@@ -1,4 +1,6 @@
+import 'package:cafetaria/components/buttons/test_buttons.dart';
 import 'package:cafetaria/components/textfields/test_textfield.dart';
+import 'package:cafetaria/components/tiles/test_custom_tiles.dart';
 import 'package:flutter/material.dart';
 
 void main() {
@@ -25,7 +27,7 @@ class MyApp extends StatelessWidget {
         // is not restarted.
         primarySwatch: Colors.blue,
       ),
-      home: const TestComponentTextfields(),
+      home: const TestButtons(),
     );
   }
 }

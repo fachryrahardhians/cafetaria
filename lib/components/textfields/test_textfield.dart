@@ -16,6 +16,7 @@ class TestComponentTextfields extends StatelessWidget {
         shrinkWrap: true,
         children: [
           CustomTextfield1(label: "NAMA MENU",hint: "Masukkan nama menu",),
+          SearchTextfield1()
         ],
       ),
     );

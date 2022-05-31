@@ -2,10 +2,26 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfield1 extends StatelessWidget {
-  CustomTextfield1({Key? key, this.hint, this.label}) : super(key: key);
+  CustomTextfield1({
+    Key? key,
+    this.hint,
+    this.label,
+    this.maxLine,
+    this.suffix,
+    this.controller,
+  }) : super(key: key);
 
   String? hint;
+  ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
   String? label;
+  ///Label digunakan untuk tulisan label diatas textfield
+  int? maxLine;
+  ///MaxLine digunakan untuk mengatur tinggi textfield default secara
+  ///hitungan baris
+  TextEditingController? controller;
+  ///controller untuk Text Editing Controller
+  Widget? suffix;
+  ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 
   @override
   Widget build(BuildContext context) {
@@ -22,7 +38,7 @@ class CustomTextfield1 extends StatelessWidget {
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.symmetric(vertical: 8,horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 color: Colors.white,
@@ -35,13 +51,60 @@ class CustomTextfield1 extends StatelessWidget {
                   ),
                 ]),
             child: TextFormField(
+              controller: controller,
+              maxLines: maxLine ?? 1,
               decoration: InputDecoration(
+                isDense: true,
                 border: InputBorder.none,
                 hintText: hint ?? '',
+                suffix: suffix,
               ),
             ),
           ),
         ],
+      ),
+    );
+  }
+}
+
+class SearchTextfield1 extends StatelessWidget {
+  SearchTextfield1({
+    Key? key,
+    this.hint,
+    this.suffix,
+    this.controller,
+  }) : super(key: key);
+
+  String? hint;
+  TextEditingController? controller;
+  Widget? suffix;
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      child: TextFormField(
+        controller: controller,
+        maxLines: 1,
+        decoration: InputDecoration(
+          isDense: true,
+          border: const OutlineInputBorder(
+            borderSide: BorderSide(
+              color: Color(0xffCACCCF),
+            ),
+            borderRadius: BorderRadius.horizontal(
+              left: Radius.circular(25),
+              right: Radius.circular(25),
+            ),
+          ),
+          hintText: hint ?? '',
+          suffix: suffix,
+          prefixIcon: const Icon(
+            Icons.search,
+            color: MyColors.red1,
+            size: 18,
+          ),
+        ),
       ),
     );
   }

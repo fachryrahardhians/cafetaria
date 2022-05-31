@@ -9,4 +9,5 @@ class MyColors{
   static const Color whiteGrey1 = Color(0xfff2f2f2);
   static const Color disabledRed1 = Color(0xffFE8F7D);
   static const Color grey1 = Color(0xff5C5E61);
+  static const Color grey2 = Color(0xffB1B5BA);
 }
