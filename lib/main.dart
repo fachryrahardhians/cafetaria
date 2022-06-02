@@ -17,6 +17,7 @@ void main() async {
 
       return App(
         authenticationRepository: _authenticationRepository,
+
       );
     },
   );

@@ -3,6 +3,7 @@ import 'dart:developer';
 
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -32,7 +33,13 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
-
+  await Firebase.initializeApp();
+  // runApp(
+      // await builder(
+      //   FirebaseAuth.instance,
+      //   FirebaseFirestore.instance,
+      //   await SharedPreferences.getInstance(),
+      // )
   await runZonedGuarded(
     () async {
       await BlocOverrides.runZoned(

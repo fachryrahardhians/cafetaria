@@ -37,7 +37,7 @@ class CustomTextfield1 extends StatelessWidget {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text(
-            label ?? ''.toUpperCase(),
+            (label ?? '').toUpperCase(),
             style: const TextStyle(fontSize: 12, color: MyColors.grey1),
           ),
           Container(
