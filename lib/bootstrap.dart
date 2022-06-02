@@ -8,6 +8,8 @@ import 'package:flutter/widgets.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'firebase_options.dart';
+
 class AppBlocObserver extends BlocObserver {
   @override
   void onChange(BlocBase bloc, Change change) {
@@ -30,9 +32,21 @@ typedef BootstrapBuilder = Future<Widget> Function(
 
 Future<void> bootstrap(BootstrapBuilder builder) async {
   WidgetsFlutterBinding.ensureInitialized();
+
   FlutterError.onError = (details) {
     log(details.exceptionAsString(), stackTrace: details.stack);
   };
+
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  runApp(
+    await builder(
+      FirebaseAuth.instance,
+      FirebaseFirestore.instance,
+      await SharedPreferences.getInstance(),
+    ),
   await Firebase.initializeApp();
   // runApp(
       // await builder(
@@ -55,4 +69,20 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
     },
     (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
+
+  // await runZonedGuarded(
+  //   () async {
+  //     await BlocOverrides.runZoned(
+  //       () async => runApp(
+  //         await builder(
+  //           FirebaseAuth.instance,
+  //           FirebaseFirestore.instance,
+  //           await SharedPreferences.getInstance(),
+  //         ),
+  //       ),
+  //       blocObserver: AppBlocObserver(),
+  //     );
+  //   },
+  //   (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
+  // );
 }
