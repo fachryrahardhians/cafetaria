@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "281496016898",
+    "project_id": "komplekku-575ee",
+    "storage_bucket": "komplekku-575ee.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:281496016898:android:9941684e9dff10f875ef1b",
+        "android_client_info": {
+          "package_name": "com.example.cafetaria"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "281496016898-65e7q52v6s55msf2lddh2ukumnufg256.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCNrE8yl_GgDLKQsDSL35DAroHQMop1GAY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "281496016898-65e7q52v6s55msf2lddh2ukumnufg256.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
