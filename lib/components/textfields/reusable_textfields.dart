@@ -12,15 +12,20 @@ class CustomTextfield1 extends StatelessWidget {
   }) : super(key: key);
 
   String? hint;
+
   ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
   String? label;
+
   ///Label digunakan untuk tulisan label diatas textfield
   int? maxLine;
+
   ///MaxLine digunakan untuk mengatur tinggi textfield default secara
   ///hitungan baris
   TextEditingController? controller;
+
   ///controller untuk Text Editing Controller
   Widget? suffix;
+
   ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 
   @override

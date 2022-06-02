@@ -13,8 +13,8 @@ class OrderCard extends StatelessWidget {
         children: [
           Container(
             clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.only(top: 0, bottom: 16, left: 16, right:
-            16),
+            padding:
+                const EdgeInsets.only(top: 0, bottom: 16, left: 16, right: 16),
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -29,44 +29,74 @@ class OrderCard extends StatelessWidget {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 32,),
+                const SizedBox(
+                  height: 32,
+                ),
                 Row(
                   children: [
-                    CustomTileDateBox(),
-                    SizedBox(width: 16,),
+                    const CustomTileDateBox(),
+                    const SizedBox(
+                      width: 16,
+                    ),
                     Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Text("Cafetaria #1234567890",style: bigText.copyWith
-                          (fontWeight: FontWeight.bold),),
-                        SizedBox(height: 4,),
-                        Text("Apartemen Skyline Residence",style: bigText,),
-                        SizedBox(height: 4,),
-                        Text("Tower A • Lantai 3A • Nomor 37 ",style: normalText,),
+                        Text(
+                          "Cafetaria #1234567890",
+                          style: bigText.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          "Apartemen Skyline Residence",
+                          style: bigText,
+                        ),
+                        const SizedBox(
+                          height: 4,
+                        ),
+                        Text(
+                          "Tower A • Lantai 3A • Nomor 37 ",
+                          style: normalText,
+                        ),
                       ],
                     ),
                   ],
                 ),
-                SizedBox(height: 12,),
-                Divider(),
-                SizedBox(height: 12,),
-                Text("ka tolong diantar ke lantai 1A no 3 yah",style: smallText
-                    .copyWith(color: MyColors.grey2),),
-                SizedBox(height: 12,),
-                Text.rich(TextSpan(
-                  children: [
-                    TextSpan(text: "Keterangan : ",style: smallText
-                        .copyWith(color: MyColors.red1)),
-                    TextSpan(text: "Mohon maaf, Ayam sudah habis kami "
-                        "rekomendasikan Nasi Iga Bakar dengan harga Rp25"
-                        ".000. Terima kasih  kak.",style: smallText.copyWith
-                      (color: MyColors.grey2))
-                  ]
-                ),),
+                const SizedBox(
+                  height: 12,
+                ),
+                const Divider(),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text(
+                  "ka tolong diantar ke lantai 1A no 3 yah",
+                  style: smallText.copyWith(color: MyColors.grey2),
+                ),
+                const SizedBox(
+                  height: 12,
+                ),
+                Text.rich(
+                  TextSpan(children: [
+                    TextSpan(
+                        text: "Keterangan : ",
+                        style: smallText.copyWith(color: MyColors.red1)),
+                    TextSpan(
+                        text: "Mohon maaf, Ayam sudah habis kami "
+                            "rekomendasikan Nasi Iga Bakar dengan harga Rp25"
+                            ".000. Terima kasih  kak.",
+                        style: smallText.copyWith(color: MyColors.grey2))
+                  ]),
+                ),
               ],
             ),
           ),
-          Positioned(right: 0,top: 0,child: CustomTileTimeBadge(),)
+          const Positioned(
+            right: 0,
+            top: 0,
+            child: CustomTileTimeBadge(),
+          )
         ],
       ),
     );
@@ -97,19 +127,32 @@ class DetailOrderCard extends StatelessWidget {
         children: [
           Row(
             children: [
-              CustomTileDateBox(),
-              SizedBox(width: 16,),
+              const CustomTileDateBox(),
+              const SizedBox(
+                width: 16,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  Text("Cafetaria #1234567890",style: bigText.copyWith
-                    (fontWeight: FontWeight.bold),),
-                  SizedBox(height: 4,),
-                  Text("Apartemen Skyline Residence",style: bigText,),
-                  SizedBox(height: 4,),
-                  Text("Tower A • Lantai 3A • Nomor 37 ",style:
-                  normalText.copyWith(fontWeight: FontWeight.bold,
-                      color: MyColors.grey2),),
+                  Text(
+                    "Cafetaria #1234567890",
+                    style: bigText.copyWith(fontWeight: FontWeight.bold),
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    "Apartemen Skyline Residence",
+                    style: bigText,
+                  ),
+                  const SizedBox(
+                    height: 4,
+                  ),
+                  Text(
+                    "Tower A • Lantai 3A • Nomor 37 ",
+                    style: normalText.copyWith(
+                        fontWeight: FontWeight.bold, color: MyColors.grey2),
+                  ),
                 ],
               ),
             ],
@@ -126,33 +169,53 @@ class CustomMenuOrderTile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: EdgeInsets.symmetric(horizontal: 16,vertical: 8),
+      margin: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text("20x",style: TextStyle(fontSize: 13),),
-          Column(crossAxisAlignment: CrossAxisAlignment.start,children: [
-            Text("Tteokbokki Regular",style: TextStyle(fontSize: 13),
-              maxLines: 2,overflow: TextOverflow.ellipsis,),
-            Text("Nasi",style: TextStyle(fontSize: 13,color: MyColors.grey2),),
-            Text.rich(TextSpan(
-                children: [
-                  TextSpan(text: "Catatan : ",style: normalText
-                      .copyWith(color: MyColors.red1)),
-                  TextSpan(text: "Nanti saya ambil jam 9 ya kak",style:
-                  normalText.copyWith
-                    (color: MyColors.grey2))
-                ]
-            ),),
-          ],),
+          const Text(
+            "20x",
+            style: TextStyle(fontSize: 13),
+          ),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text("Rp.400.000",style: TextStyle(fontSize: 13),),
-              Text("Rp.520.000",style: smallText.copyWith(color: MyColors.grey2,
-                  decorationStyle:
-              TextDecorationStyle.dashed),),
+              const Text(
+                "Tteokbokki Regular",
+                style: TextStyle(fontSize: 13),
+                maxLines: 2,
+                overflow: TextOverflow.ellipsis,
+              ),
+              const Text(
+                "Nasi",
+                style: TextStyle(fontSize: 13, color: MyColors.grey2),
+              ),
+              Text.rich(
+                TextSpan(children: [
+                  TextSpan(
+                      text: "Catatan : ",
+                      style: normalText.copyWith(color: MyColors.red1)),
+                  TextSpan(
+                      text: "Nanti saya ambil jam 9 ya kak",
+                      style: normalText.copyWith(color: MyColors.grey2))
+                ]),
+              ),
+            ],
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Rp.400.000",
+                style: TextStyle(fontSize: 13),
+              ),
+              Text(
+                "Rp.520.000",
+                style: smallText.copyWith(
+                    color: MyColors.grey2,
+                    decorationStyle: TextDecorationStyle.dashed),
+              ),
             ],
           ),
         ],
@@ -160,8 +223,6 @@ class CustomMenuOrderTile extends StatelessWidget {
     );
   }
 }
-
-
 
 class CustomTileDateBox extends StatelessWidget {
   const CustomTileDateBox({
@@ -171,9 +232,10 @@ class CustomTileDateBox extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      height: 60,width: 60,
-      padding: EdgeInsets.symmetric(vertical: 2),
-      decoration: BoxDecoration(
+      height: 60,
+      width: 60,
+      padding: const EdgeInsets.symmetric(vertical: 2),
+      decoration: const BoxDecoration(
           borderRadius: BorderRadius.all(Radius.circular(8)),
           gradient: LinearGradient(
             begin: Alignment.topRight,
@@ -183,17 +245,22 @@ class CustomTileDateBox extends StatelessWidget {
               Color(0xff808285),
               Color(0xff333435),
             ],
-          )
-      ),
+          )),
       child: Column(
         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
         children: [
-          Text("Rab",style: normalText.copyWith(color: Colors.white),),
-
-          Text("13",style: TextStyle(fontSize: 24,color: Colors.white),),
-
-          Text("JUN",style: normalText.copyWith(color :Colors
-              .white),),
+          Text(
+            "Rab",
+            style: normalText.copyWith(color: Colors.white),
+          ),
+          const Text(
+            "13",
+            style: TextStyle(fontSize: 24, color: Colors.white),
+          ),
+          Text(
+            "JUN",
+            style: normalText.copyWith(color: Colors.white),
+          ),
         ],
       ),
     );
@@ -208,15 +275,16 @@ class CustomTileTimeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 16,vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
-            topRight: Radius.circular(8),
-            bottomLeft: Radius.circular(8)),
+            topRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
         color: MyColors.red1.withOpacity(0.3),
       ),
-      child: Text("3 Menit lalu",style: smallText.copyWith(color:
-      MyColors.red1),),
+      child: Text(
+        "3 Menit lalu",
+        style: smallText.copyWith(color: MyColors.red1),
+      ),
     );
   }
 }

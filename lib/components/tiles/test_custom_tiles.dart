@@ -8,10 +8,10 @@ class TestCustomTiles extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Custom Tiles"),
+        title: const Text("Custom Tiles"),
       ),
       body: ListView(
-        children: [
+        children: const [
           OrderCard(),
           DetailOrderCard(),
           CustomMenuOrderTile(),

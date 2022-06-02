@@ -8,7 +8,7 @@ class TestButtons extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        title: Text("Button"),
+        title: const Text("Button"),
       ),
       body: Column(
         children: [
