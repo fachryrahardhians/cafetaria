@@ -28,4 +28,6 @@ class AuthenticationBloc extends Bloc<AuthenticationEvent, AuthenticationState> 
       emit(AuthenticationStateError(e.toString()));
     }
   }
+
+
 }

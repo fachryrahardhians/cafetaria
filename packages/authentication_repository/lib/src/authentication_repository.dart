@@ -4,6 +4,7 @@ import 'package:google_sign_in/google_sign_in.dart';
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
     'email',
+    // 'https://www.googleapis.com/auth/contacts.readonly',
     'https://www.googleapis.com/auth/contacts.readonly',
   ],
 );
@@ -39,12 +40,31 @@ class AuthenticationRepository {
     }
   }
 
+  Future<User?> getCurrentUser() async {
+    try {
+      return _firebaseAuth.currentUser;
+    } catch (e) {
+      throw Exception(e);
+    }
+  }
+
   /// sign user with gmail
   /// [email] and [password] must not be null
   Future<GoogleSignInAccount?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
+      print(data!.photoUrl);
+      // Obtain the auth details from the request
+      final GoogleSignInAuthentication? googleAuth = await data.authentication;
 
+      // Create a new credential
+      final credential = GoogleAuthProvider.credential(
+        accessToken: googleAuth?.accessToken,
+        idToken: googleAuth?.idToken,
+      );
+
+      // Once signed in, return the UserCredential
+      // return await FirebaseAuth.instance.signInWithCredential(credential);
       return data;
     } on Exception catch (error, stacktrace) {
       print(error);
