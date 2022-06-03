@@ -41,13 +41,13 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
     options: DefaultFirebaseOptions.currentPlatform,
   );
 
-  runApp(
-    await builder(
-      FirebaseAuth.instance,
-      FirebaseFirestore.instance,
-      await SharedPreferences.getInstance(),
-    ),
-  await Firebase.initializeApp();
+  // runApp(
+  //   await builder(
+  //     FirebaseAuth.instance,
+  //     FirebaseFirestore.instance,
+  //     await SharedPreferences.getInstance(),
+  //   ),
+  // await Firebase.initializeApp();
   // runApp(
       // await builder(
       //   FirebaseAuth.instance,
