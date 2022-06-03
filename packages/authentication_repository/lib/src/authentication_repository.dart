@@ -65,12 +65,21 @@ class AuthenticationRepository {
       );
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(credential);
+      await _firebaseAuth.signInWithCredential(credential);
       return data;
 
     } on Exception catch (error, stacktrace) {
       print(error);
       throw AuthenticationException(error, stacktrace);
+    }
+  }
+
+  Future<void> signoutGoogle() async {
+    try{
+      final data = await _googleSignIn.signOut();
+      await _firebaseAuth.signOut();
+    }catch(e){
+      throw Exception(e);
     }
   }
 }
