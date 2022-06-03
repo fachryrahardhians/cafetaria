@@ -49,11 +49,11 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
   //   ),
   // await Firebase.initializeApp();
   // runApp(
-      // await builder(
-      //   FirebaseAuth.instance,
-      //   FirebaseFirestore.instance,
-      //   await SharedPreferences.getInstance(),
-      // )
+  // await builder(
+  //   FirebaseAuth.instance,
+  //   FirebaseFirestore.instance,
+  //   await SharedPreferences.getInstance(),
+  // )
   await runZonedGuarded(
     () async {
       await BlocOverrides.runZoned(

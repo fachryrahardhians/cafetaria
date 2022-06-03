@@ -1,4 +1,3 @@
-
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
@@ -42,9 +41,9 @@ class AuthenticationRepository {
   }
 
   Future<User?> getCurrentUser() async {
-    try{
+    try {
       return _firebaseAuth.currentUser;
-    }catch(e){
+    } catch (e) {
       throw Exception(e);
     }
   }
@@ -67,7 +66,6 @@ class AuthenticationRepository {
       // Once signed in, return the UserCredential
       await _firebaseAuth.signInWithCredential(credential);
       return data;
-
     } on Exception catch (error, stacktrace) {
       print(error);
       throw AuthenticationException(error, stacktrace);
