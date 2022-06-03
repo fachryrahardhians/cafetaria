@@ -44,6 +44,7 @@ class AuthenticationRepository {
   Future<GoogleSignInAccount?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
+
       return data;
     } on Exception catch (error, stacktrace) {
       print(error);

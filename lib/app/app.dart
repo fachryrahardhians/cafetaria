@@ -1,5 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
+import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:penjual_repository/penjual_repository.dart';
@@ -40,7 +40,7 @@ class AppView extends StatelessWidget {
       theme: ThemeData(
         primarySwatch: Colors.blue,
       ),
-      home: const PenjualDashboardView(),
+      home: const LoginPage(),
     );
   }
 }

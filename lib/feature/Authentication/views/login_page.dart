@@ -1,10 +1,10 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +15,12 @@ class LoginPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(create: (context) =>
-        AuthenticationBloc
-          (authenticationRepository: context.read<AuthenticationRepository>()),
-      child: LoginView(),);
+    return BlocProvider(
+      create: (context) => AuthenticationBloc(
+          authenticationRepository: context.read<AuthenticationRepository>()),
+      child: const LoginView(),
+    );
   }
-
-
 }
 
 class LoginView extends StatefulWidget {
@@ -41,33 +40,35 @@ class _LoginViewState extends State<LoginView> {
           mainAxisAlignment: MainAxisAlignment.center,
           crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            BoxLogo(),
+            const BoxLogo(),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 36),
               child: Text(
-                "Selamat Datang Kembali di Komplekku!", style: extraBigText
-                  .copyWith(fontWeight: FontWeight.bold),),
+                "Selamat Datang Kembali di Komplekku!",
+                style: extraBigText.copyWith(fontWeight: FontWeight.bold),
+              ),
             ),
             BlocListener<AuthenticationBloc, AuthenticationState>(
               listener: (context, state) {
-                if(state is AuthenticationStateSuccess){
-                  Navigator.push(context, MaterialPageRoute(builder:
-                      (context)=> SuccessLogin()));
-                }
-
-                else if(state is AuthenticationStateError){
+                if (state is AuthenticationStateSuccess) {
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const PenjualDashboardPage()));
+                } else if (state is AuthenticationStateError) {
                   print(state.error);
                 }
-
               },
               child: InkWell(
                 onTap: () {
-                  context.read<AuthenticationBloc>().add(
-                      GetGoogleAuthentication());
+                  context
+                      .read<AuthenticationBloc>()
+                      .add(GetGoogleAuthentication());
                 },
                 child: Container(
-                  padding: EdgeInsets.symmetric(horizontal: 90, vertical: 14),
-                  decoration: BoxDecoration(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
+                  decoration: const BoxDecoration(
                       borderRadius: BorderRadius.all(Radius.circular(8)),
                       color: Colors.white,
                       boxShadow: [
@@ -78,21 +79,34 @@ class _LoginViewState extends State<LoginView> {
                           blurRadius: 1,
                         ),
                       ]),
-                  child: Text("Masuk Dengan Google", style: bigText.copyWith
-                    (fontWeight: FontWeight.bold),),
+                  child: Text(
+                    "Masuk Dengan Google",
+                    style: bigText.copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
               ),
             ),
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 18),
-              child: Text("ATAU", style: extraBigText
-                  .copyWith(
-                  fontWeight: FontWeight.bold, color: MyColors.grey2),),
+              child: Text(
+                "ATAU",
+                style: extraBigText.copyWith(
+                    fontWeight: FontWeight.bold, color: MyColors.grey2),
+              ),
             ),
-            CustomTextfield1(label: "komplekku id",),
-            CustomTextfield1(label: "kata sandi",),
-            SizedBox(height: 50,),
-            ReusableButton1(label: "MASUK", onPressed: () {},),
+            CustomTextfield1(
+              label: "komplekku id",
+            ),
+            CustomTextfield1(
+              label: "kata sandi",
+            ),
+            const SizedBox(
+              height: 50,
+            ),
+            ReusableButton1(
+              label: "MASUK",
+              onPressed: () {},
+            ),
           ],
         ),
       ),
@@ -107,14 +121,13 @@ class SuccessLogin extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        child: Center(
+        child: const Center(
           child: Text("SUKSES LOGIN"),
         ),
       ),
     );
   }
 }
-
 
 class BoxLogo extends StatelessWidget {
   const BoxLogo({Key? key}) : super(key: key);
@@ -124,7 +137,7 @@ class BoxLogo extends StatelessWidget {
     return Container(
       height: 100,
       width: 100,
-      decoration: BoxDecoration(
+      decoration: const BoxDecoration(
         borderRadius: BorderRadius.all(Radius.circular(16)),
         gradient: LinearGradient(
           begin: Alignment.topLeft,
@@ -138,4 +151,3 @@ class BoxLogo extends StatelessWidget {
     );
   }
 }
-
