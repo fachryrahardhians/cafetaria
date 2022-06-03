@@ -47,6 +47,27 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
       FirebaseFirestore.instance,
       await SharedPreferences.getInstance(),
     ),
+  await Firebase.initializeApp();
+  // runApp(
+      // await builder(
+      //   FirebaseAuth.instance,
+      //   FirebaseFirestore.instance,
+      //   await SharedPreferences.getInstance(),
+      // )
+  await runZonedGuarded(
+    () async {
+      await BlocOverrides.runZoned(
+        () async => runApp(
+          await builder(
+            FirebaseAuth.instance,
+            FirebaseFirestore.instance,
+            await SharedPreferences.getInstance(),
+          ),
+        ),
+        blocObserver: AppBlocObserver(),
+      );
+    },
+    (error, stackTrace) => log(error.toString(), stackTrace: stackTrace),
   );
 
   // await runZonedGuarded(

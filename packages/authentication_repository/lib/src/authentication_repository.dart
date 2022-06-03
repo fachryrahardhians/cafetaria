@@ -46,6 +46,7 @@ class AuthenticationRepository {
       final data = await _googleSignIn.signIn();
       return data;
     } on Exception catch (error, stacktrace) {
+      print(error);
       throw AuthenticationException(error, stacktrace);
     }
   }

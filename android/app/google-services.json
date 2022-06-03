@@ -14,6 +14,14 @@
       },
       "oauth_client": [
         {
+          "client_id": "281496016898-brbcdt3n5cmg3k4v4ls8j82uhu5gl2g7.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.cafetaria",
+            "certificate_hash": "e12adfa4599109ca882d82e314c2156e2303f291"
+          }
+        },
+        {
           "client_id": "281496016898-65e7q52v6s55msf2lddh2ukumnufg256.apps.googleusercontent.com",
           "client_type": 3
         }
@@ -29,6 +37,13 @@
             {
               "client_id": "281496016898-65e7q52v6s55msf2lddh2ukumnufg256.apps.googleusercontent.com",
               "client_type": 3
+            },
+            {
+              "client_id": "281496016898-fjb2u4b5qfjfc9utj1r5hjul2cvuknaf.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.cafetaria"
+              }
             }
           ]
         }
