@@ -64,7 +64,7 @@ class AuthenticationRepository {
       );
 
       // Once signed in, return the UserCredential
-      // return await FirebaseAuth.instance.signInWithCredential(credential);
+      await FirebaseAuth.instance.signInWithCredential(credential);
       return data;
     } on Exception catch (error, stacktrace) {
       print(error);

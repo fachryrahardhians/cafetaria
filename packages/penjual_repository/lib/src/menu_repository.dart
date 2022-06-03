@@ -1,8 +1,10 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:penjual_repository/src/models/category_menu_model.dart';
+import 'package:uuid/uuid.dart';
 
 class MenuRepository {
   final FirebaseFirestore _firestore;
+  var uuid = const Uuid();
 
   MenuRepository({
     required FirebaseFirestore firestore,
@@ -33,6 +35,21 @@ class MenuRepository {
       print(e.toString());
       throw Exception('Failed to get category menu');
     }
+  }
+
+  // add category menu
+  Future<void> addCategory(
+    String idMerchant,
+    String name,
+  ) async {
+    final data = {
+      'merchantId': idMerchant,
+      'category': name,
+      'categoryId': uuid.v4(),
+    };
+
+    // add to firestore
+    await _firestore.collection('category').add(data);
   }
 }
 
