@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:penjual_repository/src/models/category_menu_model.dart';
 
 class MenuRepository {
   final FirebaseFirestore _firestore;
@@ -19,5 +20,35 @@ class MenuRepository {
 
     // add to firestore
     await _firestore.collection('category').add(data);
+  }
+
+  // get category menu
+  Future<List<CategoryMenuModel>> getCategoryMenu(String idMerchant) async {
+    try {
+      final snapshot = await _firestore.collection('category').get();
+
+      final documents = snapshot.docs;
+      return documents.toLeaderboard();
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Failed to get category menu');
+    }
+  }
+}
+
+extension on List<QueryDocumentSnapshot> {
+  List<CategoryMenuModel> toLeaderboard() {
+    final leaderboardEntries = <CategoryMenuModel>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          leaderboardEntries.add(CategoryMenuModel.fromJson(data));
+        } catch (error) {
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
   }
 }

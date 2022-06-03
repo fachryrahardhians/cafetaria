@@ -6,3 +6,12 @@ abstract class MenuMakananEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetMenuMakanan extends MenuMakananEvent {
+  final String idMerchant;
+
+  const GetMenuMakanan(this.idMerchant);
+
+  @override
+  List<Object> get props => [idMerchant];
+}
