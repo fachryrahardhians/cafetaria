@@ -2,12 +2,21 @@
 
 import 'package:flutter/material.dart';
 import 'dart:async';
+import 'dart:io';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+import 'package:cafetaria/components/buttons/reusables_buttons.dart';
+import 'package:cafetaria/feature/pembeli/widget/widget.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:firebase_storage/firebase_storage.dart';
+import 'package:uuid/uuid.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
   const PenjualDashboardPage({Key? key}) : super(key: key);
@@ -26,16 +35,84 @@ class PenjualDashboardView extends StatefulWidget {
 }
 
 class _PenjualDashboardState extends State<PenjualDashboardView> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
   final Completer<GoogleMapController> _mapController = Completer();
   List<Marker> _marker = [];
+  final ImagePicker _picker = ImagePicker();
+  final TextEditingController _namaUsaha = TextEditingController();
+  final TextEditingController _kota = TextEditingController();
+  final TextEditingController _kodePos = TextEditingController();
+  final TextEditingController _alamatLengkap = TextEditingController();
+  final TextEditingController _lokasiDetail = TextEditingController();
 
   final List<String> _listBidangUsaha = ["Hiburan", "Makanan", "Minuman"];
   String? _bidangUsaha = null;
+  XFile? _fotoLuar;
+  XFile? _fotoDalam;
 
-  void _handleMapTap(LatLng latLng) {
+  Future _handleMapTap(LatLng latLng) async {
     setState(() {
       _marker = [Marker(markerId: MarkerId("main"), position: latLng)];
     });
+
+    final GoogleMapController controller = await _mapController.future;
+    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
+      target: latLng,
+      zoom: 17,
+    )));
+
+    List<Placemark> placemarks = await placemarkFromCoordinates(
+        latLng.latitude, latLng.longitude,
+        localeIdentifier: "id");
+    Placemark placemark = placemarks[0];
+
+    _alamatLengkap.text =
+        '${placemark.thoroughfare != null ? placemark.street : ""}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}';
+
+    print(placemark.toString());
+  }
+
+  Future _handleUpload(String type) async {
+    final XFile? photo =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    setState(() {
+      if (type == "dalam") {
+        _fotoDalam = photo;
+      } else {
+        _fotoLuar = photo;
+      }
+    });
+  }
+
+  Future _onSubmit() async {
+    final uuid = Uuid().v4();
+
+    try {
+      var snapshotLuar = await _storage
+          .ref()
+          .child('images/merchant/foto_toko_luar/$uuid.jpg')
+          .putFile(File(_fotoLuar!.path));
+      var snapshotDalam = await _storage
+          .ref()
+          .child('images/merchant/foto_toko_dalam/$uuid.jpg')
+          .putFile(File(_fotoLuar!.path));
+
+      var urlLuar = await snapshotLuar.ref.getDownloadURL();
+      var urlDalam = await snapshotDalam.ref.getDownloadURL();
+
+      final data = {
+        'test': _namaUsaha.text,
+        "fotoTokoLuar": urlLuar,
+        "fotoTokoDalam": urlDalam
+      };
+
+      await _firestore.collection('merchant').doc(uuid).set(data);
+      Fluttertoast.showToast(
+          msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+    } catch (error) {
+      Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
+    }
   }
 
   @override
@@ -60,12 +137,14 @@ class _PenjualDashboardState extends State<PenjualDashboardView> {
       ),
       body: SingleChildScrollView(
           child: Padding(
-              padding:
-                  EdgeInsets.only(left: 24, right: 24, bottom: 24, top: 12),
+              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Column(
                 children: [
                   CustomTextfield2(
-                      label: "NAMA USAHA", hint: "Masukkan nama usaha"),
+                    label: "NAMA USAHA",
+                    hint: "Masukkan nama usaha",
+                    controller: _namaUsaha,
+                  ),
                   DropdownTextfield1(
                     label: "BIDANG USAHA",
                     hint: "Pilih bidang usaha",
@@ -78,9 +157,15 @@ class _PenjualDashboardState extends State<PenjualDashboardView> {
                     },
                   ),
                   CustomTextfield2(
-                      label: "KOTA ATAU KABUPATEN", hint: "Pilih kota"),
+                    label: "KOTA ATAU KABUPATEN",
+                    hint: "Pilih kota",
+                    controller: _kota,
+                  ),
                   CustomTextfield2(
-                      label: "KODE POS", hint: "Masukkan kode pos"),
+                    label: "KODE POS",
+                    hint: "Masukkan kode pos",
+                    controller: _kodePos,
+                  ),
                   SizedBox(height: 10),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -104,9 +189,8 @@ class _PenjualDashboardState extends State<PenjualDashboardView> {
                                   mapType: MapType.normal,
                                   mapToolbarEnabled: false,
                                   initialCameraPosition: CameraPosition(
-                                    target: LatLng(
-                                        37.42796133580664, -122.085749655962),
-                                    zoom: 14.4746,
+                                    target: LatLng(-6.200000, 106.816666),
+                                    zoom: 12,
                                   ),
                                   myLocationEnabled: true,
                                   onTap: _handleMapTap,
@@ -123,11 +207,35 @@ class _PenjualDashboardState extends State<PenjualDashboardView> {
                   SizedBox(height: 20),
                   CustomTextfield2(
                       label: "ALAMAT LENGKAP TOKO",
+                      controller: _alamatLengkap,
                       maxLine: 4,
                       hint:
                           "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
                   CustomTextfield2(
-                      label: "LOKASI DETAIL", hint: "Misalkan: Depan Circle K"),
+                    label: "LOKASI DETAIL",
+                    hint: "Misalkan: Depan Circle K",
+                    controller: _lokasiDetail,
+                  ),
+                  SizedBox(height: 10),
+                  UploadPhotoMerchant(
+                      label: "UNGGAH FOTO TOKO DARI LUAR",
+                      onTap: () => _handleUpload("luar"),
+                      photo: _fotoLuar),
+                  SizedBox(height: 32),
+                  UploadPhotoMerchant(
+                      label: "UNGGAH FOTO TOKO DARI DALAM",
+                      onTap: () => _handleUpload("dalam"),
+                      photo: _fotoDalam),
+                  SizedBox(height: 40),
+                  SizedBox(
+                      width: double.infinity,
+                      height: 50,
+                      child: ReusableButton1(
+                        label: "SIMPAN",
+                        onPressed: _onSubmit,
+                        padding: EdgeInsets.all(0),
+                        margin: EdgeInsets.all(0),
+                      ))
                 ],
               ))),
     );

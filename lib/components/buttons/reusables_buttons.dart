@@ -7,17 +7,21 @@ class ReusableButton1 extends StatelessWidget {
       {Key? key,
       required this.label,
       required this.onPressed,
-      this.backgroundColor})
+      this.backgroundColor,
+      this.padding,
+      this.margin})
       : super(key: key);
 
   String label;
   Function() onPressed;
   Color? backgroundColor;
   Color? borderColor;
+  EdgeInsets? padding;
+  EdgeInsets? margin;
   @override
   Widget build(BuildContext context) {
     return Container(
-      margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+      margin: margin ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: OutlinedButton(
         child: Text(
           label,
@@ -26,15 +30,14 @@ class ReusableButton1 extends StatelessWidget {
         ),
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 16,horizontal: 90),
+            padding:
+                padding ?? EdgeInsets.symmetric(vertical: 16, horizontal: 90),
             backgroundColor: backgroundColor ?? MyColors.red1,
             side: BorderSide(
               color: borderColor ?? MyColors.red1,
             ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))
-          )
-        ),
+            shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)))),
       ),
     );
   }
