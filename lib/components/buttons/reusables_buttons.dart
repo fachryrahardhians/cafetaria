@@ -9,7 +9,9 @@ class ReusableButton1 extends StatelessWidget {
       required this.onPressed,
       this.backgroundColor,
       this.padding,
-      this.margin})
+      this.margin,
+      this.disabled = false,
+      this.loading = false})
       : super(key: key);
 
   String label;
@@ -18,6 +20,9 @@ class ReusableButton1 extends StatelessWidget {
   Color? borderColor;
   EdgeInsets? padding;
   EdgeInsets? margin;
+  bool disabled;
+  bool loading;
+
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -28,13 +33,16 @@ class ReusableButton1 extends StatelessWidget {
           style: normalText.copyWith(
               fontWeight: FontWeight.bold, color: Colors.white),
         ),
-        onPressed: onPressed,
+        onPressed: () {
+          disabled ? null : onPressed();
+        },
         style: OutlinedButton.styleFrom(
             padding:
                 padding ?? EdgeInsets.symmetric(vertical: 16, horizontal: 90),
-            backgroundColor: backgroundColor ?? MyColors.red1,
+            backgroundColor: backgroundColor ??
+                MyColors.red1.withOpacity(disabled ? 0.5 : 1),
             side: BorderSide(
-              color: borderColor ?? MyColors.red1,
+              color: borderColor ?? MyColors.red1.withOpacity(disabled ? 0 : 1),
             ),
             shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.all(Radius.circular(8)))),
