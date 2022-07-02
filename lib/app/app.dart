@@ -1,5 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
+import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:penjual_repository/penjual_repository.dart';
@@ -38,9 +38,9 @@ class AppView extends StatelessWidget {
     return MaterialApp(
       title: 'Cafetaria',
       theme: ThemeData(
-        primarySwatch: Colors.blue,
+        primarySwatch: Colors.red,
       ),
-      home: const PembeliCreateMerchantPage(),
+      home: const PembeliProfilePage(),
     );
   }
 }

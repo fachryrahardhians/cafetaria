@@ -10,6 +10,7 @@ class ReusableButton1 extends StatelessWidget {
       this.backgroundColor,
       this.padding,
       this.margin,
+      this.borderRadius,
       this.disabled = false,
       this.loading = false})
       : super(key: key);
@@ -20,6 +21,7 @@ class ReusableButton1 extends StatelessWidget {
   Color? borderColor;
   EdgeInsets? padding;
   EdgeInsets? margin;
+  double? borderRadius;
   bool disabled;
   bool loading;
 
@@ -45,7 +47,8 @@ class ReusableButton1 extends StatelessWidget {
               color: borderColor ?? MyColors.red1.withOpacity(disabled ? 0 : 1),
             ),
             shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.all(Radius.circular(8)))),
+                borderRadius:
+                    BorderRadius.all(Radius.circular(borderRadius ?? 8)))),
       ),
     );
   }

@@ -1,14 +1,14 @@
-// ignore_for_file: prefer_const_constructors, prefer_const_literals_to_create_immutables, prefer_collection_literals, avoid_init_to_null
+// ignore_for_file: prefer_const_literals_to_create_immutables, prefer_collection_literals, avoid_init_to_null
 
 import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:flutter/foundation.dart';
-import 'package:flutter/gestures.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:image_picker/image_picker.dart';
@@ -40,6 +40,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   final FirebaseStorage _storage = FirebaseStorage.instance;
   final Completer<GoogleMapController> _mapController = Completer();
   List<Marker> _marker = [];
+
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _namaUsaha = TextEditingController();
   final TextEditingController _kota = TextEditingController();
@@ -49,30 +50,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
   final List<String> _listBidangUsaha = ["Hiburan", "Makanan", "Minuman"];
   LatLng? _latLngToko;
+  LatLng _latLngInit = const LatLng(-6.200000, 106.816666);
   String? _bidangUsaha = null;
   XFile? _fotoLuar;
   XFile? _fotoDalam;
-
-  Future _handleMapTap(LatLng latLng) async {
-    setState(() {
-      _marker = [Marker(markerId: MarkerId("main"), position: latLng)];
-      _latLngToko = latLng;
-    });
-
-    final GoogleMapController controller = await _mapController.future;
-    controller.animateCamera(CameraUpdate.newCameraPosition(CameraPosition(
-      target: latLng,
-      zoom: 17,
-    )));
-
-    List<Placemark> placemarks = await placemarkFromCoordinates(
-        latLng.latitude, latLng.longitude,
-        localeIdentifier: "id");
-    Placemark placemark = placemarks[0];
-
-    _alamatLengkap.text =
-        '${placemark.thoroughfare != null ? placemark.street : ""}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}';
-  }
 
   Future _handleUpload(String type) async {
     final XFile? photo =
@@ -86,8 +67,41 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     });
   }
 
+  Future _handleMapsPicker() async {
+    LatLng? latLng = await Navigator.push(
+      context,
+      MaterialPageRoute(
+          builder: (_) => MapsPickerPage(
+                latLng: _latLngInit,
+                marker: _marker,
+              )),
+    );
+
+    if (latLng != null) {
+      if (_latLngToko != null) {
+        final GoogleMapController controller = await _mapController.future;
+        controller.moveCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(target: latLng, zoom: 17)));
+      }
+
+      setState(() {
+        _marker = [Marker(markerId: const MarkerId("main"), position: latLng)];
+        _latLngInit = latLng;
+        _latLngToko = latLng;
+      });
+
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          latLng.latitude, latLng.longitude,
+          localeIdentifier: "id");
+      Placemark placemark = placemarks[0];
+
+      _alamatLengkap.text =
+          '${placemark.thoroughfare != null ? placemark.street : ""}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}';
+    }
+  }
+
   Future _onSubmit() async {
-    final uuid = Uuid().v4();
+    final uuid = const Uuid().v4();
 
     try {
       var snapshotLuar = await _storage
@@ -116,6 +130,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       };
 
       await _firestore.collection('merchant').doc(uuid).set(data);
+      Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
@@ -158,12 +173,17 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: MyColors.whiteGrey2,
       appBar: AppBar(
         centerTitle: true,
         backgroundColor: Colors.white,
         elevation: 0,
-        leading: const BackButton(color: Colors.red),
+        leading: IconButton(
+          icon: const Icon(Icons.arrow_back, color: Colors.red),
+          onPressed: () {
+            Navigator.pop(context);
+          },
+        ),
         title: Text(
           "INFORMASI USAHA",
           style: GoogleFonts.ubuntu(
@@ -177,7 +197,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       ),
       body: SingleChildScrollView(
           child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
               child: Column(
                 children: [
                   CustomTextfield2(
@@ -206,45 +226,39 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                     hint: "Masukkan kode pos",
                     controller: _kodePos,
                   ),
-                  SizedBox(height: 10),
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        "LOKASI TOKO",
-                        style: const TextStyle(
-                            fontSize: 13,
-                            color: MyColors.grey1,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      Container(
-                          margin: EdgeInsets.only(top: 10),
-                          width: double.infinity,
-                          height: 300,
-                          child: ClipRRect(
-                              borderRadius: const BorderRadius.all(
-                                Radius.circular(8),
-                              ),
-                              child: GoogleMap(
+                  const SizedBox(height: 10),
+                  CustomBoxPicker(
+                      label: "LOKASI TOKO",
+                      hint: "PILIH LOKASI",
+                      onTap: _handleMapsPicker,
+                      child: _latLngToko == null
+                          ? null
+                          : Stack(
+                              children: [
+                                GoogleMap(
                                   mapType: MapType.normal,
                                   mapToolbarEnabled: false,
+                                  myLocationEnabled: false,
+                                  zoomControlsEnabled: false,
                                   initialCameraPosition: CameraPosition(
-                                    target: LatLng(-6.200000, 106.816666),
-                                    zoom: 12,
+                                    target: _latLngInit,
+                                    zoom: 17,
                                   ),
-                                  myLocationEnabled: true,
-                                  onTap: _handleMapTap,
                                   onMapCreated:
                                       (GoogleMapController controller) {
                                     _mapController.complete(controller);
                                   },
                                   markers: Set.from(_marker),
-                                  gestureRecognizers: [
-                                    Factory(() => EagerGestureRecognizer()),
-                                  ].toSet())))
-                    ],
-                  ),
-                  SizedBox(height: 20),
+                                ),
+                                GestureDetector(
+                                    onTap: _handleMapsPicker,
+                                    child: Expanded(
+                                        child: Container(
+                                            color:
+                                                Colors.black.withOpacity(0))))
+                              ],
+                            )),
+                  const SizedBox(height: 20),
                   CustomTextfield2(
                       label: "ALAMAT LENGKAP TOKO",
                       controller: _alamatLengkap,
@@ -256,25 +270,33 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                     hint: "Misalkan: Depan Circle K",
                     controller: _lokasiDetail,
                   ),
-                  SizedBox(height: 10),
-                  UploadPhotoMerchant(
+                  const SizedBox(height: 10),
+                  CustomBoxPicker(
                       label: "UNGGAH FOTO TOKO DARI LUAR",
+                      hint: "UNGGAH FOTO",
                       onTap: () => _handleUpload("luar"),
-                      photo: _fotoLuar),
-                  SizedBox(height: 32),
-                  UploadPhotoMerchant(
+                      child: _fotoLuar == null
+                          ? null
+                          : Image.file(File(_fotoLuar!.path),
+                              fit: BoxFit.contain)),
+                  const SizedBox(height: 32),
+                  CustomBoxPicker(
                       label: "UNGGAH FOTO TOKO DARI DALAM",
+                      hint: "UNGGAH FOTO",
                       onTap: () => _handleUpload("dalam"),
-                      photo: _fotoDalam),
-                  SizedBox(height: 40),
+                      child: _fotoDalam == null
+                          ? null
+                          : Image.file(File(_fotoDalam!.path),
+                              fit: BoxFit.contain)),
+                  const SizedBox(height: 40),
                   SizedBox(
                       width: double.infinity,
                       height: 50,
                       child: ReusableButton1(
                           label: "SIMPAN",
                           onPressed: _onSubmit,
-                          padding: EdgeInsets.all(0),
-                          margin: EdgeInsets.all(0),
+                          padding: const EdgeInsets.all(0),
+                          margin: const EdgeInsets.all(0),
                           disabled: _checkDisableButton()))
                 ],
               ))),

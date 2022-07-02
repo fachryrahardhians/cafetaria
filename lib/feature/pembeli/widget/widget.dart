@@ -3,19 +3,60 @@ import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
 import 'dart:io';
 
-class UploadPhotoMerchant extends StatelessWidget {
-  UploadPhotoMerchant({
+class BottomBar extends StatelessWidget {
+  BottomBar({
+    Key? key,
+    required this.index,
+  }) : super(key: key);
+
+  int index;
+
+  @override
+  Widget build(BuildContext context) {
+    return BottomNavigationBar(
+      items: const [
+        BottomNavigationBarItem(
+          icon: Icon(Icons.home),
+          label: 'Beranda',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.message),
+          label: 'Pesan',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.history),
+          label: 'Riwayat',
+        ),
+        BottomNavigationBarItem(
+          icon: Icon(Icons.person),
+          label: 'Profil',
+        ),
+      ],
+      currentIndex: index,
+      type: BottomNavigationBarType.fixed, // Fixed
+      backgroundColor: Colors.white,
+      selectedItemColor: MyColors.red1,
+      unselectedItemColor: MyColors.grey2,
+      onTap: null,
+    );
+  }
+}
+
+class CustomBoxPicker extends StatelessWidget {
+  CustomBoxPicker({
     Key? key,
     required this.onTap,
     this.photo,
     this.label,
-    this.hint = "UNGGAH FOTO",
+    this.hint,
+    this.child,
   }) : super(key: key);
 
   XFile? photo;
   String? label;
-  String hint;
+  String? hint;
   Function() onTap;
+  Widget? child;
 
   @override
   Widget build(BuildContext context) {
@@ -47,9 +88,7 @@ class UploadPhotoMerchant extends StatelessWidget {
                       ),
                     ]),
                 child: Center(
-                  child: photo != null
-                      ? Image.file(File(photo!.path), fit: BoxFit.contain)
-                      : Text(hint),
+                  child: child ?? Text(hint ?? ""),
                 ))
           ],
         ));
