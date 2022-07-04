@@ -26,15 +26,13 @@ class ReusableButton1 extends StatelessWidget {
         ),
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
-            padding: EdgeInsets.symmetric(vertical: 16,horizontal: 90),
+            padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 90),
             backgroundColor: backgroundColor ?? MyColors.red1,
             side: BorderSide(
               color: borderColor ?? MyColors.red1,
             ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.all(Radius.circular(8))
-          )
-        ),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)))),
       ),
     );
   }

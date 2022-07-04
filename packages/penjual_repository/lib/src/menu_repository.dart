@@ -1,5 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:penjual_repository/src/models/category_menu_model.dart';
+import 'package:penjual_repository/penjual_repository.dart';
 import 'package:uuid/uuid.dart';
 
 class MenuRepository {
@@ -51,6 +51,23 @@ class MenuRepository {
     // add to firestore
     await _firestore.collection('category').add(data);
   }
+
+  // get  menu per merchant
+  Future<List<MenuModel>> getMenu(
+    String idMerchant,
+    String idCategory,
+  ) async {
+    try {
+      final snapshot =
+          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+
+      final documents = snapshot.docs;
+      return documents.toListMenu();
+    } catch (e) {
+      print(e.toString());
+      throw Exception('Failed to get menu');
+    }
+  }
 }
 
 extension on List<QueryDocumentSnapshot> {
@@ -61,6 +78,21 @@ extension on List<QueryDocumentSnapshot> {
       if (data != null) {
         try {
           leaderboardEntries.add(CategoryMenuModel.fromJson(data));
+        } catch (error) {
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
+  }
+
+  List<MenuModel> toListMenu() {
+    final leaderboardEntries = <MenuModel>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          leaderboardEntries.add(MenuModel.fromJson(data));
         } catch (error) {
           throw Exception();
         }

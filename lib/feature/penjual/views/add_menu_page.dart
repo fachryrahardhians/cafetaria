@@ -1,11 +1,19 @@
+import 'package:cafetaria/feature/penjual/bloc/add_category_bloc/add_category_bloc.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:penjual_repository/penjual_repository.dart';
 
 class AddMenuPage extends StatelessWidget {
   const AddMenuPage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const AddMenuView();
+    return BlocProvider(
+      create: (context) => AddCategoryBloc(
+        menuRepository: context.read<MenuRepository>(),
+      ),
+      child: const AddMenuView(),
+    );
   }
 }
 
@@ -30,12 +38,38 @@ class _AddMenuViewState extends State<AddMenuView> {
             TextFormField(
               controller: _menuController,
               decoration: const InputDecoration(
-                labelText: "Nama Menu",
+                labelText: "Nama Category",
               ),
             ),
-            ElevatedButton(
-              onPressed: () {},
-              child: const Text('SIMPAN'),
+            BlocConsumer<AddCategoryBloc, AddCategoryState>(
+              listener: (context, state) {
+                if (state is AddCategorySuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Category berhasil ditambahkan'),
+                    ),
+                  );
+                } else if (state is AddCategoryFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Terjadi kesalahan'),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return ElevatedButton(
+                  onPressed: () {
+                    context.read<AddCategoryBloc>().add(SaveCategory(
+                          category: _menuController.text,
+                          idMerchant: '0DzobjgsR7jF8qWvCoG0',
+                        ));
+                  },
+                  child: (state is AddCategoryLoading)
+                      ? const CircularProgressIndicator()
+                      : const Text('SIMPAN'),
+                );
+              },
             ),
           ],
         ),

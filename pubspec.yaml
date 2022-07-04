@@ -48,6 +48,11 @@ dependencies:
   penjual_repository:
     path: packages/penjual_repository
 
+  cafetaria_ui:
+    path: packages/cafetaria_ui
+  storage:
+    path: packages/storage    
+
 dev_dependencies:
   flutter_lints: ^1.0.0
   flutter_test:
