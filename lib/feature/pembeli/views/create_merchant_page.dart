@@ -55,6 +55,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   XFile? _fotoLuar;
   XFile? _fotoDalam;
 
+  bool _submitLoading = false;
+
   Future _handleUpload(String type) async {
     final XFile? photo =
         await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
@@ -103,6 +105,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   Future _onSubmit() async {
     final uuid = const Uuid().v4();
 
+    setState(() {
+      _submitLoading = true;
+    });
+
     try {
       var snapshotLuar = await _storage
           .ref()
@@ -126,7 +132,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'address_latitude': _latLngToko!.latitude,
         'address_longitude': _latLngToko!.longitude,
         'photo_from_outside': urlLuar,
-        'photo_from_inside': urlDalam
+        'photo_from_inside': urlDalam,
+        'create_at': Timestamp.now()
       };
 
       await _firestore.collection('merchant').doc(uuid).set(data);
@@ -135,6 +142,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
       Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
+    } finally {
+      setState(() {
+        _submitLoading = false;
+      });
     }
   }
 
@@ -230,6 +241,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   CustomBoxPicker(
                       label: "LOKASI TOKO",
                       hint: "PILIH LOKASI",
+                      icon: const Icon(
+                        Icons.pin_drop,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
                       onTap: _handleMapsPicker,
                       child: _latLngToko == null
                           ? null
@@ -274,6 +290,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   CustomBoxPicker(
                       label: "UNGGAH FOTO TOKO DARI LUAR",
                       hint: "UNGGAH FOTO",
+                      icon: const Icon(
+                        Icons.upload,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
                       onTap: () => _handleUpload("luar"),
                       child: _fotoLuar == null
                           ? null
@@ -283,6 +304,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   CustomBoxPicker(
                       label: "UNGGAH FOTO TOKO DARI DALAM",
                       hint: "UNGGAH FOTO",
+                      icon: const Icon(
+                        Icons.upload,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
                       onTap: () => _handleUpload("dalam"),
                       child: _fotoDalam == null
                           ? null
@@ -297,7 +323,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                           onPressed: _onSubmit,
                           padding: const EdgeInsets.all(0),
                           margin: const EdgeInsets.all(0),
-                          disabled: _checkDisableButton()))
+                          disabled: _checkDisableButton(),
+                          loading: _submitLoading))
                 ],
               ))),
     );

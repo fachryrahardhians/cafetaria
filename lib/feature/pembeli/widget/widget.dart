@@ -20,7 +20,7 @@ class BottomBar extends StatelessWidget {
           label: 'Beranda',
         ),
         BottomNavigationBarItem(
-          icon: Icon(Icons.message),
+          icon: Icon(Icons.mail),
           label: 'Pesan',
         ),
         BottomNavigationBarItem(
@@ -49,6 +49,7 @@ class CustomBoxPicker extends StatelessWidget {
     this.photo,
     this.label,
     this.hint,
+    this.icon,
     this.child,
   }) : super(key: key);
 
@@ -57,6 +58,7 @@ class CustomBoxPicker extends StatelessWidget {
   String? hint;
   Function() onTap;
   Widget? child;
+  Widget? icon;
 
   @override
   Widget build(BuildContext context) {
@@ -87,9 +89,13 @@ class CustomBoxPicker extends StatelessWidget {
                         blurRadius: 1,
                       ),
                     ]),
-                child: Center(
-                  child: child ?? Text(hint ?? ""),
-                ))
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Visibility(visible: icon != null, child: icon!),
+                      const SizedBox(height: 12),
+                      Text(hint ?? "")
+                    ]))
           ],
         ));
   }

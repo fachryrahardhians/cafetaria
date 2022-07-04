@@ -30,17 +30,25 @@ class ReusableButton1 extends StatelessWidget {
     return Container(
       margin: margin ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: OutlinedButton(
-        child: Text(
-          label,
-          style: normalText.copyWith(
-              fontWeight: FontWeight.bold, color: Colors.white),
-        ),
+        child: loading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                label,
+                style: normalText.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white),
+              ),
         onPressed: () {
-          disabled ? null : onPressed();
+          (disabled || loading) ? null : onPressed();
         },
         style: OutlinedButton.styleFrom(
-            padding:
-                padding ?? EdgeInsets.symmetric(vertical: 16, horizontal: 90),
+            padding: padding ??
+                const EdgeInsets.symmetric(vertical: 16, horizontal: 90),
             backgroundColor: backgroundColor ??
                 MyColors.red1.withOpacity(disabled ? 0.5 : 1),
             side: BorderSide(

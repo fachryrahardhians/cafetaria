@@ -80,7 +80,9 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                           },
                           child: Row(
                             children: const [
-                              Icon(Icons.store),
+                              Image(
+                                  image: AssetImage(
+                                      'assets/images/merchant_default_icon.png')),
                               SizedBox(width: 18),
                               Text("Buka Toko Gratis",
                                   style: TextStyle(
