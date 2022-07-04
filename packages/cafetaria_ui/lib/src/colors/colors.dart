@@ -50,4 +50,8 @@ abstract class CFColors {
   static Color blueAccent50 = const Color(0xff0065FF);
 
   static Color blueAccent40 = const Color(0xff2684FF);
+
+  static Color grey = const Color(0xfffcfbfc);
+
+  static Color grey90 = const Color(0xff333435);
 }

@@ -14,11 +14,16 @@ class CFButton extends ElevatedButton {
     required super.onPressed,
   }) : super(
           style: ElevatedButton.styleFrom(
-              primary: CFColors.redPrimary40,
-              textStyle: const TextStyle(
-                color: Colors.white,
-                fontSize: 14,
-                fontWeight: FontWeight.bold,
-              )),
+            primary: CFColors.redPrimary40,
+            textStyle: const TextStyle(
+              color: Colors.white,
+              fontSize: 14,
+              fontWeight: FontWeight.bold,
+            ),
+            minimumSize: const Size(
+              double.infinity,
+              48,
+            ),
+          ),
         );
 }

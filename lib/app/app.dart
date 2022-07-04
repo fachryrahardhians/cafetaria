@@ -1,5 +1,6 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:penjual_repository/penjual_repository.dart';
@@ -36,10 +37,8 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: CFTheme.themeData,
       title: 'Cafetaria',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: const LoginPage(),
     );
   }

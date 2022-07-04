@@ -37,6 +37,7 @@ class CFTextFormField extends TextFormField {
             filled: true,
             border: OutlineInputBorder(
               borderRadius: BorderRadius.circular(8),
+              borderSide: BorderSide.none,
             ),
             labelStyle: TextStyle(color: CFColors.grayscaleBlack50),
           ),

@@ -75,13 +75,8 @@ class MenuCafetariaView extends StatelessWidget {
             ],
           ),
           backgroundColor: Colors.white,
-          title: Text(
+          title: const Text(
             'Menu Cafetaria',
-            style: GoogleFonts.ubuntu(
-              color: const Color(0xff2E3032),
-              fontSize: 24,
-              fontWeight: FontWeight.bold,
-            ),
           ),
         ),
         body: Column(
