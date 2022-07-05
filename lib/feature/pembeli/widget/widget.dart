@@ -89,13 +89,17 @@ class CustomBoxPicker extends StatelessWidget {
                         blurRadius: 1,
                       ),
                     ]),
-                child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Visibility(visible: icon != null, child: icon!),
-                      const SizedBox(height: 12),
-                      Text(hint ?? "")
-                    ]))
+                child: child != null
+                    ? Center(
+                        child: child,
+                      )
+                    : Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                            Visibility(visible: icon != null, child: icon!),
+                            const SizedBox(height: 12),
+                            Text(hint ?? "")
+                          ]))
           ],
         ));
   }
