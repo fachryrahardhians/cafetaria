@@ -1,6 +1,8 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
+import 'package:cafetaria/gen/assets.gen.dart';
+import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -41,6 +43,8 @@ class MenuCafetariaView extends StatelessWidget {
         key: _scaffold,
         appBar: AppBar(
           bottom: TabBar(
+            indicatorColor: CFColors.redPrimary,
+            indicatorWeight: 3,
             tabs: [
               Tab(
                 icon: Text(
@@ -83,7 +87,6 @@ class MenuCafetariaView extends StatelessWidget {
           children: [
             BlocBuilder<MenuMakananBloc, MenuMakananState>(
               builder: (context, state) {
-                print(state);
                 if (state is MenuMakananLoading) {
                   return const Center(
                     child: CircularProgressIndicator(),
@@ -152,44 +155,136 @@ class MenuCafetariaView extends StatelessWidget {
             child: const Text('TAMBAH MENU ATAU KATEGORI'),
             onPressed: () {
               showModalBottomSheet(
+                  shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(8)),
                   context: context,
                   builder: (dialogContext) {
                     return SizedBox(
-                      height: 200,
-                      child: Column(
-                        children: [
-                          ListTile(
-                            title: const Text('Tambah Menu Baru'),
-                            onTap: () {
-                              Navigator.pop(dialogContext);
-                              Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => const AddMenuPage()),
-                              );
-                            },
-                          ),
-                          const SizedBox(height: 10),
-                          ListTile(
-                            title: const Text('Tambah Kategori Baru'),
-                            onTap: () async {
-                              Navigator.push(
-                                dialogContext,
-                                MaterialPageRoute(
-                                    builder: (_) => const AddMenuPage()),
-                              ).then((value) {
-                                context.read<MenuMakananBloc>().add(
-                                    const GetMenuMakanan(
-                                        '0DzobjgsR7jF8qWvCoG0'));
+                      height: 300,
+                      child: Padding(
+                        padding: const EdgeInsets.all(24.0),
+                        child: Column(
+                          children: [
+                            Container(
+                              height: 4,
+                              width: 100,
+                              decoration: BoxDecoration(
+                                color: const Color(0xffE5E6E6),
+                                borderRadius: BorderRadius.circular(2),
+                              ),
+                            ),
+                            const SizedBox(height: 10),
+                            ListMenu(
+                              title: 'Tambah Menu Baru',
+                              onTap: () {
                                 Navigator.pop(dialogContext);
-                              });
-                            },
-                          ),
-                        ],
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                      builder: (_) => const AddMenuPage()),
+                                );
+                              },
+                              desc: 'mis : Ayam bakar, milk tea madu',
+                            ),
+                            const SizedBox(height: 10),
+                            ListMenu(
+                              title: 'Tambah Kategori Baru',
+                              onTap: () {
+                                Navigator.push(
+                                  dialogContext,
+                                  MaterialPageRoute(
+                                      builder: (_) => const AddMenuPage()),
+                                ).then(
+                                  (value) {
+                                    context.read<MenuMakananBloc>().add(
+                                        const GetMenuMakanan(
+                                            '0DzobjgsR7jF8qWvCoG0'));
+                                    Navigator.pop(dialogContext);
+                                  },
+                                );
+                              },
+                              desc: 'mis : Ayam, ikan, minuman',
+                            ),
+                            const SizedBox(height: 10),
+                          ],
+                        ),
                       ),
                     );
                   });
             },
+          ),
+        ),
+      ),
+    );
+  }
+}
+
+class ListMenu extends StatelessWidget {
+  const ListMenu({
+    Key? key,
+    required this.onTap,
+    required this.title,
+    required this.desc,
+  }) : super(key: key);
+
+  final VoidCallback onTap;
+  final String title;
+  final String desc;
+
+  @override
+  Widget build(BuildContext context) {
+    return InkWell(
+      onTap: onTap,
+      child: Container(
+        decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(
+            Radius.circular(8),
+          ),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.04),
+              offset: Offset(0, 4),
+              blurRadius: 12,
+            )
+          ],
+        ),
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Row(
+            children: [
+              Assets.images.maskgroup.image(
+                width: 64,
+                height: 64,
+              ),
+              const SizedBox(
+                width: 18,
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Text(
+                    title,
+                    style: TextStyle(
+                      color: CFColors.darkGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                  Text(
+                    desc,
+                    style: TextStyle(
+                      color: CFColors.slateGrey,
+                      fontSize: 12,
+                      fontWeight: FontWeight.normal,
+                    ),
+                  ),
+                ],
+              ),
+              const Expanded(
+                child: Icon(Icons.arrow_forward_ios),
+              ),
+            ],
           ),
         ),
       ),

@@ -53,5 +53,9 @@ abstract class CFColors {
 
   static Color grey = const Color(0xfffcfbfc);
 
+  static Color darkGrey = const Color(0xff222222);
+
+  static Color slateGrey = const Color(0xff66686A);
+
   static Color grey90 = const Color(0xff333435);
 }

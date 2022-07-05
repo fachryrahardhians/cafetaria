@@ -35,6 +35,10 @@ class _AddMenuViewState extends State<AddMenuView> {
       appBar: AppBar(
         title: const Text('TAMBAH KATEGORI MENU'),
       ),
+      bottomNavigationBar: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: _ButtonSave(menuController: _menuController),
+      ),
       body: Padding(
         padding: const EdgeInsets.all(16.0),
         child: Column(
@@ -62,39 +66,53 @@ class _AddMenuViewState extends State<AddMenuView> {
             const SizedBox(
               height: 8,
             ),
-            BlocConsumer<AddCategoryBloc, AddCategoryState>(
-              listener: (context, state) {
-                if (state is AddCategorySuccess) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Category berhasil ditambahkan'),
-                    ),
-                  );
-                } else if (state is AddCategoryFailure) {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Terjadi kesalahan'),
-                    ),
-                  );
-                }
-              },
-              builder: (context, state) {
-                return CFButton.primary(
-                  child: (state is AddCategoryLoading)
-                      ? const CircularProgressIndicator()
-                      : const Text('SIMPAN'),
-                  onPressed: () {
-                    context.read<AddCategoryBloc>().add(SaveCategory(
-                          category: _menuController.text,
-                          idMerchant: '0DzobjgsR7jF8qWvCoG0',
-                        ));
-                  },
-                );
-              },
-            ),
           ],
         ),
       ),
+    );
+  }
+}
+
+class _ButtonSave extends StatelessWidget {
+  const _ButtonSave({
+    Key? key,
+    required TextEditingController menuController,
+  })  : _menuController = menuController,
+        super(key: key);
+
+  final TextEditingController _menuController;
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocConsumer<AddCategoryBloc, AddCategoryState>(
+      listener: (context, state) {
+        if (state is AddCategorySuccess) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Category berhasil ditambahkan'),
+            ),
+          );
+        } else if (state is AddCategoryFailure) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Terjadi kesalahan'),
+            ),
+          );
+        }
+      },
+      builder: (context, state) {
+        return CFButton.primary(
+          child: (state is AddCategoryLoading)
+              ? const CircularProgressIndicator()
+              : const Text('SIMPAN'),
+          onPressed: () {
+            context.read<AddCategoryBloc>().add(SaveCategory(
+                  category: _menuController.text,
+                  idMerchant: '0DzobjgsR7jF8qWvCoG0',
+                ));
+          },
+        );
+      },
     );
   }
 }
