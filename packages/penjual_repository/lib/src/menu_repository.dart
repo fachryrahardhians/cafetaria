@@ -32,7 +32,6 @@ class MenuRepository {
       final documents = snapshot.docs;
       return documents.toLeaderboard();
     } catch (e) {
-      print(e.toString());
       throw Exception('Failed to get category menu');
     }
   }
@@ -64,7 +63,6 @@ class MenuRepository {
       final documents = snapshot.docs;
       return documents.toListMenu();
     } catch (e) {
-      print(e.toString());
       throw Exception('Failed to get menu');
     }
   }
