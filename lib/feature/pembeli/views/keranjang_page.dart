@@ -6,6 +6,7 @@ import 'package:cafetaria/feature/pembeli/views/topping_page.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_switch/flutter_switch.dart';
+import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -23,6 +24,36 @@ class _KeranjangPageState extends State<KeranjangPage> {
       fontWeight: FontWeight.w700, fontSize: 24, color: Color(0xff2E3032));
   bool alat = false;
   bool _loading = false;
+  bool value = false;
+  TextEditingController _dateController = TextEditingController();
+
+  _selectDate(BuildContext context) async {
+    DateTime selectedDate = DateTime.now();
+    final DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: selectedDate,
+        firstDate: DateTime(1990),
+        lastDate: DateTime(2025),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: const ColorScheme.light().copyWith(
+                primary: Colors.red,
+              ),
+            ),
+            child: child!,
+          );
+        });
+    if (picked != selectedDate) {
+      setState(() {
+        selectedDate = picked!;
+        String dateString =
+            DateFormat('dd MMM yyyy').format(selectedDate).toString();
+        _dateController.text = dateString;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Consumer<OrderNotifier>(
@@ -50,56 +81,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 padding:
                     const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
                 children: [
-                  Container(
-                      padding: const EdgeInsets.all(16),
-                      width: SizeConfig.screenWidth,
-                      clipBehavior: Clip.hardEdge,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8),
-                          image: const DecorationImage(
-                              image: AssetImage(
-                                  'assets/overlay/card_overlay_orange.png'),
-                              fit: BoxFit.fill),
-                          boxShadow: [
-                            BoxShadow(
-                                color: Colors.black.withOpacity(.16),
-                                offset: const Offset(0, 4),
-                                blurRadius: 12)
-                          ]),
-                      child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.center,
-                        children: [
-                          Image.asset('assets/illustration/ill_cafetaria.png',
-                              width: SizeConfig.safeBlockHorizontal * 20,
-                              fit: BoxFit.fitWidth),
-                          SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Text('Lokasi Anda Sekarang',
-                                  style: textStyle.copyWith(
-                                      color: Colors.white.withOpacity(.7))),
-                              SizedBox(
-                                  height: SizeConfig.safeBlockVertical * .5),
-                              Text(
-                                'Apartemen Skyline Residence',
-                                style: textStyle.copyWith(
-                                    fontWeight: FontWeight.w500,
-                                    fontSize: 15,
-                                    color: Colors.white),
-                              ),
-                              SizedBox(
-                                  height: SizeConfig.safeBlockVertical * .25),
-                              Text('Tower A • Lantai 3A • Nomor 37 ',
-                                  style: textStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      fontSize: 12,
-                                      color: Colors.white))
-                            ],
-                          )
-                        ],
-                      )),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                  _customerInfo(),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  _booking(),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  _bookingOption(),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -282,6 +268,223 @@ class _KeranjangPageState extends State<KeranjangPage> {
         ),
       );
     });
+  }
+
+  Widget _booking() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        SizedBox(
+          child: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: [
+              Checkbox(
+                  value: value,
+                  onChanged: (newvalue) => setState(() {
+                        value = newvalue!;
+                      })),
+              const SizedBox(width: 3),
+              const Text('Booking')
+            ],
+          ),
+        ),
+        const Text('50/50')
+      ],
+    );
+  }
+
+  Widget _bookingOption() {
+    return Visibility(
+      visible: value,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Container(
+            padding: const EdgeInsets.all(16),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(8),
+                color: const Color(0xffE9EBEF)),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    Container(
+                      width: 20,
+                      padding: const EdgeInsets.all(2),
+                      decoration: const BoxDecoration(
+                          shape: BoxShape.circle,
+                          gradient: LinearGradient(
+                              begin: Alignment.topLeft,
+                              end: Alignment.bottomRight,
+                              colors: [
+                                const Color(0xffF8091E),
+                                Color(0xffA9085A)
+                              ])),
+                      child: Center(
+                          child: Text('i',
+                              style: headlineStyle.copyWith(
+                                  color: Colors.white, fontSize: 16))),
+                    ),
+                    SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+                    Text(
+                      'Informasi',
+                      style: headlineStyle.copyWith(fontSize: 16),
+                    ),
+                  ],
+                ),
+                SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                Text(
+                  'Booking minimal 1 hari sebelum pengambilan dan akan dihitung dari hari setelah booking.',
+                  style: textStyle.copyWith(
+                      fontSize: 14, color: const Color(0xff8C8F93)),
+                  textAlign: TextAlign.start,
+                ),
+              ],
+            ),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+          Text('TANGGAL PENGAMBILAN',
+              style: textStyle.copyWith(color: const Color(0xff66686a))),
+          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+          GestureDetector(
+            onTap: () => _selectDate(context),
+            child: AbsorbPointer(
+              child: Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                      offset: const Offset(0, 4),
+                      blurRadius: 12,
+                      color: Colors.black.withOpacity(.04))
+                ]),
+                child: TextFormField(
+                  autofocus: false,
+                  controller: _dateController,
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Colors.white,
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8)),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8)),
+                    hintText: "Tentukan Tanggal",
+                    hintStyle: const TextStyle(
+                        fontSize: 13, color: const Color(0xffCACCCF)),
+                    suffixIcon: const Icon(
+                      Icons.calendar_today,
+                      color: Color(0xffEE3124),
+                    ),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+          Text('JAM PENGAMBILAN',
+              style: textStyle.copyWith(color: const Color(0xff66686a))),
+          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+          GestureDetector(
+            onTap: () {},
+            child: AbsorbPointer(
+              child: Container(
+                decoration: BoxDecoration(boxShadow: [
+                  BoxShadow(
+                      offset: const Offset(0, 4),
+                      blurRadius: 12,
+                      color: Colors.black.withOpacity(.04))
+                ]),
+                child: TextFormField(
+                  initialValue: '08:00',
+                  autofocus: false,
+                  style: const TextStyle(
+                      fontSize: 13, color: const Color(0xffB1B5BA)),
+                  decoration: InputDecoration(
+                    filled: true,
+                    fillColor: Color(0xffF2F4F6),
+                    focusedBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8)),
+                    enabledBorder: OutlineInputBorder(
+                        borderSide: BorderSide.none,
+                        borderRadius: BorderRadius.circular(8)),
+                    hintText: "Tentukan Tanggal",
+                    hintStyle: const TextStyle(
+                        fontSize: 13, color: const Color(0xffCACCCF)),
+                  ),
+                  validator: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter some text';
+                    }
+                    return null;
+                  },
+                ),
+              ),
+            ),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+        ],
+      ),
+      replacement: const SizedBox(),
+    );
+  }
+
+  Widget _customerInfo() {
+    return Container(
+        padding: const EdgeInsets.all(16),
+        width: SizeConfig.screenWidth,
+        clipBehavior: Clip.hardEdge,
+        decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(8),
+            image: const DecorationImage(
+                image: AssetImage('assets/images/card_overlay_orange.png'),
+                fit: BoxFit.fill),
+            boxShadow: [
+              BoxShadow(
+                  color: Colors.black.withOpacity(.16),
+                  offset: const Offset(0, 4),
+                  blurRadius: 12)
+            ]),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.center,
+          children: [
+            Image.asset('assets/images/ill_cafetaria.png',
+                width: SizeConfig.safeBlockHorizontal * 20,
+                fit: BoxFit.fitWidth),
+            SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text('Lokasi Anda Sekarang',
+                    style: textStyle.copyWith(
+                        color: Colors.white.withOpacity(.7))),
+                SizedBox(height: SizeConfig.safeBlockVertical * .5),
+                Text(
+                  'Apartemen Skyline Residence',
+                  style: textStyle.copyWith(
+                      fontWeight: FontWeight.w500,
+                      fontSize: 15,
+                      color: Colors.white),
+                ),
+                SizedBox(height: SizeConfig.safeBlockVertical * .25),
+                Text('Tower A • Lantai 3A • Nomor 37 ',
+                    style: textStyle.copyWith(
+                        fontWeight: FontWeight.w500,
+                        fontSize: 12,
+                        color: Colors.white))
+              ],
+            )
+          ],
+        ));
   }
 
   Widget item(FoodOrder order, Menu menu) {
