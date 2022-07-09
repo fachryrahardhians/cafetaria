@@ -1,18 +1,18 @@
 import 'package:bloc/bloc.dart';
+import 'package:category_repository/category_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:penjual_repository/penjual_repository.dart';
 
 part 'add_category_event.dart';
 part 'add_category_state.dart';
 
 class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
-  final MenuRepository _menuRepository;
+  final CategoryRepository _categoryRepository;
   AddCategoryBloc({
-    required MenuRepository menuRepository,
-  })  : _menuRepository = menuRepository,
+    required CategoryRepository categoryRepository,
+  })  : _categoryRepository = categoryRepository,
         super(AddCategoryInitial()) {
     ///
-    on<SaveCategory>((event, emit) => _saveCategory(event, emit));
+    on<SaveCategory>(_saveCategory);
   }
 
   Future<void> _saveCategory(
@@ -22,7 +22,7 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
     emit(AddCategoryLoading());
 
     try {
-      await _menuRepository.addCategory(
+      await _categoryRepository.addCategory(
         event.idMerchant,
         event.category,
       );

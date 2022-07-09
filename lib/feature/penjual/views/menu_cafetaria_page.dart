@@ -3,10 +3,11 @@ import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bl
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
+import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penjual_repository/penjual_repository.dart';
+import 'package:menu_repository/menu_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key}) : super(key: key);
@@ -17,7 +18,7 @@ class MenuCafetariaPage extends StatelessWidget {
       providers: [
         BlocProvider(
           create: (context) => MenuMakananBloc(
-            menuRepository: context.read<MenuRepository>(),
+            categoryRepository: context.read<CategoryRepository>(),
           )..add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
         BlocProvider(
@@ -87,15 +88,18 @@ class MenuCafetariaView extends StatelessWidget {
           children: [
             BlocBuilder<MenuMakananBloc, MenuMakananState>(
               builder: (context, state) {
-                if (state is MenuMakananLoading) {
+                final status = state.status;
+
+                if (status == MenuMakananStatus.loading) {
                   return const Center(
                     child: CircularProgressIndicator(),
                   );
-                } else if (state is MenuMakananFailurre) {
+                } else if (status == MenuMakananStatus.failure) {
                   return const Center(
                     child: Text('Terjadi kesalahan'),
                   );
-                } else if (state is MenuMakananSuccess) {
+                } else if (status == MenuMakananStatus.success) {
+                  final items = state.items!;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: Column(
@@ -107,9 +111,9 @@ class MenuCafetariaView extends StatelessWidget {
                           child: ListView.builder(
                             shrinkWrap: true,
                             scrollDirection: Axis.horizontal,
-                            itemCount: state.items.length,
+                            itemCount: items.length,
                             itemBuilder: (context, index) {
-                              final item = state.items[index];
+                              final item = items[index];
                               return Padding(
                                 padding: const EdgeInsets.all(4.0),
                                 child: ChoiceChip(
@@ -299,37 +303,41 @@ class ListMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final categoryState = context.watch<MenuMakananBloc>().state;
+    final status = context.watch<MenuMakananBloc>().state.status;
 
-    if (categoryState is MenuMakananLoading) {
+    if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
       );
-    } else if (categoryState is MenuMakananFailurre) {
+    } else if (status == MenuMakananStatus.failure) {
       return const Center(
         child: Text('Terjadi kesalahan'),
       );
-    } else if (categoryState is MenuMakananSuccess) {
-      final cat = categoryState.items.first;
+    } else if (status == MenuMakananStatus.success) {
+      // final cat = categoryState.items.first;
+      final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
           .add(GetListMenu('0DzobjgsR7jF8qWvCoG0', cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
-          if (state is ListMenuLoading) {
+          final status = state.status;
+
+          if (status == ListMenuStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
             );
-          } else if (state is ListMenuFailure) {
+          } else if (status == ListMenuStatus.failure) {
             return const Center(
               child: Text('Terjadi kesalahan'),
             );
-          } else if (state is ListMenuSuccess) {
+          } else if (status == ListMenuStatus.success) {
+            final items = state.items!;
             return Expanded(
               child: ListView.builder(
-                itemCount: state.items.length,
+                itemCount: items.length,
                 itemBuilder: (context, index) {
-                  final item = state.items[index];
+                  final item = items[index];
                   return ListTile(
                     title: Text(item.nama ?? '-'),
                     // subtitle: Text(item.price.toString()),

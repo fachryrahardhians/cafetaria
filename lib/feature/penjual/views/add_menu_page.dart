@@ -1,8 +1,8 @@
 import 'package:cafetaria/feature/penjual/bloc/add_category_bloc/add_category_bloc.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
+import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:penjual_repository/penjual_repository.dart';
 
 class AddMenuPage extends StatelessWidget {
   const AddMenuPage({Key? key}) : super(key: key);
@@ -11,7 +11,7 @@ class AddMenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AddCategoryBloc(
-        menuRepository: context.read<MenuRepository>(),
+        categoryRepository: context.read<CategoryRepository>(),
       ),
       child: const AddMenuView(),
     );

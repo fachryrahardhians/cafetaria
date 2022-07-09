@@ -2,7 +2,7 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfield1 extends StatelessWidget {
-  CustomTextfield1({
+  const CustomTextfield1({
     Key? key,
     this.hint,
     this.label,
@@ -11,20 +11,20 @@ class CustomTextfield1 extends StatelessWidget {
     this.controller,
   }) : super(key: key);
 
-  String? hint;
+  final String? hint;
 
   ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
-  String? label;
+  final String? label;
 
   ///Label digunakan untuk tulisan label diatas textfield
-  int? maxLine;
+  final int? maxLine;
 
   ///MaxLine digunakan untuk mengatur tinggi textfield default secara
   ///hitungan baris
-  TextEditingController? controller;
+  final TextEditingController? controller;
 
   ///controller untuk Text Editing Controller
-  Widget? suffix;
+  final Widget? suffix;
 
   ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 
@@ -73,16 +73,16 @@ class CustomTextfield1 extends StatelessWidget {
 }
 
 class SearchTextfield1 extends StatelessWidget {
-  SearchTextfield1({
+  const SearchTextfield1({
     Key? key,
     this.hint,
     this.suffix,
     this.controller,
   }) : super(key: key);
 
-  String? hint;
-  TextEditingController? controller;
-  Widget? suffix;
+  final String? hint;
+  final TextEditingController? controller;
+  final Widget? suffix;
 
   @override
   Widget build(BuildContext context) {

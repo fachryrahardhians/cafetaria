@@ -53,9 +53,9 @@ class AuthenticationRepository {
   Future<GoogleSignInAccount?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
-      print(data!.photoUrl);
+
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth = await data.authentication;
+      final GoogleSignInAuthentication? googleAuth = await data!.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -67,7 +67,6 @@ class AuthenticationRepository {
       await FirebaseAuth.instance.signInWithCredential(credential);
       return data;
     } on Exception catch (error, stacktrace) {
-      print(error);
       throw AuthenticationException(error, stacktrace);
     }
   }

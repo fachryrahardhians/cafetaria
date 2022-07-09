@@ -3,17 +3,18 @@ import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 
 class ReusableButton1 extends StatelessWidget {
-  ReusableButton1(
-      {Key? key,
-      required this.label,
-      required this.onPressed,
-      this.backgroundColor})
-      : super(key: key);
+  const ReusableButton1({
+    Key? key,
+    required this.label,
+    required this.onPressed,
+    this.backgroundColor,
+    this.borderColor,
+  }) : super(key: key);
 
-  String label;
-  Function() onPressed;
-  Color? backgroundColor;
-  Color? borderColor;
+  final String label;
+  final Function() onPressed;
+  final Color? backgroundColor;
+  final Color? borderColor;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -39,18 +40,18 @@ class ReusableButton1 extends StatelessWidget {
 }
 
 class CategoryButton extends StatelessWidget {
-  CategoryButton(
-      {Key? key,
-      required this.label,
-      required this.onPressed,
-      this.borderColor,
-      this.backgroundColor})
-      : super(key: key);
+  const CategoryButton({
+    Key? key,
+    required this.label,
+    required this.onPressed,
+    this.borderColor,
+    this.backgroundColor,
+  }) : super(key: key);
 
-  String label;
-  Function() onPressed;
-  Color? backgroundColor;
-  Color? borderColor;
+  final String label;
+  final Function() onPressed;
+  final Color? backgroundColor;
+  final Color? borderColor;
 
   @override
   Widget build(BuildContext context) {
