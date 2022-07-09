@@ -57,7 +57,7 @@ class _LoginViewState extends State<LoginView> {
                       MaterialPageRoute(
                           builder: (context) => const PenjualDashboardPage()));
                 } else if (state is AuthenticationStateError) {
-                  print(state.error);
+                  // print(state.error);
                 }
               },
               child: InkWell(
@@ -95,10 +95,10 @@ class _LoginViewState extends State<LoginView> {
                     fontWeight: FontWeight.bold, color: MyColors.grey2),
               ),
             ),
-            CustomTextfield1(
+            const CustomTextfield1(
               label: "komplekku id",
             ),
-            CustomTextfield1(
+            const CustomTextfield1(
               label: "kata sandi",
             ),
             const SizedBox(
@@ -123,11 +123,9 @@ class SuccessLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: const Center(
-          child: Text("SUKSES LOGIN"),
-        ),
+    return const Scaffold(
+      body: Center(
+        child: Text("SUKSES LOGIN"),
       ),
     );
   }

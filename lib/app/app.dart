@@ -1,20 +1,33 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria_ui/cafetaria_ui.dart';
+import 'package:category_repository/category_repository.dart';
+import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:penjual_repository/penjual_repository.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:storage/storage.dart';
 
 class App extends StatelessWidget {
   const App({
     Key? key,
     required AuthenticationRepository authenticationRepository,
     required MenuRepository menuRepository,
+    required CategoryRepository categoryRepository,
+    required CloudStorage cloudStorage,
+    required SecureStorage secureStorage,
   })  : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
+        _categoryRepository = categoryRepository,
+        _cloudStorage = cloudStorage,
+        _secureStorage = secureStorage,
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
   final MenuRepository _menuRepository;
+  final CategoryRepository _categoryRepository;
+  final CloudStorage _cloudStorage;
+  final SecureStorage _secureStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -22,6 +35,9 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: _authenticationRepository),
         RepositoryProvider.value(value: _menuRepository),
+        RepositoryProvider.value(value: _categoryRepository),
+        RepositoryProvider.value(value: _secureStorage),
+        RepositoryProvider.value(value: _cloudStorage),
       ],
       child: const AppView(),
     );
@@ -36,10 +52,8 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: CFTheme.themeData,
       title: 'Cafetaria',
-      theme: ThemeData(
-        primarySwatch: Colors.blue,
-      ),
       home: const LoginPage(),
     );
   }

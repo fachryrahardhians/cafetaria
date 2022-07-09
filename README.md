@@ -2,18 +2,35 @@
 
 Komplekku Cafetaria
 
-## Getting Started
 
-This project is a starting point for a Flutter application.
+## How to run this project
 
-A few resources to get you started if this is your first Flutter project:
+This project has the following flavors:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
-
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+```
+Coming soon
+```
 
 
-# Sementara saya bikin gini dulu yak starternya , tar dicustom bareng
+## Generating assets 🖼️
+
+We're using [flutter_gen](https://pub.dev/packages/flutter_gen) to generate statically safe descriptions of image and font assets.
+
+You need to install the `flutter_gen` tool via brew or pub, by following the [installation instruction](https://pub.dev/packages/flutter_gen/install). The configuration of the tool is stored in `pubspec.yaml`.
+
+After that you can easily recreate the assets descriptions by calling:
+
+```bash
+$> fluttergen
+```
+
+Then to reference the asset you can call:
+
+```dart
+Assets.images.unicornVgvBlack.image(height: 120),
+```
+
+## Working with translations
+```
+Coming soon
+```
