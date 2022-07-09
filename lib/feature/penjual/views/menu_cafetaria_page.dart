@@ -180,13 +180,17 @@ class MenuCafetariaView extends StatelessWidget {
                             const SizedBox(height: 10),
                             ListMenu(
                               title: 'Tambah Menu Baru',
-                              onTap: () {
+                              onTap: () async {
                                 Navigator.pop(dialogContext);
-                                Navigator.push(
+                                await Navigator.push(
                                   context,
                                   MaterialPageRoute(
                                       builder: (_) => const AddMenuPage()),
                                 );
+
+                                context.read<MenuMakananBloc>().add(
+                                    const GetMenuMakanan(
+                                        '0DzobjgsR7jF8qWvCoG0'));
                               },
                               desc: 'mis : Ayam bakar, milk tea madu',
                             ),
