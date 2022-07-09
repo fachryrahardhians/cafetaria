@@ -1,23 +1,28 @@
 part of 'add_category_bloc.dart';
 
-abstract class AddCategoryState extends Equatable {
-  const AddCategoryState();
+class AddCategoryState extends Equatable {
+  const AddCategoryState({
+    this.formzStatus = FormzStatus.pure,
+    this.categoryInput = const CategoryInput.pure(),
+  });
+
+  final FormzStatus formzStatus;
+  final CategoryInput categoryInput;
 
   @override
-  List<Object> get props => [];
-}
+  List<Object?> get props => [
+        formzStatus,
+        categoryInput,
+      ];
 
-class AddCategoryInitial extends AddCategoryState {}
-
-class AddCategoryLoading extends AddCategoryState {}
-
-class AddCategorySuccess extends AddCategoryState {}
-
-class AddCategoryFailure extends AddCategoryState {
-  final String error;
-
-  const AddCategoryFailure(this.error);
-
-  @override
-  List<Object> get props => [error];
+  AddCategoryState copyWith({
+    String? errorMessage,
+    FormzStatus? formzStatus,
+    CategoryInput? categoryInput,
+  }) {
+    return AddCategoryState(
+      formzStatus: formzStatus ?? this.formzStatus,
+      categoryInput: categoryInput ?? this.categoryInput,
+    );
+  }
 }

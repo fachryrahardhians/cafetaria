@@ -19,3 +19,12 @@ class SaveCategory extends AddCategoryEvent {
   @override
   List<Object> get props => [category, idMerchant];
 }
+
+class CategoryChange extends AddCategoryEvent {
+  final String name;
+
+  const CategoryChange(this.name);
+
+  @override
+  List<Object> get props => [name];
+}

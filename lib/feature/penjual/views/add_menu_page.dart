@@ -3,6 +3,7 @@ import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class AddMenuPage extends StatelessWidget {
   const AddMenuPage({Key? key}) : super(key: key);
@@ -30,6 +31,11 @@ class _AddMenuViewState extends State<AddMenuView> {
 
   @override
   Widget build(BuildContext context) {
+    final isCategoryValid = context.select(
+      (AddCategoryBloc bloc) =>
+          bloc.state.categoryInput.pure ||
+          (!bloc.state.categoryInput.pure && bloc.state.categoryInput.valid),
+    );
     return Scaffold(
       backgroundColor: CFColors.grey,
       appBar: AppBar(
@@ -58,9 +64,14 @@ class _AddMenuViewState extends State<AddMenuView> {
               ]),
               child: CFTextFormField(
                 controller: _menuController,
-                decoration: const InputDecoration(
+                decoration: InputDecoration(
                   labelText: "Nama Category",
+                  errorText:
+                      !isCategoryValid ? "Kategori tidak boleh kosong" : null,
                 ),
+                onChanged: (category) {
+                  context.read<AddCategoryBloc>().add(CategoryChange(category));
+                },
               ),
             ),
             const SizedBox(
@@ -86,13 +97,13 @@ class _ButtonSave extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocConsumer<AddCategoryBloc, AddCategoryState>(
       listener: (context, state) {
-        if (state is AddCategorySuccess) {
+        if (state.formzStatus == FormzStatus.submissionSuccess) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Category berhasil ditambahkan'),
             ),
           );
-        } else if (state is AddCategoryFailure) {
+        } else if (state.formzStatus == FormzStatus.submissionFailure) {
           ScaffoldMessenger.of(context).showSnackBar(
             const SnackBar(
               content: Text('Terjadi kesalahan'),
@@ -102,15 +113,19 @@ class _ButtonSave extends StatelessWidget {
       },
       builder: (context, state) {
         return CFButton.primary(
-          child: (state is AddCategoryLoading)
+          child: (state.formzStatus == FormzStatus.submissionInProgress)
               ? const CircularProgressIndicator()
               : const Text('SIMPAN'),
-          onPressed: () {
-            context.read<AddCategoryBloc>().add(SaveCategory(
-                  category: _menuController.text,
-                  idMerchant: '0DzobjgsR7jF8qWvCoG0',
-                ));
-          },
+          onPressed: state.categoryInput.valid
+              ? () {
+                  context.read<AddCategoryBloc>().add(
+                        SaveCategory(
+                          category: _menuController.text,
+                          idMerchant: '0DzobjgsR7jF8qWvCoG0',
+                        ),
+                      );
+                }
+              : null,
         );
       },
     );
