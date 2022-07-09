@@ -1,7 +1,9 @@
+import 'package:cafetaria/feature/penjual/views/atur_booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
-import 'package:cafetaria/gen/assets.gen.dart';
+import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
+import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
+import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:google_fonts/google_fonts.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
   const PenjualDashboardPage({Key? key}) : super(key: key);
@@ -19,16 +21,178 @@ class PenjualDashboardView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       backgroundColor: Colors.white,
-      appBar: AppBar(
-        centerTitle: false,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const DashboarAppbar(),
+      body: SafeArea(
+        child: ListView(
+          padding: const EdgeInsets.all(20),
+          children: [
+            const Text(
+              "Halo Shabrina",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(height: 5),
+            const Text(
+              "Ayam Pangeran - Gambir",
+              style: TextStyle(color: MyColors.grey3),
+            ),
+            const SizedBox(height: 30),
+            // Container Total Penjualan
+            Container(
+              padding: const EdgeInsets.all(20),
+              child: Row(
+                crossAxisAlignment: CrossAxisAlignment.center,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Row(
+                    children: [
+                      SizedBox(
+                        height: 60,
+                        width: 60,
+                        child: Image.asset(
+                          "assets/icons/wallet.png",
+                          fit: BoxFit.contain,
+                        ),
+                      ),
+                      const SizedBox(width: 10),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            "Total penjualan hari ini",
+                            style: TextStyle(color: MyColors.white),
+                          ),
+                          RichText(
+                            text: const TextSpan(
+                              text: "Rp ",
+                              children: [
+                                TextSpan(
+                                  text: "2.350.100",
+                                  style: TextStyle(
+                                    color: MyColors.white,
+                                    fontSize: 24,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                  Column(
+                    children: const [
+                      Text(
+                        "Dari kemarin",
+                        style: TextStyle(color: MyColors.white),
+                      ),
+                      Text(
+                        "Rp1.750.500",
+                        style: TextStyle(color: MyColors.white),
+                      ),
+                    ],
+                  ),
+                ],
+              ),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                image: const DecorationImage(
+                  fit: BoxFit.cover,
+                  image: AssetImage("assets/images/background.png"),
+                ),
+              ),
+            ),
+            const SizedBox(height: 20),
+            // 250 Pesanan
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                RichText(
+                  text: const TextSpan(
+                    text: "250 ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: MyColors.blackText,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Pesanan",
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: MyColors.blackText,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(width: 20),
+                Container(
+                  color: Colors.black,
+                  width: 2,
+                  height: 15,
+                ),
+                const SizedBox(width: 20),
+                RichText(
+                  text: const TextSpan(
+                    text: "1.7K ",
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      color: MyColors.blackText,
+                    ),
+                    children: [
+                      TextSpan(
+                        text: "Pembayaran QR",
+                        style: TextStyle(
+                          fontWeight: FontWeight.normal,
+                          color: MyColors.blackText,
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+              ],
+            ),
+            const SizedBox(height: 20),
+            const MainMenuWidget(),
+          ],
+        ),
       ),
-      body: ListView(
-        children: const [
-          CardMaskGroup(),
-          MainMenuWidget(),
+      bottomNavigationBar: BottomNavigationBar(
+        elevation: 10,
+        selectedItemColor: MyColors.blackText,
+        unselectedItemColor: MyColors.grey3,
+        showSelectedLabels: true,
+        showUnselectedLabels: true,
+        items: [
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.asset("assets/icons/bottom-home-active.png"),
+            ),
+            label: "Beranda",
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.asset("assets/icons/bottom-pesan.png"),
+            ),
+            label: "Pesan",
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.asset("assets/icons/bottom-history.png"),
+            ),
+            label: "Riwayat",
+          ),
+          BottomNavigationBarItem(
+            icon: Padding(
+              padding: const EdgeInsets.symmetric(vertical: 10),
+              child: Image.asset("assets/icons/bottom-profile.png"),
+            ),
+            label: "Profile",
+          ),
         ],
       ),
     );
@@ -46,109 +210,72 @@ class MainMenuWidget extends StatelessWidget {
       padding: const EdgeInsets.all(16.0),
       child: Wrap(
         children: [
-          InkWell(
-            onTap: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
-            },
-            child: Column(
+          // Icon Pesanan - Menu - Booking
+          Row(
+            children: [
+              HomeItemOrder(
+                route: () {
+                  print("Pesanan");
+                },
+                image: "assets/icons/paper.png",
+                title: "Pesanan",
+                total: 4,
+              ),
+              HomeItemOrder(
+                route: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
+                },
+                image: "assets/icons/menu.png",
+                title: "Menu",
+              ),
+              // TODO: SANDIKA
+              HomeItemOrder(
+                // route: () => Get.toNamed(
+                //   Routes.BOOKING,
+                //   arguments: controller.booking,
+                // ),
+                route: () {
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AturBookingPage()));
+                },
+                image: "assets/icons/booking.png",
+                title: "Atur Booking",
+              ),
+            ],
+          ),
+          const SizedBox(height: 20),
+          const Text(
+            "PAPAN INFO",
+            style: TextStyle(color: MyColors.grey3),
+          ),
+          const SizedBox(height: 10),
+          // Papan Info
+          SingleChildScrollView(
+            scrollDirection: Axis.horizontal,
+            child: Row(
               children: [
-                Container(
-                  width: 48,
-                  height: 48,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    border: Border.all(
-                      color: const Color(0xffE9EBEF),
-                    ),
-                  ),
-                  child: const Icon(Icons.book),
+                HomeItemInfo(
+                  route: () => print("info-1"),
+                  image: "assets/images/info-1.png",
+                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  author: "Charlie Natalie",
                 ),
-                const SizedBox(
-                  height: 8,
+                HomeItemInfo(
+                  route: () => print("info-2"),
+                  image: "assets/images/info-2.png",
+                  title: "Training Professional Tenant & Property Management",
+                  author: "Charlie Natalie",
                 ),
-                Text(
-                  'Menu',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xff222222),
-                  ),
-                )
+                HomeItemInfo(
+                  route: () => print("info-3"),
+                  image: "assets/images/info-1.png",
+                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  author: "Charlie Natalie",
+                ),
               ],
             ),
-          )
+          ),
         ],
       ),
-    );
-  }
-}
-
-class CardMaskGroup extends StatelessWidget {
-  const CardMaskGroup({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      clipBehavior: Clip.antiAlias,
-      width: MediaQuery.of(context).size.width,
-      height: 84,
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(7),
-        image: DecorationImage(
-          image: AssetImage(Assets.images.maskgroup.path),
-          fit: BoxFit.fill,
-        ),
-      ),
-      child: Padding(
-        padding: const EdgeInsets.all(20.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            Text(
-              'Total penjualan hari ini',
-              style: GoogleFonts.ubuntu(
-                fontSize: 12,
-                color: Colors.white,
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class DashboarAppbar extends StatelessWidget {
-  const DashboarAppbar({
-    Key? key,
-  }) : super(key: key);
-
-  @override
-  Widget build(BuildContext context) {
-    return Column(
-      children: [
-        Text(
-          "Halo Shabrina",
-          style: GoogleFonts.ubuntu(
-            fontWeight: FontWeight.bold,
-            fontSize: 24,
-            color: const Color(
-              0xff333435,
-            ),
-          ),
-        ),
-        Text(
-          "Ayam Pangeran - Gambir",
-          style: GoogleFonts.ubuntu(
-            fontWeight: FontWeight.w400,
-            fontSize: 14,
-            color: const Color(
-              0xff808285,
-            ),
-          ),
-        ),
-      ],
     );
   }
 }
