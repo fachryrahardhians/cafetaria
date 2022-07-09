@@ -1,5 +1,7 @@
+import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
@@ -79,7 +81,17 @@ class _RatingState extends State<Rating> {
       ),
       bottomNavigationBar: ReusableButton1(
         label: 'KIRIM',
-        onPressed: () {},
+        onPressed: () {
+          var baseDialog = AlertDialogWait(
+            image: Assets.images.illRate.path,
+            title: 'Makanan Anda sedang diproses',
+            message:
+                'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
+            buttonText: 'KEMBALI KE HOME',
+          );
+          showDialog(
+              context: context, builder: (BuildContext context) => baseDialog);
+        },
       ),
     );
   }

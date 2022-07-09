@@ -32,6 +32,14 @@ class $AssetsImagesGen {
   AssetGenImage get illFood =>
       const AssetGenImage('assets/images/ill_food.png');
 
+  /// File path: assets/images/ill_rate.png
+  AssetGenImage get illRate =>
+      const AssetGenImage('assets/images/ill_rate.png');
+
+  /// File path: assets/images/ill_wait.png
+  AssetGenImage get illWait =>
+      const AssetGenImage('assets/images/ill_wait.png');
+
   /// File path: assets/images/maskgroup.png
   AssetGenImage get maskgroup =>
       const AssetGenImage('assets/images/maskgroup.png');
