@@ -1,10 +1,9 @@
-import 'package:cafetaria/feature/pembeli/data/model/order_model.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_detail_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/merchant_widget.dart';
 import 'package:cafetaria/feature/pembeli/widget/promo_widget.dart';
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
-import 'package:provider/provider.dart';
 
 class Makanan extends StatefulWidget {
   const Makanan({Key? key}) : super(key: key);
@@ -74,13 +73,11 @@ class _MakananState extends State<Makanan> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => ChangeNotifierProvider<OrderNotifier>(
-                        create: (_) => OrderNotifier(),
-                        child: const MerchantPage(
+                    builder: (_) => MerchantPage(
                           title: 'Key-Pop Korean Street Food - Antapani',
-                        )))),
+                        ))),
             child: outlet(
-                'assets/images/ill_cafetaria_banner1.png',
+                Assets.images.illCafetariaBanner1.path,
                 true,
                 'Key-Pop Korean Street Food - Antapani',
                 '1.2 km',
@@ -89,7 +86,7 @@ class _MakananState extends State<Makanan> {
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           outlet(
-              'assets/images/ill_cafetaria_banner2.png',
+              Assets.images.illCafetariaBanner2.path,
               false,
               'Shabrina’s Kitchen - Gambir',
               'Lantai 1',
@@ -97,7 +94,7 @@ class _MakananState extends State<Makanan> {
               '4.8 • 1rb+ rating'),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           outlet(
-              'assets/images/ill_cafetaria_banner2.png',
+              Assets.images.illCafetariaBanner2.path,
               true,
               'Shabrina’s Kitchen - Gambir',
               'Lantai 1',

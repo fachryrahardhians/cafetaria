@@ -1,3 +1,4 @@
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ Widget promo() {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset('assets/images/offer_1.png',
+              Image.asset(Assets.images.offer1.path,
                   height: SizeConfig.safeBlockVertical * 16),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               Text('Dapatkan Potongan\nhingga 25% untuk\nMenu Pilihan',
@@ -25,7 +26,7 @@ Widget promo() {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset('assets/images/offer_2.png',
+              Image.asset(Assets.images.offer2.path,
                   height: SizeConfig.safeBlockVertical * 16),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               Text('Beef burger atau\nchicken burger hanya\nRp10 ribu saja!',
@@ -36,7 +37,7 @@ Widget promo() {
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Image.asset('assets/images/offer_3.png',
+              Image.asset(Assets.images.offer3.path,
                   height: SizeConfig.safeBlockVertical * 16),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               Text('Tokyo Belly Food of\nThe Day Hanya Rp 28\nRibu',
