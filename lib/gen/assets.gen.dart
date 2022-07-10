@@ -12,9 +12,46 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/card_overlay_orange.png
+  AssetGenImage get cardOverlayOrange =>
+      const AssetGenImage('assets/images/card_overlay_orange.png');
+
+  /// File path: assets/images/ill_cafetaria.png
+  AssetGenImage get illCafetaria =>
+      const AssetGenImage('assets/images/ill_cafetaria.png');
+
+  /// File path: assets/images/ill_cafetaria_banner1.png
+  AssetGenImage get illCafetariaBanner1 =>
+      const AssetGenImage('assets/images/ill_cafetaria_banner1.png');
+
+  /// File path: assets/images/ill_cafetaria_banner2.png
+  AssetGenImage get illCafetariaBanner2 =>
+      const AssetGenImage('assets/images/ill_cafetaria_banner2.png');
+
+  /// File path: assets/images/ill_food.png
+  AssetGenImage get illFood =>
+      const AssetGenImage('assets/images/ill_food.png');
+
+  /// File path: assets/images/ill_rate.png
+  AssetGenImage get illRate =>
+      const AssetGenImage('assets/images/ill_rate.png');
+
+  /// File path: assets/images/ill_wait.png
+  AssetGenImage get illWait =>
+      const AssetGenImage('assets/images/ill_wait.png');
+
   /// File path: assets/images/maskgroup.png
   AssetGenImage get maskgroup =>
       const AssetGenImage('assets/images/maskgroup.png');
+
+  /// File path: assets/images/offer_1.png
+  AssetGenImage get offer1 => const AssetGenImage('assets/images/offer_1.png');
+
+  /// File path: assets/images/offer_2.png
+  AssetGenImage get offer2 => const AssetGenImage('assets/images/offer_2.png');
+
+  /// File path: assets/images/offer_3.png
+  AssetGenImage get offer3 => const AssetGenImage('assets/images/offer_3.png');
 }
 
 class Assets {
@@ -35,7 +72,7 @@ class AssetGenImage {
     ImageErrorWidgetBuilder? errorBuilder,
     String? semanticLabel,
     bool excludeFromSemantics = false,
-    double? scale = 1.0,
+    double? scale,
     double? width,
     double? height,
     Color? color,
@@ -82,4 +119,6 @@ class AssetGenImage {
   }
 
   String get path => _assetName;
+
+  String get keyName => _assetName;
 }
