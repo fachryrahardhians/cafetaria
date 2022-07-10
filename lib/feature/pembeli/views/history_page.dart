@@ -1,9 +1,12 @@
+import 'package:cafetaria/feature/pembeli/bloc/history_order_bloc/history_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/history_detail_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:rating_repository/rating_repository.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -22,13 +25,6 @@ class History extends StatefulWidget {
 }
 
 class _HistoryState extends State<History> {
-  Color getStatusColor(int time) {
-    if (time >= 15)
-      return Colors.red;
-    else
-      return Colors.yellow;
-  }
-
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
@@ -66,32 +62,42 @@ class _HistoryState extends State<History> {
           ),
         ),
         body: TabBarView(
-          children: [
-            ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                itemBuilder: (context, index) {
-                  return listCard();
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: SizeConfig.safeBlockVertical * 3);
-                },
-                itemCount: 2),
-            ListView.separated(
-                padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                itemBuilder: (context, index) {
-                  return _doneCard();
-                },
-                separatorBuilder: (context, index) {
-                  return SizedBox(height: SizeConfig.safeBlockVertical * 3);
-                },
-                itemCount: 2),
-          ],
+          children: [SizedBox(), DoneList()],
         ),
       ),
     );
   }
+}
 
-  Widget listCard() {
+class ProcessList extends StatelessWidget {
+  const ProcessList({Key? key}) : super(key: key);
+
+  Color getStatusColor(int time) {
+    if (time >= 15)
+      return Colors.red;
+    else
+      return Colors.yellow;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
+            ..add(GetHistoryOrder('process')),
+      child: ListView.separated(
+          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          itemBuilder: (context, index) {
+            return listCard(context);
+          },
+          separatorBuilder: (context, index) {
+            return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+          },
+          itemCount: 2),
+    );
+  }
+
+  Widget listCard(BuildContext context) {
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -212,8 +218,61 @@ class _HistoryState extends State<History> {
       ),
     );
   }
+}
 
-  Widget _doneCard() {
+class DoneList extends StatefulWidget {
+  const DoneList({Key? key}) : super(key: key);
+
+  @override
+  State<DoneList> createState() => _DoneListState();
+}
+
+class _DoneListState extends State<DoneList> {
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
+            ..add(GetHistoryOrder('done')),
+      child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
+        builder: (context, state) {
+          final status = state.status;
+          if (status == HistoryOrderStatus.loading)
+            return Center(child: const CircularProgressIndicator());
+          else if (status == HistoryOrderStatus.failure) {
+            return const Center(
+              child: Text('Terjadi kesalahan'),
+            );
+          } else if (status == HistoryOrderStatus.success) {
+            if (state.items != null) {
+              final items = state.items!;
+              return SizedBox(
+                height: 200,
+                child: ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      return _doneCard(
+                          merchant: item.merchantId ?? '',
+                          price: item.total.toString(),
+                          date: item.timestamp ?? '');
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+                    },
+                    itemCount: 1),
+              );
+            } else
+              return Text('No Data');
+          }
+          return const SizedBox();
+        },
+      ),
+    );
+  }
+
+  Widget _doneCard(
+      {required String merchant, required String date, required String price}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -234,16 +293,16 @@ class _HistoryState extends State<History> {
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 50,
                   child: Text(
-                    'Key-Pop Korean Street Food - Antapani',
+                    merchant,
                     style: headlineStyle.copyWith(fontSize: 14),
                   ),
                 ),
-                Text('Rp 90.000', style: textStyle),
+                Text('Rp$price', style: textStyle),
               ],
             ),
             SizedBox(height: SizeConfig.safeBlockVertical * 1),
             Text(
-              '13 Mei 2022, 20:51',
+              date,
               style: textStyle.copyWith(color: Color(0xffB1B5BA)),
             )
           ],
