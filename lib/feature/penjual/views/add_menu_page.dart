@@ -50,18 +50,20 @@ class _AddMenuViewState extends State<AddMenuView> {
         child: Column(
           children: [
             Container(
-              decoration: const BoxDecoration(boxShadow: [
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.04),
-                  offset: Offset(0, 0),
-                  blurRadius: 1,
-                ),
-                BoxShadow(
-                  color: Color.fromRGBO(0, 0, 0, 0.08),
-                  offset: Offset(0, 0),
-                  blurRadius: 4,
-                ),
-              ]),
+              decoration: const BoxDecoration(
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.04),
+                    offset: Offset(0, 0),
+                    blurRadius: 1,
+                  ),
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.08),
+                    offset: Offset(0, 0),
+                    blurRadius: 4,
+                  ),
+                ],
+              ),
               child: CFTextFormField(
                 controller: _menuController,
                 decoration: InputDecoration(

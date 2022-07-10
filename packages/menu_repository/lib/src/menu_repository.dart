@@ -26,6 +26,14 @@ class MenuRepository {
       throw Exception('Failed to get menu');
     }
   }
+
+  Future<void> addMenu(MenuModel menu) async {
+    try {
+      await _firestore.collection('menu').doc(menu.menuId).set(menu.toJson());
+    } catch (e) {
+      throw Exception('Failed to get menu');
+    }
+  }
 }
 
 extension on List<QueryDocumentSnapshot> {

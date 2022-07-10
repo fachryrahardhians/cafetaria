@@ -28,14 +28,15 @@ class CategoryRepository {
     String idMerchant,
     String name,
   ) async {
+    final id = uuid.v4();
     final data = {
       'merchantId': idMerchant,
       'category': name,
-      'categoryId': uuid.v4(),
+      'categoryId': id,
     };
 
     // add to firestore
-    await _firestore.collection('category').add(data);
+    await _firestore.collection('category').doc(id).set(data);
   }
 }
 

@@ -1,6 +1,7 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -32,12 +33,32 @@ class MenuCafetariaPage extends StatelessWidget {
   }
 }
 
-class MenuCafetariaView extends StatelessWidget {
+class MenuCafetariaView extends StatefulWidget {
   const MenuCafetariaView({Key? key}) : super(key: key);
 
   @override
+  State<MenuCafetariaView> createState() => _MenuCafetariaViewState();
+}
+
+class _MenuCafetariaViewState extends State<MenuCafetariaView> {
+  // The reference to the navigator
+  late NavigatorState _navigator;
+
+  @override
+  void didChangeDependencies() {
+    _navigator = Navigator.of(context);
+    super.didChangeDependencies();
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    GlobalKey _scaffold = GlobalKey();
+    final _scaffold = GlobalKey<ScaffoldState>();
     return DefaultTabController(
       length: 3,
       child: Scaffold(
@@ -84,69 +105,11 @@ class MenuCafetariaView extends StatelessWidget {
             'Menu Cafetaria',
           ),
         ),
-        body: Column(
+        body: const TabBarView(
           children: [
-            BlocBuilder<MenuMakananBloc, MenuMakananState>(
-              builder: (context, state) {
-                final status = state.status;
-
-                if (status == MenuMakananStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (status == MenuMakananStatus.failure) {
-                  return const Center(
-                    child: Text('Terjadi kesalahan'),
-                  );
-                } else if (status == MenuMakananStatus.success) {
-                  final items = state.items!;
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          // width: 50,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: ChoiceChip(
-                                  padding: const EdgeInsets.all(9),
-                                  onSelected: (val) {
-                                    context.read<ListMenuBloc>().add(
-                                          GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                              item.categoryId!),
-                                        );
-                                  },
-                                  label: Text(
-                                    item.category,
-                                    style: GoogleFonts.ubuntu(
-                                        color: const Color(0xffEA001E)),
-                                  ),
-                                  side: const BorderSide(
-                                    color: Color(0xffEA001E),
-                                  ),
-                                  selected: false,
-                                  backgroundColor: const Color(0xffFEDED8),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
-                    ),
-                  );
-                }
-                return const SizedBox.shrink();
-              },
-            ),
-            const ListMenuWidget()
+            DaftarMenuWidget(),
+            SizedBox.shrink(),
+            SizedBox.shrink(),
           ],
         ),
         bottomNavigationBar: Padding(
@@ -157,70 +120,154 @@ class MenuCafetariaView extends StatelessWidget {
               primary: const Color(0xffEA001E),
             ),
             child: const Text('TAMBAH MENU ATAU KATEGORI'),
-            onPressed: () {
-              showModalBottomSheet(
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8)),
-                  context: context,
-                  builder: (dialogContext) {
-                    return SizedBox(
-                      height: 300,
-                      child: Padding(
-                        padding: const EdgeInsets.all(24.0),
-                        child: Column(
-                          children: [
-                            Container(
-                              height: 4,
-                              width: 100,
-                              decoration: BoxDecoration(
-                                color: const Color(0xffE5E6E6),
-                                borderRadius: BorderRadius.circular(2),
-                              ),
-                            ),
-                            const SizedBox(height: 10),
-                            ListMenu(
-                              title: 'Tambah Menu Baru',
-                              onTap: () async {
-                                Navigator.pop(dialogContext);
-                                await Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                      builder: (_) => const AddMenuPage()),
-                                );
-
-                                context.read<MenuMakananBloc>().add(
-                                    const GetMenuMakanan(
-                                        '0DzobjgsR7jF8qWvCoG0'));
-                              },
-                              desc: 'mis : Ayam bakar, milk tea madu',
-                            ),
-                            const SizedBox(height: 10),
-                            ListMenu(
-                              title: 'Tambah Kategori Baru',
-                              onTap: () {
-                                Navigator.push(
-                                  dialogContext,
-                                  MaterialPageRoute(
-                                      builder: (_) => const AddMenuPage()),
-                                ).then(
-                                  (value) {
-                                    context.read<MenuMakananBloc>().add(
-                                        const GetMenuMakanan(
-                                            '0DzobjgsR7jF8qWvCoG0'));
-                                    Navigator.pop(dialogContext);
-                                  },
-                                );
-                              },
-                              desc: 'mis : Ayam, ikan, minuman',
-                            ),
-                            const SizedBox(height: 10),
-                          ],
-                        ),
-                      ),
-                    );
-                  });
+            onPressed: () async {
+              await showModalBottomSheet(
+                shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8)),
+                context: context,
+                builder: (context) {
+                  return const _ModalBottomSheet();
+                },
+              );
+              context
+                  .read<MenuMakananBloc>()
+                  .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
             },
           ),
+        ),
+      ),
+    );
+  }
+}
+
+class DaftarMenuWidget extends StatelessWidget {
+  const DaftarMenuWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Column(
+      children: [
+        BlocBuilder<MenuMakananBloc, MenuMakananState>(
+          builder: (context, state) {
+            final status = state.status;
+
+            if (status == MenuMakananStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (status == MenuMakananStatus.failure) {
+              return const Center(
+                child: Text('Terjadi kesalahan'),
+              );
+            } else if (status == MenuMakananStatus.success) {
+              final items = state.items!;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      // width: 50,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ChoiceChip(
+                              padding: const EdgeInsets.all(9),
+                              onSelected: (val) {
+                                context.read<ListMenuBloc>().add(
+                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
+                                          item.categoryId!),
+                                    );
+                              },
+                              label: Text(
+                                item.category,
+                                style: GoogleFonts.ubuntu(
+                                    color: const Color(0xffEA001E)),
+                              ),
+                              side: const BorderSide(
+                                color: Color(0xffEA001E),
+                              ),
+                              selected: false,
+                              backgroundColor: const Color(0xffFEDED8),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
+        const ListMenuWidget()
+      ],
+    );
+  }
+}
+
+class _ModalBottomSheet extends StatelessWidget {
+  const _ModalBottomSheet({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      height: 300,
+      child: Padding(
+        padding: const EdgeInsets.all(24.0),
+        child: Column(
+          children: [
+            Container(
+              height: 4,
+              width: 100,
+              decoration: BoxDecoration(
+                color: const Color(0xffE5E6E6),
+                borderRadius: BorderRadius.circular(2),
+              ),
+            ),
+            const SizedBox(height: 10),
+            ListMenu(
+              title: 'Tambah Menu Baru',
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddMenuPage()),
+                );
+                Navigator.pop(context);
+              },
+              desc: 'mis : Ayam bakar, milk tea madu',
+            ),
+            const SizedBox(height: 10),
+            ListMenu(
+              title: 'Tambah Kategori Baru',
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const AddMenuPenjualPage()),
+                ).then(
+                  (value) {
+                    // context
+                    //     .read<MenuMakananBloc>()
+                    //     .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
+                    // Navigator.pop(context);
+                  },
+                );
+              },
+              desc: 'mis : Ayam, ikan, minuman',
+            ),
+            const SizedBox(height: 10),
+          ],
         ),
       ),
     );
@@ -343,7 +390,7 @@ class ListMenuWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return ListTile(
-                    title: Text(item.nama ?? '-'),
+                    title: Text(item.name ?? '-'),
                     // subtitle: Text(item.price.toString()),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),
