@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+
 part 'option_menu_model.g.dart';
 
 /// OptionMenuModel
@@ -79,17 +80,17 @@ class Option extends Equatable {
     required this.price,
   });
 
-  /// name
-  final String name;
-
-  /// price
-  final int price;
-
   /// from Json
   factory Option.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
 
   /// toJson
   Map<String, dynamic> toJson() => _$OptionToJson(this);
+
+  /// name
+  final String name;
+
+  /// price
+  final int price;
 
   @override
   List<Object?> get props => [

@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, sort_unnamed_constructors_first
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,6 +7,17 @@ part 'rating_model.g.dart';
 
 @JsonSerializable()
 class RatingModel extends Equatable {
+  factory RatingModel.fromJson(Map<String, dynamic> json) =>
+      _$RatingModelFromJson(json);
+
+  const RatingModel({
+    this.feedback,
+    this.merchantId,
+    this.orderId,
+    this.ratingId,
+    this.userId,
+    this.rating,
+  });
   final String? feedback;
   final String? merchantId;
   final String? orderId;
@@ -12,26 +25,16 @@ class RatingModel extends Equatable {
   final String? userId;
   final int? rating;
 
-  const RatingModel(
-      {this.feedback,
-      this.merchantId,
-      this.orderId,
-      this.ratingId,
-      this.userId,
-      this.rating});
-
-  factory RatingModel.fromJson(Map<String, dynamic> json) =>
-      _$RatingModelFromJson(json);
-
   Map<String, dynamic> toJson() => _$RatingModelToJson(this);
 
-  RatingModel copyWith(
-      {String? feedback,
-      String? merchantId,
-      String? orderId,
-      String? ratingId,
-      String? userId,
-      int? rating}) {
+  RatingModel copyWith({
+    String? feedback,
+    String? merchantId,
+    String? orderId,
+    String? ratingId,
+    String? userId,
+    int? rating,
+  }) {
     return RatingModel(
       feedback: feedback ?? this.feedback,
       orderId: orderId ?? this.orderId,

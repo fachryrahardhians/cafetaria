@@ -1,15 +1,14 @@
 /// {@template rating_repository}
 /// rating repository
 /// {@endtemplate}
-class RatingRepository {
-  /// {@macro rating_repository}
-  const RatingRepository();
+///
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:rating_repository/src/models/models.dart';
 import 'package:uuid/uuid.dart';
 
-import 'models/models.dart';
-
+///
 class RatingRepository {
+  ///
   RatingRepository({
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
@@ -18,6 +17,7 @@ class RatingRepository {
 
   final _uuid = const Uuid();
 
+  ///
   Future<List<HistoryModel>> getListOrderHistory(String status) async {
     try {
       final snapshot = await _firestore.collection('order').get();
@@ -29,7 +29,7 @@ class RatingRepository {
     }
   }
 
-  // add discount
+  /// add discount
   Future<void> addRating(
     RatingModel rating,
   ) async {

@@ -41,21 +41,6 @@ class MenuCafetariaView extends StatefulWidget {
 }
 
 class _MenuCafetariaViewState extends State<MenuCafetariaView> {
-  // The reference to the navigator
-  late NavigatorState _navigator;
-
-  @override
-  void didChangeDependencies() {
-    _navigator = Navigator.of(context);
-    super.didChangeDependencies();
-  }
-
-  @override
-  void dispose() {
-    // TODO: implement dispose
-    super.dispose();
-  }
-
   @override
   Widget build(BuildContext context) {
     final _scaffold = GlobalKey<ScaffoldState>();

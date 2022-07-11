@@ -10,7 +10,7 @@ class HistoryDetailPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return HistoryDetail();
+    return const HistoryDetail();
   }
 }
 
@@ -39,7 +39,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
           outlet(
               'assets/images/ill_cafetaria_banner1.png',
@@ -124,7 +124,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
         label: 'BELI NILAI DAN ULASAN',
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => RatingPage()));
+              context, MaterialPageRoute(builder: (_) => const RatingPage()));
         },
       ),
     );

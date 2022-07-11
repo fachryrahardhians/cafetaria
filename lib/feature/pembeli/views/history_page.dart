@@ -13,7 +13,7 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return History();
+    return const History();
   }
 }
 
@@ -61,7 +61,7 @@ class _HistoryState extends State<History> {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [SizedBox(), DoneList()],
         ),
       ),
@@ -73,10 +73,11 @@ class ProcessList extends StatelessWidget {
   const ProcessList({Key? key}) : super(key: key);
 
   Color getStatusColor(int time) {
-    if (time >= 15)
+    if (time >= 15) {
       return Colors.red;
-    else
+    } else {
       return Colors.yellow;
+    }
   }
 
   @override
@@ -84,9 +85,9 @@ class ProcessList extends StatelessWidget {
     return BlocProvider(
       create: (context) =>
           HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
-            ..add(GetHistoryOrder('process')),
+            ..add(const GetHistoryOrder('process')),
       child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
           itemBuilder: (context, index) {
             return listCard(context);
           },
@@ -107,7 +108,7 @@ class ProcessList extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                   color: Colors.black.withOpacity(.04),
                   blurRadius: 12)
             ]),
@@ -120,7 +121,7 @@ class ProcessList extends StatelessWidget {
                   width: SizeConfig.safeBlockHorizontal * 30,
                   height: SizeConfig.safeBlockVertical * 3,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(8),
                           bottomLeft: Radius.circular(8)),
                       color: getStatusColor(1).withOpacity(.25)),
@@ -128,7 +129,7 @@ class ProcessList extends StatelessWidget {
                     child: Text(
                       '4 menit lalu',
                       style: textStyle.copyWith(
-                          color: Color(0xffFF9500),
+                          color: const Color(0xffFF9500),
                           fontSize: 10,
                           fontWeight: FontWeight.w500),
                     ),
@@ -143,12 +144,13 @@ class ProcessList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     width: SizeConfig.safeBlockVertical * 9,
                     height: SizeConfig.safeBlockVertical * 9,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
@@ -158,7 +160,7 @@ class ProcessList extends StatelessWidget {
                             ]),
                         boxShadow: [
                           BoxShadow(
-                              offset: Offset(0, 4),
+                              offset: const Offset(0, 4),
                               color: Colors.black.withOpacity(.04),
                               blurRadius: 12)
                         ]),
@@ -206,7 +208,7 @@ class ProcessList extends StatelessWidget {
                       Text(
                         'Perkiraan waktu 08:00 - 10:00',
                         style: textStyle.copyWith(
-                            fontSize: 11, color: Color(0xff999B9D)),
+                            fontSize: 11, color: const Color(0xff999B9D)),
                       )
                     ],
                   )
@@ -233,13 +235,13 @@ class _DoneListState extends State<DoneList> {
     return BlocProvider(
       create: (context) =>
           HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
-            ..add(GetHistoryOrder('done')),
+            ..add(const GetHistoryOrder('done')),
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (context, state) {
           final status = state.status;
-          if (status == HistoryOrderStatus.loading)
-            return Center(child: const CircularProgressIndicator());
-          else if (status == HistoryOrderStatus.failure) {
+          if (status == HistoryOrderStatus.loading) {
+            return const Center(child: CircularProgressIndicator());
+          } else if (status == HistoryOrderStatus.failure) {
             return const Center(
               child: Text('Terjadi kesalahan'),
             );
@@ -249,7 +251,8 @@ class _DoneListState extends State<DoneList> {
               return SizedBox(
                 height: 200,
                 child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 24, vertical: 16),
                     itemBuilder: (context, index) {
                       final item = items[index];
                       return _doneCard(
@@ -262,8 +265,9 @@ class _DoneListState extends State<DoneList> {
                     },
                     itemCount: 1),
               );
-            } else
-              return Text('No Data');
+            } else {
+              return const Text('No Data');
+            }
           }
           return const SizedBox();
         },
@@ -275,11 +279,11 @@ class _DoneListState extends State<DoneList> {
       {required String merchant, required String date, required String price}) {
     return GestureDetector(
       onTap: () {
-        Navigator.push(
-            context, MaterialPageRoute(builder: (_) => HistoryDetailPage()));
+        Navigator.push(context,
+            MaterialPageRoute(builder: (_) => const HistoryDetailPage()));
       },
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
@@ -303,7 +307,7 @@ class _DoneListState extends State<DoneList> {
             SizedBox(height: SizeConfig.safeBlockVertical * 1),
             Text(
               date,
-              style: textStyle.copyWith(color: Color(0xffB1B5BA)),
+              style: textStyle.copyWith(color: const Color(0xffB1B5BA)),
             )
           ],
         ),

@@ -32,8 +32,8 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
             children: [
               Makanan(),
               SizedBox(),
-              const HistoryPage(),
-              const SizedBox()
+              HistoryPage(),
+              SizedBox(),
             ],
           ),
           bottomNavigationBar: Container(

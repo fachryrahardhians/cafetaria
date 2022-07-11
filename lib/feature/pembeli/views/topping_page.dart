@@ -3,7 +3,7 @@ import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
 
-enum type { Sama, Beda }
+enum Type { sama, beda }
 
 class SelectToppingPage extends StatelessWidget {
   final String photo;
@@ -20,13 +20,12 @@ class SelectTopping extends StatefulWidget {
   const SelectTopping({Key? key, required this.photo}) : super(key: key);
 
   @override
-  State<SelectTopping> createState() => _SelectToppingState(photo);
+  State<SelectTopping> createState() => _SelectToppingState();
 }
 
 class _SelectToppingState extends State<SelectTopping> {
-  type? _toppingType = type.Sama;
-  String photo;
-  _SelectToppingState(this.photo);
+  Type? _toppingType = Type.sama;
+  String get photo => widget.photo;
   final TextEditingController _catatanController = TextEditingController();
   final TextEditingController _counterController =
       TextEditingController(text: '0');
@@ -69,17 +68,17 @@ class _SelectToppingState extends State<SelectTopping> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Radio<type>(
-                        value: type.Sama,
+                      Radio<Type>(
+                        value: Type.sama,
                         groupValue: _toppingType!,
-                        onChanged: (type? value) {
+                        onChanged: (Type? value) {
                           setState(() {
                             _toppingType = value;
                           });
                         },
                       ),
-                      SizedBox(width: 3),
-                      Text('Topping Sama')
+                      const SizedBox(width: 3),
+                      const Text('Topping Sama')
                     ],
                   ),
                 ),
@@ -87,17 +86,17 @@ class _SelectToppingState extends State<SelectTopping> {
                   child: Row(
                     mainAxisSize: MainAxisSize.min,
                     children: [
-                      Radio<type>(
-                        value: type.Beda,
+                      Radio<Type>(
+                        value: Type.beda,
                         groupValue: _toppingType!,
-                        onChanged: (type? value) {
+                        onChanged: (Type? value) {
                           setState(() {
                             _toppingType = value;
                           });
                         },
                       ),
-                      SizedBox(width: 3),
-                      Text('Topping Beda')
+                      const SizedBox(width: 3),
+                      const Text('Topping Beda')
                     ],
                   ),
                 )
@@ -355,11 +354,4 @@ class _SelectToppingState extends State<SelectTopping> {
       ),
     );
   }
-}
-
-class _ListTopping {
-  _ListTopping({required this.name, required this.price});
-  final String name;
-  final int price;
-  bool value = false;
 }

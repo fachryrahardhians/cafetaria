@@ -21,7 +21,6 @@ class _MakananState extends State<Makanan> {
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var size = MediaQuery.of(context).size;
 
     return ListView(
         padding: const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
@@ -73,7 +72,7 @@ class _MakananState extends State<Makanan> {
             onTap: () => Navigator.push(
                 context,
                 MaterialPageRoute(
-                    builder: (_) => MerchantPage(
+                    builder: (_) => const MerchantPage(
                           title: 'Key-Pop Korean Street Food - Antapani',
                         ))),
             child: outlet(

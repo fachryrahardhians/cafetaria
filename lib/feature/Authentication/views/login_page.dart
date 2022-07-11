@@ -107,8 +107,10 @@ class _LoginViewState extends State<LoginView> {
             ReusableButton1(
               label: "MASUK",
               onPressed: () {
-                Navigator.pushReplacement(context,
-                    MaterialPageRoute(builder: (_) => PembeliDashboardPage()));
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PembeliDashboardPage()));
               },
             ),
           ],

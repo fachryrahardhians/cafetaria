@@ -18,9 +18,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
   TextStyle headlineStyle = const TextStyle(
       fontWeight: FontWeight.w700, fontSize: 24, color: Color(0xff2E3032));
   bool alat = false;
-  bool _loading = false;
+  final bool _loading = false;
   bool value = false;
-  TextEditingController _dateController = TextEditingController();
+  final TextEditingController _dateController = TextEditingController();
 
   _selectDate(BuildContext context) async {
     DateTime selectedDate = DateTime.now();
@@ -281,10 +281,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [
-                                const Color(0xffF8091E),
-                                Color(0xffA9085A)
-                              ])),
+                              colors: [Color(0xffF8091E), Color(0xffA9085A)])),
                       child: Center(
                           child: Text('i',
                               style: headlineStyle.copyWith(
@@ -334,8 +331,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(8)),
                     hintText: "Tentukan Tanggal",
-                    hintStyle: const TextStyle(
-                        fontSize: 13, color: const Color(0xffCACCCF)),
+                    hintStyle:
+                        const TextStyle(fontSize: 13, color: Color(0xffCACCCF)),
                     suffixIcon: const Icon(
                       Icons.calendar_today,
                       color: Color(0xffEE3124),
@@ -368,11 +365,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 child: TextFormField(
                   initialValue: '08:00',
                   autofocus: false,
-                  style: const TextStyle(
-                      fontSize: 13, color: const Color(0xffB1B5BA)),
+                  style:
+                      const TextStyle(fontSize: 13, color: Color(0xffB1B5BA)),
                   decoration: InputDecoration(
                     filled: true,
-                    fillColor: Color(0xffF2F4F6),
+                    fillColor: const Color(0xffF2F4F6),
                     focusedBorder: OutlineInputBorder(
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(8)),
@@ -380,8 +377,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(8)),
                     hintText: "Tentukan Tanggal",
-                    hintStyle: const TextStyle(
-                        fontSize: 13, color: const Color(0xffCACCCF)),
+                    hintStyle:
+                        const TextStyle(fontSize: 13, color: Color(0xffCACCCF)),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {

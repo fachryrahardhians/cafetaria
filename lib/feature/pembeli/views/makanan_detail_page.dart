@@ -21,12 +21,11 @@ class ListMenu extends StatefulWidget {
   const ListMenu({Key? key, required this.title}) : super(key: key);
 
   @override
-  State<ListMenu> createState() => _ListMenuState(title);
+  State<ListMenu> createState() => _ListMenuState();
 }
 
 class _ListMenuState extends State<ListMenu> {
-  String title;
-  _ListMenuState(this.title);
+  String get title => widget.title;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -83,7 +82,7 @@ class _ListMenuState extends State<ListMenu> {
                       side: BorderSide.none))),
               onPressed: () {
                 Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => KeranjangPage()));
+                    MaterialPageRoute(builder: (_) => const KeranjangPage()));
               },
               child: Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -95,11 +94,11 @@ class _ListMenuState extends State<ListMenu> {
                               fontSize: 14, color: Colors.white),
                           children: [
                         TextSpan(
-                            text: '0' + ' Pesanan',
+                            text: '0' ' Pesanan',
                             style: normalText.copyWith(
                                 fontSize: 14, color: Colors.white)),
                       ])),
-                  Text('Rp. ' + '0',
+                  Text('Rp. ' '0',
                       style: normalText.copyWith(
                           fontSize: 14, color: Colors.white)),
                 ],
