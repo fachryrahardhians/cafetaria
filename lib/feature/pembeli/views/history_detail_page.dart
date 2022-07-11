@@ -2,7 +2,7 @@ import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/rating_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class HistoryDetailPage extends StatelessWidget {

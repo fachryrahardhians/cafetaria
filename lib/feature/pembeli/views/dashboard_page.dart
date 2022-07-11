@@ -2,7 +2,7 @@ import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class PembeliDashboardPage extends StatelessWidget {

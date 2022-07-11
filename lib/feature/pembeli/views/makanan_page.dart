@@ -2,7 +2,7 @@ import 'package:cafetaria/feature/pembeli/views/makanan_detail_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/promo_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class Makanan extends StatefulWidget {
