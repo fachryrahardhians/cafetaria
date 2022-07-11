@@ -58,6 +58,7 @@ class CFTextFormField extends TextFormField {
     super.onFieldSubmitted,
     super.obscureText,
     super.autofocus,
+    super.maxLines,
     super.textInputAction,
     super.autocorrect,
     super.style,

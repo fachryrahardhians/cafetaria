@@ -33,9 +33,10 @@ class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
       await _ratingRepository.addRating(RatingModel(
           feedback: event.catatan,
           rating: event.rating,
-          orderId: 'order1',
-          userId: 'T64s0sUD0mMAyfZDTYpowf5nVei2',
-          merchantId: 'merchant1'));
+          orderId: event.orderId,
+          ratingId: '',
+          userId: '7goTPZo9N2c9O1jm7A6bL0YIyMb2',
+          merchantId: event.merchantId));
 
       emit(state.copyWith(
         formzStatus: FormzStatus.submissionSuccess,

@@ -45,6 +45,8 @@ dependencies:
     path: packages/menu_repository
   rating_repository:
     path: packages/rating_repository
+  order_repository:
+    path: packages/order_repository
   category_repository:
     path: packages/category_repository
   cafetaria_ui:

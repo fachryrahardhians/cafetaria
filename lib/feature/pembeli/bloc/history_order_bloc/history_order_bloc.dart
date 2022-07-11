@@ -1,16 +1,16 @@
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
-import 'package:rating_repository/rating_repository.dart';
+import 'package:order_repository/order_repository.dart';
 
 part 'history_order_event.dart';
 part 'history_order_state.dart';
 
 class HistoryOrderBloc extends Bloc<HistoryOrderEvent, HistoryOrderState> {
-  final RatingRepository _ratingRepository;
+  final OrderRepository _orderRepository;
 
   HistoryOrderBloc({
-    required RatingRepository ratingRepository,
-  })  : _ratingRepository = ratingRepository,
+    required OrderRepository orderRepository,
+  })  : _orderRepository = orderRepository,
         super(const HistoryOrderState.initial()) {
     on<GetHistoryOrder>(_getHistoryOrder);
   }
@@ -22,7 +22,7 @@ class HistoryOrderBloc extends Bloc<HistoryOrderEvent, HistoryOrderState> {
     emit(const HistoryOrderState.loading());
 
     try {
-      final items = await _ratingRepository.getListOrderHistory(event.status);
+      final items = await _orderRepository.getListOrderHistory(event.status);
 
       emit(HistoryOrderState.success(items));
     } catch (error) {

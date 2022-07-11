@@ -4,24 +4,41 @@ import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:order_repository/order_repository.dart';
 
 class HistoryDetailPage extends StatelessWidget {
-  const HistoryDetailPage({Key? key}) : super(key: key);
+  final HistoryModel item;
+  const HistoryDetailPage({Key? key, required this.item}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return HistoryDetail();
+    return HistoryDetail(
+      item: item,
+    );
   }
 }
 
 class HistoryDetail extends StatefulWidget {
-  const HistoryDetail({Key? key}) : super(key: key);
+  final HistoryModel item;
+  const HistoryDetail({Key? key, required this.item}) : super(key: key);
 
   @override
-  State<HistoryDetail> createState() => _HistoryDetailState();
+  State<HistoryDetail> createState() => _HistoryDetailState(item);
 }
 
 class _HistoryDetailState extends State<HistoryDetail> {
+  HistoryModel item;
+  _HistoryDetailState(this.item);
+  double subTotal = 0.0;
+  double ppn = 0.0;
+
+  @override
+  void initState() {
+    subTotal = ((item.total! - 2000) / 1.1);
+    ppn = subTotal * .1;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -62,7 +79,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 style: textStyle,
               ),
               Text(
-                'Rp 82.000',
+                'Rp ' + subTotal.toStringAsFixed(0),
                 style: textStyle.copyWith(fontWeight: FontWeight.w500),
               )
             ],
@@ -76,7 +93,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 style: textStyle,
               ),
               Text(
-                'Rp 82.000',
+                'Rp ' + ppn.toStringAsFixed(0),
                 style: textStyle.copyWith(fontWeight: FontWeight.w500),
               )
             ],
@@ -112,7 +129,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 style: textStyle.copyWith(fontWeight: FontWeight.w500),
               ),
               Text(
-                'Rp 82.000',
+                'Rp ' + item.total.toString(),
                 style: textStyle.copyWith(
                     fontWeight: FontWeight.w500, fontSize: 15),
               )
@@ -124,7 +141,12 @@ class _HistoryDetailState extends State<HistoryDetail> {
         label: 'BELI NILAI DAN ULASAN',
         onPressed: () {
           Navigator.push(
-              context, MaterialPageRoute(builder: (_) => RatingPage()));
+              context,
+              MaterialPageRoute(
+                  builder: (_) => RatingPage(
+                        orderId: item.orderId ?? '',
+                        merchantId: item.merchantId ?? '',
+                      )));
         },
       ),
     );
