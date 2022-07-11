@@ -230,6 +230,16 @@ class DoneList extends StatefulWidget {
 class _DoneListState extends State<DoneList> {
   @override
   Widget build(BuildContext context) {
+    // return ListView.separated(
+    //     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+    //     itemBuilder: (context, index) {
+    //       return _doneCard(
+    //           merchant: 'aaaa', price: '87000', date: '07 Jul 2022, 20:15');
+    //     },
+    //     separatorBuilder: (context, index) {
+    //       return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+    //     },
+    //     itemCount: 2);
     return BlocProvider(
       create: (context) =>
           HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())

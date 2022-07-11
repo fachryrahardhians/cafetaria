@@ -6,6 +6,7 @@ import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:rating_repository/rating_repository.dart';
 import 'package:storage/storage.dart';
 
 class App extends StatelessWidget {
@@ -16,11 +17,13 @@ class App extends StatelessWidget {
     required CategoryRepository categoryRepository,
     required CloudStorage cloudStorage,
     required SecureStorage secureStorage,
+    required RatingRepository ratingRepository,
   })  : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
         _categoryRepository = categoryRepository,
         _cloudStorage = cloudStorage,
         _secureStorage = secureStorage,
+        _ratingRepository = ratingRepository,
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
@@ -28,6 +31,7 @@ class App extends StatelessWidget {
   final CategoryRepository _categoryRepository;
   final CloudStorage _cloudStorage;
   final SecureStorage _secureStorage;
+  final RatingRepository _ratingRepository;
 
   @override
   Widget build(BuildContext context) {
@@ -38,6 +42,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _categoryRepository),
         RepositoryProvider.value(value: _secureStorage),
         RepositoryProvider.value(value: _cloudStorage),
+        RepositoryProvider.value(value: _ratingRepository),
       ],
       child: const AppView(),
     );

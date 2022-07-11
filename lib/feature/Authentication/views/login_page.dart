@@ -50,7 +50,7 @@ class _LoginViewState extends State<LoginView> {
               ),
             ),
             BlocListener<AuthenticationBloc, AuthenticationState>(
-              listener: (context, state) {
+              listener: (ctx, state) {
                 if (state is AuthenticationStateSuccess) {
                   Navigator.push(
                       context,
