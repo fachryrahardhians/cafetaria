@@ -10,11 +10,14 @@ abstract class AddRatingEvent extends Equatable {
 class SaveRating extends AddRatingEvent {
   final int rating;
   final String catatan;
+  final String orderId;
+  final String merchantId;
 
-  const SaveRating({
-    required this.rating,
-    required this.catatan,
-  });
+  const SaveRating(
+      {required this.orderId,
+      required this.rating,
+      required this.catatan,
+      required this.merchantId});
 
   @override
   List<Object> get props => [rating, catatan];

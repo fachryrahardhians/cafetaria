@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/views/atur_booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
@@ -187,9 +188,15 @@ class PenjualDashboardView extends StatelessWidget {
             label: "Riwayat",
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset("assets/icons/bottom-profile.png"),
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(context,
+                    MaterialPageRoute(builder: (_) => PembeliDashboardPage()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.asset("assets/icons/bottom-profile.png"),
+              ),
             ),
             label: "Profile",
           ),
@@ -223,7 +230,10 @@ class MainMenuWidget extends StatelessWidget {
               ),
               HomeItemOrder(
                 route: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MenuCafetariaPage()));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",
@@ -235,7 +245,10 @@ class MainMenuWidget extends StatelessWidget {
                 //   arguments: controller.booking,
                 // ),
                 route: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AturBookingPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AturBookingPage()));
                 },
                 image: "assets/icons/booking.png",
                 title: "Atur Booking",
@@ -256,7 +269,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => print("info-1"),
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
                 HomeItemInfo(
@@ -268,7 +282,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => print("info-3"),
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
               ],

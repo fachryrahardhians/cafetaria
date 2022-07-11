@@ -10,7 +10,7 @@ HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       orderId: json['orderId'] as String?,
       merchantId: json['merchantId'] as String?,
       total: json['total'] as int?,
-      timestamp: json['timestamp'] as String?,
+      timestamp: json['timestamp'].toDate().toString() as String?,
       statusOrder: json['statusOrder'] as String?,
       menus: (json['menus'] as List<dynamic>?)
           ?.map((e) => OrderMenu.fromJson(e as Map<String, dynamic>))

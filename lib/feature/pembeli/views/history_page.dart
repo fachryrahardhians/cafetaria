@@ -6,7 +6,7 @@ import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:rating_repository/rating_repository.dart';
+import 'package:order_repository/order_repository.dart';
 
 class HistoryPage extends StatelessWidget {
   const HistoryPage({Key? key}) : super(key: key);
@@ -83,7 +83,7 @@ class ProcessList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
+          HistoryOrderBloc(orderRepository: context.read<OrderRepository>())
             ..add(GetHistoryOrder('process')),
       child: ListView.separated(
           padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
@@ -230,19 +230,9 @@ class DoneList extends StatefulWidget {
 class _DoneListState extends State<DoneList> {
   @override
   Widget build(BuildContext context) {
-    // return ListView.separated(
-    //     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-    //     itemBuilder: (context, index) {
-    //       return _doneCard(
-    //           merchant: 'aaaa', price: '87000', date: '07 Jul 2022, 20:15');
-    //     },
-    //     separatorBuilder: (context, index) {
-    //       return SizedBox(height: SizeConfig.safeBlockVertical * 3);
-    //     },
-    //     itemCount: 2);
     return BlocProvider(
       create: (context) =>
-          HistoryOrderBloc(ratingRepository: context.read<RatingRepository>())
+          HistoryOrderBloc(orderRepository: context.read<OrderRepository>())
             ..add(GetHistoryOrder('done')),
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (context, state) {
@@ -250,8 +240,8 @@ class _DoneListState extends State<DoneList> {
           if (status == HistoryOrderStatus.loading)
             return Center(child: const CircularProgressIndicator());
           else if (status == HistoryOrderStatus.failure) {
-            return const Center(
-              child: Text('Terjadi kesalahan'),
+            return Center(
+              child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
             );
           } else if (status == HistoryOrderStatus.success) {
             if (state.items != null) {
@@ -262,10 +252,7 @@ class _DoneListState extends State<DoneList> {
                     padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                     itemBuilder: (context, index) {
                       final item = items[index];
-                      return _doneCard(
-                          merchant: item.merchantId ?? '',
-                          price: item.total.toString(),
-                          date: item.timestamp ?? '');
+                      return _doneCard(item: item);
                     },
                     separatorBuilder: (context, index) {
                       return SizedBox(height: SizeConfig.safeBlockVertical * 3);
@@ -281,12 +268,15 @@ class _DoneListState extends State<DoneList> {
     );
   }
 
-  Widget _doneCard(
-      {required String merchant, required String date, required String price}) {
+  Widget _doneCard({required HistoryModel item}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
-            context, MaterialPageRoute(builder: (_) => HistoryDetailPage()));
+            context,
+            MaterialPageRoute(
+                builder: (_) => HistoryDetailPage(
+                      item: item,
+                    )));
       },
       child: Container(
         padding: EdgeInsets.all(16),
@@ -303,16 +293,16 @@ class _DoneListState extends State<DoneList> {
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 50,
                   child: Text(
-                    merchant,
+                    item.merchantId ?? '',
                     style: headlineStyle.copyWith(fontSize: 14),
                   ),
                 ),
-                Text('Rp$price', style: textStyle),
+                Text('Rp ${item.total}', style: textStyle),
               ],
             ),
             SizedBox(height: SizeConfig.safeBlockVertical * 1),
             Text(
-              date,
+              item.timestamp ?? '',
               style: textStyle.copyWith(color: Color(0xffB1B5BA)),
             )
           ],

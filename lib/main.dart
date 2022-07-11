@@ -7,6 +7,7 @@ import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:order_repository/order_repository.dart';
 import 'package:rating_repository/rating_repository.dart';
 import 'package:storage/storage.dart';
 
@@ -24,6 +25,7 @@ void main() async {
       final _cloudStorage = CloudStorage();
       const _secureStorage = SecureStorage();
       final _ratingRepository = RatingRepository(firestore: firebaseStore);
+      final _orderRepository = OrderRepository(firestore: firebaseStore);
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       print(fcmToken);
@@ -37,6 +39,7 @@ void main() async {
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,
         ratingRepository: _ratingRepository,
+        orderRepository: _orderRepository,
       );
     },
   );
