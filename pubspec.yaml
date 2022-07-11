@@ -47,6 +47,10 @@ dependencies:
 
   penjual_repository:
     path: packages/penjual_repository
+  sharedpref_repository:
+    path: packages/sharedpref_repository
+  home_repository:
+    path: packages/home_repository
 
 dev_dependencies:
   flutter_lints: ^1.0.0

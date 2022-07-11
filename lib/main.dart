@@ -3,6 +3,7 @@ import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/bootstrap.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:penjual_repository/penjual_repository.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 void main() async {
   bootstrap(
@@ -14,8 +15,9 @@ void main() async {
       //
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);
-
+      final _appSharePref = AppSharedPref(sharedpreference);
       final fcmToken = await FirebaseMessaging.instance.getToken();
+
       print(fcmToken);
 
       // Initialize Firebase
@@ -23,6 +25,7 @@ void main() async {
       return App(
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,
+        appSharedPref:  _appSharePref,
       );
     },
   );

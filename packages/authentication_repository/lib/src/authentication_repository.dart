@@ -50,12 +50,11 @@ class AuthenticationRepository {
 
   /// sign user with gmail
   /// [email] and [password] must not be null
-  Future<GoogleSignInAccount?> signedWithGoogle() async {
+  Future<UserCredential?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
-      print(data!.photoUrl);
       // Obtain the auth details from the request
-      final GoogleSignInAuthentication? googleAuth = await data.authentication;
+      final GoogleSignInAuthentication? googleAuth = await data!.authentication;
 
       // Create a new credential
       final credential = GoogleAuthProvider.credential(
@@ -64,10 +63,9 @@ class AuthenticationRepository {
       );
 
       // Once signed in, return the UserCredential
-      await _firebaseAuth.signInWithCredential(credential);
-      return data;
+      return await _firebaseAuth.signInWithCredential(credential);
     } on Exception catch (error, stacktrace) {
-      print(error);
+      print("ERROR : $error");
       throw AuthenticationException(error, stacktrace);
     }
   }
@@ -77,6 +75,36 @@ class AuthenticationRepository {
       final data = await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
     }catch(e){
+      throw Exception(e);
+    }
+  }
+
+  Future<UserCredential> addLinkedEmail({required String email,required String
+  password})
+  async {
+    try {
+      final credential =
+      EmailAuthProvider.credential(email: email, password: password);
+      final userCredential = await FirebaseAuth.instance.currentUser
+          !.linkWithCredential(credential);
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "provider-already-linked":
+          print("The provider has already been linked to the user.");
+          break;
+        case "invalid-credential":
+          print("The provider's credential is not valid.");
+          break;
+        case "credential-already-in-use":
+          print("The account corresponding to the credential already exists, "
+              "or is already linked to a Firebase User.");
+          break;
+      // See the API reference for the full list of error codes.
+        default:
+          print("Unknown error.");
+      }
       throw Exception(e);
     }
   }
