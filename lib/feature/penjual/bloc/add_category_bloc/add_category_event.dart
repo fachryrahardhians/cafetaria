@@ -1,6 +1,6 @@
 part of 'add_category_bloc.dart';
 
-abstract class AddCategoryEvent extends Equatable {
+class AddCategoryEvent extends Equatable {
   const AddCategoryEvent();
 
   @override
