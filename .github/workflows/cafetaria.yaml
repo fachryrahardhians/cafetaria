@@ -31,8 +31,8 @@ jobs:
       - name: Analyze
         run: flutter analyze lib test
 
-      - name: Verify
-        run: flutter test -t presubmit-only
+      # - name: Verify
+      #   run: flutter test -t presubmit-only
 
       - name: Run tests
         run: flutter test -x presubmit-only --no-pub --coverage --test-randomize-ordering-seed random
