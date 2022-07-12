@@ -62,6 +62,7 @@ dependencies:
 
 dev_dependencies:
   bloc_test: ^9.0.2
+  build_verify: ^3.0.0
   flutter_lints: ^1.0.0
   flutter_test:
     sdk: flutter
