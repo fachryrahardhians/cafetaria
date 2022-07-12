@@ -44,14 +44,17 @@ class CustomTextfield1 extends StatelessWidget {
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             clipBehavior: Clip.antiAlias,
             padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
-            decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
-              BoxShadow(
-                color: Colors.grey,
-                offset: Offset(0, 0),
-                spreadRadius: 0,
-                blurRadius: 1,
-              ),
-            ]),
+            decoration: const BoxDecoration(
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                color: Colors.white,
+                boxShadow: [
+                  BoxShadow(
+                    color: Colors.grey,
+                    offset: Offset(0, 0),
+                    spreadRadius: 0,
+                    blurRadius: 1,
+                  ),
+                ]),
             child: TextFormField(
               controller: controller,
               maxLines: maxLine ?? 1,

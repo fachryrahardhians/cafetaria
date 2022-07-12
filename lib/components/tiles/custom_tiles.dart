@@ -13,15 +13,19 @@ class OrderCard extends StatelessWidget {
         children: [
           Container(
             clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.only(top: 0, bottom: 16, left: 16, right: 16),
-            decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8)), boxShadow: [
-              BoxShadow(
-                color: Color.fromRGBO(0, 0, 0, 0.04),
-                offset: Offset(0, 0),
-                spreadRadius: 3,
-                blurRadius: 3,
-              ),
-            ]),
+            padding:
+                const EdgeInsets.only(top: 0, bottom: 16, left: 16, right: 16),
+            decoration: const BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.all(Radius.circular(8)),
+                boxShadow: [
+                  BoxShadow(
+                    color: Color.fromRGBO(0, 0, 0, 0.04),
+                    offset: Offset(0, 0),
+                    spreadRadius: 3,
+                    blurRadius: 3,
+                  ),
+                ]),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -75,7 +79,9 @@ class OrderCard extends StatelessWidget {
                 ),
                 Text.rich(
                   TextSpan(children: [
-                    TextSpan(text: "Keterangan : ", style: smallText.copyWith(color: MyColors.red1)),
+                    TextSpan(
+                        text: "Keterangan : ",
+                        style: smallText.copyWith(color: MyColors.red1)),
                     TextSpan(
                         text: "Mohon maaf, Ayam sudah habis kami "
                             "rekomendasikan Nasi Iga Bakar dengan harga Rp25"
@@ -106,14 +112,17 @@ class DetailOrderCard extends StatelessWidget {
       margin: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
       clipBehavior: Clip.antiAlias,
       padding: const EdgeInsets.all(16),
-      decoration: const BoxDecoration(color: Colors.white, borderRadius: BorderRadius.all(Radius.circular(8)), boxShadow: [
-        BoxShadow(
-          color: Color.fromRGBO(0, 0, 0, 0.04),
-          offset: Offset(0, 0),
-          spreadRadius: 3,
-          blurRadius: 3,
-        ),
-      ]),
+      decoration: const BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.all(Radius.circular(8)),
+          boxShadow: [
+            BoxShadow(
+              color: Color.fromRGBO(0, 0, 0, 0.04),
+              offset: Offset(0, 0),
+              spreadRadius: 3,
+              blurRadius: 3,
+            ),
+          ]),
       child: Column(
         children: [
           Row(
@@ -141,7 +150,8 @@ class DetailOrderCard extends StatelessWidget {
                   ),
                   Text(
                     "Tower A • Lantai 3A • Nomor 37 ",
-                    style: normalText.copyWith(fontWeight: FontWeight.bold, color: MyColors.grey2),
+                    style: normalText.copyWith(
+                        fontWeight: FontWeight.bold, color: MyColors.grey2),
                   ),
                 ],
               ),
@@ -183,8 +193,12 @@ class CustomMenuOrderTile extends StatelessWidget {
               ),
               Text.rich(
                 TextSpan(children: [
-                  TextSpan(text: "Catatan : ", style: normalText.copyWith(color: MyColors.red1)),
-                  TextSpan(text: "Nanti saya ambil jam 9 ya kak", style: normalText.copyWith(color: MyColors.grey2))
+                  TextSpan(
+                      text: "Catatan : ",
+                      style: normalText.copyWith(color: MyColors.red1)),
+                  TextSpan(
+                      text: "Nanti saya ambil jam 9 ya kak",
+                      style: normalText.copyWith(color: MyColors.grey2))
                 ]),
               ),
             ],
@@ -198,7 +212,9 @@ class CustomMenuOrderTile extends StatelessWidget {
               ),
               Text(
                 "Rp.520.000",
-                style: smallText.copyWith(color: MyColors.grey2, decorationStyle: TextDecorationStyle.dashed),
+                style: smallText.copyWith(
+                    color: MyColors.grey2,
+                    decorationStyle: TextDecorationStyle.dashed),
               ),
             ],
           ),
@@ -261,7 +277,8 @@ class CustomTileTimeBadge extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
       decoration: BoxDecoration(
-        borderRadius: const BorderRadius.only(topRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
+        borderRadius: const BorderRadius.only(
+            topRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
         color: MyColors.red1.withOpacity(0.3),
       ),
       child: Text(

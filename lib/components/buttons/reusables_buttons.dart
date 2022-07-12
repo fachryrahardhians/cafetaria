@@ -22,7 +22,8 @@ class ReusableButton1 extends StatelessWidget {
       child: OutlinedButton(
         child: Text(
           label,
-          style: normalText.copyWith(fontWeight: FontWeight.bold, color: Colors.white),
+          style: normalText.copyWith(
+              fontWeight: FontWeight.bold, color: Colors.white),
         ),
         onPressed: onPressed,
         style: OutlinedButton.styleFrom(
@@ -31,7 +32,8 @@ class ReusableButton1 extends StatelessWidget {
             side: BorderSide(
               color: borderColor ?? MyColors.red1,
             ),
-            shape: const RoundedRectangleBorder(borderRadius: BorderRadius.all(Radius.circular(8)))),
+            shape: const RoundedRectangleBorder(
+                borderRadius: BorderRadius.all(Radius.circular(8)))),
       ),
     );
   }
@@ -60,7 +62,8 @@ class CategoryButton extends StatelessWidget {
         padding: const EdgeInsets.symmetric(vertical: 9, horizontal: 16),
         decoration: BoxDecoration(
             color: backgroundColor ?? const Color(0xffFEDED8),
-            borderRadius: const BorderRadius.horizontal(right: Radius.circular(25), left: Radius.circular(25)),
+            borderRadius: const BorderRadius.horizontal(
+                right: Radius.circular(25), left: Radius.circular(25)),
             border: Border.all(
               color: borderColor ?? MyColors.red1,
             )),

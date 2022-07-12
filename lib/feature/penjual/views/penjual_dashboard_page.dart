@@ -223,7 +223,10 @@ class MainMenuWidget extends StatelessWidget {
               ),
               HomeItemOrder(
                 route: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MenuCafetariaPage()));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",
@@ -235,7 +238,10 @@ class MainMenuWidget extends StatelessWidget {
                 //   arguments: controller.booking,
                 // ),
                 route: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const AturBookingPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const AturBookingPage()));
                 },
                 image: "assets/icons/booking.png",
                 title: "Atur Booking",
@@ -256,7 +262,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => print("info-1"),
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
                 HomeItemInfo(
@@ -268,7 +275,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => print("info-3"),
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
               ],
