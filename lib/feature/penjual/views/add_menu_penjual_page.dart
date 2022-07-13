@@ -60,11 +60,11 @@ class AddMenuPenjualView extends StatelessWidget {
     final uploadProgressState =
         context.select((AddMenuPenjualBloc bloc) => bloc.state.uploadProgress);
 
-    final menuValid = context.select((AddMenuPenjualBloc bloc) =>
-        bloc.state.menuInput.pure ||
-        (!bloc.state.menuInput.pure && bloc.state.menuInput.valid));
+    // final menuValid = context.select((AddMenuPenjualBloc bloc) =>
+    //     bloc.state.menuInput.pure ||
+    //     (!bloc.state.menuInput.pure && bloc.state.menuInput.valid));
 
-    print(image);
+    // print(image);
 
     return BlocListener<AddMenuPenjualBloc, AddMenuPenjualState>(
       listener: (context, state) {
