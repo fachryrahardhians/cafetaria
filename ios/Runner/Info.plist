@@ -23,6 +23,12 @@
 		</dict>
 	</array>
 	<!-- End of the Google Sign-in Section -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To access your photos on this device</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To access your camera on this device</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To access your microphone on this device</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -64,5 +70,7 @@
 	</array>
 	<key>UIViewControllerBasedStatusBarAppearance</key>
 	<false/>
+	<key>CADisableMinimumFrameDurationOnPhone</key>
+	<true/>
 </dict>
 </plist>

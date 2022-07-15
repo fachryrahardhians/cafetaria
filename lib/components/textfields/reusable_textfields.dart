@@ -12,22 +12,22 @@ class CustomTextfield1 extends StatelessWidget {
     this.isObscure,
   }) : super(key: key);
 
-  String? hint;
+  final String? hint;
 
   ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
-  String? label;
+  final String? label;
 
   ///Label digunakan untuk tulisan label diatas textfield
-  int? maxLine;
+  final int? maxLine;
 
   ///MaxLine digunakan untuk mengatur tinggi textfield default secara
   ///hitungan baris
-  TextEditingController? controller;
+  final TextEditingController? controller;
 
   ///controller untuk Text Editing Controller
-  Widget? suffix;
+  final Widget? suffix;
 
-  bool? isObscure;
+  final bool? isObscure;
 
   ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 

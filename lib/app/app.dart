@@ -3,26 +3,47 @@ import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/views/link_email.dart';
 import 'package:cafetaria/feature/penjual/views/order_page/detail_order_page.dart';
 import 'package:cafetaria/feature/penjual/views/order_page/order_page.dart';
+import 'package:cafetaria_ui/cafetaria_ui.dart';
+import 'package:category_repository/category_repository.dart';
+import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:storage/storage.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:penjual_repository/penjual_repository.dart';
+// import 'package:penjual_repository/penjual_repository.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class App extends StatelessWidget {
-  const App(
-      {Key? key,
-      required AuthenticationRepository authenticationRepository,
-      required MenuRepository menuRepository,
-      required AppSharedPref appSharedPref})
+  const App({
+    Key? key,
+    required AuthenticationRepository authenticationRepository,
+    required MenuRepository menuRepository,
+    required CategoryRepository categoryRepository,
+    required CloudStorage cloudStorage,
+    required SecureStorage secureStorage,
+    required AppSharedPref appSharedPref,
+  })
+  //     : _authenticationRepository = authenticationRepository,
+  // const App(
+  //     {Key? key,
+  //     required AuthenticationRepository authenticationRepository,
+  //     required MenuRepository menuRepository,
+  //     required AppSharedPref appSharedPref})
       : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
         _appSharedPref = appSharedPref,
+        _categoryRepository = categoryRepository,
+        _cloudStorage = cloudStorage,
+        _secureStorage = secureStorage,
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
   final MenuRepository _menuRepository;
   final AppSharedPref _appSharedPref;
+  final CategoryRepository _categoryRepository;
+  final CloudStorage _cloudStorage;
+  final SecureStorage _secureStorage;
 
   @override
   Widget build(BuildContext context) {
@@ -30,6 +51,9 @@ class App extends StatelessWidget {
       providers: [
         RepositoryProvider.value(value: _authenticationRepository),
         RepositoryProvider.value(value: _menuRepository),
+        RepositoryProvider.value(value: _categoryRepository),
+        RepositoryProvider.value(value: _secureStorage),
+        RepositoryProvider.value(value: _cloudStorage),
         RepositoryProvider.value(value: _appSharedPref),
       ],
       child: const AppView(),
@@ -45,12 +69,13 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      theme: CFTheme.themeData,
       title: 'Cafetaria',
-      theme: ThemeData(
-        primarySwatch: Colors.red,
-        fontFamily: GoogleFonts.ubuntu().fontFamily,
-      ),
-      home: const OrderPage(),
+      // theme: ThemeData(
+      //   primarySwatch: Colors.red,
+      //   fontFamily: GoogleFonts.ubuntu().fontFamily,
+      // ),
+      home: const LoginPage(),
     );
   }
 }
