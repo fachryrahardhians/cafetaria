@@ -36,6 +36,8 @@ class AddMenuPenjualBloc
     on<MenuCanBooked>(_checkedBookedMenu);
     on<UploadPhoto>(_uploadPhoto);
     on<SaveMenu>(_saveMenu);
+    on<DeleteImage>(_deleteImage);
+    on<DeleteTag>(_deleteTag);
   }
 
   final CloudStorage _cloudStorage;
@@ -215,6 +217,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      uploadProgress: state.uploadProgress,
     ));
   }
 
@@ -235,6 +238,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: event.checked,
+      uploadProgress: state.uploadProgress,
     ));
   }
 
@@ -252,6 +256,7 @@ class AddMenuPenjualBloc
       tagging: state.tagging,
       image: state.image,
       imageUrl: state.imageUrl,
+      uploadProgress: state.uploadProgress,
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: event.canBooked,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
@@ -294,6 +299,7 @@ class AddMenuPenjualBloc
       tagInput: tag,
       tagging: state.tagging,
       image: state.image,
+      uploadProgress: state.uploadProgress,
       imageUrl: state.imageUrl,
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
@@ -305,6 +311,21 @@ class AddMenuPenjualBloc
     SaveMenu event,
     Emitter<AddMenuPenjualState> emit,
   ) async {
+    emit(state.copyWith(
+      status: FormzStatus.submissionInProgress,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      uploadProgress: state.uploadProgress,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
     final menu = MenuModel(
       menuId: _uuid.v4(),
 
@@ -323,6 +344,71 @@ class AddMenuPenjualBloc
     );
 
     await _menuRepository.addMenu(menu);
+
+    emit(state.copyWith(
+      status: FormzStatus.submissionSuccess,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      uploadProgress: state.uploadProgress,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
+  }
+
+  FutureOr<void> _deleteImage(
+    DeleteImage event,
+    Emitter<AddMenuPenjualState> emit,
+  ) {
+    unawaited(_cloudStorage.deleteImage(state.uploadProgress!.downloadUrl!));
+
+    state.image!.delete();
+
+    emit(state.copyWith(
+      status: state.status,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      uploadProgress: state.uploadProgress,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
+  }
+
+  FutureOr<void> _deleteTag(
+    DeleteTag event,
+    Emitter<AddMenuPenjualState> emit,
+  ) {
+    final tag = List<String>.from(state.tagging);
+    tag.removeWhere((tag) => tag == event.tag);
+
+    emit(state.copyWith(
+      status: state.status,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: tag,
+      image: state.image,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      uploadProgress: state.uploadProgress,
+    ));
   }
 }
 

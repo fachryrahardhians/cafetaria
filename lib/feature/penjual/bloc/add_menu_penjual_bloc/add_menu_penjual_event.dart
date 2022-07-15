@@ -107,3 +107,14 @@ class MenuCanBooked extends AddMenuPenjualEvent {
 }
 
 class SaveMenu extends AddMenuPenjualEvent {}
+
+class DeleteImage extends AddMenuPenjualEvent {}
+
+class DeleteTag extends AddMenuPenjualEvent {
+  final String tag;
+
+  const DeleteTag(this.tag);
+
+  @override
+  List<Object> get props => [tag];
+}
