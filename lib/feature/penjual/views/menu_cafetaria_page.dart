@@ -343,7 +343,7 @@ class ListMenuWidget extends StatelessWidget {
                 itemBuilder: (context, index) {
                   final item = items[index];
                   return ListTile(
-                    title: Text(item.nama ?? '-'),
+                    title: Text(item.name ?? '-'),
                     // subtitle: Text(item.price.toString()),
                     trailing: IconButton(
                       icon: const Icon(Icons.delete),

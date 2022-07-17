@@ -12,6 +12,36 @@ class MenuRepository {
   }) : _firestore = firestore;
 
   // get  menu per merchant
+  Future<List<MenuModel>> getMenuByMerchant(
+    String idMerchant,
+  ) async {
+    try {
+      final snapshot =
+          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+
+      final documents = snapshot.docs;
+      return documents.toListMenu();
+    } catch (e) {
+      throw Exception('Failed to get menu');
+    }
+  }
+
+  Future<List<MenuModel>> getRecommendedMenuByMerchant(
+    String idMerchant,
+  ) async {
+    try {
+      final snapshot = await _firestore
+          .collection('menuPerMerchant-$idMerchant')
+          .where("isRecomended", isEqualTo: true)
+          .get();
+
+      final documents = snapshot.docs.toListMenu();
+      return documents;
+    } catch (e) {
+      throw Exception('Failed to get menu');
+    }
+  }
+
   Future<List<MenuModel>> getMenu(
     String idMerchant,
     String idCategory,

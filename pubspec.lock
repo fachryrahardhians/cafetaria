@@ -464,6 +464,13 @@ packages:
       relative: true
     source: path
     version: "0.0.1"
+  merchant_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/merchant_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   meta:
     dependency: transitive
     description:

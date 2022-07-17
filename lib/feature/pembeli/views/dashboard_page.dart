@@ -1,5 +1,5 @@
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
-import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
+import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
@@ -30,7 +30,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         child: Scaffold(
           body: const TabBarView(
             children: [
-              Makanan(),
+              MerchantPage(),
               SizedBox(),
               const HistoryPage(),
               const SizedBox()

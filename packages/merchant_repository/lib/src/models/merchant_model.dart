@@ -5,16 +5,16 @@ part 'merchant_model.g.dart';
 
 @JsonSerializable()
 class MerchantModel extends Equatable {
-  final String? maxPrice;
+  final int? maxPrice;
   final String? merchantId;
-  final String? minPrice;
+  final int? minPrice;
   final String? nama;
-  final String? rating;
+  final double? rating;
   final String? test;
-  final String? totalCountRating;
-  final String? totalOrderToday;
-  final String? totalSalesToday;
-  final String? totalSalesYesterday;
+  final int? totalCountRating;
+  final int? totalOrderToday;
+  final int? totalSalesToday;
+  final int? totalSalesYesterday;
   final String? userId;
 
   const MerchantModel(
@@ -37,16 +37,16 @@ class MerchantModel extends Equatable {
 
   /// Copy with a new [MerchantModel].
   MerchantModel copyWith({
-    String? maxPrice,
+    int? maxPrice,
     String? merchantId,
-    String? minPrice,
+    int? minPrice,
     String? nama,
-    String? rating,
+    double? rating,
     String? test,
-    String? totalCountRating,
-    String? totalOrderToday,
-    String? totalSalesToday,
-    String? totalSalesYesterday,
+    int? totalCountRating,
+    int? totalOrderToday,
+    int? totalSalesToday,
+    int? totalSalesYesterday,
     String? userId,
   }) {
     return MerchantModel(

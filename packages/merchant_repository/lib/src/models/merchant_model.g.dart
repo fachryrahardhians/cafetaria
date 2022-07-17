@@ -8,16 +8,16 @@ part of 'merchant_model.dart';
 
 MerchantModel _$MerchantModelFromJson(Map<String, dynamic> json) =>
     MerchantModel(
-      maxPrice: json['maxPrice'] as String?,
+      maxPrice: json['maxPrice'] as int?,
       merchantId: json['merchantId'] as String?,
-      minPrice: json['minPrice'] as String?,
+      minPrice: json['minPrice'] as int?,
       nama: json['nama'] as String?,
-      rating: json['rating'] as String?,
+      rating: (json['rating'] as num?)?.toDouble(),
       test: json['test'] as String?,
-      totalCountRating: json['totalCountRating'] as String?,
-      totalOrderToday: json['totalOrderToday'] as String?,
-      totalSalesToday: json['totalSalesToday'] as String?,
-      totalSalesYesterday: json['totalSalesYesterday'] as String?,
+      totalCountRating: json['totalCountRating'] as int?,
+      totalOrderToday: json['totalOrderToday'] as int?,
+      totalSalesToday: json['totalSalesToday'] as int?,
+      totalSalesYesterday: json['totalSalesYesterday'] as int?,
       userId: json['userId'] as String?,
     );
 
