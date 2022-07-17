@@ -23,6 +23,14 @@ class OrderRepository {
       throw Exception('Failed to get history');
     }
   }
+
+  Future<void> addOrder(HistoryModel order) async {
+    order.copyWith(
+      orderId: _uuid.v4(),
+    );
+    // add to firestore
+    await _firestore.collection('order').add(order.toJson());
+  }
 }
 
 extension on List<QueryDocumentSnapshot> {

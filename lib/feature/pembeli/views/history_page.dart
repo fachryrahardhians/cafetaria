@@ -302,7 +302,7 @@ class _DoneListState extends State<DoneList> {
             ),
             SizedBox(height: SizeConfig.safeBlockVertical * 1),
             Text(
-              item.timestamp ?? '',
+              item.timestamp.toString(),
               style: textStyle.copyWith(color: Color(0xffB1B5BA)),
             )
           ],
