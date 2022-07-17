@@ -14,7 +14,7 @@ class AlertDialogWait extends StatelessWidget {
       required this.title,
       required this.message,
       required this.buttonText,
-      this.image = 'assets/illustration/ill_wait.png',
+      this.image = 'assets/images/ill_wait.png',
       this.onPressAction})
       : super(key: key);
 

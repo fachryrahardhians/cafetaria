@@ -8,6 +8,14 @@ part of 'history_model.dart';
 
 HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       orderId: json['orderId'] as String?,
+      cash: json['cash'] as int?,
+      change: json['change'] as String?,
+      deviceToken: json['deviceToken'] as String?,
+      isCutlery: json['isCutlery'] as bool?,
+      isPreorder: json['isPreorder'] as bool?,
+      pickupDate: json['pickupDate'].toDate().toString() as String?,
+      typePickup: json['typePickup'] as String?,
+      userId: json['userId'] as String?,
       merchantId: json['merchantId'] as String?,
       total: json['total'] as int?,
       timestamp: json['timestamp'].toDate().toString() as String?,
@@ -20,11 +28,20 @@ HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
 Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>
     <String, dynamic>{
       'orderId': instance.orderId,
+      'cash': instance.cash,
+      'change': instance.change,
+      'deviceToken': instance.deviceToken,
+      'isCutlery': instance.isCutlery,
+      'isPreorder': instance.isPreorder,
+      'pickupDate': Timestamp.fromDate(DateTime.parse(instance.pickupDate!)),
+      'typePickup': instance.typePickup,
       'merchantId': instance.merchantId,
+      'userId': instance.userId,
       'total': instance.total,
-      'timestamp': instance.timestamp,
+      'timestamp': Timestamp.fromDate(DateTime.parse(instance.timestamp!)),
       'statusOrder': instance.statusOrder,
-      'menus': instance.menus,
+      'menus':
+          List<dynamic>.from(instance.menus!.map((e) => e.toJson()).toList()),
     };
 
 OrderMenu _$OrderMenuFromJson(Map<String, dynamic> json) => OrderMenu(
@@ -42,7 +59,8 @@ Map<String, dynamic> _$OrderMenuToJson(OrderMenu instance) => <String, dynamic>{
       'notes': instance.notes,
       'price': instance.price,
       'qty': instance.qty,
-      'toppings': instance.toppings,
+      'toppings': List<dynamic>.from(
+          instance.toppings!.map((e) => e.toJson()).toList()),
     };
 
 OrderTopping _$OrderToppingFromJson(Map<String, dynamic> json) => OrderTopping(
@@ -53,7 +71,8 @@ OrderTopping _$OrderToppingFromJson(Map<String, dynamic> json) => OrderTopping(
 
 Map<String, dynamic> _$OrderToppingToJson(OrderTopping instance) =>
     <String, dynamic>{
-      'items': instance.items,
+      'items':
+          List<dynamic>.from(instance.items!.map((e) => e.toJson()).toList()),
     };
 
 ToppingItem _$ToppingItemFromJson(Map<String, dynamic> json) => ToppingItem(

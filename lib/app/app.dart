@@ -5,6 +5,7 @@ import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:order_repository/order_repository.dart';
@@ -66,6 +67,9 @@ class AppView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+      ],
       theme: CFTheme.themeData,
       title: 'Cafetaria',
       home: const LoginPage(),

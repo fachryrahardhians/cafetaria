@@ -1,3 +1,4 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -6,14 +7,30 @@ part 'history_model.g.dart';
 @JsonSerializable()
 class HistoryModel extends Equatable {
   final String? orderId;
+  final int? cash;
+  final String? change;
+  final String? deviceToken;
+  final bool? isCutlery;
+  final bool? isPreorder;
+  final String? pickupDate;
+  final String? typePickup;
   final String? merchantId;
+  final String? userId;
   final int? total;
   final String? timestamp;
   final String? statusOrder;
-  final List<OrderMenu>? menus;
+  final List<dynamic>? menus;
 
   const HistoryModel(
       {this.orderId,
+      this.cash,
+      this.change,
+      this.deviceToken,
+      this.isCutlery,
+      this.isPreorder,
+      this.pickupDate,
+      this.typePickup,
+      this.userId,
       this.merchantId,
       this.total,
       this.timestamp,
@@ -27,26 +44,55 @@ class HistoryModel extends Equatable {
 
   /// Copy with a new [HistoryModel].
   HistoryModel copyWith({
-    String? historyId,
+    String? orderId,
+    int? cash,
+    String? change,
+    String? deviceToken,
+    bool? isCutlery,
+    bool? isPreorder,
+    String? pickupDate,
+    String? typePickup,
+    String? userId,
     String? merchantId,
     int? total,
     String? timestamp,
     String? statusOrder,
-    List<OrderMenu>? menus,
+    List<dynamic>? menus,
   }) {
     return HistoryModel(
-      orderId: historyId ?? this.orderId,
-      merchantId: merchantId ?? this.merchantId,
-      total: total ?? this.total,
-      timestamp: timestamp ?? this.timestamp,
-      statusOrder: statusOrder ?? this.statusOrder,
-      menus: menus ?? this.menus,
-    );
+        orderId: orderId ?? this.orderId,
+        merchantId: merchantId ?? this.merchantId,
+        total: total ?? this.total,
+        timestamp: timestamp ?? this.timestamp,
+        statusOrder: statusOrder ?? this.statusOrder,
+        menus: menus ?? this.menus,
+        cash: cash ?? this.cash,
+        change: change ?? this.change,
+        deviceToken: deviceToken ?? this.deviceToken,
+        isCutlery: isCutlery ?? this.isCutlery,
+        isPreorder: isPreorder ?? this.isPreorder,
+        pickupDate: pickupDate ?? this.pickupDate,
+        typePickup: typePickup ?? this.typePickup,
+        userId: userId ?? this.userId);
   }
 
   @override
-  List<Object?> get props =>
-      [orderId, merchantId, total, timestamp, statusOrder, menus];
+  List<Object?> get props => [
+        orderId,
+        merchantId,
+        total,
+        timestamp,
+        statusOrder,
+        menus,
+        cash,
+        change,
+        deviceToken,
+        isCutlery,
+        isPreorder,
+        pickupDate,
+        typePickup,
+        userId
+      ];
 }
 
 @JsonSerializable()
@@ -63,7 +109,9 @@ class OrderMenu extends Equatable {
   factory OrderMenu.fromJson(Map<String, dynamic> json) =>
       _$OrderMenuFromJson(json);
 
-  Map<String, dynamic> toJson() => _$OrderMenuToJson(this);
+  Map<String, dynamic> toJson() {
+    return _$OrderMenuToJson(this);
+  }
 
   OrderMenu copyWith(
       {String? menuId,
