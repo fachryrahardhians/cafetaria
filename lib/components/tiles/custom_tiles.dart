@@ -56,7 +56,7 @@ class OrderCard extends StatelessWidget {
                           height: 4,
                         ),
                         Text(
-                          "Tower A • Lantai 3A • Nomor 37 ",
+                          "Tower A • Lantai 3A • Nomor 37",
                           style: normalText,
                         ),
                       ],
@@ -275,15 +275,16 @@ class CustomTileTimeBadge extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 5),
       decoration: BoxDecoration(
         borderRadius: const BorderRadius.only(
             topRight: Radius.circular(8), bottomLeft: Radius.circular(8)),
-        color: MyColors.red1.withOpacity(0.3),
+        color: MyColors.green1.withOpacity(0.3),
       ),
       child: Text(
         "3 Menit lalu",
-        style: smallText.copyWith(color: MyColors.red1),
+        style: normalText.copyWith(color: MyColors.green1,fontWeight: FontWeight
+            .bold),
       ),
     );
   }

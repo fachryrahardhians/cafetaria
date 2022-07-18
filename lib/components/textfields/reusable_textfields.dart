@@ -2,13 +2,14 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfield1 extends StatelessWidget {
-  const CustomTextfield1({
+  CustomTextfield1({
     Key? key,
     this.hint,
     this.label,
     this.maxLine,
     this.suffix,
     this.controller,
+    this.isObscure,
   }) : super(key: key);
 
   final String? hint;
@@ -26,6 +27,8 @@ class CustomTextfield1 extends StatelessWidget {
   ///controller untuk Text Editing Controller
   final Widget? suffix;
 
+  final bool? isObscure;
+
   ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 
   @override
@@ -38,12 +41,13 @@ class CustomTextfield1 extends StatelessWidget {
         children: [
           Text(
             (label ?? '').toUpperCase(),
-            style: const TextStyle(fontSize: 12, color: MyColors.grey1),
+            style: const TextStyle(fontSize: 12, color: MyColors.grey1,
+                letterSpacing: 1.1),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 color: Colors.white,
@@ -58,11 +62,11 @@ class CustomTextfield1 extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               maxLines: maxLine ?? 1,
+              obscureText: isObscure ?? false,
               decoration: InputDecoration(
-                isDense: true,
                 border: InputBorder.none,
                 hintText: hint ?? '',
-                suffix: suffix,
+                suffixIcon: suffix,
               ),
             ),
           ),
@@ -73,16 +77,16 @@ class CustomTextfield1 extends StatelessWidget {
 }
 
 class SearchTextfield1 extends StatelessWidget {
-  const SearchTextfield1({
+  SearchTextfield1({
     Key? key,
     this.hint,
     this.suffix,
     this.controller,
   }) : super(key: key);
 
-  final String? hint;
-  final TextEditingController? controller;
-  final Widget? suffix;
+  String? hint;
+  TextEditingController? controller;
+  Widget? suffix;
 
   @override
   Widget build(BuildContext context) {
