@@ -1,4 +1,4 @@
-import 'package:cafetaria/feature/penjual/views/atur_booking_page.dart';
+import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
@@ -223,10 +223,7 @@ class MainMenuWidget extends StatelessWidget {
               ),
               HomeItemOrder(
                 route: () {
-                  Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const MenuCafetariaPage()));
+                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",
@@ -239,9 +236,11 @@ class MainMenuWidget extends StatelessWidget {
                 // ),
                 route: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const AturBookingPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => const BookingPage(),
+                    ),
+                  );
                 },
                 image: "assets/icons/booking.png",
                 title: "Atur Booking",
@@ -262,8 +261,7 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => () {},
                   image: "assets/images/info-1.png",
-                  title:
-                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
                 HomeItemInfo(
@@ -275,8 +273,7 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () {},
                   image: "assets/images/info-1.png",
-                  title:
-                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
               ],

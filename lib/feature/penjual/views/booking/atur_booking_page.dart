@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/penjual/views/booking/booking_settings.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_menu.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -60,19 +61,16 @@ class AturBookingPage extends StatelessWidget {
                 ListView.builder(
                   shrinkWrap: true,
                   physics: const NeverScrollableScrollPhysics(),
-                  // itemCount: controller.dataMenuNasiAyam.length,
-                  itemCount: 0,
+                  itemCount: 2,
                   itemBuilder: (context, index) {
-                    // Map<String, dynamic> menu = controller.dataMenuNasiAyam[index];
-                    Map<String, dynamic> menu = {};
+                    Map<String, dynamic> menu = {"image": "", "name": "ayam bakar", "price": 200000};
                     if (index == 0) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,
                         mainAxisSize: MainAxisSize.min,
                         children: [
                           const Text(
-                            // "${menu['category'].toString().toUpperCase()}",
-                            "{menu['category'].toString().toUpperCase()}",
+                            "NASI AYAM",
                             style: TextStyle(
                               color: MyColors.grey3,
                               fontWeight: FontWeight.w500,
@@ -123,9 +121,11 @@ class AturBookingPage extends StatelessWidget {
               width: double.infinity,
               child: ElevatedButton(
                 onPressed: () {
-                  // if (controller.issetSelected.isTrue) {
-                  //   Get.toNamed(Routes.BOOKING_SETTING);
-                  // }
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => BookingSettingsPage(),
+                    ),
+                  );
                 },
                 child: const Text("PILIH MENU"),
                 style: ElevatedButton.styleFrom(
