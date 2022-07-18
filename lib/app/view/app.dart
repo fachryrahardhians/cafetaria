@@ -1,5 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
@@ -39,7 +41,12 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _secureStorage),
         RepositoryProvider.value(value: _cloudStorage),
       ],
-      child: const AppView(),
+      child: BlocProvider(
+        create: (context) => AppBloc(
+          authenticationRepository: _authenticationRepository,
+        ),
+        child: const AppView(),
+      ),
     );
   }
 }
@@ -51,10 +58,13 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
       theme: CFTheme.themeData,
       title: 'Cafetaria',
-      home: const LoginPage(),
+      home: statusApp == AppStatus.authenticated
+          ? const PenjualDashboardPage()
+          : const LoginPage(),
     );
   }
 }
