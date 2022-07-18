@@ -49,10 +49,7 @@ dependencies:
   google_fonts: ^3.0.1
   image_picker: ^0.8.5+3
   intl: ^0.17.0
-  menu_repository:
-    path: packages/menu_repository
-  rating_repository:
-    path: packages/rating_repository
+
   shared_preferences: ^2.0.15
   storage:
     path: packages/storage
@@ -66,6 +63,12 @@ dependencies:
     path: packages/sharedpref_repository
 #  home_repository:
 #    path: packages/home_repository
+  menu_repository:
+    path: packages/menu_repository
+  rating_repository:
+    path: packages/rating_repository
+  penjual_order_repository:
+    path: packages/penjual_order_repository
 
 dev_dependencies:
   bloc_test: ^9.0.2

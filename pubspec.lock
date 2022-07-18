@@ -709,6 +709,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.0"
+  penjual_order_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/penjual_order_repository"
+      relative: true
+    source: path
+    version: "0.0.1"
   platform:
     dependency: transitive
     description:
@@ -821,6 +828,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.1.1"
+  sharedpref_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/sharedpref_repository"
+      relative: true
+    source: path
+    version: "0.0.1"
   shelf:
     dependency: transitive
     description:

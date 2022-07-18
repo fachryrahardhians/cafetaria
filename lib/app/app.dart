@@ -1,17 +1,16 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
-import 'package:cafetaria/feature/Authentication/views/link_email.dart';
-import 'package:cafetaria/feature/penjual/views/order_page/detail_order_page.dart';
-import 'package:cafetaria/feature/penjual/views/order_page/order_page.dart';
+
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:storage/storage.dart';
-import 'package:google_fonts/google_fonts.dart';
-// import 'package:penjual_repository/penjual_repository.dart';
+
+
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class App extends StatelessWidget {
@@ -23,6 +22,7 @@ class App extends StatelessWidget {
     required CloudStorage cloudStorage,
     required SecureStorage secureStorage,
     required AppSharedPref appSharedPref,
+    required PenjualOrderRepository penjualOrderRepository,
   })
   //     : _authenticationRepository = authenticationRepository,
   // const App(
@@ -36,6 +36,7 @@ class App extends StatelessWidget {
         _categoryRepository = categoryRepository,
         _cloudStorage = cloudStorage,
         _secureStorage = secureStorage,
+        _penjualOrderRepository = penjualOrderRepository,
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
@@ -44,6 +45,7 @@ class App extends StatelessWidget {
   final CategoryRepository _categoryRepository;
   final CloudStorage _cloudStorage;
   final SecureStorage _secureStorage;
+  final PenjualOrderRepository _penjualOrderRepository;
 
   @override
   Widget build(BuildContext context) {

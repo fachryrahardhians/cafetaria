@@ -7,6 +7,7 @@ import 'package:cafetaria/feature/Authentication/bloc/authentication/authenticat
 import 'package:cafetaria/feature/Authentication/views/link_email.dart';
 
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
+import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -43,90 +44,93 @@ class _LoginViewState extends State<LoginView> {
       child: Scaffold(
         backgroundColor: Colors.white,
         body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            crossAxisAlignment: CrossAxisAlignment.center,
-            children: [
-              const BoxLogo(),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 36),
-                child: Text(
-                  "Selamat Datang Kembali di Komplekku!",
-                  style: extraBigText.copyWith(fontWeight: FontWeight.bold),
+          child: SingleChildScrollView(
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                const BoxLogo(),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 36),
+                  child: Text(
+                    "Selamat Datang Kembali di Komplekku!",
+                    style: extraBigText.copyWith(fontWeight: FontWeight.bold),
+                  ),
                 ),
-              ),
-              BlocListener<AuthenticationBloc, AuthenticationState>(
-                listener: (ctx, state) {
-                  if (state is AuthenticationStateSuccess) {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        // builder: (context) => const HomePage(),
-                        builder: (context) => const LinkEmailPage(),
-                      ),
-                    );
-                  }
-                  if (state is AuthenticationStateError) {
-                    final snackBar = SnackBar(
-                      content: Text(state.error),
-                      action: SnackBarAction(
-                        label: 'OK',
-                        onPressed: () {},
-                      ),
-                    );
+                BlocListener<AuthenticationBloc, AuthenticationState>(
+                  listener: (ctx, state) {
+                    if (state is AuthenticationStateSuccess) {
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          // builder: (context) => const HomePage(),
+                          // builder: (context) => const LinkEmailPage(),
+                          builder: (context) => const OrderPage(),
+                        ),
+                      );
+                    }
+                    if (state is AuthenticationStateError) {
+                      final snackBar = SnackBar(
+                        content: Text(state.error),
+                        action: SnackBarAction(
+                          label: 'OK',
+                          onPressed: () {},
+                        ),
+                      );
 
-                    ScaffoldMessenger.of(context).showSnackBar(snackBar);
-                  }
-                },
-                child: InkWell(
-                  onTap: () {
-                    context
-                        .read<AuthenticationBloc>()
-                        .add(GetGoogleAuthentication());
+                      ScaffoldMessenger.of(context).showSnackBar(snackBar);
+                    }
                   },
-                  child: Container(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                            blurRadius: 1,
-                          ),
-                        ]),
-                    child: Text(
-                      "Masuk Dengan Google",
-                      style: bigText.copyWith(fontWeight: FontWeight.bold),
+                  child: InkWell(
+                    onTap: () {
+                      context
+                          .read<AuthenticationBloc>()
+                          .add(GetGoogleAuthentication());
+                    },
+                    child: Container(
+                      padding:
+                          const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
+                      decoration: const BoxDecoration(
+                          borderRadius: BorderRadius.all(Radius.circular(8)),
+                          color: Colors.white,
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, 0),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                            ),
+                          ]),
+                      child: Text(
+                        "Masuk Dengan Google",
+                        style: bigText.copyWith(fontWeight: FontWeight.bold),
+                      ),
                     ),
                   ),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.symmetric(vertical: 18),
-                child: Text(
-                  "ATAU",
-                  style: extraBigText.copyWith(
-                      fontWeight: FontWeight.bold, color: MyColors.grey2),
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Text(
+                    "ATAU",
+                    style: extraBigText.copyWith(
+                        fontWeight: FontWeight.bold, color: MyColors.grey2),
+                  ),
                 ),
-              ),
-              CustomTextfield1(
-                label: "Email",
-              ),
-              CustomTextfield1(
-                label: "Password",
-              ),
-              const SizedBox(
-                height: 50,
-              ),
-              ReusableButton1(
-                label: "MASUK",
-                onPressed: () {},
-              ),
-            ],
+                CustomTextfield1(
+                  label: "Email",
+                ),
+                CustomTextfield1(
+                  label: "Password",
+                ),
+                const SizedBox(
+                  height: 50,
+                ),
+                ReusableButton1(
+                  label: "MASUK",
+                  onPressed: () {},
+                ),
+              ],
+            ),
           ),
         ),
       ),
