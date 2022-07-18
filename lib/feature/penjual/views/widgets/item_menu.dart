@@ -1,15 +1,14 @@
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:menu_repository/menu_repository.dart';
 
 class ItemMenu extends StatelessWidget {
   const ItemMenu({
     Key? key,
-    required this.index,
     required this.menu,
   }) : super(key: key);
 
-  final Map<String, dynamic> menu;
-  final int index;
+  final MenuModel menu;
 
   @override
   Widget build(BuildContext context) {
@@ -20,8 +19,9 @@ class ItemMenu extends StatelessWidget {
       elevation: 4,
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
-        // onTap: () => controller.checkSelected(menu, index),
-        onTap: () {},
+        onTap: () {
+          print("SELECT MENU : ${menu.name}");
+        },
         child: Padding(
           padding: const EdgeInsets.all(20),
           child: Row(
@@ -33,20 +33,23 @@ class ItemMenu extends StatelessWidget {
                     margin: const EdgeInsets.only(right: 10),
                     height: 60,
                     width: 60,
-                    child: Image.asset(menu["image"]),
+                    child: Image.network(
+                      menu.image!,
+                      fit: BoxFit.cover,
+                    ),
                   ),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        "${menu['name']}",
+                        "${menu.name}",
                         style: const TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
                       const SizedBox(height: 5),
-                      Text("${menu['price']}"),
+                      Text("${menu.price}"),
                     ],
                   ),
                 ],

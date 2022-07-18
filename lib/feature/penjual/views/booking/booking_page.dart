@@ -36,25 +36,25 @@ class BookingPage extends StatelessWidget {
           Expanded(
             child: FutureBuilder(
               builder: (context, snap) {
-                // if (!snap.hasData) {
-                //   return Center(
-                //     child: Column(
-                //       mainAxisSize: MainAxisSize.min,
-                //       mainAxisAlignment: MainAxisAlignment.center,
-                //       crossAxisAlignment: CrossAxisAlignment.center,
-                //       children: [
-                //         Image.asset("assets/icons/no-menu.png"),
-                //         const SizedBox(height: 10),
-                //         const Text(
-                //           "Anda belum memiliki menu",
-                //           style: TextStyle(
-                //             color: MyColors.grey3,
-                //           ),
-                //         ),
-                //       ],
-                //     ),
-                //   );
-                // }
+                if (!snap.hasData) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset("assets/icons/no-menu.png"),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Anda belum memiliki menu",
+                          style: TextStyle(
+                            color: MyColors.grey3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
 
                 return ListView.builder(
                   padding: const EdgeInsets.all(20),
