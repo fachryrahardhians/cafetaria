@@ -4,6 +4,7 @@ import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -56,7 +57,7 @@ class _LoginViewState extends State<LoginView> {
                       MaterialPageRoute(
                           builder: (context) => const PenjualDashboardPage()));
                 } else if (state is AuthenticationStateError) {
-                  print(state.error);
+                  // print(state.error);
                 }
               },
               child: InkWell(
@@ -94,10 +95,10 @@ class _LoginViewState extends State<LoginView> {
                     fontWeight: FontWeight.bold, color: MyColors.grey2),
               ),
             ),
-            CustomTextfield1(
+            const CustomTextfield1(
               label: "komplekku id",
             ),
-            CustomTextfield1(
+            const CustomTextfield1(
               label: "kata sandi",
             ),
             const SizedBox(
@@ -105,7 +106,12 @@ class _LoginViewState extends State<LoginView> {
             ),
             ReusableButton1(
               label: "MASUK",
-              onPressed: () {},
+              onPressed: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PembeliDashboardPage()));
+              },
             ),
           ],
         ),
@@ -119,11 +125,9 @@ class SuccessLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: const Center(
-          child: Text("SUKSES LOGIN"),
-        ),
+    return const Scaffold(
+      body: Center(
+        child: Text("SUKSES LOGIN"),
       ),
     );
   }
