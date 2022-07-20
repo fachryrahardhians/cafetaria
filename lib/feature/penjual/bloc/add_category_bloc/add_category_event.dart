@@ -28,3 +28,14 @@ class CategoryChange extends AddCategoryEvent {
   @override
   List<Object> get props => [name];
 }
+
+class Increment extends AddCategoryEvent {
+  const Increment({
+    required this.jumlahIncrement,
+  });
+
+  final int jumlahIncrement;
+
+  @override
+  List<Object> get props => [jumlahIncrement];
+}

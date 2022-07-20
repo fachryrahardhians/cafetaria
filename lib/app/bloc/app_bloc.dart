@@ -13,6 +13,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
     required AuthenticationRepository authenticationRepository,
   })  : _authenticationRepository = authenticationRepository,
         super(const AppState.unauthenticated()) {
+    on<AppUserChanged>(_appUserChanged);
     _userSubscription = _authenticationRepository.user.listen(
       _onUserChanged,
       onError: (e) {
@@ -22,6 +23,7 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   }
 
   final AuthenticationRepository _authenticationRepository;
+
   StreamSubscription<User?>? _userSubscription;
 
   void _onUserChanged(User? user) {
@@ -36,5 +38,17 @@ class AppBloc extends Bloc<AppEvent, AppState> {
   Future<void> close() {
     _userSubscription?.cancel();
     return super.close();
+  }
+
+  FutureOr<void> _appUserChanged(
+    AppUserChanged event,
+    Emitter<AppState> emit,
+  ) {
+    final user = event.user;
+    if (user != null) {
+      emit(AppState.authenticated(user));
+    } else {
+      emit(const AppState.unauthenticated());
+    }
   }
 }
