@@ -36,6 +36,10 @@ class _AddMenuViewState extends State<AddMenuView> {
           bloc.state.categoryInput.pure ||
           (!bloc.state.categoryInput.pure && bloc.state.categoryInput.valid),
     );
+
+    final counter = context.select(
+      (AddCategoryBloc bloc) => bloc.state.counter,
+    );
     return Scaffold(
       backgroundColor: CFColors.grey,
       appBar: AppBar(
@@ -49,6 +53,15 @@ class _AddMenuViewState extends State<AddMenuView> {
         padding: const EdgeInsets.all(16.0),
         child: Column(
           children: [
+            Text(counter.toString()),
+            ElevatedButton(
+              onPressed: () {
+                context
+                    .read<AddCategoryBloc>()
+                    .add(const Increment(jumlahIncrement: 3));
+              },
+              child: const Text('ubah'),
+            ),
             Container(
               decoration: const BoxDecoration(
                 boxShadow: [
