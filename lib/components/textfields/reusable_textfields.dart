@@ -9,22 +9,25 @@ class CustomTextfield1 extends StatelessWidget {
     this.maxLine,
     this.suffix,
     this.controller,
+    this.isObscure,
   }) : super(key: key);
 
-  String? hint;
+  final String? hint;
 
   ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
-  String? label;
+  final String? label;
 
   ///Label digunakan untuk tulisan label diatas textfield
-  int? maxLine;
+  final int? maxLine;
 
   ///MaxLine digunakan untuk mengatur tinggi textfield default secara
   ///hitungan baris
-  TextEditingController? controller;
+  final TextEditingController? controller;
 
   ///controller untuk Text Editing Controller
-  Widget? suffix;
+  final Widget? suffix;
+
+  final bool? isObscure;
 
   ///suffix untuk widget yang ditempatkan di bagian belakang di dalam textfield
 
@@ -38,12 +41,13 @@ class CustomTextfield1 extends StatelessWidget {
         children: [
           Text(
             (label ?? '').toUpperCase(),
-            style: const TextStyle(fontSize: 12, color: MyColors.grey1),
+            style: const TextStyle(fontSize: 12, color: MyColors.grey1,
+                letterSpacing: 1.1),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
             clipBehavior: Clip.antiAlias,
-            padding: const EdgeInsets.symmetric(vertical: 8, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 2, horizontal: 10),
             decoration: const BoxDecoration(
                 borderRadius: BorderRadius.all(Radius.circular(8)),
                 color: Colors.white,
@@ -58,11 +62,11 @@ class CustomTextfield1 extends StatelessWidget {
             child: TextFormField(
               controller: controller,
               maxLines: maxLine ?? 1,
+              obscureText: isObscure ?? false,
               decoration: InputDecoration(
-                isDense: true,
                 border: InputBorder.none,
                 hintText: hint ?? '',
-                suffix: suffix,
+                suffixIcon: suffix,
               ),
             ),
           ),

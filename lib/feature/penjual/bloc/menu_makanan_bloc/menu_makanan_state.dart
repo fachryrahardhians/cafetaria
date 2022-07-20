@@ -1,30 +1,47 @@
 part of 'menu_makanan_bloc.dart';
 
-abstract class MenuMakananState extends Equatable {
-  const MenuMakananState();
+enum MenuMakananStatus { initial, loading, success, failure }
+
+class MenuMakananState extends Equatable {
+  const MenuMakananState.__({
+    this.items,
+    this.errorMessage,
+    required this.status,
+  });
+
+  const MenuMakananState.initial() : this.__(status: MenuMakananStatus.initial);
+
+  const MenuMakananState.loading() : this.__(status: MenuMakananStatus.loading);
+
+  const MenuMakananState.success(
+    List<CategoryModel> items,
+  ) : this.__(
+          status: MenuMakananStatus.success,
+          items: items,
+        );
+  const MenuMakananState.failure(
+    String errorMessage,
+  ) : this.__(
+          status: MenuMakananStatus.failure,
+          errorMessage: errorMessage,
+        );
+
+  final List<CategoryModel>? items;
+  final String? errorMessage;
+  final MenuMakananStatus status;
 
   @override
-  List<Object> get props => [];
-}
+  List<Object?> get props => [items, errorMessage, status];
 
-class MenuMakananInitial extends MenuMakananState {}
-
-class MenuMakananLoading extends MenuMakananState {}
-
-class MenuMakananSuccess extends MenuMakananState {
-  final List<CategoryMenuModel> items;
-
-  const MenuMakananSuccess(this.items);
-
-  @override
-  List<Object> get props => [items];
-}
-
-class MenuMakananFailurre extends MenuMakananState {
-  final String errorMessage;
-
-  const MenuMakananFailurre(this.errorMessage);
-
-  @override
-  List<Object> get props => [errorMessage];
+  MenuMakananState copyWith({
+    List<CategoryModel>? items,
+    String? errorMessage,
+    MenuMakananStatus? status,
+  }) {
+    return MenuMakananState.__(
+      items: items ?? this.items,
+      errorMessage: errorMessage ?? this.errorMessage,
+      status: status ?? this.status,
+    );
+  }
 }

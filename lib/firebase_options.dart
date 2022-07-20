@@ -63,7 +63,8 @@ class DefaultFirebaseOptions {
     messagingSenderId: '281496016898',
     projectId: 'komplekku-575ee',
     storageBucket: 'komplekku-575ee.appspot.com',
-    iosClientId: '281496016898-fjb2u4b5qfjfc9utj1r5hjul2cvuknaf.apps.googleusercontent.com',
+    iosClientId:
+        '281496016898-fjb2u4b5qfjfc9utj1r5hjul2cvuknaf.apps.googleusercontent.com',
     iosBundleId: 'com.example.cafetaria',
   );
 }
