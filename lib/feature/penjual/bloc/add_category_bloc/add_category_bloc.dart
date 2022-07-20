@@ -21,6 +21,8 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
     on<CategoryChange>(_categoryChange);
 
     on<Increment>(_increment);
+
+    on<MerchantDataChange>(_merchantDataChange);
   }
 
   Future<void> _saveCategory(
@@ -53,9 +55,22 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
     final category = CategoryInput.dirty(event.name);
 
     emit(state.copyWith(
-        categoryInput: category,
-        formzStatus: Formz.validate([category]),
-        counter: state.counter));
+      categoryInput: category,
+      formzStatus: Formz.validate([category]),
+      counter: state.counter,
+      merchantData: state.merchantData,
+    ));
+  }
+
+  void _merchantDataChange(
+    MerchantDataChange event,
+    Emitter<AddCategoryState> emit,
+  ) {
+    emit(state.copyWith(
+        formzStatus: state.formzStatus,
+        categoryInput: state.categoryInput,
+        counter: state.counter,
+        merchantData: "berubah"));
   }
 
   FutureOr<void> _increment(
@@ -65,6 +80,7 @@ class AddCategoryBloc extends Bloc<AddCategoryEvent, AddCategoryState> {
     emit(state.copyWith(
       formzStatus: state.formzStatus,
       categoryInput: state.categoryInput,
+      merchantData: state.merchantData,
       counter: state.counter + event.jumlahIncrement,
     ));
   }

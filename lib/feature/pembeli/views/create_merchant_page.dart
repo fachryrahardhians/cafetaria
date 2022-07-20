@@ -7,7 +7,6 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -16,6 +15,9 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:category_repository/category_repository.dart';
+import 'package:cafetaria/feature/penjual/bloc/add_category_bloc/add_category_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
@@ -23,7 +25,12 @@ class PembeliCreateMerchantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const PembeliCreateMerchantView();
+    return BlocProvider(
+      create: (context) => AddCategoryBloc(
+        categoryRepository: context.read<CategoryRepository>(),
+      ),
+      child: const PembeliCreateMerchantView(),
+    );
   }
 }
 
@@ -102,7 +109,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     }
   }
 
-  Future _onSubmit() async {
+  Future _onSubmit(context) async {
     final uuid = const Uuid().v4();
 
     setState(() {
@@ -124,6 +131,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
       final data = {
         'name': _namaUsaha.text,
+        'merchantId': uuid,
         'category': _bidangUsaha,
         'city': _kota.text,
         'postal_code': _kodePos.text,
@@ -137,6 +145,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       };
 
       await _firestore.collection('merchant').doc(uuid).set(data);
+      context
+          .read<AddCategoryBloc>()
+          .add(const MerchantDataChange(merchantData: "success"));
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
@@ -320,7 +331,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                       height: 50,
                       child: ReusableButton1(
                           label: "SIMPAN",
-                          onPressed: _onSubmit,
+                          onPressed: () {
+                            _onSubmit(context);
+                          },
                           padding: const EdgeInsets.all(0),
                           margin: const EdgeInsets.all(0),
                           disabled: _checkDisableButton(),

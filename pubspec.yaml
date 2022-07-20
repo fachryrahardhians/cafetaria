@@ -55,8 +55,6 @@ dependencies:
     storage:
         path: packages/storage
     uuid: ^3.0.6
-    google_sign_in: ^5.3.2
-    firebase_messaging: ^11.4.1
 
     #  penjual_repository:
     #    path: packages/penjual_repository
@@ -65,8 +63,6 @@ dependencies:
     #  home_repository:
     #    path: packages/home_repository
     google_sign_in: ^5.3.2
-    image_picker: ^0.8.5+3
-    intl: ^0.17.0
     menu_repository:
         path: packages/menu_repository
     rating_repository:
@@ -76,10 +72,6 @@ dependencies:
     fluttertoast: ^8.0.9
     google_maps_flutter: ^2.1.8
     geocoding: ^2.0.4
-    shared_preferences: ^2.0.15
-    storage:
-        path: packages/storage
-    uuid: ^3.0.6
 
 dev_dependencies:
     bloc_test: ^9.0.2

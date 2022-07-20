@@ -39,3 +39,12 @@ class Increment extends AddCategoryEvent {
   @override
   List<Object> get props => [jumlahIncrement];
 }
+
+class MerchantDataChange extends AddCategoryEvent {
+  const MerchantDataChange({required this.merchantData});
+
+  final String merchantData;
+
+  @override
+  List<Object> get props => [merchantData];
+}

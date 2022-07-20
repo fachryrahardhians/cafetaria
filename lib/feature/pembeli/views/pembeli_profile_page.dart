@@ -3,13 +3,21 @@ import 'package:flutter/material.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
+import 'package:category_repository/category_repository.dart';
+import 'package:cafetaria/feature/penjual/bloc/add_category_bloc/add_category_bloc.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class PembeliProfilePage extends StatelessWidget {
   const PembeliProfilePage({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const PembeliProfileView();
+    return BlocProvider(
+      create: (context) => AddCategoryBloc(
+        categoryRepository: context.read<CategoryRepository>(),
+      ),
+      child: const PembeliProfileView(),
+    );
   }
 }
 
@@ -23,6 +31,10 @@ class PembeliProfileView extends StatefulWidget {
 class _PembeliProfileState extends State<PembeliProfileView> {
   @override
   Widget build(BuildContext context) {
+    final merchantData = context.select(
+      (AddCategoryBloc bloc) => bloc.state.merchantData,
+    );
+
     return Scaffold(
         backgroundColor: MyColors.whiteGrey2,
         bottomNavigationBar: BottomBar(index: 3),
@@ -79,17 +91,20 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                             );
                           },
                           child: Row(
-                            children: const [
-                              Image(
+                            children: [
+                              const Image(
                                   image: AssetImage(
                                       'assets/images/merchant_default_icon.png')),
-                              SizedBox(width: 18),
-                              Text("Buka Toko Gratis",
-                                  style: TextStyle(
+                              const SizedBox(width: 18),
+                              Text(
+                                  merchantData.isEmpty
+                                      ? "Buka Toko Gratis"
+                                      : merchantData,
+                                  style: const TextStyle(
                                       fontSize: 16,
                                       fontWeight: FontWeight.bold)),
-                              Spacer(),
-                              Icon(
+                              const Spacer(),
+                              const Icon(
                                 Icons.arrow_forward_ios,
                                 size: 16,
                                 color: MyColors.red1,
