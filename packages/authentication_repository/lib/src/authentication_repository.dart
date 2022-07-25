@@ -11,7 +11,7 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 /// author: @burhanwakhid
 class AuthenticationRepository {
-  const AuthenticationRepository(this._firebaseAuth);
+  AuthenticationRepository(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
 
@@ -69,6 +69,14 @@ class AuthenticationRepository {
     } on Exception catch (error, stacktrace) {
       throw AuthenticationException(error, stacktrace);
     }
+  }
+
+  Stream<User?> get user {
+    return _firebaseAuth.authStateChanges().asyncMap(_handleAuthStateChanged);
+  }
+
+  Future<User?> _handleAuthStateChanged(User? auth) async {
+    return auth;
   }
 }
 
