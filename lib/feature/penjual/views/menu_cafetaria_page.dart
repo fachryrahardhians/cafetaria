@@ -2,6 +2,7 @@ import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dar
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -52,35 +53,32 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
           bottom: TabBar(
             indicatorColor: CFColors.redPrimary,
             indicatorWeight: 3,
-            tabs: [
+            unselectedLabelColor: const Color(0xffC8CCD2),
+            labelColor: const Color(0xff2E3032),
+            unselectedLabelStyle: GoogleFonts.ubuntu(
+              color: const Color(0xffC8CCD2),
+              fontSize: 15,
+              fontWeight: FontWeight.normal,
+            ),
+            labelStyle: GoogleFonts.ubuntu(
+              color: const Color(0xff2E3032),
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+            tabs: const [
               Tab(
-                icon: Text(
+                child: Text(
                   'Daftar Menu',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xff2E3032),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
               ),
               Tab(
-                icon: Text(
+                child: Text(
                   'Opsi Menu',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xffC8CCD2),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
                 ),
               ),
               Tab(
-                icon: Text(
+                child: Text(
                   'Tidak Tersedia',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xffC8CCD2),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
                 ),
               ),
             ],
@@ -93,31 +91,19 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
         body: const TabBarView(
           children: [
             DaftarMenuWidget(),
-            SizedBox.shrink(),
+            OpsiMenuWidget(),
             SizedBox.shrink(),
           ],
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(44),
-              primary: const Color(0xffEA001E),
-            ),
-            child: const Text('TAMBAH MENU ATAU KATEGORI'),
-            onPressed: () async {
-              await showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-                context: context,
-                builder: (context) {
-                  return const _ModalBottomSheet();
-                },
-              );
-              context
-                  .read<MenuMakananBloc>()
-                  .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
-            },
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.all(16.0),
+          height: 74,
+          child: const TabBarView(
+            children: [
+              BottomDaftarMenuWidget(),
+              BottomOpsiMenuWidget(),
+              SizedBox.shrink(),
+            ],
           ),
         ),
       ),
@@ -394,5 +380,212 @@ class ListMenuWidget extends StatelessWidget {
     }
 
     return const SizedBox.shrink();
+  }
+}
+
+class BottomDaftarMenuWidget extends StatelessWidget {
+  const BottomDaftarMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(44),
+        primary: const Color(0xffEA001E),
+      ),
+      child: const Text('TAMBAH MENU ATAU KATEGORI'),
+      onPressed: () async {
+        await showModalBottomSheet(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          context: context,
+          builder: (context) {
+            return const _ModalBottomSheet();
+          },
+        );
+        context
+            .read<MenuMakananBloc>()
+            .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
+      },
+    );
+  }
+}
+
+// temp object for "opsi menu"
+class OpsiMenu {
+  final bool isMandatory;
+  final bool isMultipleTopping;
+  final String menuId;
+  final List<Option> option;
+  final String optionmenuId;
+  final String title;
+
+  OpsiMenu(
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  );
+}
+
+class Option {
+  final String name;
+  final int price;
+
+  Option(this.name, this.price);
+}
+// =====
+
+class OpsiMenuWidget extends StatefulWidget {
+  const OpsiMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _OpsiMenuWidgetState();
+}
+
+class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
+  List<OpsiMenu> menuOptions = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      width: double.infinity,
+      child: menuOptions.isEmpty
+          ? const SizedBox.shrink()
+          : SizedBox(
+              width: double.infinity,
+              height: 500,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: menuOptions.length,
+                itemBuilder: (context, index) {
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        menuOptions[index].title,
+                        style: const TextStyle(
+                          fontWeight: FontWeight.bold,
+                          fontSize: 16,
+                        ),
+                      ),
+                      const SizedBox(height: 4.0),
+                      Text(
+                        '${menuOptions[index].option.map((e) => e.name)}',
+                        style: TextStyle(
+                          color: Colors.black.withOpacity(0.5),
+                        ),
+                      ),
+                      const SizedBox(height: 4.0),
+                      const Text(
+                        '0 menu tersambung',
+                        style: TextStyle(
+                          color: Colors.green,
+                        ),
+                      ),
+                      const SizedBox(height: 6.0),
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          InkWell(
+                            onTap: () {},
+                            child: const Text(
+                              'Sambungkan',
+                              style: TextStyle(
+                                color: Colors.red,
+                                fontWeight: FontWeight.bold,
+                              ),
+                            ),
+                          ),
+                          Row(
+                            children: [
+                              InkWell(
+                                onTap: () {},
+                                child: const Text(
+                                  'Hapus',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                              const SizedBox(width: 16.0),
+                              InkWell(
+                                onTap: () {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          const AddOpsiMenuPage(),
+                                      settings: RouteSettings(
+                                        arguments: OpsiMenu(
+                                          menuOptions[index].isMandatory,
+                                          menuOptions[index].isMultipleTopping,
+                                          menuOptions[index].menuId,
+                                          menuOptions[index].option,
+                                          menuOptions[index].optionmenuId,
+                                          menuOptions[index].title,
+                                        ),
+                                      ),
+                                    ),
+                                  ).then((value) {
+                                    if (value != null) {
+                                      setState(() {
+                                        menuOptions[index] = value;
+                                      });
+                                    }
+                                  });
+                                },
+                                child: const Text(
+                                  'Edit',
+                                  style: TextStyle(
+                                    color: Colors.red,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
+                      ),
+                      const SizedBox(height: 10.0),
+                    ],
+                  );
+                },
+              ),
+            ),
+    );
+  }
+}
+
+class BottomOpsiMenuWidget extends StatelessWidget {
+  const BottomOpsiMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AddOpsiMenuPage(),
+            settings: const RouteSettings(
+              arguments: null,
+            ),
+          ),
+        ).then((value) {
+          
+        });
+      },
+      child: Text("Tambah Opsi Menu".toUpperCase()),
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(44),
+        primary: const Color(0xffEA001E),
+      ),
+    );
   }
 }
