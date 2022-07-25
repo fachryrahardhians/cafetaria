@@ -238,7 +238,7 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => const BookingPage(),
+                      builder: (_) => BookingPage(),
                     ),
                   );
                 },

@@ -1,9 +1,15 @@
+import 'package:cafetaria/feature/penjual/model/menu_model_obs.dart';
 import 'package:cafetaria/feature/penjual/views/booking/atur_booking_page.dart';
+import 'package:cafetaria/feature/penjual/views/booking/controller/booking_controller.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
 
 class BookingPage extends StatelessWidget {
-  const BookingPage({Key? key}) : super(key: key);
+  BookingPage({Key? key}) : super(key: key);
+
+  final bookC = Get.put(BookingController());
 
   @override
   Widget build(BuildContext context) {
@@ -11,6 +17,13 @@ class BookingPage extends StatelessWidget {
       appBar: AppBar(
         title: const Text('BOOKING'),
         centerTitle: true,
+        leading: IconButton(
+          onPressed: () {
+            Get.delete<BookingController>();
+            Navigator.of(context).pop();
+          },
+          icon: const Icon(Icons.arrow_back_ios),
+        ),
       ),
       body: Column(
         children: [
@@ -34,8 +47,15 @@ class BookingPage extends StatelessWidget {
           ),
           const SizedBox(height: 5),
           Expanded(
-            child: FutureBuilder(
+            child: StreamBuilder<QuerySnapshot<Map<String, dynamic>>>(
+              stream: bookC.streamAllBooking(),
               builder: (context, snap) {
+                if (snap.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                }
+
                 if (!snap.hasData) {
                   return Center(
                     child: Column(
@@ -56,10 +76,34 @@ class BookingPage extends StatelessWidget {
                   );
                 }
 
+                if (snap.data!.docs.isEmpty) {
+                  return Center(
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      children: [
+                        Image.asset("assets/icons/no-menu.png"),
+                        const SizedBox(height: 10),
+                        const Text(
+                          "Anda belum memiliki menu",
+                          style: TextStyle(
+                            color: MyColors.grey3,
+                          ),
+                        ),
+                      ],
+                    ),
+                  );
+                }
+
+                bookC.addAllDocBooking(snap.data!.docs);
+
                 return ListView.builder(
                   padding: const EdgeInsets.all(20),
-                  itemCount: 10,
+                  itemCount: bookC.booking.length,
                   itemBuilder: (context, index) {
+                    List<MenuModelObs> menuByCategory = bookC.booking[index];
+
                     return Card(
                       margin: const EdgeInsets.only(bottom: 25),
                       shape: RoundedRectangleBorder(
@@ -71,36 +115,50 @@ class BookingPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            const Text(
-                              "CATEGORY ...",
-                              style: TextStyle(
-                                fontSize: 15,
-                                fontWeight: FontWeight.bold,
-                              ),
+                            FutureBuilder<String>(
+                              future: bookC.getCategoryName(bookC.allCategoryBooking[index]),
+                              builder: (context, snapCat) {
+                                if (snapCat.connectionState == ConnectionState.waiting) {
+                                  return const Text(
+                                    "LOADING...",
+                                    style: TextStyle(
+                                      fontSize: 15,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  );
+                                }
+                                return Text(
+                                  snapCat.data!,
+                                  style: const TextStyle(
+                                    fontSize: 15,
+                                    fontWeight: FontWeight.bold,
+                                  ),
+                                );
+                              },
                             ),
                             const SizedBox(height: 5),
                             const Text(
-                              "Jarak Booking : 2 Hari",
+                              "Jarak Booking : - Hari",
                               style: TextStyle(
-                                color: MyColors.grey3,
+                                color: MyColors.grey2,
                               ),
                             ),
                             const Text(
-                              "Maksimal Porsi : 4 Porsi",
+                              "Maksimal Porsi : - Porsi",
                               style: TextStyle(
-                                color: MyColors.grey3,
+                                color: MyColors.grey2,
                               ),
                             ),
                             const Text(
-                              "Jam Pengambilan : 18:00",
+                              "Jam Pengambilan : -",
                               style: TextStyle(
-                                color: MyColors.grey3,
+                                color: MyColors.grey2,
                               ),
                             ),
                             const Text(
-                              "Batasan porsi : 'Terlihat'",
+                              "Batasan porsi : -",
                               style: TextStyle(
-                                color: MyColors.grey3,
+                                color: MyColors.grey2,
                               ),
                             ),
                             const SizedBox(height: 5),
@@ -108,20 +166,20 @@ class BookingPage extends StatelessWidget {
                               padding: EdgeInsets.zero,
                               shrinkWrap: true,
                               physics: const NeverScrollableScrollPhysics(),
-                              itemCount: 3,
+                              itemCount: menuByCategory.length,
                               itemBuilder: (context, index) => Row(
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    "\u2022 Nama ${index + 1}",
+                                    "\u2022 ${menuByCategory[index].name}",
                                     style: const TextStyle(
-                                      color: MyColors.grey3,
+                                      color: MyColors.grey2,
                                     ),
                                   ),
-                                  const Text(
-                                    "Rp 20.000",
-                                    style: TextStyle(
-                                      color: MyColors.blackText,
+                                  Text(
+                                    "Rp ${menuByCategory[index].price}",
+                                    style: const TextStyle(
+                                      color: MyColors.grey2,
                                     ),
                                   ),
                                 ],
@@ -133,7 +191,51 @@ class BookingPage extends StatelessWidget {
                               children: [
                                 TextButton(
                                   onPressed: () {
-                                    // OPEN DIALOG
+                                    showDialog(
+                                      context: context,
+                                      builder: (context) => Dialog(
+                                        child: Padding(
+                                          padding: const EdgeInsets.all(20),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: [
+                                              const Text(
+                                                "Delete Booking",
+                                                style: TextStyle(
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 14,
+                                                ),
+                                              ),
+                                              const SizedBox(height: 20),
+                                              const Text(
+                                                "Are you sure to delete all item in this booking?",
+                                                textAlign: TextAlign.center,
+                                              ),
+                                              const SizedBox(height: 20),
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: [
+                                                  OutlinedButton(
+                                                    onPressed: () {
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("CANCEL"),
+                                                  ),
+                                                  const SizedBox(width: 15),
+                                                  ElevatedButton(
+                                                    onPressed: () {
+                                                      bookC.deleteBooking(menuByCategory);
+                                                      Navigator.pop(context);
+                                                    },
+                                                    child: const Text("DELETE"),
+                                                  ),
+                                                ],
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: const Text(
                                     "Hapus",
@@ -179,7 +281,7 @@ class BookingPage extends StatelessWidget {
                 onPressed: () {
                   Navigator.of(context).push(
                     MaterialPageRoute(
-                      builder: (context) => const AturBookingPage(),
+                      builder: (context) => AturBookingPage(),
                     ),
                   );
                 },

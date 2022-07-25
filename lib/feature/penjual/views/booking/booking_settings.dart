@@ -1,11 +1,13 @@
+import 'package:cafetaria/feature/penjual/views/booking/controller/booking_controller.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class BookingSettingsPage extends StatelessWidget {
   BookingSettingsPage({Key? key}) : super(key: key);
 
-  final TextEditingController jarakC = TextEditingController();
-  final TextEditingController maxPorsiC = TextEditingController();
+  final bookC = Get.find<BookingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -29,9 +31,10 @@ class BookingSettingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 TextField(
-                  controller: jarakC,
+                  controller: bookC.jarakC,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.next,
+                  onChanged: (_) => bookC.checkDone(),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: MyColors.grey3),
                     hintText: "Masukkan jarak booking",
@@ -64,9 +67,10 @@ class BookingSettingsPage extends StatelessWidget {
                 ),
                 const SizedBox(height: 10),
                 TextField(
-                  controller: maxPorsiC,
+                  controller: bookC.maxPorsiC,
                   keyboardType: TextInputType.number,
                   textInputAction: TextInputAction.done,
+                  onChanged: (_) => bookC.checkDone(),
                   decoration: const InputDecoration(
                     hintStyle: TextStyle(color: MyColors.grey3),
                     hintText: "Masukkan maksimal porsi",
@@ -88,20 +92,24 @@ class BookingSettingsPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 OutlinedButton(
                   onPressed: () {
-                    //
+                    bookC.aturJamPengambilan(context);
                   },
                   child: Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: const [
-                      Text(
-                        "Atur jam pengambilan",
-                        style: TextStyle(
-                          fontSize: 16,
-                          color: MyColors.grey3,
-                          fontWeight: FontWeight.w400,
-                        ),
+                    children: [
+                      GetBuilder<BookingController>(
+                        builder: (c) {
+                          return Text(
+                            c.selectedTime == null ? "Atur jam pengambilan" : DateFormat.Hm().format(c.selectedTime!),
+                            style: TextStyle(
+                              fontSize: 16,
+                              color: c.selectedTime == null ? MyColors.grey3 : MyColors.blackText,
+                              fontWeight: FontWeight.w400,
+                            ),
+                          );
+                        },
                       ),
-                      SizedBox(
+                      const SizedBox(
                         height: 50,
                         width: 50,
                         child: Icon(
@@ -112,7 +120,7 @@ class BookingSettingsPage extends StatelessWidget {
                     ],
                   ),
                   style: OutlinedButton.styleFrom(
-                    fixedSize: const Size(double.infinity, 60),
+                    fixedSize: Size(Get.width, 60),
                     side: const BorderSide(
                       color: MyColors.grey3,
                       width: 2,
@@ -132,32 +140,36 @@ class BookingSettingsPage extends StatelessWidget {
                 const SizedBox(height: 10),
                 GestureDetector(
                   onTap: () {
-                    //
+                    bookC.showPorsi.value = true;
                   },
                   child: Row(
-                    children: const [
-                      Icon(
-                        Icons.radio_button_checked,
-                        color: MyColors.red1,
+                    children: [
+                      Obx(
+                        () => Icon(
+                          bookC.showPorsi.isTrue ? Icons.radio_button_checked : Icons.radio_button_off,
+                          color: bookC.showPorsi.isTrue ? MyColors.red1 : MyColors.grey3,
+                        ),
                       ),
-                      SizedBox(width: 5),
-                      Text("Batasan porsi terlihat"),
+                      const SizedBox(width: 5),
+                      const Text("Batasan porsi terlihat"),
                     ],
                   ),
                 ),
                 const SizedBox(height: 8),
                 GestureDetector(
                   onTap: () {
-                    //
+                    bookC.showPorsi.value = false;
                   },
                   child: Row(
-                    children: const [
-                      Icon(
-                        Icons.radio_button_checked,
-                        color: MyColors.red1,
+                    children: [
+                      Obx(
+                        () => Icon(
+                          bookC.showPorsi.isTrue ? Icons.radio_button_off : Icons.radio_button_checked,
+                          color: bookC.showPorsi.isTrue ? MyColors.grey3 : MyColors.red1,
+                        ),
                       ),
-                      SizedBox(width: 5),
-                      Text("Batasan porsi sembunyikan"),
+                      const SizedBox(width: 5),
+                      const Text("Batasan porsi sembunyikan"),
                     ],
                   ),
                 ),
@@ -167,14 +179,23 @@ class BookingSettingsPage extends StatelessWidget {
           Padding(
             padding: const EdgeInsets.only(bottom: 30, left: 20, right: 20),
             child: SizedBox(
-              width: double.infinity,
-              child: ElevatedButton(
-                onPressed: () {
-                  //
-                },
-                child: const Text("SIMPAN"),
-                style: ElevatedButton.styleFrom(
-                  primary: MyColors.red1,
+              width: Get.width,
+              child: Obx(
+                () => ElevatedButton(
+                  onPressed: () async {
+                    if (bookC.isDone.isTrue && bookC.selectedTime != null) {
+                      await bookC.addBooking();
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Navigator.pop(context);
+                      Get.delete<BookingController>();
+                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil tambah booking")));
+                    }
+                  },
+                  child: const Text("SIMPAN"),
+                  style: ElevatedButton.styleFrom(
+                    primary: bookC.isDone.isTrue && bookC.selectedTime != null ? MyColors.red1 : MyColors.disabledRed1,
+                  ),
                 ),
               ),
             ),

@@ -1,14 +1,17 @@
+import 'package:cafetaria/feature/penjual/model/menu_model_obs.dart';
+import 'package:cafetaria/feature/penjual/views/booking/controller/booking_controller.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
-import 'package:menu_repository/menu_repository.dart';
+import 'package:get/get.dart';
 
 class ItemMenu extends StatelessWidget {
-  const ItemMenu({
+  ItemMenu({
     Key? key,
     required this.menu,
   }) : super(key: key);
 
-  final MenuModel menu;
+  final MenuModelObs menu;
+  final bookC = Get.find<BookingController>();
 
   @override
   Widget build(BuildContext context) {
@@ -20,7 +23,8 @@ class ItemMenu extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
-          print("SELECT MENU : ${menu.name}");
+          print("SELECT MENU : ${menu.name} => ${menu.selected}");
+          bookC.checkSelected(menu);
         },
         child: Padding(
           padding: const EdgeInsets.all(20),
@@ -54,10 +58,12 @@ class ItemMenu extends StatelessWidget {
                   ),
                 ],
               ),
-              const Icon(
-                Icons.radio_button_checked,
-                color: MyColors.red1,
-              )
+              Obx(
+                () => Icon(
+                  menu.selected.isTrue ? Icons.radio_button_checked : Icons.radio_button_off,
+                  color: menu.selected.isTrue ? MyColors.red1 : MyColors.grey3,
+                ),
+              ),
             ],
           ),
         ),
