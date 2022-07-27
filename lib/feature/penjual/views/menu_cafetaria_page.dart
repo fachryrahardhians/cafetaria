@@ -462,102 +462,103 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                 physics: const NeverScrollableScrollPhysics(),
                 itemCount: menuOptions.length,
                 itemBuilder: (context, index) {
-                  return Column(
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        menuOptions[index].title,
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
-                      const SizedBox(height: 4.0),
-                      Text(
-                        '${menuOptions[index].option.map((e) => e.name)}',
-                        style: TextStyle(
-                          color: Colors.black.withOpacity(0.5),
-                        ),
-                      ),
-                      const SizedBox(height: 4.0),
-                      const Text(
-                        '0 menu tersambung',
-                        style: TextStyle(
-                          color: Colors.green,
-                        ),
-                      ),
-                      const SizedBox(height: 6.0),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          InkWell(
-                            onTap: () {},
-                            child: const Text(
-                              'Sambungkan',
-                              style: TextStyle(
-                                color: Colors.red,
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ),
-                          Row(
-                            children: [
-                              InkWell(
-                                onTap: () {},
-                                child: const Text(
-                                  'Hapus',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                              const SizedBox(width: 16.0),
-                              InkWell(
-                                onTap: () {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>
-                                          const AddOpsiMenuPage(),
-                                      settings: RouteSettings(
-                                        arguments: OpsiMenu(
-                                          menuOptions[index].isMandatory,
-                                          menuOptions[index].isMultipleTopping,
-                                          menuOptions[index].menuId,
-                                          menuOptions[index].option,
-                                          menuOptions[index].optionmenuId,
-                                          menuOptions[index].title,
-                                        ),
-                                      ),
-                                    ),
-                                  ).then((value) {
-                                    if (value != null) {
-                                      setState(() {
-                                        menuOptions[index] = value;
-                                      });
-                                    }
-                                  });
-                                },
-                                child: const Text(
-                                  'Edit',
-                                  style: TextStyle(
-                                    color: Colors.red,
-                                    fontWeight: FontWeight.bold,
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                      const SizedBox(height: 10.0),
-                    ],
-                  );
+                  return _itemOpsiMenuWidget(menuOptions[index]);
                 },
               ),
             ),
+    );
+  }
+
+  Widget _itemOpsiMenuWidget(OpsiMenu menu) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          menu.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        Text(
+          '${menu.option.map((e) => e.name)}',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.5),
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        const Text(
+          '0 menu tersambung',
+          style: TextStyle(
+            color: Colors.green,
+          ),
+        ),
+        const SizedBox(height: 6.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {},
+              child: const Text(
+                'Sambungkan',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {},
+                  child: const Text(
+                    'Hapus',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16.0),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddOpsiMenuPage(),
+                        settings: RouteSettings(
+                          arguments: OpsiMenu(
+                            menu.isMandatory,
+                            menu.isMultipleTopping,
+                            menu.menuId,
+                            menu.option,
+                            menu.optionmenuId,
+                            menu.title,
+                          ),
+                        ),
+                      ),
+                    ).then((value) {
+                      if (value != null) {
+                        // save to firebase
+                      }
+                    });
+                  },
+                  child: const Text(
+                    'Edit',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 10.0),
+      ],
     );
   }
 }
@@ -577,9 +578,7 @@ class BottomOpsiMenuWidget extends StatelessWidget {
               arguments: null,
             ),
           ),
-        ).then((value) {
-          
-        });
+        ).then((value) {});
       },
       child: Text("Tambah Opsi Menu".toUpperCase()),
       style: ElevatedButton.styleFrom(
