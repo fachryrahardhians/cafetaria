@@ -33,12 +33,12 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
   List<Option> option = [];
   bool isMandatory = true;
   bool isMultipleTopping = false;
-  
+
   @override
   Widget build(BuildContext context) {
     final opsi = ModalRoute.of(context)!.settings.arguments;
 
-    if(opsi is OpsiMenu) {
+    if (opsi is OpsiMenu) {
       _textController.text = opsi.title;
       option = opsi.option;
       isMandatory = opsi.isMandatory;
@@ -371,7 +371,6 @@ class TambahOpsiComponent extends StatefulWidget {
 }
 
 class _TambahOpsiComponentState extends State<TambahOpsiComponent> {
-  String appBarTitle = '';
   final _titleController = TextEditingController();
   final _priceController = MoneyMaskedTextController(
     precision: 0,
@@ -383,7 +382,7 @@ class _TambahOpsiComponentState extends State<TambahOpsiComponent> {
   Widget build(BuildContext context) {
     final option = ModalRoute.of(context)!.settings.arguments;
 
-    if(option is Option) {
+    if (option is Option) {
       _titleController.text = option.name;
       _priceController.text = '${option.price}';
     }
