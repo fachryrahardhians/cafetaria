@@ -5,6 +5,7 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:intl/intl.dart';
 
 class BookingPage extends StatelessWidget {
   BookingPage({Key? key}) : super(key: key);
@@ -137,31 +138,78 @@ class BookingPage extends StatelessWidget {
                               },
                             ),
                             const SizedBox(height: 5),
-                            const Text(
-                              "Jarak Booking : - Hari",
-                              style: TextStyle(
-                                color: MyColors.grey2,
-                              ),
+                            FutureBuilder(
+                              future: bookC.getOrderTime(),
+                              builder: (context, snapTime) {
+                                if (snapTime.connectionState == ConnectionState.waiting) {
+                                  return Column(
+                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    children: const [
+                                      Text(
+                                        "Jarak Booking : - Hari",
+                                        style: TextStyle(
+                                          color: MyColors.grey2,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Maksimal Porsi : - Porsi",
+                                        style: TextStyle(
+                                          color: MyColors.grey2,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Jam Pengambilan : -",
+                                        style: TextStyle(
+                                          color: MyColors.grey2,
+                                        ),
+                                      ),
+                                      Text(
+                                        "Batasan porsi : -",
+                                        style: TextStyle(
+                                          color: MyColors.grey2,
+                                        ),
+                                      ),
+                                      SizedBox(height: 5),
+                                    ],
+                                  );
+                                }
+
+                                if (snapTime.hasError) {
+                                  return const SizedBox();
+                                }
+
+                                return Column(
+                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  children: [
+                                    Text(
+                                      "Jarak Booking : ${bookC.preOrder?.poDay ?? '-'} Hari",
+                                      style: const TextStyle(
+                                        color: MyColors.grey2,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Maksimal Porsi : ${bookC.preOrder?.maxQty ?? '-'} Porsi",
+                                      style: const TextStyle(
+                                        color: MyColors.grey2,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Jam Pengambilan : ${bookC.preOrder?.pickupTime == null ? '-' : DateFormat.Hm().format(DateTime.parse(bookC.preOrder!.pickupTime!))}",
+                                      style: const TextStyle(
+                                        color: MyColors.grey2,
+                                      ),
+                                    ),
+                                    Text(
+                                      "Batasan porsi : ${bookC.preOrder == null ? '-' : bookC.preOrder!.isShowPublic == true ? 'Terlihat' : 'Disembunyikan'}",
+                                      style: const TextStyle(
+                                        color: MyColors.grey2,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 5),
+                                  ],
+                                );
+                              },
                             ),
-                            const Text(
-                              "Maksimal Porsi : - Porsi",
-                              style: TextStyle(
-                                color: MyColors.grey2,
-                              ),
-                            ),
-                            const Text(
-                              "Jam Pengambilan : -",
-                              style: TextStyle(
-                                color: MyColors.grey2,
-                              ),
-                            ),
-                            const Text(
-                              "Batasan porsi : -",
-                              style: TextStyle(
-                                color: MyColors.grey2,
-                              ),
-                            ),
-                            const SizedBox(height: 5),
                             ListView.builder(
                               padding: EdgeInsets.zero,
                               shrinkWrap: true,

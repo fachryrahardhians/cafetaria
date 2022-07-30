@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/penjual/model/menu_model_obs.dart';
+import 'package:cafetaria/feature/penjual/model/preorder.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -15,6 +16,9 @@ class BookingController extends GetxController {
   RxBool isDone = false.obs;
 
   DateTime? selectedTime;
+
+  // PREORDER
+  PreOrder? preOrder;
 
   // ALL MENU
   RxList<List<MenuModelObs>> menu = List<List<MenuModelObs>>.empty().obs;
@@ -126,8 +130,47 @@ class BookingController extends GetxController {
       for (var e in element) {
         if (e.selected.isTrue) {
           await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": true});
+
+          var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+          late String docIdTime;
+          if (querySnap.docs.isNotEmpty) {
+            docIdTime = querySnap.docs.first.id;
+            await _firestore.collection("rulepreordermenu").doc(docIdTime).update({
+              "isShowPublic": showPorsi.value,
+              "maxQty": maxPorsiC.text.isEmpty ? 0 : int.parse(maxPorsiC.text),
+              "merchantId": merchantId,
+              "pickupTime": selectedTime?.toIso8601String(),
+              "poDay": jarakC.text.isEmpty ? 0 : int.parse(jarakC.text),
+              "rulepreordermenuId": docIdTime,
+            });
+          } else {
+            var queryRaw = await _firestore.collection("rulepreordermenu").add({
+              "isShowPublic": showPorsi.value,
+              "maxQty": maxPorsiC.text.isEmpty ? 0 : int.parse(maxPorsiC.text),
+              "merchantId": merchantId,
+              "pickupTime": selectedTime?.toIso8601String(),
+              "poDay": jarakC.text.isEmpty ? 0 : int.parse(jarakC.text),
+            });
+            docIdTime = queryRaw.id;
+            await _firestore.collection("rulepreordermenu").doc(docIdTime).update({"rulepreordermenuId": docIdTime});
+          }
+
+          await _firestore.collection("menu").doc(e.menuId).update({"rulepreordermenuId": docIdTime});
         }
       }
+    }
+  }
+
+  Future<void> getOrderTime() async {
+    try {
+      var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+      if (querySnap.docs.isNotEmpty) {
+        preOrder = PreOrder.fromJson(querySnap.docs.first.data());
+        print(querySnap.docs.first.data());
+      }
+    } catch (e) {
+      preOrder = null;
+      print(e);
     }
   }
 
@@ -205,7 +248,7 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     // TODO: @kuldii => Penentuan merchant masih hard code
-    // merchantId = "0DzobjgsR7jF8qWvCoG0";
+    // merchantId = "merchant1";
     merchantId = "merchant2";
   }
 
