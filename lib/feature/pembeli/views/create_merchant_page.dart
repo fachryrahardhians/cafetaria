@@ -15,9 +15,6 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:category_repository/category_repository.dart';
-import 'package:cafetaria/feature/penjual/bloc/add_category_bloc/add_category_bloc.dart';
 import 'package:uuid/uuid.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
@@ -25,12 +22,7 @@ class PembeliCreateMerchantPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AddCategoryBloc(
-        categoryRepository: context.read<CategoryRepository>(),
-      ),
-      child: const PembeliCreateMerchantView(),
-    );
+    return const PembeliCreateMerchantView();
   }
 }
 
@@ -145,9 +137,6 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       };
 
       await _firestore.collection('merchant').doc(uuid).set(data);
-      context
-          .read<AddCategoryBloc>()
-          .add(const MerchantDataChange(merchantData: "success"));
       Navigator.pop(context);
       Fluttertoast.showToast(
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
