@@ -1,5 +1,6 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
+import 'package:cafetaria/feature/penjual/bloc/opsi_menu_makanan_bloc/opsi_menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
@@ -27,6 +28,11 @@ class MenuCafetariaPage extends StatelessWidget {
           create: (context) => ListMenuBloc(
             menuRepository: context.read<MenuRepository>(),
           ),
+        ),
+         BlocProvider(
+          create: (context) => OpsiMenuMakananBloc(
+            categoryRepository: context.read<CategoryRepository>(),
+          )..add(const GetOpsiMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
       child: const MenuCafetariaView(),
@@ -449,23 +455,70 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      width: double.infinity,
-      child: menuOptions.isEmpty
-          ? const SizedBox.shrink()
-          : SizedBox(
-              width: double.infinity,
-              height: 500,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: menuOptions.length,
-                itemBuilder: (context, index) {
-                  return _itemOpsiMenuWidget(menuOptions[index]);
-                },
-              ),
-            ),
+    return Column(
+      children: [
+        BlocBuilder<OpsiMenuMakananBloc, OpsiMenuMakananState>(
+          builder: (context, state) {
+            final status = state.status;
+
+            if (status == OpsiMenuMakananStatus.loading) {
+              return const Center(
+                child: CircularProgressIndicator(),
+              );
+            } else if (status == OpsiMenuMakananStatus.failure) {
+              return const Center(
+                child: Text('Terjadi kesalahan'),
+              );
+            } else if (status == OpsiMenuMakananStatus.success) {
+              final items = state.items!;
+              return Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    SizedBox(
+                      height: 50,
+                      // width: 50,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ChoiceChip(
+                              padding: const EdgeInsets.all(9),
+                              onSelected: (val) {
+                                context.read<ListMenuBloc>().add(
+                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
+                                          item.categoryId!),
+                                    );
+                              },
+                              label: Text(
+                                item.category,
+                                style: GoogleFonts.ubuntu(
+                                    color: const Color(0xffEA001E)),
+                              ),
+                              side: const BorderSide(
+                                color: Color(0xffEA001E),
+                              ),
+                              selected: false,
+                              backgroundColor: const Color(0xffFEDED8),
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            }
+            return const SizedBox.shrink();
+          },
+        ),
+        const ListMenuWidget()
+      ],
     );
   }
 

@@ -25,4 +25,15 @@ class OptionMenuRepository {
       throw Exception('Failed to save option menu');
     }
   }
+    /// get option menu
+  Future<void> getOptionMenu(OptionMenuModel optionMenu) async {
+    try {
+      await _firestore
+          .collection('optionMenu')
+          .doc(_uuid.v4())
+          .set(optionMenu.toJson());
+    } catch (e) {
+      throw Exception('Failed to save option menu');
+    }
+  }
 }
