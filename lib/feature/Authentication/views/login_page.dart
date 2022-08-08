@@ -17,8 +17,7 @@ class LoginPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthenticationBloc(
-          authenticationRepository: context.read<AuthenticationRepository>()),
+      create: (context) => AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>()),
       child: const LoginView(),
     );
   }
@@ -53,33 +52,29 @@ class _LoginViewState extends State<LoginView> {
               listener: (context, state) {
                 if (state is AuthenticationStateSuccess) {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const PenjualDashboardPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const PenjualDashboardPage(),
+                    ),
+                  );
                 } else if (state is AuthenticationStateError) {
                   // print(state.error);
                 }
               },
               child: InkWell(
                 onTap: () {
-                  context
-                      .read<AuthenticationBloc>()
-                      .add(GetGoogleAuthentication());
+                  context.read<AuthenticationBloc>().add(GetGoogleAuthentication());
                 },
                 child: Container(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
-                  decoration: const BoxDecoration(
-                      borderRadius: BorderRadius.all(Radius.circular(8)),
-                      color: Colors.white,
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.grey,
-                          offset: Offset(0, 0),
-                          spreadRadius: 0,
-                          blurRadius: 1,
-                        ),
-                      ]),
+                  padding: const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
+                  decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
+                    BoxShadow(
+                      color: Colors.grey,
+                      offset: Offset(0, 0),
+                      spreadRadius: 0,
+                      blurRadius: 1,
+                    ),
+                  ]),
                   child: Text(
                     "Masuk Dengan Google",
                     style: bigText.copyWith(fontWeight: FontWeight.bold),
@@ -91,8 +86,7 @@ class _LoginViewState extends State<LoginView> {
               padding: const EdgeInsets.symmetric(vertical: 18),
               child: Text(
                 "ATAU",
-                style: extraBigText.copyWith(
-                    fontWeight: FontWeight.bold, color: MyColors.grey2),
+                style: extraBigText.copyWith(fontWeight: FontWeight.bold, color: MyColors.grey2),
               ),
             ),
             const CustomTextfield1(
@@ -107,10 +101,7 @@ class _LoginViewState extends State<LoginView> {
             ReusableButton1(
               label: "MASUK",
               onPressed: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const PembeliDashboardPage()));
+                Navigator.pushReplacement(context, MaterialPageRoute(builder: (_) => const PembeliDashboardPage()));
               },
             ),
           ],
