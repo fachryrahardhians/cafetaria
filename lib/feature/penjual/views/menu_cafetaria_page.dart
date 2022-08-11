@@ -11,6 +11,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key}) : super(key: key);
@@ -31,7 +32,7 @@ class MenuCafetariaPage extends StatelessWidget {
         ),
          BlocProvider(
           create: (context) => OpsiMenuMakananBloc(
-            optionmenuRepository: context.read<CategoryRepository>(),
+            opsimenuRepository: context.read<OptionMenuRepository>(),
           )..add(const GetOpsiMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
@@ -416,31 +417,6 @@ class BottomDaftarMenuWidget extends StatelessWidget {
   }
 }
 
-// temp object for "opsi menu"
-class OpsiMenu {
-  final bool isMandatory;
-  final bool isMultipleTopping;
-  final String menuId;
-  final List<Option> option;
-  final String optionmenuId;
-  final String title;
-
-  OpsiMenu(
-    this.isMandatory,
-    this.isMultipleTopping,
-    this.menuId,
-    this.option,
-    this.optionmenuId,
-    this.title,
-  );
-}
-
-class OptioMenuModel {
-  final String name;
-  final int price;
-
-  OptioMenuModel(this.name, this.price);
-}
 
 
 class OpsiMenuWidget extends StatefulWidget {
@@ -451,7 +427,7 @@ class OpsiMenuWidget extends StatefulWidget {
 }
 
 class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
-  List<OpsiMenu> menuOptions = [];
+  List<OptionMenuModel> menuOptions = [];
 
   @override
   Widget build(BuildContext context) {
@@ -496,7 +472,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                     );
                               },
                               label: Text(
-                                item.category,
+                               ' items.category',
                                 style: GoogleFonts.ubuntu(
                                     color: const Color(0xffEA001E)),
                               ),
@@ -522,13 +498,13 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
     );
   }
 
-  Widget _itemOpsiMenuWidget(OpsiMenu menu) {
+  Widget _itemOpsiMenuWidget(OptionMenuModel menu) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-          menu.title,
+        '  menu.title',
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -536,7 +512,8 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
         ),
         const SizedBox(height: 4.0),
         Text(
-          '${menu.option.map((e) => e.name)}',
+          // '${menu.option.map((e) => e.name)}',
+          'test',
           style: TextStyle(
             color: Colors.black.withOpacity(0.5),
           ),
@@ -577,26 +554,26 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                 const SizedBox(width: 16.0),
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddOpsiMenuPage(),
-                        settings: RouteSettings(
-                          arguments: OpsiMenu(
-                            menu.isMandatory,
-                            menu.isMultipleTopping,
-                            menu.menuId,
-                            menu.option,
-                            menu.optionmenuId,
-                            menu.title,
-                          ),
-                        ),
-                      ),
-                    ).then((value) {
-                      if (value != null) {
-                        // save to firebase
-                      }
-                    });
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     builder: (context) => const AddOpsiMenuPage(),
+                    //     settings: RouteSettings(
+                    //       arguments: OpsiMenu(
+                    //         menu.isMandatory,
+                    //         menu.isMultipleTopping,
+                    //         menu.menuId,
+                    //         menu.option,
+                    //         menu.optionmenuId,
+                    //         menu.title,
+                    //       ),
+                    //     ),
+                    //   ),
+                    // ).then((value) {
+                    //   if (value != null) {
+                    //     // save to firebase
+                    //   }
+                    // });
                   },
                   child: const Text(
                     'Edit',

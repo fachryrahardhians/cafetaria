@@ -11,8 +11,8 @@ class OpsiMenuMakananBloc
   final OptionMenuRepository _opsiMenuRepository;
 
   OpsiMenuMakananBloc({
-    required OptionMenuRepository menuRepository,
-  })  : _opsiMenuRepository = menuRepository,
+    required OptionMenuRepository opsimenuRepository,
+  })  : _opsiMenuRepository = opsimenuRepository,
         super(const OpsiMenuMakananState.initial()) {
     on<GetOpsiMenuMakanan>(_getOpsiMenu);
   }
