@@ -4,17 +4,20 @@ enum OpsiMenuMakananStatus { initial, loading, success, failure }
 
 class OpsiMenuMakananState extends Equatable {
   const OpsiMenuMakananState.__({
+    required this.status,
     this.items,
     this.errorMessage,
-    required this.status,
   });
+  final OpsiMenuMakananStatus status;
+  final List<OptionMenuModel>? items;
+  final String? errorMessage;
 
   const OpsiMenuMakananState.initial() : this.__(status: OpsiMenuMakananStatus.initial);
 
   const OpsiMenuMakananState.loading() : this.__(status: OpsiMenuMakananStatus.loading);
 
   const OpsiMenuMakananState.success(
-    List<OptionMenu> items,
+    List<OptionMenuModel> items,
   ) : this.__(
           status: OpsiMenuMakananStatus.success,
           items: items,
@@ -26,15 +29,12 @@ class OpsiMenuMakananState extends Equatable {
           errorMessage: errorMessage,
         );
 
-  final List<Option>? items;
-  final String? errorMessage;
-  final OpsiMenuMakananStatus status;
 
   @override
   List<Object?> get props => [items, errorMessage, status];
 
   OpsiMenuMakananState copyWith({
-    List<Option>? items,
+    List<OptionMenuModel>? items,
     String? errorMessage,
     OpsiMenuMakananStatus? status,
   }) {
