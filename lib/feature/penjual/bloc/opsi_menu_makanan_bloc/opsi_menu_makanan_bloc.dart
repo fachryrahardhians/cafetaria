@@ -10,23 +10,21 @@ class OpsiMenuMakananBloc extends Bloc<OpsiMenuMakananEvent, OpsiMenuMakananStat
   final OptionMenuRepository _opsiMenuRepository;
 
   OpsiMenuMakananBloc({
-    required OptionMenuRepository opsiMenuRepository,
-  })  : _opsiMenuRepository = opsiMenuRepository,
+    required OptionMenuRepository menuRepository,
+  })  : _opsiMenuRepository = menuRepository,
         super(const OpsiMenuMakananState.initial()) {
-    on<GetOpsiMenuMakanan>(_getOpsiMenuMakanan);
+    on<GetOpsiMenuMakanan>(_getOpsiMenu);
   }
 
-  Future<void> _getOpsiMenuMakanan(
+  Future<void> _getOpsiMenu(
     GetOpsiMenuMakanan event,
     Emitter<OpsiMenuMakananState> emit,
   ) async {
     emit(const OpsiMenuMakananState.loading());
 
     try {
-      final items = await _opsiMenuRepository.getOptionMenu(
-        event.menuId,
-      );
 
+   final items = await _opsiMenuRepository.getOptionMenu(event.menuId);
       emit(OpsiMenuMakananState.success(items));
     } catch (error) {
       emit(OpsiMenuMakananState.failure(error.toString()));

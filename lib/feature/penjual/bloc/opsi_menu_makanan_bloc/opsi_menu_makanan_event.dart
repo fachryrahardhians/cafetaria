@@ -8,10 +8,10 @@ abstract class OpsiMenuMakananEvent extends Equatable {
 }
 
 class GetOpsiMenuMakanan extends OpsiMenuMakananEvent {
-  final String idMerchant;
+  final String menuId;
 
-  const GetOpsiMenuMakanan(this.idMerchant);
+  const GetOpsiMenuMakanan(this.menuId);
 
   @override
-  List<Object> get props => [idMerchant];
+  List<Object> get props => [menuId];
 }

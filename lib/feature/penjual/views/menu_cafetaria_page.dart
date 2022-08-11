@@ -31,7 +31,7 @@ class MenuCafetariaPage extends StatelessWidget {
         ),
          BlocProvider(
           create: (context) => OpsiMenuMakananBloc(
-            categoryRepository: context.read<CategoryRepository>(),
+            optionmenuRepository: context.read<CategoryRepository>(),
           )..add(const GetOpsiMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
