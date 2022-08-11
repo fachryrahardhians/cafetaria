@@ -6,7 +6,8 @@ import 'package:option_menu_repository/option_menu_repository.dart';
 part 'opsi_menu_makanan_event.dart';
 part 'opsi_menu_makanan_state.dart';
 
-class OpsiMenuMakananBloc extends Bloc<OpsiMenuMakananEvent, OpsiMenuMakananState> {
+class OpsiMenuMakananBloc
+    extends Bloc<OpsiMenuMakananEvent, OpsiMenuMakananState> {
   final OptionMenuRepository _opsiMenuRepository;
 
   OpsiMenuMakananBloc({
@@ -23,8 +24,7 @@ class OpsiMenuMakananBloc extends Bloc<OpsiMenuMakananEvent, OpsiMenuMakananStat
     emit(const OpsiMenuMakananState.loading());
 
     try {
-
-   final items = await _opsiMenuRepository.getOptionMenu(event.menuId);
+      final items = await _opsiMenuRepository.getOptionMenu(event.menuId);
       emit(OpsiMenuMakananState.success(items));
     } catch (error) {
       emit(OpsiMenuMakananState.failure(error.toString()));

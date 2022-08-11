@@ -435,13 +435,13 @@ class OpsiMenu {
   );
 }
 
-class Option {
+class OptioMenuModel {
   final String name;
   final int price;
 
-  Option(this.name, this.price);
+  OptioMenuModel(this.name, this.price);
 }
-// =====
+
 
 class OpsiMenuWidget extends StatefulWidget {
   const OpsiMenuWidget({Key? key}) : super(key: key);

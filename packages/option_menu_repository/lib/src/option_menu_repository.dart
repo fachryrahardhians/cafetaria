@@ -14,7 +14,7 @@ class OptionMenuRepository {
   }) : _firestore = firestore;
 
   // get  menu per merchant
-  Future<List> getOptionMenu(
+   Future<List<OptionMenuModel>> getOptionMenu(
     String menuId,
   ) async {
     try {

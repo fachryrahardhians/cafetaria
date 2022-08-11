@@ -14,7 +14,7 @@ class OpsiMenuMakananState extends Equatable {
   const OpsiMenuMakananState.loading() : this.__(status: OpsiMenuMakananStatus.loading);
 
   const OpsiMenuMakananState.success(
-    List<Option> items,
+    List<OptionMenu> items,
   ) : this.__(
           status: OpsiMenuMakananStatus.success,
           items: items,
