@@ -24,12 +24,6 @@ class App extends StatelessWidget {
     required AppSharedPref appSharedPref,
     required PenjualOrderRepository penjualOrderRepository,
   })
-  //     : _authenticationRepository = authenticationRepository,
-  // const App(
-  //     {Key? key,
-  //     required AuthenticationRepository authenticationRepository,
-  //     required MenuRepository menuRepository,
-  //     required AppSharedPref appSharedPref})
       : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
         _appSharedPref = appSharedPref,
@@ -57,6 +51,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _secureStorage),
         RepositoryProvider.value(value: _cloudStorage),
         RepositoryProvider.value(value: _appSharedPref),
+        RepositoryProvider.value(value: _penjualOrderRepository),
       ],
       child: const AppView(),
     );

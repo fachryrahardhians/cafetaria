@@ -23,6 +23,7 @@ abstract class CFTheme {
     disabledColor: CFColors.grey,
     errorColor: CFColors.redAccent,
     dialogTheme: _dialogTheme,
+    // fontFamily: GoogleFonts.ubuntu().fontFamily,
   );
 
   static const _dialogTheme = DialogTheme(

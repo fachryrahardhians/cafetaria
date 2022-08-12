@@ -49,13 +49,14 @@ dependencies:
   google_fonts: ^3.0.1
   image_picker: ^0.8.5+3
   intl: ^0.17.0
-
+  pull_to_refresh: ^2.0.0
   shared_preferences: ^2.0.15
   storage:
     path: packages/storage
   uuid: ^3.0.6
   google_sign_in: ^5.3.2
   firebase_messaging: ^11.4.1
+  loading_overlay: ^0.3.0
 
 #  penjual_repository:
 #    path: packages/penjual_repository

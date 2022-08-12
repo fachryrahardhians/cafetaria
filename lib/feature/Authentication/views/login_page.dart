@@ -61,11 +61,11 @@ class _LoginViewState extends State<LoginView> {
                   listener: (ctx, state) {
                     if (state is AuthenticationStateSuccess) {
                       Navigator.push(
-                        context,
+                        ctx,
                         MaterialPageRoute(
                           // builder: (context) => const HomePage(),
                           // builder: (context) => const LinkEmailPage(),
-                          builder: (context) => const OrderPage(),
+                          builder: (ctx) => const OrderPage(),
                         ),
                       );
                     }
