@@ -11,9 +11,19 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 /// author: @burhanwakhid
 class AuthenticationRepository {
-  const AuthenticationRepository(this._firebaseAuth);
+  AuthenticationRepository(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
+
+  /// sign out google
+  Future<void> signoutGoogle() async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+    } on Exception catch (error, stacktrace) {
+      throw AuthenticationException(error, stacktrace);
+    }
+  }
 
   /// sign user anonymously
   Future<void> signedAnonymous() async {
@@ -50,10 +60,9 @@ class AuthenticationRepository {
 
   /// sign user with gmail
   /// [email] and [password] must not be null
-  Future<GoogleSignInAccount?> signedWithGoogle() async {
+  Future<UserCredential?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
-
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth = await data!.authentication;
 
@@ -64,11 +73,19 @@ class AuthenticationRepository {
       );
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      return data;
+      return await _firebaseAuth.signInWithCredential(credential);
     } on Exception catch (error, stacktrace) {
+      print("ERROR : $error");
       throw AuthenticationException(error, stacktrace);
     }
+  }
+
+  Stream<User?> get user {
+    return _firebaseAuth.authStateChanges().asyncMap(_handleAuthStateChanged);
+  }
+
+  Future<User?> _handleAuthStateChanged(User? auth) async {
+    return auth;
   }
 }
 

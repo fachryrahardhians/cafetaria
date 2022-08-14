@@ -72,7 +72,7 @@ class _RatingState extends State<Rating> {
                 itemCount: 5),
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 7),
-          const CustomTextfield1(
+          CustomTextfield1(
             label: 'CERITAKAN PENGALAMANMU LEBIH LENGKAP',
             hint: 'Ceritakan pengalamanmu lebih lengkap',
             maxLine: 4,
