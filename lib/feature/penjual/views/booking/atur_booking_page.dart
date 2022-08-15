@@ -7,12 +7,17 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 
 class AturBookingPage extends StatelessWidget {
-  AturBookingPage({Key? key}) : super(key: key);
+  AturBookingPage({Key? key, this.booking}) : super(key: key);
 
   final bookC = Get.find<BookingController>();
 
+  final List<List<MenuModelObs>>? booking;
+
   @override
   Widget build(BuildContext context) {
+    if (booking != null) {
+      bookC.issetSelected.value = true;
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('ATUR BOOKING'),
@@ -73,12 +78,22 @@ class AturBookingPage extends StatelessWidget {
                   itemBuilder: (context, indexAllMenu) {
                     List<MenuModelObs> menuByCategory = bookC.menu[indexAllMenu];
                     String categoryId = bookC.allCategoryMenu[indexAllMenu];
+
                     return ListView.builder(
                       shrinkWrap: true,
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: menuByCategory.length,
                       itemBuilder: (context, index) {
                         MenuModelObs menu = menuByCategory[index];
+                        if (booking != null) {
+                          booking!.forEach((e) {
+                            e.forEach((element) {
+                              if (element.menuId == menu.menuId) {
+                                menu.selected.value = true;
+                              }
+                            });
+                          });
+                        }
                         if (index == 0) {
                           return Column(
                             crossAxisAlignment: CrossAxisAlignment.stretch,
@@ -123,13 +138,21 @@ class AturBookingPage extends StatelessWidget {
               width: double.infinity,
               child: Obx(
                 () => ElevatedButton(
-                  onPressed: () {
+                  onPressed: () async {
                     if (bookC.issetSelected.isTrue) {
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => BookingSettingsPage(),
-                        ),
-                      );
+                      if (booking != null) {
+                        await bookC.editBooking();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Get.delete<BookingController>();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil mengubah booking")));
+                      } else {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => BookingSettingsPage(),
+                          ),
+                        );
+                      }
                     } else {
                       ScaffoldMessenger.of(context).showSnackBar(
                         const SnackBar(
@@ -139,7 +162,7 @@ class AturBookingPage extends StatelessWidget {
                       );
                     }
                   },
-                  child: const Text("PILIH MENU"),
+                  child: Text(booking != null ? "SIMPAN" : "PILIH MENU"),
                   style: ElevatedButton.styleFrom(
                     primary: bookC.issetSelected.isTrue ? MyColors.red1 : MyColors.disabledRed1,
                   ),

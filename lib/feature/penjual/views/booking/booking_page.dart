@@ -294,7 +294,14 @@ class BookingPage extends StatelessWidget {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await bookC.getAllBooking();
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => AturBookingPage(booking: bookC.booking),
+                                      ),
+                                    );
+                                  },
                                   child: const Text(
                                     "Edit Menu",
                                     style: TextStyle(

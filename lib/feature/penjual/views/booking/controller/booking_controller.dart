@@ -161,6 +161,18 @@ class BookingController extends GetxController {
     }
   }
 
+  Future<void> editBooking() async {
+    for (var element in menu) {
+      for (var e in element) {
+        if (e.selected.isTrue) {
+          await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": true});
+        } else {
+          await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": false});
+        }
+      }
+    }
+  }
+
   Future<void> editSettingBooking() async {
     try {
       var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
