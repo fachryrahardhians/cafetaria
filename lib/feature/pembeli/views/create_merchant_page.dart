@@ -32,7 +32,8 @@ class PembeliCreateMerchantView extends StatefulWidget {
   const PembeliCreateMerchantView(this.user, {Key? key}) : super(key: key);
   final User user;
   @override
-  State<PembeliCreateMerchantView> createState() => _PembeliCreateMerchantState();
+  State<PembeliCreateMerchantView> createState() =>
+      _PembeliCreateMerchantState();
 }
 
 class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
@@ -59,7 +60,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   bool _submitLoading = false;
 
   Future _handleUpload(String type) async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    final XFile? photo =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
     setState(() {
       if (type == "dalam") {
         _fotoDalam = photo;
@@ -82,7 +84,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     if (latLng != null) {
       if (_latLngToko != null) {
         final GoogleMapController controller = await _mapController.future;
-        controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 17)));
+        controller.moveCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(target: latLng, zoom: 17)));
       }
 
       setState(() {
@@ -91,7 +94,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         _latLngToko = latLng;
       });
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude, localeIdentifier: "id");
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          latLng.latitude, latLng.longitude,
+          localeIdentifier: "id");
       Placemark placemark = placemarks[0];
 
       _alamatLengkap.text =
@@ -109,8 +114,24 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     });
 
     try {
+      var documentReference = await _firestore.collection('merchant').add(data);
+      uuid = documentReference.id;
+
+      var snapshotLuar = await _storage
+          .ref()
+          .child('images/merchant/photo_from_outside/$uuid.jpg')
+          .putFile(File(_fotoLuar!.path));
+      var snapshotDalam = await _storage
+          .ref()
+          .child('images/merchant/photo_from_inside/$uuid.jpg')
+          .putFile(File(_fotoDalam!.path));
+
+      var urlLuar = await snapshotLuar.ref.getDownloadURL();
+      var urlDalam = await snapshotDalam.ref.getDownloadURL();
+
       final data = {
         'userId': userId,
+        'merchant': userId,
         'name': _namaUsaha.text,
         'category': _bidangUsaha,
         'city': _kota.text,
@@ -119,27 +140,20 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'address_detail': _lokasiDetail.text,
         'address_latitude': _latLngToko!.latitude,
         'address_longitude': _latLngToko!.longitude,
+        'photo_from_outside': urlLuar,
+        'photo_from_inside': urlDalam,
+        'rating': 0,
+        'totalCountRating': 0,
+        'totalOrderToday': 0,
+        'totalSalesToday': 0,
+        'totalSalesYesterday': 0,
         'create_at': Timestamp.now()
       };
 
-      var documentReference = await _firestore.collection('merchant').add(data);
-      uuid = documentReference.id;
-
-      var snapshotLuar = await _storage.ref().child('images/merchant/photo_from_outside/$uuid.jpg').putFile(File(_fotoLuar!.path));
-      var snapshotDalam = await _storage.ref().child('images/merchant/photo_from_inside/$uuid.jpg').putFile(File(_fotoDalam!.path));
-
-      var urlLuar = await snapshotLuar.ref.getDownloadURL();
-      var urlDalam = await snapshotDalam.ref.getDownloadURL();
-
-      await _firestore.collection('merchant').doc(uuid).update(
-        {
-          'merchantId': uuid,
-          'photo_from_outside': urlLuar,
-          'photo_from_inside': urlDalam,
-        },
-      );
+      await _firestore.collection('merchant').doc(userId).set(data);
       Navigator.pop(context);
-      Fluttertoast.showToast(msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+      Fluttertoast.showToast(
+          msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
       Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
     } finally {
@@ -271,7 +285,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                               },
                               markers: Set.from(_marker),
                             ),
-                            GestureDetector(onTap: _handleMapsPicker, child: Expanded(child: Container(color: Colors.black.withOpacity(0))))
+                            GestureDetector(
+                                onTap: _handleMapsPicker,
+                                child: Expanded(
+                                    child: Container(
+                                        color: Colors.black.withOpacity(0))))
                           ],
                         )),
               const SizedBox(height: 20),
@@ -279,7 +297,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   label: "ALAMAT LENGKAP TOKO",
                   controller: _alamatLengkap,
                   maxLine: 4,
-                  hint: "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
+                  hint:
+                      "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
               CustomTextfield2(
                 label: "LOKASI DETAIL",
                 hint: "Misalkan: Depan Circle K",
@@ -295,7 +314,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                     size: 32,
                   ),
                   onTap: () => _handleUpload("luar"),
-                  child: _fotoLuar == null ? null : Image.file(File(_fotoLuar!.path), fit: BoxFit.contain)),
+                  child: _fotoLuar == null
+                      ? null
+                      : Image.file(File(_fotoLuar!.path), fit: BoxFit.contain)),
               const SizedBox(height: 32),
               CustomBoxPicker(
                   label: "UNGGAH FOTO TOKO DARI DALAM",
@@ -306,7 +327,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                     size: 32,
                   ),
                   onTap: () => _handleUpload("dalam"),
-                  child: _fotoDalam == null ? null : Image.file(File(_fotoDalam!.path), fit: BoxFit.contain)),
+                  child: _fotoDalam == null
+                      ? null
+                      : Image.file(File(_fotoDalam!.path),
+                          fit: BoxFit.contain)),
               const SizedBox(height: 40),
               SizedBox(
                   width: double.infinity,
