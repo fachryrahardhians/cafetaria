@@ -88,6 +88,10 @@ class MenuRepository {
     }
   }
 
+  Future<void> updateMenuKeranjang(Keranjang keranjang) async {
+    await keranjang.save();
+  }
+
   Future<List<Keranjang>> getMenuInKeranjang() async {
     try {
       Iterable<Keranjang> keranjang = keranjangBox.values;
@@ -99,7 +103,7 @@ class MenuRepository {
   }
 
   Future<void> deleteMenuFromKeranjang(Keranjang keranjang) async {
-    keranjang.delete();
+    await keranjang.delete();
   }
 
   Future<void> deleteAllMenuInKeranjang() async {

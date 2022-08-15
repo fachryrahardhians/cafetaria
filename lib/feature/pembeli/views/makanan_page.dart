@@ -168,15 +168,16 @@ class _ListMenuState extends State<ListMenu> {
                                             MaterialPageRoute(
                                                 builder: (_) =>
                                                     SelectToppingPage(
-                                                      quantity: a.quantity != -1
-                                                          ? a.quantity
-                                                          : 0,
+                                                      itemInKeranjang: a,
                                                       model:
                                                           state.items![index],
-                                                    ))).then((val) => {
-                                              _addMenuToCartBloc
-                                                  .add(GetMenusInCart())
-                                            });
+                                                    ))).then((val) {
+                                          _addMenuToCartBloc
+                                              .add(GetMenusInCart());
+                                          _listRecomendedMenuBloc.add(
+                                              GetListRecomendedMenu(
+                                                  idMerchant));
+                                        });
                                       },
                                       child: makananGrid(
                                           state.items![index].image.toString(),
@@ -217,25 +218,15 @@ class _ListMenuState extends State<ListMenu> {
                                           state.items![index].menuId,
                                       orElse: (() => Keranjang(
                                           quantity: -1, totalPrice: -1)));
-                                  if (a.quantity != -1) {
-                                    makananItem = makananList(
-                                        state.items![index].image.toString(),
-                                        state.items![index].name.toString(),
-                                        state.items![index].price ?? 0,
-                                        false,
-                                        0,
-                                        state.items![index].menuId.toString(),
-                                        a.quantity);
-                                  } else {
-                                    makananItem = makananList(
-                                        state.items![index].image.toString(),
-                                        state.items![index].name.toString(),
-                                        state.items![index].price ?? 0,
-                                        false,
-                                        0,
-                                        state.items![index].menuId.toString(),
-                                        a.quantity);
-                                  }
+
+                                  makananItem = makananList(
+                                      state.items![index].image.toString(),
+                                      state.items![index].name.toString(),
+                                      state.items![index].price ?? 0,
+                                      false,
+                                      0,
+                                      state.items![index].menuId.toString(),
+                                      a.quantity);
 
                                   return GestureDetector(
                                       onTap: () async {
@@ -244,15 +235,16 @@ class _ListMenuState extends State<ListMenu> {
                                             MaterialPageRoute(
                                                 builder: (_) =>
                                                     SelectToppingPage(
-                                                      quantity: a.quantity != -1
-                                                          ? a.quantity
-                                                          : 0,
+                                                      itemInKeranjang: a,
                                                       model:
                                                           state.items![index],
-                                                    ))).then((val) => {
-                                              _addMenuToCartBloc
-                                                  .add(GetMenusInCart())
-                                            });
+                                                    ))).then((val) {
+                                          _addMenuToCartBloc
+                                              .add(GetMenusInCart());
+                                          _listRecomendedMenuBloc.add(
+                                              GetListRecomendedMenu(
+                                                  idMerchant));
+                                        });
                                       },
                                       child: makananItem);
                                 },

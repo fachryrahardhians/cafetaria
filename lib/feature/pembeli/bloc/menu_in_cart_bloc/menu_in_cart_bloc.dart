@@ -13,6 +13,8 @@ class MenuInCartBloc extends Bloc<MenuInCartEvent, MenuInCartState> {
   })  : _menuRepository = menuRepository,
         super(const MenuInCartState()) {
     on<GetMenusInCart>(_getMenusInCart);
+    on<DeleteMenuInCart>(_deleteMenuInCart);
+    on<UpdateMenuInCart>(_updateMenuInCart);
   }
 
   void _getMenusInCart(
@@ -30,5 +32,21 @@ class MenuInCartBloc extends Bloc<MenuInCartEvent, MenuInCartState> {
     } catch (e) {
       emit.call(MenuInCartRetrieveFailed(e.toString()));
     }
+  }
+
+  void _deleteMenuInCart(
+    DeleteMenuInCart event,
+    Emitter<MenuInCartState> emit,
+  ) async {
+    await _menuRepository.deleteMenuFromKeranjang(event.menuKeranjang);
+    emit.call(MenuInCartDeleted());
+  }
+
+  void _updateMenuInCart(
+    UpdateMenuInCart event,
+    Emitter<MenuInCartState> emit,
+  ) async {
+    await _menuRepository.updateMenuKeranjang(event.menuKeranjang);
+    emit.call(MenuInCartUpdated());
   }
 }

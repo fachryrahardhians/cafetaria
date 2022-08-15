@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -13,24 +14,25 @@ enum type { Sama, Beda }
 
 class SelectToppingPage extends StatelessWidget {
   final MenuModel model;
-  final int quantity;
+  final Keranjang itemInKeranjang;
   const SelectToppingPage(
-      {Key? key, required this.model, required this.quantity})
+      {Key? key, required this.model, required this.itemInKeranjang})
       : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return SelectTopping(
       item: model,
-      quantity: quantity,
+      itemInKeranjang: itemInKeranjang,
     );
   }
 }
 
 class SelectTopping extends StatefulWidget {
   final MenuModel item;
-  final int quantity;
-  const SelectTopping({Key? key, required this.item, required this.quantity})
+  final Keranjang itemInKeranjang;
+  const SelectTopping(
+      {Key? key, required this.item, required this.itemInKeranjang})
       : super(key: key);
 
   @override
@@ -45,27 +47,61 @@ class _SelectToppingState extends State<SelectTopping> {
   final TextEditingController _counterController = TextEditingController();
 
   late AddMenuToCartBloc addMenuToCartBloc;
+  late MenuInCartBloc menuInCartBloc;
   int qty = 0;
-
+  bool _isButtonPerbaruEnable = true;
   @override
   void initState() {
     addMenuToCartBloc =
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
-    qty = widget.quantity;
+    menuInCartBloc =
+        MenuInCartBloc(menuRepository: context.read<MenuRepository>());
+    if (widget.itemInKeranjang.quantity == -1) {
+      qty = 0;
+    } else {
+      qty = widget.itemInKeranjang.quantity;
+    }
+
     _counterController.text = qty.toString();
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-        create: ((context) => addMenuToCartBloc),
-        child: BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
-            listener: ((context, state) {
-              if (state is MenuAddedToTheCart) {
-                Navigator.pop(context);
-              }
-            }),
+    if (widget.itemInKeranjang.quantity == qty ||
+        (widget.itemInKeranjang.quantity == -1 && qty == 0)) {
+      _isButtonPerbaruEnable = false;
+    } else {
+      _isButtonPerbaruEnable = true;
+    }
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+            create: ((context) => addMenuToCartBloc),
+          ),
+          BlocProvider(
+            create: ((context) => menuInCartBloc),
+          )
+        ],
+        child: MultiBlocListener(
+            listeners: [
+              BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
+                  listener: ((context, state) {
+                if (state is MenuAddedToTheCart) {
+                  Navigator.pop(context);
+                }
+              })),
+              BlocListener<MenuInCartBloc, MenuInCartState>(
+                  listener: ((context, state) {
+                if (state is MenuInCartDeleted) {
+                  Navigator.pop(context);
+                }
+
+                if (state is MenuInCartUpdated) {
+                  Navigator.pop(context);
+                }
+              }))
+            ],
             child: SafeArea(
               child: Scaffold(
                 backgroundColor: const Color(0xffFCFBFC),
@@ -374,20 +410,33 @@ class _SelectToppingState extends State<SelectTopping> {
         child: ElevatedButton(
             style: ButtonStyle(
                 elevation: MaterialStateProperty.all(0),
-                backgroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
-                foregroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
+                backgroundColor: MaterialStateProperty.all(
+                    _isButtonPerbaruEnable
+                        ? const Color(0xffee3124)
+                        : const Color(0xffFE8F7D)),
                 shape: MaterialStateProperty.all(RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                     side: BorderSide.none))),
-            onPressed: () {
-              addMenuToCartBloc.add(AddMenuToCart(
-                  menuModel: item,
-                  quantity: qty,
-                  totalPrice: (item.price ?? 0) * qty,
-                  notes: _catatanController.text));
-            },
+            onPressed: _isButtonPerbaruEnable
+                ? () {
+                    if (qty == 0) {
+                      menuInCartBloc
+                          .add(DeleteMenuInCart(widget.itemInKeranjang));
+                    } else if (widget.itemInKeranjang.quantity == -1) {
+                      addMenuToCartBloc.add(AddMenuToCart(
+                          menuModel: item,
+                          quantity: qty,
+                          totalPrice: (item.price ?? 0) * qty,
+                          notes: _catatanController.text));
+                    } else {
+                      Keranjang editedMenu = widget.itemInKeranjang;
+                      editedMenu.totalPrice =
+                          widget.itemInKeranjang.price! * qty;
+                      editedMenu.quantity = qty;
+                      menuInCartBloc.add(UpdateMenuInCart(editedMenu));
+                    }
+                  }
+                : null,
             child: Text('Perbarui Isi Keranjang',
                 style: normalText.copyWith(fontSize: 14, color: Colors.white))),
       ),

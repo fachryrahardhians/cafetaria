@@ -19,3 +19,7 @@ class MenuInCartRetrieveFailed extends MenuInCartState {
   final String message;
   const MenuInCartRetrieveFailed(this.message);
 }
+
+class MenuInCartDeleted extends MenuInCartState {}
+
+class MenuInCartUpdated extends MenuInCartState {}
