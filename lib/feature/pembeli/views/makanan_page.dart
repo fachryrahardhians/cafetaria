@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_recomended_menu_bloc/list_recomended_menu_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/keranjang_page.dart';
@@ -47,6 +48,7 @@ class ListMenu extends StatefulWidget {
   final int? jumlahUlasan;
   final int? minPrice;
   final int? maxPrice;
+
   const ListMenu(
       {Key? key,
       required this.title,
@@ -67,12 +69,18 @@ class _ListMenuState extends State<ListMenu> {
   _ListMenuState(this.title, this.idMerchant);
 
   late ListMenuBloc _listMenuBloc;
+  late AddMenuToCartBloc _addMenuToCartBloc;
   late ListRecomendedMenuBloc _listRecomendedMenuBloc;
 
+  int pesananCount = 0;
+  int totalHarga = 0;
+  List<Keranjang> listMenuInKeranjang = [];
   @override
   void initState() {
     _listMenuBloc =
         ListMenuBloc(menuRepository: context.read<MenuRepository>());
+    _addMenuToCartBloc =
+        AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     _listRecomendedMenuBloc =
         ListRecomendedMenuBloc(menuRepository: context.read<MenuRepository>());
     super.initState();
@@ -80,168 +88,292 @@ class _ListMenuState extends State<ListMenu> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: const Color(0xffFCFBFC),
-      appBar: AppBar(
-          iconTheme: const IconThemeData(color: Color(0xffee3124)),
-          backgroundColor: const Color(0xffFCFBFC),
-          elevation: 0),
-      body: MultiBlocProvider(
-          providers: [
-            BlocProvider(
-                create: ((context) =>
-                    _listMenuBloc..add(GetListMenu(idMerchant)))),
-            BlocProvider(
-                create: ((context) => _listRecomendedMenuBloc
-                  ..add(GetListRecomendedMenu(idMerchant))))
-          ],
-          child: SingleChildScrollView(
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 24, vertical: 16.0),
-                  child: Column(
-                    children: [
-                      Text(
-                        title,
-                        style: const TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xff333435)),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      _merchantInfo(widget.rating, widget.jumlahUlasan,
-                          widget.minPrice, widget.maxPrice),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 3),
-                      _customerInfo(),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 3),
-                      Text(
-                        'REKOMENDASI UNTUKMU',
-                        style:
-                            normalText.copyWith(color: const Color(0xff8C8F93)),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      BlocBuilder<ListRecomendedMenuBloc,
-                          ListRecomendedMenuState>(builder: ((context, state) {
-                        if (state.status == ListRecomendedMenuStatus.loading) {
-                          return const CircularProgressIndicator();
-                        } else if (state.status ==
-                            ListRecomendedMenuStatus.failure) {
-                          return Text(state.errorMessage.toString());
-                        } else if (state.status ==
-                            ListRecomendedMenuStatus.success) {
-                          return GridView.builder(
-                            shrinkWrap: true,
-                            itemCount: state.items!.length,
-                            gridDelegate:
-                                SliverGridDelegateWithFixedCrossAxisCount(
-                              crossAxisCount: 2,
-                              mainAxisSpacing: SizeConfig.safeBlockVertical * 2,
-                            ),
-                            physics: const ScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              return makananGrid(
-                                  Assets.images.illFood.path,
-                                  state.items![index].name.toString(),
-                                  state.items![index].price.toString(),
-                                  false,
-                                  '');
-                            },
-                          );
-                        } else {
-                          return const SizedBox();
-                        }
-                      })),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      Text(
-                        'AYAM',
-                        style:
-                            normalText.copyWith(color: const Color(0xff8C8F93)),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      BlocBuilder<ListMenuBloc, ListMenuState>(
-                          builder: ((context, state) {
-                        if (state.status == ListMenuStatus.loading) {
-                          return const CircularProgressIndicator();
-                        } else if (state.status == ListMenuStatus.failure) {
-                          return Text(state.errorMessage.toString());
-                        } else if (state.status == ListMenuStatus.success) {
-                          return ListView.separated(
-                            shrinkWrap: true,
-                            physics: const ScrollPhysics(),
-                            itemCount: state.items!.length,
-                            itemBuilder: (context, index) {
-                              return GestureDetector(
-                                onTap: () async {
-                                  await Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                          builder: (_) => SelectToppingPage(
-                                                photo:
-                                                    Assets.images.illFood.path,
-                                              )));
-                                },
-                                child: makananList(
-                                    Assets.images.illFood.path,
-                                    state.items![index].name.toString(),
-                                    state.items![index].price ?? 0,
-                                    false,
-                                    0,
-                                    state.items![index].menuId.toString()),
-                              );
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                  height: SizeConfig.safeBlockVertical * 1);
-                            },
-                          );
-                        } else {
-                          return const SizedBox();
-                        }
-                      })),
-                    ],
-                  )))),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-        child: SizedBox(
-          width: SizeConfig.screenWidth,
-          height: SizeConfig.safeBlockVertical * 6.5,
-          child: ElevatedButton(
-              style: ButtonStyle(
-                  padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
-                  elevation: MaterialStateProperty.all(0),
-                  backgroundColor:
-                      MaterialStateProperty.all(const Color(0xffee3124)),
-                  foregroundColor:
-                      MaterialStateProperty.all(const Color(0xffee3124)),
-                  shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                      side: BorderSide.none))),
-              onPressed: () {
-                Navigator.push(context,
-                    MaterialPageRoute(builder: (_) => KeranjangPage()));
-              },
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  RichText(
-                      text: TextSpan(
-                          text: 'Keranjang • ',
-                          style: normalText.copyWith(
-                              fontSize: 14, color: Colors.white),
-                          children: [
-                        TextSpan(
-                            text: '0' + ' Pesanan',
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: ((context) => _addMenuToCartBloc..add(GetMenusInCart()))),
+          BlocProvider(create: ((context) => _listMenuBloc)),
+          BlocProvider(
+              create: ((context) => _listRecomendedMenuBloc
+                ..add(GetListRecomendedMenu(idMerchant)))),
+        ],
+        child: WillPopScope(
+          onWillPop: () {
+            Navigator.pop(context);
+            return Future.value(true);
+          },
+          child: Scaffold(
+              backgroundColor: const Color(0xffFCFBFC),
+              appBar: AppBar(
+                  iconTheme: const IconThemeData(color: Color(0xffee3124)),
+                  backgroundColor: const Color(0xffFCFBFC),
+                  elevation: 0),
+              body: SingleChildScrollView(
+                  child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 24, vertical: 16.0),
+                      child: Column(
+                        children: [
+                          Text(
+                            title,
+                            style: const TextStyle(
+                                fontSize: 16,
+                                fontWeight: FontWeight.w700,
+                                color: Color(0xff333435)),
+                          ),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                          _merchantInfo(widget.rating, widget.jumlahUlasan,
+                              widget.minPrice, widget.maxPrice),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                          _customerInfo(),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                          Text(
+                            'REKOMENDASI UNTUKMU',
                             style: normalText.copyWith(
-                                fontSize: 14, color: Colors.white)),
-                      ])),
-                  Text('Rp. ' + '0',
-                      style: normalText.copyWith(
-                          fontSize: 14, color: Colors.white)),
-                ],
+                                color: const Color(0xff8C8F93)),
+                          ),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                          BlocBuilder<ListRecomendedMenuBloc,
+                                  ListRecomendedMenuState>(
+                              builder: ((context, state) {
+                            if (state.status ==
+                                ListRecomendedMenuStatus.loading) {
+                              return const CircularProgressIndicator();
+                            } else if (state.status ==
+                                ListRecomendedMenuStatus.failure) {
+                              return Text(state.errorMessage.toString());
+                            } else if (state.status ==
+                                ListRecomendedMenuStatus.success) {
+                              return GridView.builder(
+                                shrinkWrap: true,
+                                itemCount: state.items!.length,
+                                gridDelegate:
+                                    SliverGridDelegateWithFixedCrossAxisCount(
+                                  crossAxisCount: 2,
+                                  mainAxisSpacing:
+                                      SizeConfig.safeBlockVertical * 2,
+                                ),
+                                physics: const ScrollPhysics(),
+                                itemBuilder: (context, index) {
+                                  var a = listMenuInKeranjang.firstWhere(
+                                      (element) =>
+                                          element.menuId ==
+                                          state.items![index].menuId,
+                                      orElse: (() => Keranjang(
+                                          quantity: -1, totalPrice: -1)));
+                                  return GestureDetector(
+                                      onTap: () async {
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    SelectToppingPage(
+                                                      quantity: a.quantity != -1
+                                                          ? a.quantity
+                                                          : 0,
+                                                      model:
+                                                          state.items![index],
+                                                    ))).then((val) => {
+                                              _addMenuToCartBloc
+                                                  .add(GetMenusInCart())
+                                            });
+                                      },
+                                      child: makananGrid(
+                                          state.items![index].image.toString(),
+                                          state.items![index].name.toString(),
+                                          state.items![index].price.toString(),
+                                          false,
+                                          ''));
+                                },
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          })),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                          Text(
+                            'AYAM',
+                            style: normalText.copyWith(
+                                color: const Color(0xff8C8F93)),
+                          ),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                          BlocBuilder<ListMenuBloc, ListMenuState>(
+                              builder: ((context, state) {
+                            if (state.status == ListMenuStatus.loading) {
+                              return const CircularProgressIndicator();
+                            } else if (state.status == ListMenuStatus.failure) {
+                              return Text(state.errorMessage.toString());
+                            } else if (state.status == ListMenuStatus.success) {
+                              return ListView.separated(
+                                shrinkWrap: true,
+                                physics: const ScrollPhysics(),
+                                itemCount: state.items!.length,
+                                itemBuilder: (context, index) {
+                                  late Widget makananItem;
+
+                                  var a = listMenuInKeranjang.firstWhere(
+                                      (element) =>
+                                          element.menuId ==
+                                          state.items![index].menuId,
+                                      orElse: (() => Keranjang(
+                                          quantity: -1, totalPrice: -1)));
+                                  if (a.quantity != -1) {
+                                    makananItem = makananList(
+                                        state.items![index].image.toString(),
+                                        state.items![index].name.toString(),
+                                        state.items![index].price ?? 0,
+                                        false,
+                                        0,
+                                        state.items![index].menuId.toString(),
+                                        a.quantity);
+                                  } else {
+                                    makananItem = makananList(
+                                        state.items![index].image.toString(),
+                                        state.items![index].name.toString(),
+                                        state.items![index].price ?? 0,
+                                        false,
+                                        0,
+                                        state.items![index].menuId.toString(),
+                                        a.quantity);
+                                  }
+
+                                  return GestureDetector(
+                                      onTap: () async {
+                                        await Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) =>
+                                                    SelectToppingPage(
+                                                      quantity: a.quantity != -1
+                                                          ? a.quantity
+                                                          : 0,
+                                                      model:
+                                                          state.items![index],
+                                                    ))).then((val) => {
+                                              _addMenuToCartBloc
+                                                  .add(GetMenusInCart())
+                                            });
+                                      },
+                                      child: makananItem);
+                                },
+                                separatorBuilder: (context, index) {
+                                  return SizedBox(
+                                      height: SizeConfig.safeBlockVertical * 1);
+                                },
+                              );
+                            } else {
+                              return const SizedBox();
+                            }
+                          })),
+                        ],
+                      ))),
+              bottomNavigationBar: Padding(
+                padding:
+                    const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                child: SizedBox(
+                  width: SizeConfig.screenWidth,
+                  height: SizeConfig.safeBlockVertical * 6.5,
+                  child: ElevatedButton(
+                    style: ButtonStyle(
+                        padding:
+                            MaterialStateProperty.all(const EdgeInsets.all(16)),
+                        elevation: MaterialStateProperty.all(0),
+                        backgroundColor:
+                            MaterialStateProperty.all(const Color(0xffee3124)),
+                        foregroundColor:
+                            MaterialStateProperty.all(const Color(0xffee3124)),
+                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8),
+                            side: BorderSide.none))),
+                    onPressed: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => KeranjangPage(
+                                    merchantId: idMerchant,
+                                  )));
+                    },
+                    child: BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
+                      builder: ((context, state) {
+                        if (state is MenuInCartRetrieveLoading) {
+                          return const CircularProgressIndicator();
+                        } else if (state is MenuInCartRetrieved) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                  text: TextSpan(
+                                      text: 'Keranjang • ',
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white),
+                                      children: [
+                                    TextSpan(
+                                        text:
+                                            state.menuInCart.length.toString() +
+                                                ' Pesanan',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white)),
+                                  ])),
+                              Text('Rp. ' + state.totalPrice.toString(),
+                                  style: normalText.copyWith(
+                                      fontSize: 14, color: Colors.white)),
+                            ],
+                          );
+                        } else if (state is MenuInCartRetrieveFailed) {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                  text: TextSpan(
+                                      text: 'Keranjang • ',
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white),
+                                      children: [
+                                    TextSpan(
+                                        text: '0' + ' Pesanan',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white)),
+                                  ])),
+                              Text('Rp. ' + '0',
+                                  style: normalText.copyWith(
+                                      fontSize: 14, color: Colors.white)),
+                            ],
+                          );
+                        } else {
+                          return Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              RichText(
+                                  text: TextSpan(
+                                      text: 'Keranjang • ',
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white),
+                                      children: [
+                                    TextSpan(
+                                        text: '0' + ' Pesanan',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white)),
+                                  ])),
+                              Text('Rp. ' + '0',
+                                  style: normalText.copyWith(
+                                      fontSize: 14, color: Colors.white)),
+                            ],
+                          );
+                        }
+                      }),
+                      listener: (context, state) {
+                        if (state is MenuInCartRetrieved) {
+                          pesananCount = state.menuInCart.length;
+                          totalHarga = state.totalPrice;
+                          listMenuInKeranjang = state.menuInCart;
+                          _listMenuBloc.add(GetListMenu(idMerchant));
+                        }
+                      },
+                    ),
+                  ),
+                ),
               )),
-        ),
-      ),
-    );
+        ));
   }
 
   Widget _merchantInfo(
@@ -314,30 +446,30 @@ class _ListMenuState extends State<ListMenu> {
     );
   }
 
-  Widget _listMenu() {
-    return ListView.separated(
-      shrinkWrap: true,
-      physics: const ScrollPhysics(),
-      itemCount: 3,
-      itemBuilder: (context, index) {
-        return GestureDetector(
-          onTap: () async {
-            await Navigator.push(
-                context,
-                MaterialPageRoute(
-                    builder: (_) => SelectToppingPage(
-                          photo: Assets.images.illFood.path,
-                        )));
-          },
-          child: makananList(Assets.images.illFood.path, 'itemName', 0, false,
-              0, 'itemId$index'),
-        );
-      },
-      separatorBuilder: (context, index) {
-        return SizedBox(height: SizeConfig.safeBlockVertical * 1);
-      },
-    );
-  }
+  // Widget _listMenu() {
+  //   return ListView.separated(
+  //     shrinkWrap: true,
+  //     physics: const ScrollPhysics(),
+  //     itemCount: 3,
+  //     itemBuilder: (context, index) {
+  //       return GestureDetector(
+  //         onTap: () async {
+  //           await Navigator.push(
+  //               context,
+  //               MaterialPageRoute(
+  //                   builder: (_) => SelectToppingPage(
+  //                         photo: Assets.images.illFood.path,
+  //                       )));
+  //         },
+  //         child: makananList(Assets.images.illFood.path, 'itemName', 0, false,
+  //             0, 'itemId$index'),
+  //       );
+  //     },
+  //     separatorBuilder: (context, index) {
+  //       return SizedBox(height: SizeConfig.safeBlockVertical * 1);
+  //     },
+  //   );
+  // }
 
   Widget _customerInfo() {
     return Container(
@@ -404,10 +536,13 @@ class _ListMenuState extends State<ListMenu> {
             width: SizeConfig.safeBlockHorizontal * 30,
             height: SizeConfig.safeBlockHorizontal * 30,
             clipBehavior: Clip.hardEdge,
+            child: Image.network(
+              image,
+              fit: BoxFit.cover,
+            ),
             decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(8),
-                image: DecorationImage(
-                    image: AssetImage(image), fit: BoxFit.fill)),
+              borderRadius: BorderRadius.circular(8),
+            ),
           ),
           SizedBox(
             height: SizeConfig.safeBlockVertical * 1,
@@ -433,14 +568,14 @@ class _ListMenuState extends State<ListMenu> {
   }
 
   Widget makananList(String image, String name, int price, bool promo,
-      double discount, String id) {
+      double discount, String id, int quantity) {
     return IntrinsicHeight(
       child: OverflowBox(
         maxWidth: SizeConfig.screenWidth,
         child: Row(
           children: [
             Visibility(
-              visible: true,
+              visible: quantity != -1,
               child: Container(width: 4, color: const Color(0xffEA001E)),
             ),
             const SizedBox(width: 20),
@@ -450,10 +585,17 @@ class _ListMenuState extends State<ListMenu> {
                 width: SizeConfig.safeBlockHorizontal * 20,
                 height: SizeConfig.safeBlockHorizontal * 20,
                 clipBehavior: Clip.hardEdge,
+                child: Image.network(
+                  image,
+                  fit: BoxFit.cover,
+                ),
                 decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    image: DecorationImage(
-                        image: AssetImage(image), fit: BoxFit.fill)),
+                  borderRadius: BorderRadius.circular(8),
+                  // image:
+                  // DecorationImage(
+                  //     image:
+                  //     AssetImage(image), fit: BoxFit.fill)
+                ),
               ),
             ),
             SizedBox(
@@ -463,11 +605,14 @@ class _ListMenuState extends State<ListMenu> {
                 child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('2x $name',
+                Text(quantity != -1 ? '${quantity}x $name' : name,
                     style: normalText.copyWith(
                         fontSize: 15,
-                        fontWeight: FontWeight.w500,
-                        color: const Color(0xffEA001E))),
+                        fontWeight:
+                            quantity != -1 ? FontWeight.w500 : FontWeight.w400,
+                        color: quantity != -1
+                            ? const Color(0xffEA001E)
+                            : Colors.black)),
                 Text(
                   'Rp. $price',
                   style: normalText.copyWith(fontSize: 15),

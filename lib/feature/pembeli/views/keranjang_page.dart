@@ -1,5 +1,6 @@
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
+import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
@@ -8,11 +9,13 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_switch/flutter_switch.dart';
 import 'package:formz/formz.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
 class KeranjangPage extends StatefulWidget {
-  const KeranjangPage({Key? key}) : super(key: key);
+  final String merchantId;
+  const KeranjangPage({Key? key, required this.merchantId}) : super(key: key);
 
   @override
   State<KeranjangPage> createState() => _KeranjangPageState();
@@ -30,7 +33,10 @@ class _KeranjangPageState extends State<KeranjangPage> {
   DateTime _selectedDay = DateTime.now().add(const Duration(days: 1));
   DateTime _focusedDay = DateTime.now().add(const Duration(days: 1));
   DateTime _availableDay = DateTime.now();
+  List<Keranjang> menuInKeranjang = [];
 
+  int subTotalPrice = 0;
+  int biayaPemesanan = 2000;
   // _selectDate(BuildContext context) async {
   //   final DateTime? picked = await showDatePicker(
   //       context: context,
@@ -60,10 +66,17 @@ class _KeranjangPageState extends State<KeranjangPage> {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) => AddOrderBloc(
-        orderRepository: context.read<OrderRepository>(),
-      ),
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+            create: (context) => AddOrderBloc(
+                  orderRepository: context.read<OrderRepository>(),
+                )),
+        BlocProvider(
+            create: (context) => MenuInCartBloc(
+                  menuRepository: context.read<MenuRepository>(),
+                )..add(GetMenusInCart()))
+      ],
       child: Scaffold(
         backgroundColor: const Color(0xffFCFBFC),
         appBar: AppBar(
@@ -79,16 +92,15 @@ class _KeranjangPageState extends State<KeranjangPage> {
           ),
           centerTitle: true,
         ),
-        body:
-            BlocBuilder<AddOrderBloc, AddOrderState>(builder: (context, state) {
-          return ListView(
+        body: ListView(
             padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
             children: [
               _customerInfo(),
               SizedBox(height: SizeConfig.safeBlockVertical * 2),
               _booking(),
               SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              _bookingOption(context),
+              BlocBuilder<AddOrderBloc, AddOrderState>(
+                  builder: ((context, state) => _bookingOption(context))),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -104,16 +116,30 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 ],
               ),
               SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              ListView.separated(
-                  physics: const NeverScrollableScrollPhysics(),
-                  shrinkWrap: true,
-                  itemBuilder: (context, index) {
-                    return item();
-                  },
-                  separatorBuilder: (context, index) => SizedBox(
-                        height: SizeConfig.safeBlockVertical * 3,
-                      ),
-                  itemCount: 3),
+              BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                  builder: (context, state) {
+                if (state is MenuInCartRetrieved) {
+                  menuInKeranjang = state.menuInCart;
+                  subTotalPrice = state.totalPrice;
+                  return ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        return item(
+                            menuInKeranjang[index].quantity,
+                            menuInKeranjang[index].name.toString(),
+                            menuInKeranjang[index].totalPrice);
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: SizeConfig.safeBlockVertical * 3,
+                          ),
+                      itemCount: menuInKeranjang.length);
+                } else if (state is MenuInCartRetrieveFailed) {
+                  return Text(state.message);
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              }),
               SizedBox(height: SizeConfig.safeBlockVertical * 3),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -123,7 +149,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     style: textStyle,
                   ),
                   Text(
-                    'Rp 0',
+                    'Rp $subTotalPrice',
                     style: textStyle.copyWith(fontWeight: FontWeight.w500),
                   )
                 ],
@@ -145,7 +171,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   ),
                   const Spacer(),
                   Text(
-                    'Rp 2000',
+                    'Rp $biayaPemesanan',
                     style: textStyle.copyWith(fontWeight: FontWeight.w500),
                   )
                 ],
@@ -197,16 +223,21 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     'TOTAL PEMBAYARAN',
                     style: textStyle.copyWith(fontWeight: FontWeight.w500),
                   ),
-                  Text(
-                    'Rp 0',
-                    style: textStyle.copyWith(
-                        fontWeight: FontWeight.w500, fontSize: 15),
-                  )
+                  BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                      builder: ((context, state) {
+                    if (state is MenuInCartRetrieved) {
+                      return Text(
+                        'Rp ${state.totalPrice + biayaPemesanan}',
+                        style: textStyle.copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 15),
+                      );
+                    } else {
+                      return SizedBox();
+                    }
+                  }))
                 ],
-              ),
-            ],
-          );
-        }),
+              )
+            ]),
         bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
           listener: (context, state) {
             if (state.formzStatus == FormzStatus.submissionSuccess) {
@@ -237,7 +268,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     ? () {
                         context.read<AddOrderBloc>().add(
                               SaveOrder(
+                                  merchantId: widget.merchantId,
+                                  listKeranjang: menuInKeranjang,
                                   preOrder: _preorder,
+                                  grandTotalPrice:
+                                      subTotalPrice + biayaPemesanan,
                                   timestamp: DateTime.now().toString(),
                                   pickupDate:
                                       _selectedDay.toString().split(' ')[0] +
@@ -250,11 +285,14 @@ class _KeranjangPageState extends State<KeranjangPage> {
               return CFButton.primary(
                 child: (state.formzStatus == FormzStatus.submissionInProgress)
                     ? const CircularProgressIndicator()
-                    : const Text('SIMPAN'),
+                    : const Text('PESAN'),
                 onPressed: () {
                   context.read<AddOrderBloc>().add(
                         SaveOrder(
+                            merchantId: widget.merchantId,
+                            listKeranjang: menuInKeranjang,
                             preOrder: _preorder,
+                            grandTotalPrice: subTotalPrice + biayaPemesanan,
                             timestamp: DateTime.now().toString(),
                             pickupDate: _selectedDay.toString().split(' ')[0] +
                                 ' 08:00:00.000'),
@@ -544,19 +582,19 @@ class _KeranjangPageState extends State<KeranjangPage> {
         ));
   }
 
-  Widget item() {
+  Widget item(int itemCount, String itemName, int totalPrice) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Text('2x',
+          Text('${itemCount}x',
               style: textStyle.copyWith(
                   fontWeight: FontWeight.w500, fontSize: 13)),
           SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              Text('Item name',
+              Text(itemName,
                   style: textStyle.copyWith(
                       fontWeight: FontWeight.w500, fontSize: 13)),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
@@ -574,7 +612,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
           ),
           const Spacer(),
           Text(
-            'Rp. 0',
+            'Rp. $totalPrice',
             style:
                 textStyle.copyWith(fontWeight: FontWeight.w500, fontSize: 13),
           )

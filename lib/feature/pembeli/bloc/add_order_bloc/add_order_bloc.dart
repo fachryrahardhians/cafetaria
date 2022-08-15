@@ -4,6 +4,7 @@ import 'package:bloc/bloc.dart';
 import 'package:cafetaria/feature/pembeli/model/order_input.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 
 part 'add_order_event.dart';
@@ -15,9 +16,7 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
     required OrderRepository orderRepository,
   })  : _orderRepository = orderRepository,
         super(const AddOrderState()) {
-    ///
     on<SaveOrder>(_saveOrder);
-
     on<OrderChange>(_orderChange);
   }
 
@@ -30,31 +29,29 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
     ));
 
     try {
+      var listMenu = event.listKeranjang.map((e) {
+        return OrderMenu(
+            menuId: e.menuId,
+            notes: e.notes,
+            price: e.price,
+            qty: e.quantity,
+            toppings: [OrderTopping(items: [])]);
+      }).toList();
       await _orderRepository.addOrder(HistoryModel(
-          cash: 75000,
+          cash: 0,
           change: '0',
-          deviceToken: '',
-          orderId: '',
+          deviceToken: null,
+          orderId: null,
           isCutlery: true,
           isPreorder: event.preOrder,
           pickupDate: event.pickupDate,
           timestamp: event.timestamp,
           statusOrder: 'process',
           typePickup: 'by user',
-          total: 75000,
+          total: event.grandTotalPrice,
           userId: '7goTPZo9N2c9O1jm7A6bL0YIyMb2',
-          merchantId: 'merchant1',
-          menus: const [
-            OrderMenu(
-                menuId: 'menu-1',
-                notes: 'sambal dipisah',
-                price: 10500,
-                qty: 50,
-                toppings: [
-                  OrderTopping(
-                      items: [ToppingItem(name: 'Level 1-5', price: 1000)])
-                ])
-          ]));
+          merchantId: event.merchantId,
+          menus: listMenu));
 
       emit(state.copyWith(
         formzStatus: FormzStatus.submissionSuccess,

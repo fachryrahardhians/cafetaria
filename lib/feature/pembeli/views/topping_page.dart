@@ -1,132 +1,166 @@
+import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:merchant_repository/merchant_repository.dart';
 
 enum type { Sama, Beda }
 
 class SelectToppingPage extends StatelessWidget {
-  final String photo;
-  const SelectToppingPage({Key? key, required this.photo}) : super(key: key);
+  final MenuModel model;
+  final int quantity;
+  const SelectToppingPage(
+      {Key? key, required this.model, required this.quantity})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return SelectTopping(photo: photo);
+    return SelectTopping(
+      item: model,
+      quantity: quantity,
+    );
   }
 }
 
 class SelectTopping extends StatefulWidget {
-  final String photo;
-  const SelectTopping({Key? key, required this.photo}) : super(key: key);
+  final MenuModel item;
+  final int quantity;
+  const SelectTopping({Key? key, required this.item, required this.quantity})
+      : super(key: key);
 
   @override
-  State<SelectTopping> createState() => _SelectToppingState(photo);
+  State<SelectTopping> createState() => _SelectToppingState(item);
 }
 
 class _SelectToppingState extends State<SelectTopping> {
   type? _toppingType = type.Sama;
-  String photo;
-  _SelectToppingState(this.photo);
+  MenuModel item;
+  _SelectToppingState(this.item);
   final TextEditingController _catatanController = TextEditingController();
-  final TextEditingController _counterController =
-      TextEditingController(text: '0');
+  final TextEditingController _counterController = TextEditingController();
+
+  late AddMenuToCartBloc addMenuToCartBloc;
   int qty = 0;
 
   @override
+  void initState() {
+    addMenuToCartBloc =
+        AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
+    qty = widget.quantity;
+    _counterController.text = qty.toString();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return SafeArea(
-      child: Scaffold(
-        backgroundColor: const Color(0xffFCFBFC),
-        appBar: AppBar(
-          iconTheme: const IconThemeData(color: Color(0xffee3124)),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            'itemName',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff333435)),
-          ),
-          leading: GestureDetector(
-              onTap: () => Navigator.pop(context),
-              child: const Icon(Icons.clear_rounded)),
-          centerTitle: true,
-        ),
-        body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          children: [
-            _menuInfo(),
-            SizedBox(height: SizeConfig.safeBlockVertical * 2),
-            Text(
-              'Topping',
-              style: normalText.copyWith(fontSize: 14),
-            ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-              children: [
-                SizedBox(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Radio<type>(
-                        value: type.Sama,
-                        groupValue: _toppingType!,
-                        onChanged: (type? value) {
-                          setState(() {
-                            _toppingType = value;
-                          });
-                        },
-                      ),
-                      SizedBox(width: 3),
-                      Text('Topping Sama')
-                    ],
+    return BlocProvider(
+        create: ((context) => addMenuToCartBloc),
+        child: BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
+            listener: ((context, state) {
+              if (state is MenuAddedToTheCart) {
+                Navigator.pop(context);
+              }
+            }),
+            child: SafeArea(
+              child: Scaffold(
+                backgroundColor: const Color(0xffFCFBFC),
+                appBar: AppBar(
+                  iconTheme: const IconThemeData(color: Color(0xffee3124)),
+                  backgroundColor: Colors.white,
+                  elevation: 0,
+                  title: Text(
+                    item.name.toString(),
+                    style: const TextStyle(
+                        fontSize: 16,
+                        fontWeight: FontWeight.w700,
+                        color: Color(0xff333435)),
                   ),
+                  leading: GestureDetector(
+                      onTap: () => Navigator.pop(context),
+                      child: const Icon(Icons.clear_rounded)),
+                  centerTitle: true,
                 ),
-                SizedBox(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Radio<type>(
-                        value: type.Beda,
-                        groupValue: _toppingType!,
-                        onChanged: (type? value) {
-                          setState(() {
-                            _toppingType = value;
-                          });
-                        },
-                      ),
-                      SizedBox(width: 3),
-                      Text('Topping Beda')
-                    ],
-                  ),
-                )
-              ],
-            ),
-            Text(
-              'Topping',
-              style: normalText.copyWith(fontSize: 14),
-            ),
-            listTopping(),
-            Text(
-              'CATATAN UNTUK PENJUAL',
-              style: normalText.copyWith(
-                  fontSize: 12,
-                  fontWeight: FontWeight.w500,
-                  color: const Color(0xff5C5E61).withOpacity(.8)),
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 1),
-            catatan(),
-            SizedBox(height: SizeConfig.safeBlockVertical * 2),
-            quantity(),
-          ],
-        ),
-        bottomNavigationBar: bottomNavBar(),
-      ),
-    );
+                body: ListView(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  children: [
+                    _menuInfo(),
+                    SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                    Text(
+                      'Topping',
+                      style: normalText.copyWith(fontSize: 14),
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                      children: [
+                        SizedBox(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Radio<type>(
+                                value: type.Sama,
+                                groupValue: _toppingType!,
+                                onChanged: (type? value) {
+                                  setState(() {
+                                    _toppingType = value;
+                                  });
+                                },
+                              ),
+                              SizedBox(width: 3),
+                              Text('Topping Sama')
+                            ],
+                          ),
+                        ),
+                        SizedBox(
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Radio<type>(
+                                value: type.Beda,
+                                groupValue: _toppingType!,
+                                onChanged: (type? value) {
+                                  setState(() {
+                                    _toppingType = value;
+                                  });
+                                },
+                              ),
+                              SizedBox(width: 3),
+                              Text('Topping Beda')
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    Text(
+                      'Topping',
+                      style: normalText.copyWith(fontSize: 14),
+                    ),
+                    listTopping(),
+                    Text(
+                      'CATATAN UNTUK PENJUAL',
+                      style: normalText.copyWith(
+                          fontSize: 12,
+                          fontWeight: FontWeight.w500,
+                          color: const Color(0xff5C5E61).withOpacity(.8)),
+                    ),
+                    SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                    catatan(),
+                    SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                    quantity(),
+                  ],
+                ),
+                bottomNavigationBar: bottomNavBar(),
+              ),
+            )));
   }
 
   Widget _menuInfo() {
+    var formatter = NumberFormat('Rp #,##,000');
     return Container(
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(8),
@@ -141,12 +175,13 @@ class _SelectToppingState extends State<SelectTopping> {
               width: SizeConfig.screenWidth,
               height: SizeConfig.safeBlockVertical * 20,
               clipBehavior: Clip.hardEdge,
+              child: Image.network(
+                item.image.toString(),
+                fit: BoxFit.cover,
+              ),
               decoration: BoxDecoration(
-                  image: DecorationImage(
-                      image: AssetImage(photo), fit: BoxFit.cover),
-                  borderRadius: const BorderRadius.only(
-                      topRight: Radius.circular(8),
-                      topLeft: Radius.circular(8))),
+                borderRadius: BorderRadius.circular(8),
+              ),
             ),
           ),
           Container(
@@ -154,14 +189,13 @@ class _SelectToppingState extends State<SelectTopping> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const Text('Tteokbokki Polos Reguler'),
+                Text(item.name.toString()),
                 SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                const Text('Rp 0'),
+                Text(formatter.format(item.price)),
                 SizedBox(height: SizeConfig.safeBlockVertical * 2),
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 70,
-                  child: const Text(
-                      'Nasinya gurih karena dibumbui serai, santan, dan daun kemangi. Sementara ayamnya diolesi margarin dan kecap manis. Mantap!'),
+                  child: Text(item.desc.toString()),
                 )
               ],
             ),
@@ -348,7 +382,11 @@ class _SelectToppingState extends State<SelectTopping> {
                     borderRadius: BorderRadius.circular(8),
                     side: BorderSide.none))),
             onPressed: () {
-              Navigator.pop(context);
+              addMenuToCartBloc.add(AddMenuToCart(
+                  menuModel: item,
+                  quantity: qty,
+                  totalPrice: (item.price ?? 0) * qty,
+                  notes: _catatanController.text));
             },
             child: Text('Perbarui Isi Keranjang',
                 style: normalText.copyWith(fontSize: 14, color: Colors.white))),
