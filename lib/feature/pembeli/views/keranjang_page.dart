@@ -28,6 +28,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
       fontWeight: FontWeight.w700, fontSize: 24, color: Color(0xff2E3032));
   bool alat = false;
   bool _preorder = false;
+  bool diantar = false;
   //TextEditingController _dateController = TextEditingController();
   //DateTime selectedDate = DateTime.now();
   DateTime _selectedDay = DateTime.now().add(const Duration(days: 1));
@@ -99,8 +100,38 @@ class _KeranjangPageState extends State<KeranjangPage> {
               SizedBox(height: SizeConfig.safeBlockVertical * 2),
               _booking(),
               SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              BlocBuilder<AddOrderBloc, AddOrderState>(
-                  builder: ((context, state) => _bookingOption(context))),
+              _bookingOption(context),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(diantar ? 'Diantar' : 'Ambil Sendiri'),
+                        TextButton(
+                            onPressed: () => showDialog(
+                                context: context,
+                                builder: (builder) => _popUpPanel()),
+                            style: TextButton.styleFrom(
+                                minimumSize: Size.zero,
+                                padding: EdgeInsets.zero,
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap),
+                            child: Text(
+                              "Ganti",
+                              style: textStyle.copyWith(
+                                  color: const Color(0xffee3124), fontSize: 11),
+                            ))
+                      ]),
+                  Text(
+                    diantar
+                        ? 'Pesananmu akan diantar ke apartemen'
+                        : 'Kamu ambil sendiri pesananmu di toko',
+                    style: textStyle.copyWith(color: const Color(0xff8C8F93)),
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -618,6 +649,158 @@ class _KeranjangPageState extends State<KeranjangPage> {
           )
         ],
       ),
+    );
+  }
+
+  Widget _popUpPanel() {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.36,
+      minChildSize: 0.36,
+      maxChildSize: 0.36,
+      builder: (context, scrollController) {
+        return Container(
+          alignment: Alignment.bottomCenter,
+          decoration: BoxDecoration(
+              borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+              color: Colors.white),
+          child: Column(
+            children: [
+              Container(
+                height: 30,
+                alignment: Alignment.center,
+                child: Container(
+                  width: 100,
+                  height: 4,
+                  decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(100),
+                      color: Color(0xffE5E6E6)),
+                ),
+              ),
+              _card('Ambil Sendiri', 'Kamu ambil sendiri pesananmu di toko',
+                  "assets/images/ill_merchants.png", !diantar),
+              _card('Diantar', 'Pesananmu akan diantar ke apartemen',
+                  "assets/images/ill_home.png", diantar),
+            ],
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _card(String title, String desc, String image, bool isVisible) {
+    return Card(
+      margin: const EdgeInsets.only(top: 16, left: 24, right: 24),
+      elevation: 5,
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      child: Padding(
+          padding: const EdgeInsets.only(top: 24, left: 12, bottom: 24),
+          child: InkWell(
+            onTap: () {
+              // setState(() {
+              //   diantar = !diantar;
+              // });
+              Navigator.pop(context);
+              if (title == 'Diantar') {
+                showDialog(
+                    context: context,
+                    builder: (BuildContext context) => _notAvailableAlert());
+              }
+            },
+            child: Column(
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    SizedBox(
+                      width: 43,
+                      height: 43,
+                      child: Image.asset(
+                        image,
+                        fit: BoxFit.contain,
+                      ),
+                    ),
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          title,
+                          style: TextStyle(
+                              color: Color(0xff2E3032),
+                              fontSize: 14,
+                              fontWeight: FontWeight.w700),
+                        ),
+                        SizedBox(height: 6),
+                        Text(
+                          desc,
+                          style: TextStyle(
+                              color: Color(0xffB1b5BA),
+                              fontWeight: FontWeight.w400,
+                              fontSize: 12),
+                        ),
+                      ],
+                    ),
+                    Visibility(
+                        visible: isVisible,
+                        child: Icon(
+                          Icons.check,
+                          color: Color(0xffEE3124),
+                        ))
+                  ],
+                )
+              ],
+            ),
+          )),
+    );
+  }
+
+  Widget _notAvailableAlert() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/ill_sad.png"),
+          Text(
+            "Mohon maaf fitur belum tersedia untuk saat ini",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff222222),
+                fontSize: 18,
+                fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+          Text(
+            "Kami mohon maaf untuk fitur pesanan diantar keapartemen untuk saat ini masih belum tersedia.",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff808285),
+                fontSize: 12,
+                fontWeight: FontWeight.w400),
+          )
+        ],
+      ),
+      actions: [
+        SizedBox(
+          width: double.infinity,
+          child: ElevatedButton(
+            style: ButtonStyle(
+                padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                elevation: MaterialStateProperty.all(0),
+                backgroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                foregroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                    side: BorderSide.none))),
+            onPressed: () {
+              Navigator.pop(context);
+            },
+            child: Text("PILIH KEMBALI PENGAMBILAN",
+                style: TextStyle(color: Colors.white, fontSize: 14)),
+          ),
+        ),
+      ],
     );
   }
 }
