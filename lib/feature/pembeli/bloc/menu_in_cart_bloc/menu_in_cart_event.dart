@@ -8,3 +8,13 @@ abstract class MenuInCartEvent extends Equatable {
 }
 
 class GetMenusInCart extends MenuInCartEvent {}
+
+class UpdateMenuInCart extends MenuInCartEvent {
+  Keranjang menuKeranjang;
+  UpdateMenuInCart(this.menuKeranjang);
+}
+
+class DeleteMenuInCart extends MenuInCartEvent {
+  Keranjang menuKeranjang;
+  DeleteMenuInCart(this.menuKeranjang);
+}

@@ -33,8 +33,10 @@ extension on List<QueryDocumentSnapshot> {
       final data = document.data() as Map<String, dynamic>?;
       if (data != null) {
         try {
+          print(data);
           leaderboardEntries.add(MerchantModel.fromJson(data));
         } catch (error) {
+          print(error.toString());
           throw Exception();
         }
       }

@@ -36,9 +36,9 @@ class Keranjang extends HiveObject {
   @HiveField(14)
   final List<String>? tags;
   @HiveField(15)
-  final int quantity;
+  int quantity;
   @HiveField(16)
-  final int totalPrice;
+  int totalPrice;
   @HiveField(17)
   final String? notes;
 
