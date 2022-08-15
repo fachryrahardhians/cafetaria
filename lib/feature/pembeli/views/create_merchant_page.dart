@@ -16,7 +16,6 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:uuid/uuid.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
   const PembeliCreateMerchantPage(this.user, {Key? key}) : super(key: key);
@@ -101,22 +100,18 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   }
 
   Future _onSubmit(context) async {
-    final uuid = user.uid;
+    final userId = user.uid;
+
+    late String uuid;
 
     setState(() {
       _submitLoading = true;
     });
 
     try {
-      var snapshotLuar = await _storage.ref().child('images/merchant/photo_from_outside/$uuid.jpg').putFile(File(_fotoLuar!.path));
-      var snapshotDalam = await _storage.ref().child('images/merchant/photo_from_inside/$uuid.jpg').putFile(File(_fotoDalam!.path));
-
-      var urlLuar = await snapshotLuar.ref.getDownloadURL();
-      var urlDalam = await snapshotDalam.ref.getDownloadURL();
-
       final data = {
+        'userId': userId,
         'name': _namaUsaha.text,
-        'merchantId': uuid,
         'category': _bidangUsaha,
         'city': _kota.text,
         'postal_code': _kodePos.text,
@@ -124,12 +119,25 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'address_detail': _lokasiDetail.text,
         'address_latitude': _latLngToko!.latitude,
         'address_longitude': _latLngToko!.longitude,
-        'photo_from_outside': urlLuar,
-        'photo_from_inside': urlDalam,
         'create_at': Timestamp.now()
       };
 
-      await _firestore.collection('merchant').doc(uuid).set(data);
+      var documentReference = await _firestore.collection('merchant').add(data);
+      uuid = documentReference.id;
+
+      var snapshotLuar = await _storage.ref().child('images/merchant/photo_from_outside/$uuid.jpg').putFile(File(_fotoLuar!.path));
+      var snapshotDalam = await _storage.ref().child('images/merchant/photo_from_inside/$uuid.jpg').putFile(File(_fotoDalam!.path));
+
+      var urlLuar = await snapshotLuar.ref.getDownloadURL();
+      var urlDalam = await snapshotDalam.ref.getDownloadURL();
+
+      await _firestore.collection('merchant').doc(uuid).update(
+        {
+          'merchantId': uuid,
+          'photo_from_outside': urlLuar,
+          'photo_from_inside': urlDalam,
+        },
+      );
       Navigator.pop(context);
       Fluttertoast.showToast(msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
