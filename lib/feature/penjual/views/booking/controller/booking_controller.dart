@@ -161,6 +161,25 @@ class BookingController extends GetxController {
     }
   }
 
+  Future<void> editSettingBooking() async {
+    try {
+      var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+      late String docIdTime;
+
+      docIdTime = querySnap.docs.first.id;
+      await _firestore.collection("rulepreordermenu").doc(docIdTime).update({
+        "isShowPublic": showPorsi.value,
+        "maxQty": maxPorsiC.text.isEmpty ? 0 : int.parse(maxPorsiC.text),
+        "merchantId": merchantId,
+        "pickupTime": selectedTime?.toIso8601String(),
+        "poDay": jarakC.text.isEmpty ? 0 : int.parse(jarakC.text),
+        "rulepreordermenuId": docIdTime,
+      });
+    } catch (e) {
+      print("error");
+    }
+  }
+
   Future<void> getOrderTime() async {
     try {
       var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();

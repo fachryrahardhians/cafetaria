@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/penjual/model/preorder.dart';
 import 'package:cafetaria/feature/penjual/views/booking/controller/booking_controller.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -5,12 +6,21 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class BookingSettingsPage extends StatelessWidget {
-  BookingSettingsPage({Key? key}) : super(key: key);
+  BookingSettingsPage({Key? key, this.preOrder}) : super(key: key);
+
+  final PreOrder? preOrder;
 
   final bookC = Get.find<BookingController>();
 
   @override
   Widget build(BuildContext context) {
+    if (preOrder != null) {
+      bookC.showPorsi.value = preOrder!.isShowPublic ?? true;
+      bookC.jarakC.text = preOrder!.poDay.toString();
+      bookC.maxPorsiC.text = preOrder!.maxQty.toString();
+      bookC.selectedTime = DateTime.parse(preOrder!.pickupTime!);
+      bookC.checkDone();
+    }
     return Scaffold(
       appBar: AppBar(
         title: const Text('ATUR BOOKING'),
@@ -184,12 +194,20 @@ class BookingSettingsPage extends StatelessWidget {
                 () => ElevatedButton(
                   onPressed: () async {
                     if (bookC.isDone.isTrue && bookC.selectedTime != null) {
-                      await bookC.addBooking();
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Navigator.pop(context);
-                      Get.delete<BookingController>();
-                      ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil tambah booking")));
+                      if (preOrder != null) {
+                        await bookC.editSettingBooking();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Get.delete<BookingController>();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil mengubah booking")));
+                      } else {
+                        await bookC.addBooking();
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Navigator.pop(context);
+                        Get.delete<BookingController>();
+                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil tambah booking")));
+                      }
                     }
                   },
                   child: const Text("SIMPAN"),

@@ -1,5 +1,6 @@
 import 'package:cafetaria/feature/penjual/model/menu_model_obs.dart';
 import 'package:cafetaria/feature/penjual/views/booking/atur_booking_page.dart';
+import 'package:cafetaria/feature/penjual/views/booking/booking_settings.dart';
 import 'package:cafetaria/feature/penjual/views/booking/controller/booking_controller.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -302,7 +303,14 @@ class BookingPage extends StatelessWidget {
                                   ),
                                 ),
                                 TextButton(
-                                  onPressed: () {},
+                                  onPressed: () async {
+                                    await bookC.getOrderTime();
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => BookingSettingsPage(preOrder: bookC.preOrder),
+                                      ),
+                                    );
+                                  },
                                   child: const Text(
                                     "Edit",
                                     style: TextStyle(

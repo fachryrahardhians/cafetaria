@@ -65,7 +65,8 @@ class _LoginViewState extends State<LoginView> {
                         MaterialPageRoute(
                           // builder: (context) => const HomePage(),
                           // builder: (context) => const LinkEmailPage(),
-                          builder: (context) => const PembeliProfilePage(),
+                          // builder: (context) => const PembeliProfilePage(),
+                          builder: (context) => const PenjualDashboardPage(),
                         ),
                       );
                     }
