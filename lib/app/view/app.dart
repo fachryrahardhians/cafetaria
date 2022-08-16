@@ -1,6 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -60,11 +61,8 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
-      theme: CFTheme.themeData,
-      title: 'Cafetaria',
-      home: statusApp == AppStatus.authenticated
-          ? const PenjualDashboardPage()
-          : const LoginPage(),
-    );
+        theme: CFTheme.themeData,
+        title: 'Cafetaria',
+        home: const MenuCafetariaPage());
   }
 }

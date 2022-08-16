@@ -18,7 +18,7 @@ class MenuRepository {
   ) async {
     try {
       final snapshot =
-          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+          await _firestore.collection('menuPerMerchant-${idMerchant}').get();
 
       final documents = snapshot.docs;
       return documents.toListMenu();
@@ -32,6 +32,17 @@ class MenuRepository {
       await _firestore.collection('menu').doc(menu.menuId).set(menu.toJson());
     } catch (e) {
       throw Exception('Failed to get menu');
+    }
+  }
+
+  Future<void> editStockMenu(MenuModel menu, String idMerchant) async {
+    try {
+      await _firestore
+          .collection('menuPerMerchant-${idMerchant}')
+          .doc(menu.menuId)
+          .update(menu.toJson());
+    } catch (e) {
+      throw Exception('Failed to Update Stock Menu');
     }
   }
 }

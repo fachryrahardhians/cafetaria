@@ -3,6 +3,7 @@ import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bl
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/atur_stock_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -154,8 +155,8 @@ class DaftarMenuWidget extends StatelessWidget {
                               padding: const EdgeInsets.all(9),
                               onSelected: (val) {
                                 context.read<ListMenuBloc>().add(
-                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.categoryId!),
+                                      GetListMenu(
+                                          'merchant1', item.categoryId!),
                                     );
                               },
                               label: Text(
@@ -340,7 +341,7 @@ class ListMenuWidget extends StatelessWidget {
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu('0DzobjgsR7jF8qWvCoG0', cat.categoryId!));
+          .add(GetListMenu('merchant2', cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -360,14 +361,22 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return ListTile(
-                    title: Text(item.name ?? '-'),
-                    // subtitle: Text(item.price.toString()),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                      },
+                  return GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AturStockMenuPage(
+                                judul: item.name ?? 'Deskripsi menu',
+                              )));
+                    },
+                    child: ListTile(
+                      title: Text(item.name ?? '-'),
+                      // subtitle: Text(item.price.toString()),
+                      trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                        },
+                      ),
                     ),
                   );
                 },
