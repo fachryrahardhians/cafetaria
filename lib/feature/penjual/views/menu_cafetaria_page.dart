@@ -3,6 +3,7 @@ import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bl
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -180,7 +181,7 @@ class DaftarMenuWidget extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
-        const ListMenuWidget()
+        const ListMenuWidget(),
       ],
     );
   }
@@ -360,14 +361,81 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return ListTile(
-                    title: Text(item.name ?? '-'),
-                    // subtitle: Text(item.price.toString()),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                      },
+                  // return ListTile(
+                  //   title: Text(item.name ?? '-'),
+                  //   // subtitle: Text(item.price.toString()),
+                  //   trailing: IconButton(
+                  //     icon: const Icon(Icons.delete),
+                  //     onPressed: () {
+                  //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                  //     },
+                  //   ),
+                  // );
+                  return Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(horizontal: 12.0, vertical: 4.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item.name}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          '${item.price}',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        const Text(
+                          '1 opsi menu tersambung',
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(height: 6.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const AddStockMenuPage(),
+                                  ),
+                                );
+                              },
+                              child: const Text(
+                                'Atur Stok',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+                            InkWell(
+                              onTap: () {},
+                              child: const Text(
+                                'Edit',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   );
                 },
