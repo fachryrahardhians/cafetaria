@@ -24,6 +24,16 @@ class MerchantRepository {
       throw Exception('Failed to get merchant');
     }
   }
+
+  Future<List<MerchantModel>> getMerchantById(String merchantId) async {
+    try {
+      final snapshot = await _firestore.collection('merchant').where('merchantId', isEqualTo: merchantId).get();
+      final documents = snapshot.docs;
+      return documents.toListMerchant();
+    } catch (e) {
+      throw Exception('Failed to get merchant');
+    }
+  }
 }
 
 extension on List<QueryDocumentSnapshot> {

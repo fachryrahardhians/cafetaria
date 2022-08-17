@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_rating_bloc/add_rating_bloc.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
@@ -22,6 +23,7 @@ class RatingPage extends StatelessWidget {
     return BlocProvider(
         create: (context) => AddRatingBloc(
               ratingRepository: context.read<RatingRepository>(),
+              authenticationRepository: context.read<AuthenticationRepository>()
             ),
         child: Rating(
           orderId: orderId,

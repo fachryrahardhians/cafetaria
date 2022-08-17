@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
@@ -12,6 +13,27 @@ import 'package:formz/formz.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
+
+class SummaryPage extends StatelessWidget {
+  final String merchantId;
+  const SummaryPage({Key? key, required this.merchantId}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => AddOrderBloc(
+                orderRepository: context.read<OrderRepository>(),
+                authenticationRepository: context.read<AuthenticationRepository>()
+              )),
+          BlocProvider(
+              create: (context) => MenuInCartBloc(
+                menuRepository: context.read<MenuRepository>(),
+              )..add(GetMenusInCart()))
+        ], child: KeranjangPage(merchantId: merchantId,));
+  }
+}
 
 class KeranjangPage extends StatefulWidget {
   final String merchantId;
@@ -67,272 +89,260 @@ class _KeranjangPageState extends State<KeranjangPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(
-      providers: [
-        BlocProvider(
-            create: (context) => AddOrderBloc(
-                  orderRepository: context.read<OrderRepository>(),
-                )),
-        BlocProvider(
-            create: (context) => MenuInCartBloc(
-                  menuRepository: context.read<MenuRepository>(),
-                )..add(GetMenusInCart()))
-      ],
-      child: Scaffold(
-        backgroundColor: const Color(0xffFCFBFC),
-        appBar: AppBar(
-          iconTheme: const IconThemeData(color: Color(0xffee3124)),
-          backgroundColor: Colors.white,
-          elevation: 0,
-          title: const Text(
-            'Keranjang',
-            style: TextStyle(
-                fontSize: 16,
-                fontWeight: FontWeight.w700,
-                color: Color(0xff333435)),
-          ),
-          centerTitle: true,
+    return Scaffold(
+      backgroundColor: const Color(0xffFCFBFC),
+      appBar: AppBar(
+        iconTheme: const IconThemeData(color: Color(0xffee3124)),
+        backgroundColor: Colors.white,
+        elevation: 0,
+        title: const Text(
+          'Keranjang',
+          style: TextStyle(
+              fontSize: 16,
+              fontWeight: FontWeight.w700,
+              color: Color(0xff333435)),
         ),
-        body: ListView(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-            children: [
-              _customerInfo(),
-              SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              _booking(),
-              SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              _bookingOption(context),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(diantar ? 'Diantar' : 'Ambil Sendiri'),
-                        TextButton(
-                            onPressed: () => showDialog(
-                                context: context,
-                                builder: (builder) => _popUpPanel()),
-                            style: TextButton.styleFrom(
-                                minimumSize: Size.zero,
-                                padding: EdgeInsets.zero,
-                                tapTargetSize:
-                                    MaterialTapTargetSize.shrinkWrap),
-                            child: Text(
-                              "Ganti",
-                              style: textStyle.copyWith(
-                                  color: const Color(0xffee3124), fontSize: 11),
-                            ))
-                      ]),
-                  Text(
-                    diantar
-                        ? 'Pesananmu akan diantar ke apartemen'
-                        : 'Kamu ambil sendiri pesananmu di toko',
-                    style: textStyle.copyWith(color: const Color(0xff8C8F93)),
-                  )
-                ],
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 2),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'PESANANMU',
-                    style: textStyle.copyWith(color: const Color(0xff8C8F93)),
-                  ),
-                  Text(
-                    'Tambah Pesanan',
-                    style: textStyle.copyWith(
-                        color: const Color(0xffee3124), fontSize: 11),
-                  )
-                ],
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              BlocBuilder<MenuInCartBloc, MenuInCartState>(
-                  builder: (context, state) {
-                if (state is MenuInCartRetrieved) {
-                  menuInKeranjang = state.menuInCart;
-                  subTotalPrice = state.totalPrice;
-                  return ListView.separated(
-                      physics: const NeverScrollableScrollPhysics(),
-                      shrinkWrap: true,
-                      itemBuilder: (context, index) {
-                        return item(
-                            menuInKeranjang[index].quantity,
-                            menuInKeranjang[index].name.toString(),
-                            menuInKeranjang[index].totalPrice);
-                      },
-                      separatorBuilder: (context, index) => SizedBox(
-                            height: SizeConfig.safeBlockVertical * 3,
-                          ),
-                      itemCount: menuInKeranjang.length);
-                } else if (state is MenuInCartRetrieveFailed) {
-                  return Text(state.message);
-                } else {
-                  return const CircularProgressIndicator();
-                }
-              }),
-              SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'Subtotal',
-                    style: textStyle,
-                  ),
-                  Text(
-                    'Rp $subTotalPrice',
-                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 1),
-              Row(
-                children: [
-                  Text(
-                    'Biaya Pemesanan ',
-                    style: textStyle,
-                  ),
-                  GestureDetector(
-                    onTap: () {},
-                    child: const Icon(
-                      Icons.info,
-                      color: Color(0xffee3124),
-                      size: 18,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    'Rp $biayaPemesanan',
-                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
+        centerTitle: true,
+      ),
+      body: ListView(
+          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+          children: [
+            _customerInfo(),
+            SizedBox(height: SizeConfig.safeBlockVertical * 2),
+            _booking(),
+            SizedBox(height: SizeConfig.safeBlockVertical * 2),
+            _bookingOption(context),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
-                      Text(
-                        alat ? 'Minta alat makan' : 'Tanpa alat makan',
-                        style: textStyle,
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      SizedBox(
-                        width: SizeConfig.safeBlockHorizontal * 60,
-                        child: Text(
-                          'Oke, akan kami sampaikan ke resto. Terima kasih sudah mengurangi pengguna plastik.',
-                          style: textStyle.copyWith(
-                              fontSize: 11, color: const Color(0xffB1B5BA)),
-                        ),
-                      )
-                    ],
-                  ),
-                  FlutterSwitch(
-                    value: alat,
-                    onToggle: (val) {
-                      setState(() {
-                        alat = val;
-                      });
-                    },
-                    activeColor: const Color(0xffee3124),
-                    inactiveColor: const Color(0xffC8CCD2),
-                    valueFontSize: 12,
-                    width: 35,
-                    height: 20,
-                    toggleSize: 15,
-                  )
-                ],
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 3),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Text(
-                    'TOTAL PEMBAYARAN',
-                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                  ),
-                  BlocBuilder<MenuInCartBloc, MenuInCartState>(
-                      builder: ((context, state) {
-                    if (state is MenuInCartRetrieved) {
-                      return Text(
-                        'Rp ${state.totalPrice + biayaPemesanan}',
-                        style: textStyle.copyWith(
-                            fontWeight: FontWeight.w500, fontSize: 15),
-                      );
-                    } else {
-                      return SizedBox();
-                    }
-                  }))
-                ],
-              )
-            ]),
-        bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
-          listener: (context, state) {
-            if (state.formzStatus == FormzStatus.submissionSuccess) {
-              var baseDialog = const AlertDialogWait(
-                title: 'Makanan Anda sedang diproses',
-                message:
-                    'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
-                buttonText: 'KEMBALI KE HOME',
-              );
-              showDialog(
-                  context: context,
-                  builder: (BuildContext context) => baseDialog);
-            } else if (state.formzStatus == FormzStatus.submissionFailure) {
-              ScaffoldMessenger.of(context).showSnackBar(
-                const SnackBar(
-                  content: Text('Terjadi kesalahan'),
+                      Text(diantar ? 'Diantar' : 'Ambil Sendiri'),
+                      TextButton(
+                          onPressed: () => showDialog(
+                              context: context,
+                              builder: (builder) => _popUpPanel()),
+                          style: TextButton.styleFrom(
+                              minimumSize: Size.zero,
+                              padding: EdgeInsets.zero,
+                              tapTargetSize:
+                                  MaterialTapTargetSize.shrinkWrap),
+                          child: Text(
+                            "Ganti",
+                            style: textStyle.copyWith(
+                                color: const Color(0xffee3124), fontSize: 11),
+                          ))
+                    ]),
+                Text(
+                  diantar
+                      ? 'Pesananmu akan diantar ke apartemen'
+                      : 'Kamu ambil sendiri pesananmu di toko',
+                  style: textStyle.copyWith(color: const Color(0xff8C8F93)),
+                )
+              ],
+            ),
+            SizedBox(height: SizeConfig.safeBlockVertical * 2),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'PESANANMU',
+                  style: textStyle.copyWith(color: const Color(0xff8C8F93)),
                 ),
-              );
-            }
-          },
-          builder: (context, state) {
-            if (_preorder) {
-              return CFButton.primary(
-                child: (state.formzStatus == FormzStatus.submissionInProgress)
-                    ? const CircularProgressIndicator()
-                    : const Text('SIMPAN'),
-                onPressed: state.orderInput.valid
-                    ? () {
-                        context.read<AddOrderBloc>().add(
-                              SaveOrder(
-                                  merchantId: widget.merchantId,
-                                  listKeranjang: menuInKeranjang,
-                                  preOrder: _preorder,
-                                  grandTotalPrice:
-                                      subTotalPrice + biayaPemesanan,
-                                  timestamp: DateTime.now().toString(),
-                                  pickupDate:
-                                      _selectedDay.toString().split(' ')[0] +
-                                          ' 08:00:00.000'),
-                            );
-                      }
-                    : null,
-              );
-            } else {
-              return CFButton.primary(
-                child: (state.formzStatus == FormzStatus.submissionInProgress)
-                    ? const CircularProgressIndicator()
-                    : const Text('PESAN'),
-                onPressed: () {
-                  context.read<AddOrderBloc>().add(
-                        SaveOrder(
-                            merchantId: widget.merchantId,
-                            listKeranjang: menuInKeranjang,
-                            preOrder: _preorder,
-                            grandTotalPrice: subTotalPrice + biayaPemesanan,
-                            timestamp: DateTime.now().toString(),
-                            pickupDate: _selectedDay.toString().split(' ')[0] +
-                                ' 08:00:00.000'),
-                      );
-                },
-              );
-            }
-          },
-        ),
+                Text(
+                  'Tambah Pesanan',
+                  style: textStyle.copyWith(
+                      color: const Color(0xffee3124), fontSize: 11),
+                )
+              ],
+            ),
+            SizedBox(height: SizeConfig.safeBlockVertical * 3),
+            BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                builder: (context, state) {
+              if (state is MenuInCartRetrieved) {
+                menuInKeranjang = state.menuInCart;
+                subTotalPrice = state.totalPrice;
+                return ListView.separated(
+                    physics: const NeverScrollableScrollPhysics(),
+                    shrinkWrap: true,
+                    itemBuilder: (context, index) {
+                      return item(
+                          menuInKeranjang[index].quantity,
+                          menuInKeranjang[index].name.toString(),
+                          menuInKeranjang[index].totalPrice);
+                    },
+                    separatorBuilder: (context, index) => SizedBox(
+                          height: SizeConfig.safeBlockVertical * 3,
+                        ),
+                    itemCount: menuInKeranjang.length);
+              } else if (state is MenuInCartRetrieveFailed) {
+                return Text(state.message);
+              } else {
+                return const CircularProgressIndicator();
+              }
+            }),
+            SizedBox(height: SizeConfig.safeBlockVertical * 3),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'Subtotal',
+                  style: textStyle,
+                ),
+                Text(
+                  'Rp $subTotalPrice',
+                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+            SizedBox(height: SizeConfig.safeBlockVertical * 1),
+            Row(
+              children: [
+                Text(
+                  'Biaya Pemesanan ',
+                  style: textStyle,
+                ),
+                GestureDetector(
+                  onTap: () {},
+                  child: const Icon(
+                    Icons.info,
+                    color: Color(0xffee3124),
+                    size: 18,
+                  ),
+                ),
+                const Spacer(),
+                Text(
+                  'Rp $biayaPemesanan',
+                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                )
+              ],
+            ),
+            SizedBox(height: SizeConfig.safeBlockVertical * 3),
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      alat ? 'Minta alat makan' : 'Tanpa alat makan',
+                      style: textStyle,
+                    ),
+                    SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                    SizedBox(
+                      width: SizeConfig.safeBlockHorizontal * 60,
+                      child: Text(
+                        'Oke, akan kami sampaikan ke resto. Terima kasih sudah mengurangi pengguna plastik.',
+                        style: textStyle.copyWith(
+                            fontSize: 11, color: const Color(0xffB1B5BA)),
+                      ),
+                    )
+                  ],
+                ),
+                FlutterSwitch(
+                  value: alat,
+                  onToggle: (val) {
+                    setState(() {
+                      alat = val;
+                    });
+                  },
+                  activeColor: const Color(0xffee3124),
+                  inactiveColor: const Color(0xffC8CCD2),
+                  valueFontSize: 12,
+                  width: 35,
+                  height: 20,
+                  toggleSize: 15,
+                )
+              ],
+            ),
+            SizedBox(height: SizeConfig.safeBlockVertical * 3),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Text(
+                  'TOTAL PEMBAYARAN',
+                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                ),
+                BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                    builder: ((context, state) {
+                  if (state is MenuInCartRetrieved) {
+                    return Text(
+                      'Rp ${state.totalPrice + biayaPemesanan}',
+                      style: textStyle.copyWith(
+                          fontWeight: FontWeight.w500, fontSize: 15),
+                    );
+                  } else {
+                    return SizedBox();
+                  }
+                }))
+              ],
+            )
+          ]),
+      bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
+        listener: (context, state) {
+          if (state.formzStatus == FormzStatus.submissionSuccess) {
+            var baseDialog = const AlertDialogWait(
+              title: 'Makanan Anda sedang diproses',
+              message:
+                  'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
+              buttonText: 'KEMBALI KE HOME',
+            );
+            showDialog(
+                context: context,
+                builder: (BuildContext context) => baseDialog);
+          } else if (state.formzStatus == FormzStatus.submissionFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Terjadi kesalahan'),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          if (_preorder) {
+            return CFButton.primary(
+              child: (state.formzStatus == FormzStatus.submissionInProgress)
+                  ? const CircularProgressIndicator()
+                  : const Text('SIMPAN'),
+              onPressed: state.orderInput.valid
+                  ? () {
+                      context.read<AddOrderBloc>().add(
+                            SaveOrder(
+                                merchantId: widget.merchantId,
+                                listKeranjang: menuInKeranjang,
+                                preOrder: _preorder,
+                                grandTotalPrice:
+                                    subTotalPrice + biayaPemesanan,
+                                timestamp: DateTime.now().toString(),
+                                pickupDate:
+                                    _selectedDay.toString().split(' ')[0] +
+                                        ' 08:00:00.000'),
+                          );
+                    }
+                  : null,
+            );
+          } else {
+            return CFButton.primary(
+              child: (state.formzStatus == FormzStatus.submissionInProgress)
+                  ? const CircularProgressIndicator()
+                  : const Text('PESAN'),
+              onPressed: () {
+                context.read<AddOrderBloc>().add(
+                      SaveOrder(
+                          merchantId: widget.merchantId,
+                          listKeranjang: menuInKeranjang,
+                          preOrder: _preorder,
+                          grandTotalPrice: subTotalPrice + biayaPemesanan,
+                          timestamp: DateTime.now().toString(),
+                          pickupDate: _selectedDay.toString().split(' ')[0] +
+                              ' 08:00:00.000'),
+                    );
+              },
+            );
+          }
+        },
       ),
     );
   }

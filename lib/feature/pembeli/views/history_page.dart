@@ -1,3 +1,4 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/pembeli/bloc/history_order_bloc/history_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/history_detail_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
@@ -6,6 +7,7 @@ import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:order_repository/order_repository.dart';
 
 class HistoryPage extends StatelessWidget {
@@ -62,7 +64,7 @@ class _HistoryState extends State<History> {
           ),
         ),
         body: TabBarView(
-          children: [SizedBox(), DoneList()],
+          children: [ProcessList(), DoneList()],
         ),
       ),
     );
@@ -83,21 +85,48 @@ class ProcessList extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          HistoryOrderBloc(orderRepository: context.read<OrderRepository>())
+          HistoryOrderBloc(orderRepository: context.read<OrderRepository>(), authenticationRepository: context.read<AuthenticationRepository>())
             ..add(GetHistoryOrder('process')),
-      child: ListView.separated(
-          padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-          itemBuilder: (context, index) {
-            return listCard(context);
-          },
-          separatorBuilder: (context, index) {
-            return SizedBox(height: SizeConfig.safeBlockVertical * 3);
-          },
-          itemCount: 2),
+      child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
+        builder: (context, state) {
+          final status = state.status;
+          if (status == HistoryOrderStatus.loading)
+            return Center(child: const CircularProgressIndicator());
+          else if (status == HistoryOrderStatus.failure) {
+            return Center(
+              child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+            );
+          } else if (status == HistoryOrderStatus.success) {
+            if (state.items != null) {
+              final items = state.items!;
+              return SizedBox(
+                height: 200,
+                child: ListView.separated(
+                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                    itemBuilder: (context, index) {
+                      final item = items[index];
+                      DateTime date = DateTime.parse(item.timestamp!);
+                      List<String> dateFormated =
+                      DateFormat('EEE MMM d').format(date).toString().trim().split(' ');
+                      return listCard(dateFormated[0],
+                          dateFormated[2],
+                          dateFormated[1], item: item);
+                    },
+                    separatorBuilder: (context, index) {
+                      return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+                    },
+                    itemCount: items.length),
+              );
+            } else
+              return Text('No Data');
+          }
+          return const SizedBox();
+        }
+      ),
     );
   }
 
-  Widget listCard(BuildContext context) {
+  Widget listCard(String day, String date, String month, {required HistoryModel item}) {
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -165,15 +194,15 @@ class ProcessList extends StatelessWidget {
                     child: Column(
                       children: [
                         Text(
-                          'Rab',
+                          day,
                           style: textStyle.copyWith(color: Colors.white),
                         ),
-                        Text('13',
+                        Text(date,
                             style: headlineStyle.copyWith(
                               color: Colors.white,
                             )),
                         Text(
-                          'JUN',
+                          month,
                           style: textStyle.copyWith(
                               fontWeight: FontWeight.w500,
                               color: Colors.white.withOpacity(.5)),
@@ -188,7 +217,7 @@ class ProcessList extends StatelessWidget {
                       SizedBox(
                         width: SizeConfig.safeBlockHorizontal * 55,
                         child: Text(
-                          'Cafetaria #1234567890',
+                          item.orderId.toString(),
                           style: headlineStyle.copyWith(fontSize: 14),
                         ),
                       ),
@@ -232,8 +261,8 @@ class _DoneListState extends State<DoneList> {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
-          HistoryOrderBloc(orderRepository: context.read<OrderRepository>())
-            ..add(GetHistoryOrder('done')),
+          HistoryOrderBloc(orderRepository: context.read<OrderRepository>(), authenticationRepository: context.read<AuthenticationRepository>())
+            ..add(GetHistoryOrder('finish')),
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (context, state) {
           final status = state.status;
@@ -257,7 +286,7 @@ class _DoneListState extends State<DoneList> {
                     separatorBuilder: (context, index) {
                       return SizedBox(height: SizeConfig.safeBlockVertical * 3);
                     },
-                    itemCount: 1),
+                    itemCount: items.length),
               );
             } else
               return Text('No Data');

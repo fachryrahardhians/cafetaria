@@ -12,9 +12,9 @@ class OrderRepository {
 
   final _uuid = const Uuid();
 
-  Future<List<HistoryModel>> getListOrderHistory(String status) async {
+  Future<List<HistoryModel>> getListOrderHistory(String status, String userId) async {
     try {
-      final snapshot = await _firestore.collection('order').get();
+      final snapshot = await _firestore.collection('order').where('statusOrder', isEqualTo: status).where('userId', isEqualTo: userId).get();
 
       final documents = snapshot.docs;
 
@@ -29,7 +29,7 @@ class OrderRepository {
       orderId: _uuid.v4(),
     );
     // add to firestore
-    await _firestore.collection('order').add(order.toJson());
+    await _firestore.collection('order').doc(order.orderId).set(order.toJson());
   }
 }
 

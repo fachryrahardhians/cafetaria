@@ -99,12 +99,13 @@ class HistoryModel extends Equatable {
 class OrderMenu extends Equatable {
   final String? menuId;
   final String? notes;
+  final String? name;
   final int? price;
   final int? qty;
   final List<OrderTopping>? toppings;
 
   const OrderMenu(
-      {this.menuId, this.qty, this.price, this.toppings, this.notes});
+      {this.menuId, this.qty, this.price, this.toppings, this.notes, this.name});
 
   factory OrderMenu.fromJson(Map<String, dynamic> json) =>
       _$OrderMenuFromJson(json);
@@ -116,6 +117,7 @@ class OrderMenu extends Equatable {
   OrderMenu copyWith(
       {String? menuId,
       String? notes,
+        String? name,
       int? price,
       int? qty,
       List<OrderTopping>? toppings}) {
@@ -123,13 +125,14 @@ class OrderMenu extends Equatable {
       menuId: menuId ?? this.menuId,
       notes: notes ?? this.notes,
       price: price ?? this.price,
+      name: name?? this.name,
       qty: qty ?? this.qty,
       toppings: toppings ?? this.toppings,
     );
   }
 
   @override
-  List<Object?> get props => [menuId, notes, price, qty, toppings];
+  List<Object?> get props => [menuId, notes, price, qty, toppings, name];
 }
 
 @JsonSerializable()

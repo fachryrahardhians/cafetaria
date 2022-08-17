@@ -16,10 +16,7 @@ class RatingRepository {
   Future<void> addRating(
     RatingModel rating,
   ) async {
-    rating.copyWith(
-      ratingId: _uuid.v4(),
-    );
     // add to firestore
-    await _firestore.collection('rating').add(rating.toJson());
+    await _firestore.collection('rating').doc(rating.ratingId).set(rating.toJson());
   }
 }
