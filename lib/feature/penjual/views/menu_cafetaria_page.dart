@@ -4,6 +4,7 @@ import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/atur_stock_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -181,7 +182,7 @@ class DaftarMenuWidget extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
-        const ListMenuWidget()
+        const ListMenuWidget(),
       ],
     );
   }
@@ -361,22 +362,14 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AturStockMenuPage(
-                                judul: item.name ?? 'Deskripsi menu',
-                              )));
-                    },
-                    child: ListTile(
-                      title: Text(item.name ?? '-'),
-                      // subtitle: Text(item.price.toString()),
-                      trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                        },
-                      ),
+                  return ListTile(
+                    title: Text(item.name ?? '-'),
+                    // subtitle: Text(item.price.toString()),
+                    trailing: IconButton(
+                      icon: const Icon(Icons.delete),
+                      onPressed: () {
+                        // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                      },
                     ),
                   );
                 },
