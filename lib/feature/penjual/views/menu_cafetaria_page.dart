@@ -3,7 +3,6 @@ import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bl
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
-import 'package:cafetaria/feature/penjual/views/atur_stock_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
