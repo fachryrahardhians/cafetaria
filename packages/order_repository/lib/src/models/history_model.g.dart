@@ -13,14 +13,16 @@ HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       deviceToken: json['deviceToken'] as String?,
       isCutlery: json['isCutlery'] as bool?,
       isPreorder: json['isPreorder'] as bool?,
-      pickupDate: json['pickupDate'].toDate().toString() as String?,
+      pickupDate: json['pickupDate'] as String?,
       typePickup: json['typePickup'] as String?,
       userId: json['userId'] as String?,
       merchantId: json['merchantId'] as String?,
       total: json['total'] as int?,
-      timestamp: json['timestamp'].toDate().toString() as String?,
+      timestamp: json['timestamp'] as String?,
       statusOrder: json['statusOrder'] as String?,
-      menus: (json['menus'] as List<dynamic>?)?.map((e) => OrderMenu.fromJson(e as Map<String, dynamic>)).toList(),
+      menus: (json['menus'] as List<dynamic>?)
+          ?.map((e) => OrderMenu.fromJson(e as Map<String, dynamic>))
+          .toList(),
     );
 
 Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>
@@ -31,14 +33,14 @@ Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>
       'deviceToken': instance.deviceToken,
       'isCutlery': instance.isCutlery,
       'isPreorder': instance.isPreorder,
-      'pickupDate': Timestamp.fromDate(DateTime.parse(instance.pickupDate!)),
+      'pickupDate': instance.pickupDate,
       'typePickup': instance.typePickup,
       'merchantId': instance.merchantId,
       'userId': instance.userId,
       'total': instance.total,
-      'timestamp': Timestamp.fromDate(DateTime.parse(instance.timestamp!)),
+      'timestamp': instance.timestamp,
       'statusOrder': instance.statusOrder,
-      'menus': instance.menus,
+      'menus': instance.menus?.map((e) => e.toJson()).toList(),
     };
 
 OrderMenu _$OrderMenuFromJson(Map<String, dynamic> json) => OrderMenu(
@@ -58,7 +60,7 @@ Map<String, dynamic> _$OrderMenuToJson(OrderMenu instance) => <String, dynamic>{
       'name': instance.name,
       'price': instance.price,
       'qty': instance.qty,
-      'toppings': instance.toppings,
+      'toppings': instance.toppings?.map((e) => e.toJson()).toList(),
     };
 
 OrderTopping _$OrderToppingFromJson(Map<String, dynamic> json) => OrderTopping(

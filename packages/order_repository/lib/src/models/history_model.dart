@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'history_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class HistoryModel extends Equatable {
   final String? orderId;
   final int? cash;
@@ -19,7 +19,7 @@ class HistoryModel extends Equatable {
   final int? total;
   final String? timestamp;
   final String? statusOrder;
-  final List<dynamic>? menus;
+  final List<OrderMenu>? menus;
 
   const HistoryModel(
       {this.orderId,
@@ -57,7 +57,7 @@ class HistoryModel extends Equatable {
     int? total,
     String? timestamp,
     String? statusOrder,
-    List<dynamic>? menus,
+    List<OrderMenu>? menus,
   }) {
     return HistoryModel(
         orderId: orderId ?? this.orderId,
@@ -95,7 +95,7 @@ class HistoryModel extends Equatable {
       ];
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class OrderMenu extends Equatable {
   final String? menuId;
   final String? notes;
@@ -105,7 +105,12 @@ class OrderMenu extends Equatable {
   final List<OrderTopping>? toppings;
 
   const OrderMenu(
-      {this.menuId, this.qty, this.price, this.toppings, this.notes, this.name});
+      {this.menuId,
+      this.qty,
+      this.price,
+      this.toppings,
+      this.notes,
+      this.name});
 
   factory OrderMenu.fromJson(Map<String, dynamic> json) =>
       _$OrderMenuFromJson(json);
@@ -117,7 +122,7 @@ class OrderMenu extends Equatable {
   OrderMenu copyWith(
       {String? menuId,
       String? notes,
-        String? name,
+      String? name,
       int? price,
       int? qty,
       List<OrderTopping>? toppings}) {
@@ -125,7 +130,7 @@ class OrderMenu extends Equatable {
       menuId: menuId ?? this.menuId,
       notes: notes ?? this.notes,
       price: price ?? this.price,
-      name: name?? this.name,
+      name: name ?? this.name,
       qty: qty ?? this.qty,
       toppings: toppings ?? this.toppings,
     );
