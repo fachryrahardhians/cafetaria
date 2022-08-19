@@ -1,7 +1,29 @@
+import 'package:cafetaria/feature/penjual/views/widgets/switch.dart';
+import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+import 'package:intl/intl.dart';
+import 'package:menu_repository/menu_repository.dart';
+
+import 'package:cafetaria/feature/penjual/bloc/atur_stock_bloc/atur_stock_bloc_bloc.dart';
+
+class EditStok extends StatelessWidget {
+  const EditStok({Key? key, required this.menuModel}) : super(key: key);
+  final MenuModel menuModel;
+  @override
+  Widget build(BuildContext context) {
+    return BlocProvider(
+      create: (context) =>
+          AturStockBlocBloc(menuRepository: context.read<MenuRepository>()),
+      child: AddStockMenuPage(user: menuModel),
+    );
+  }
+}
 
 class AddStockMenuPage extends StatefulWidget {
-  const AddStockMenuPage({Key? key}) : super(key: key);
+  final MenuModel user;
+  const AddStockMenuPage({Key? key, required this.user}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AddStockMenuPageState();
@@ -11,10 +33,31 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
   bool stockActive = true;
   bool berulangActive = false;
   List<String> dropdown = ['Setiap Jam', 'Mingguan', 'Harian'];
-  String selectedDropdown = 'Setiap Jam';
+  String selectedDropdown = 'jam';
+  List<DropdownMenuItem<String>> get dropdownItems {
+    List<DropdownMenuItem<String>> menuItems = [
+      const DropdownMenuItem(child: Text("Setiap Jam"), value: "jam"),
+      const DropdownMenuItem(child: Text("Harian"), value: "hari"),
+      const DropdownMenuItem(child: Text("Mingguan"), value: "minggu"),
+    ];
+    return menuItems;
+  }
+
+  TextEditingController? _stokBarang;
+  TimeOfDay time = const TimeOfDay(hour: 10, minute: 30);
+  final oCcy = NumberFormat("#,##0.00", "IDR");
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    _stokBarang = TextEditingController(text: widget.user.stock.toString());
+    widget.user.stock == 0 ? stockActive = false : stockActive = true;
+  }
 
   @override
   Widget build(BuildContext context) {
+    final hours = time.hour.toString().padLeft(2, '0');
+    final minute = time.minute.toString().padLeft(2, '0');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -38,24 +81,32 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
                     Container(
-                      width: 75,
-                      height: 75,
-                      color: Colors.grey,
+                      width: 80,
+                      height: 80,
+                      // color: Colors.grey,
+                      decoration: BoxDecoration(
+                          color: CFColors.grayscaleBlack50,
+                          borderRadius: BorderRadius.circular(7.0),
+                          image: DecorationImage(
+                              image: NetworkImage(widget.user.image == null
+                                  ? "https://i.pinimg.com/564x/94/17/82/941782f60e16a9d7f9b4cea4ae7025e0.jpg"
+                                  : widget.user.image.toString()),
+                              fit: BoxFit.fill)),
                     ),
                     Column(
                       mainAxisAlignment: MainAxisAlignment.start,
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                          'Nasi Ayam Bakar',
-                          style: TextStyle(
+                        Text(
+                          widget.user.name.toString(),
+                          style: const TextStyle(
                             fontWeight: FontWeight.bold,
                             fontSize: 16,
                           ),
                         ),
                         const SizedBox(height: 4.0),
                         Text(
-                          'Rp 25.000',
+                          "Rp ${oCcy.format(widget.user.price)}",
                           style: TextStyle(
                             color: Colors.black.withOpacity(0.5),
                           ),
@@ -69,12 +120,28 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         ),
                       ],
                     ),
+                    // Padding(
+                    //   padding: const EdgeInsets.all(10),
+                    //   child: BottomSheetSwitch(
+                    //     switchValue: stockActive,
+                    //     valueChanged: (value) {
+                    //       stockActive = value;
+                    //       // print(stockActive);
+                    //       context
+                    //           .read<AturStockBlocBloc>()
+                    //           .add(AturStokTersedia(stockActive));
+                    //     },
+                    //   ),
+                    // )
                     Switch(
                       value: stockActive,
                       onChanged: (val) {
                         setState(() {
                           stockActive = val;
                         });
+                        context
+                            .read<AturStockBlocBloc>()
+                            .add(AturStokTersedia(stockActive));
                       },
                       activeColor: Colors.white,
                       activeTrackColor: Colors.green,
@@ -103,12 +170,18 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                     ),
                   ),
                   child: TextFormField(
-                    initialValue: '100',
+                    controller: _stokBarang,
+                    // initialValue: '100',
                     enabled: stockActive,
                     keyboardType: TextInputType.number,
                     decoration: const InputDecoration(
                       border: InputBorder.none,
                     ),
+                    onChanged: (value) {
+                      context
+                          .read<AturStockBlocBloc>()
+                          .add(AturStokJumlah(value));
+                    },
                   ),
                 ),
                 const SizedBox(height: 16.0),
@@ -124,6 +197,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         setState(() {
                           berulangActive = val;
                         });
+                        context
+                            .read<AturStockBlocBloc>()
+                            .add(AturStokRestok(berulangActive));
                       },
                       activeColor: Colors.white,
                       activeTrackColor: Colors.green,
@@ -167,16 +243,15 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                           decoration: const InputDecoration.collapsed(
                             hintText: 'Pilih atur ulang batas penjualan',
                           ),
-                          items: dropdown.map((e) {
-                            return DropdownMenuItem<String>(
-                              child: Text(
-                                e,
-                              ),
-                              value: e,
-                            );
-                          }).toList(),
+                          items: dropdownItems,
                           onChanged: (val) {
-                            setState(() {});
+                            setState(() {
+                              selectedDropdown = val.toString();
+                            });
+                            print(selectedDropdown);
+                            context
+                                .read<AturStockBlocBloc>()
+                                .add(AturStokRestokType(selectedDropdown));
                           },
                         ),
                       ),
@@ -190,7 +265,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                       ),
                       const SizedBox(height: 4.0),
                       Container(
-                        height: 47,
+                        height: 50,
                         width: double.infinity,
                         padding: const EdgeInsets.symmetric(horizontal: 6.0),
                         alignment: Alignment.center,
@@ -202,26 +277,69 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                             width: 0.0,
                           ),
                         ),
-                        child: TextFormField(
-                          decoration: const InputDecoration(
-                            hintText: 'Pilih atur ulang pada jam',
-                            hintStyle: TextStyle(
-                              color: Colors.grey,
+                        child: Column(
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Container(
+                                  alignment: Alignment.centerLeft,
+                                  padding: const EdgeInsets.only(
+                                      top: 15, left: 12, bottom: 10),
+                                  child: Text(
+                                    "${time.hour} : ${time.minute}",
+                                    style: const TextStyle(
+                                      color: Colors.black,
+                                      fontSize: 17,
+                                      // fontFamily: 'Raleway',
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () async {
+                                    // DateTime? newDate = await showDatePicker(
+                                    //     context: context,
+                                    //     initialDate: date,
+                                    //     firstDate: DateTime.now(),
+                                    //     lastDate: DateTime(2100, 5, 5));
+
+                                    // if (newDate == null) {
+                                    //   return;
+                                    // } else {
+                                    //   setState(() {
+                                    //     date = newDate;
+                                    //   });
+                                    // }
+                                    TimeOfDay? newTimes = await showTimePicker(
+                                        context: context, initialTime: time);
+
+                                    if (newTimes == null) return;
+
+                                    //if 'OK' new time
+                                    setState(() {
+                                      time = newTimes;
+                                      context.read<AturStockBlocBloc>().add(
+                                          AturStokTime(
+                                              "${time.hour} : ${time.minute}"));
+                                    });
+                                  },
+                                  child: const Padding(
+                                      padding:
+                                          EdgeInsets.only(right: 15, top: 10),
+                                      child: Icon(
+                                        Icons.timelapse,
+                                        color: Colors.redAccent,
+                                      )),
+                                )
+                              ],
                             ),
-                            border: InputBorder.none,
-                            suffixIcon: Align(
-                              widthFactor: 1.0,
-                              heightFactor: 1.0,
-                              child: Icon(
-                                Icons.watch_later_outlined,
-                                color: Colors.red,
-                                size: 24,
-                              ),
+                            const SizedBox(
+                              height: 5,
                             ),
-                          ),
+                          ],
                         ),
                       ),
-                      const SizedBox(height: 16.0),
+                      const SizedBox(height: 20.0),
                       const Text(
                         'PENGISIAN STOK SELANJUTNYA',
                         style: TextStyle(
@@ -245,18 +363,47 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          onPressed: () {
-            Navigator.pop(context);
-          },
-          child: const Text('SIMPAN'),
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red,
-            tapTargetSize: MaterialTapTargetSize.padded,
-          ),
-        ),
+      bottomNavigationBar: BlocConsumer<AturStockBlocBloc, AturStockBlocState>(
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state.status == FormzStatus.submissionSuccess) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Stok Berhasil Di Update'),
+              ),
+            );
+          } else if (state.status == FormzStatus.submissionFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Terjadi kesalahan'),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              onPressed: state.stokInput.valid
+                  //   &&
+                  // state.tipeRestok.valid &&
+                  // state.timeReset.valid
+                  ? () {
+                      final stok = widget.user;
+                      context.read<AturStockBlocBloc>().add(
+                            AturStok(stok),
+                          );
+                      Navigator.pop(context);
+                    }
+                  : null,
+              child: const Text('SIMPAN'),
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                tapTargetSize: MaterialTapTargetSize.padded,
+              ),
+            ),
+          );
+        },
       ),
     );
   }
