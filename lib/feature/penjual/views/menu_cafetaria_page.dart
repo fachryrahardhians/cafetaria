@@ -1,6 +1,5 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
-import 'package:cafetaria/feature/penjual/bloc/opsi_menu_makanan_bloc/opsi_menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
@@ -13,7 +12,6 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
-import 'package:option_menu_repository/option_menu_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key}) : super(key: key);
@@ -31,11 +29,6 @@ class MenuCafetariaPage extends StatelessWidget {
           create: (context) => ListMenuBloc(
             menuRepository: context.read<MenuRepository>(),
           ),
-        ),
-         BlocProvider(
-          create: (context) => OpsiMenuMakananBloc(
-            opsimenuRepository: context.read<OptionMenuRepository>(),
-          )..add(const GetOpsiMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
       child: const MenuCafetariaView(),
@@ -627,7 +620,32 @@ class BottomDaftarMenuWidget extends StatelessWidget {
   }
 }
 
+// temp object for "opsi menu"
+class OpsiMenu {
+  final bool isMandatory;
+  final bool isMultipleTopping;
+  final String menuId;
+  final List<Option> option;
+  final String optionmenuId;
+  final String title;
 
+  OpsiMenu(
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  );
+}
+
+class Option {
+  final String name;
+  final int price;
+
+  Option(this.name, this.price);
+}
+// =====
 
 class OpsiMenuWidget extends StatefulWidget {
   const OpsiMenuWidget({Key? key}) : super(key: key);
@@ -637,84 +655,37 @@ class OpsiMenuWidget extends StatefulWidget {
 }
 
 class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
-  List<OptionMenuModel> menuOptions = [];
+  List<OpsiMenu> menuOptions = [];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BlocBuilder<OpsiMenuMakananBloc, OpsiMenuMakananState>(
-          builder: (context, state) {
-            final status = state.status;
-
-            if (status == OpsiMenuMakananStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (status == OpsiMenuMakananStatus.failure) {
-              return const Center(
-                child: Text('Terjadi kesalahan'),
-              );
-            } else if (status == OpsiMenuMakananStatus.success) {
-              final items = state.items!;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      // width: 50,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ChoiceChip(
-                              padding: const EdgeInsets.all(9),
-                              onSelected: (val) {
-                                context.read<ListMenuBloc>().add(
-                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.categoryId!),
-                                    );
-                              },
-                              label: Text(
-                               ' items.category',
-                                style: GoogleFonts.ubuntu(
-                                    color: const Color(0xffEA001E)),
-                              ),
-                              side: const BorderSide(
-                                color: Color(0xffEA001E),
-                              ),
-                              selected: false,
-                              backgroundColor: const Color(0xffFEDED8),
-                            ),
-                          );
-                        },
-                      ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-        const ListMenuWidget()
-      ],
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      width: double.infinity,
+      child: menuOptions.isEmpty
+          ? const SizedBox.shrink()
+          : SizedBox(
+              width: double.infinity,
+              height: 500,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: menuOptions.length,
+                itemBuilder: (context, index) {
+                  return _itemOpsiMenuWidget(menuOptions[index]);
+                },
+              ),
+            ),
     );
   }
 
-  Widget _itemOpsiMenuWidget(OptionMenuModel menu) {
+  Widget _itemOpsiMenuWidget(OpsiMenu menu) {
     return Column(
       mainAxisAlignment: MainAxisAlignment.start,
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Text(
-        '  menu.title',
+          menu.title,
           style: const TextStyle(
             fontWeight: FontWeight.bold,
             fontSize: 16,
@@ -722,8 +693,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
         ),
         const SizedBox(height: 4.0),
         Text(
-          // '${menu.option.map((e) => e.name)}',
-          'test',
+          '${menu.option.map((e) => e.name)}',
           style: TextStyle(
             color: Colors.black.withOpacity(0.5),
           ),
@@ -764,26 +734,26 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                 const SizedBox(width: 16.0),
                 InkWell(
                   onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const AddOpsiMenuPage(),
-                    //     settings: RouteSettings(
-                    //       arguments: OpsiMenu(
-                    //         menu.isMandatory,
-                    //         menu.isMultipleTopping,
-                    //         menu.menuId,
-                    //         menu.option,
-                    //         menu.optionmenuId,
-                    //         menu.title,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ).then((value) {
-                    //   if (value != null) {
-                    //     // save to firebase
-                    //   }
-                    // });
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddOpsiMenuPage(),
+                        settings: RouteSettings(
+                          arguments: OpsiMenu(
+                            menu.isMandatory,
+                            menu.isMultipleTopping,
+                            menu.menuId,
+                            menu.option,
+                            menu.optionmenuId,
+                            menu.title,
+                          ),
+                        ),
+                      ),
+                    ).then((value) {
+                      if (value != null) {
+                        // save to firebase
+                      }
+                    });
                   },
                   child: const Text(
                     'Edit',

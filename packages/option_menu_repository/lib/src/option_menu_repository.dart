@@ -1,46 +1,28 @@
-// ignore_for_file: public_member_api_docs, always_use_package_imports
-
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:option_menu_repository/src/models/option_menu_model.dart';
 import 'package:uuid/uuid.dart';
 
-import 'models/models.dart';
-
+/// {@template option_menu_repository}
+/// option menu repository
+/// {@endtemplate}
 class OptionMenuRepository {
-  final FirebaseFirestore _firestore;
-  final uuid = const Uuid();
-
+  /// {@macro option_menu_repository}
   OptionMenuRepository({
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
 
-  // get  menu per merchant
-   Future<List<OptionMenuModel>> getOptionMenu(
-    String menuId,
-  ) async {
+  final FirebaseFirestore _firestore;
+  final _uuid = const Uuid();
+
+  /// save option menu
+  Future<void> saveOptionMenu(OptionMenuModel optionMenu) async {
     try {
-      final snapshot = await _firestore.collection('menu-read').get();
-
-      final documents = snapshot.docs;
-      return documents.toListOpsiMenu();
+      await _firestore
+          .collection('optionMenu')
+          .doc(_uuid.v4())
+          .set(optionMenu.toJson());
     } catch (e) {
-      throw Exception('Failed to get stock');
+      throw Exception('Failed to save option menu');
     }
-  }
-}
-
-extension on List<QueryDocumentSnapshot> {
-  List<OptionMenuModel> toListOpsiMenu() {
-    final leaderboardEntries = <OptionMenuModel>[];
-    for (final document in this) {
-      final data = document.data() as Map<String, dynamic>?;
-      if (data != null) {
-        try {
-          leaderboardEntries.add(OptionMenuModel.fromJson(data));
-        } catch (error) {
-          throw Exception();
-        }
-      }
-    }
-    return leaderboardEntries;
   }
 }
