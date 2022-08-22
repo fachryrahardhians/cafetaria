@@ -43,6 +43,12 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
       if (state.tersedia == false) {
         stok = event.stokBarang.copyWith(
             autoResetStock: false, stock: 0, resetType: "", resetTime: "");
+      } else if (state.restok == false) {
+        stok = event.stokBarang.copyWith(
+            autoResetStock: false,
+            stock: int.parse(state.stokInput.value),
+            resetType: "",
+            resetTime: "");
       } else {
         stok = event.stokBarang.copyWith(
             autoResetStock: state.restok,
