@@ -55,8 +55,6 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
 
   @override
   Widget build(BuildContext context) {
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -247,7 +245,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                             setState(() {
                               selectedDropdown = val.toString();
                             });
-                            print(selectedDropdown);
+
                             context
                                 .read<AturStockBlocBloc>()
                                 .add(AturStokRestokType(selectedDropdown));
