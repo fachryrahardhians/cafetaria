@@ -215,7 +215,6 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         context
                             .read<AturStockBlocBloc>()
                             .add(AturStokRestok(berulangActive));
-                            
                       },
                       activeColor: Colors.white,
                       activeTrackColor: Colors.green,
