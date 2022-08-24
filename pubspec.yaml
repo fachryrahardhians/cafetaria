@@ -45,12 +45,14 @@ dependencies:
   flutter:
     sdk: flutter
   flutter_bloc: ^8.0.1
+  flutter_masked_text2: ^0.9.1
   flutter_switch: ^0.3.2
   formz: ^0.4.1
   google_fonts: ^3.0.1
   google_sign_in: ^5.3.2
   image_picker: ^0.8.5+3
   intl: ^0.17.0
+  
   menu_repository:
     path: packages/menu_repository
   rating_repository:

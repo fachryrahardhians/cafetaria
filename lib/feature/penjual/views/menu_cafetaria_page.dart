@@ -2,12 +2,15 @@ import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dar
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
@@ -52,35 +55,32 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
           bottom: TabBar(
             indicatorColor: CFColors.redPrimary,
             indicatorWeight: 3,
-            tabs: [
+            unselectedLabelColor: const Color(0xffC8CCD2),
+            labelColor: const Color(0xff2E3032),
+            unselectedLabelStyle: GoogleFonts.ubuntu(
+              color: const Color(0xffC8CCD2),
+              fontSize: 15,
+              fontWeight: FontWeight.normal,
+            ),
+            labelStyle: GoogleFonts.ubuntu(
+              color: const Color(0xff2E3032),
+              fontSize: 15,
+              fontWeight: FontWeight.bold,
+            ),
+            tabs: const [
               Tab(
-                icon: Text(
+                child: Text(
                   'Daftar Menu',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xff2E3032),
-                    fontSize: 15,
-                    fontWeight: FontWeight.bold,
-                  ),
                 ),
               ),
               Tab(
-                icon: Text(
+                child: Text(
                   'Opsi Menu',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xffC8CCD2),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
                 ),
               ),
               Tab(
-                icon: Text(
+                child: Text(
                   'Tidak Tersedia',
-                  style: GoogleFonts.ubuntu(
-                    color: const Color(0xffC8CCD2),
-                    fontSize: 15,
-                    fontWeight: FontWeight.normal,
-                  ),
                 ),
               ),
             ],
@@ -93,31 +93,19 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
         body: const TabBarView(
           children: [
             DaftarMenuWidget(),
-            SizedBox.shrink(),
-            SizedBox.shrink(),
+            OpsiMenuWidget(),
+            ListMenuTidakTersediaWidget(),
           ],
         ),
-        bottomNavigationBar: Padding(
-          padding: const EdgeInsets.all(24.0),
-          child: ElevatedButton(
-            style: ElevatedButton.styleFrom(
-              minimumSize: const Size.fromHeight(44),
-              primary: const Color(0xffEA001E),
-            ),
-            child: const Text('TAMBAH MENU ATAU KATEGORI'),
-            onPressed: () async {
-              await showModalBottomSheet(
-                shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(8)),
-                context: context,
-                builder: (context) {
-                  return const _ModalBottomSheet();
-                },
-              );
-              context
-                  .read<MenuMakananBloc>()
-                  .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
-            },
+        bottomNavigationBar: Container(
+          padding: const EdgeInsets.all(16.0),
+          height: 74,
+          child: const TabBarView(
+            children: [
+              BottomDaftarMenuWidget(),
+              BottomOpsiMenuWidget(),
+              SizedBox.shrink(),
+            ],
           ),
         ),
       ),
@@ -194,7 +182,7 @@ class DaftarMenuWidget extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
-        const ListMenuWidget()
+        const ListMenuWidget(),
       ],
     );
   }
@@ -340,7 +328,7 @@ class ListMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = context.watch<MenuMakananBloc>().state.status;
-
+    final oCcy = NumberFormat("#,##0.00", "IDR");
     if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -354,11 +342,10 @@ class ListMenuWidget extends StatelessWidget {
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu('0DzobjgsR7jF8qWvCoG0', cat.categoryId!));
+          .add(GetListMenu('merchant2', cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
-
           if (status == ListMenuStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -374,14 +361,85 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return ListTile(
-                    title: Text(item.name ?? '-'),
-                    // subtitle: Text(item.price.toString()),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                      },
+                  // return ListTile(
+                  //   title: Text(item.name ?? '-'),
+                  //   // subtitle: Text(item.price.toString()),
+                  //   trailing: IconButton(
+                  //     icon: const Icon(Icons.delete),
+                  //     onPressed: () {
+                  //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                  //     },
+                  //   ),
+                  // );
+                  return Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item.name}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Rp ${oCcy.format(item.price)}',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        const Text(
+                          '1 opsi menu tersambung',
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(height: 6.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditStok(menuModel: item),
+                                  ),
+                                ).then((value) => context
+                                    .read<ListMenuBloc>()
+                                    .add(GetListMenu(
+                                        'merchant2', cat.categoryId!)));
+                              },
+                              child: const Text(
+                                'Atur Stok',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+                            InkWell(
+                              onTap: () {},
+                              child: const Text(
+                                'Edit',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   );
                 },
@@ -394,5 +452,349 @@ class ListMenuWidget extends StatelessWidget {
     }
 
     return const SizedBox.shrink();
+  }
+}
+
+class ListMenuTidakTersediaWidget extends StatelessWidget {
+  const ListMenuTidakTersediaWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final status = context.watch<MenuMakananBloc>().state.status;
+    final oCcy = NumberFormat("#,##0.00", "IDR");
+    if (status == MenuMakananStatus.loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (status == MenuMakananStatus.failure) {
+      return const Center(
+        child: Text('Terjadi kesalahan'),
+      );
+    } else if (status == MenuMakananStatus.success) {
+      // final cat = categoryState.items.first;
+      final cat = context.watch<MenuMakananBloc>().state.items!.first;
+      context
+          .read<ListMenuBloc>()
+          .add(GetListMenuTidakTersedia('merchant2', cat.categoryId!));
+      return BlocBuilder<ListMenuBloc, ListMenuState>(
+        builder: (context, state) {
+          final status = state.status;
+          if (status == ListMenuStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (status == ListMenuStatus.failure) {
+            return const Center(
+              child: Text('Terjadi kesalahan'),
+            );
+          } else if (status == ListMenuStatus.success) {
+            final items = state.items!;
+            return Padding(
+              padding: const EdgeInsets.only(top: 20, left: 10),
+              child: Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    // return ListTile(
+                    //   title: Text(item.name ?? '-'),
+                    //   // subtitle: Text(item.price.toString()),
+                    //   trailing: IconButton(
+                    //     icon: const Icon(Icons.delete),
+                    //     onPressed: () {
+                    //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                    //     },
+                    //   ),
+                    // );
+                    return Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${item.name}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            'Rp ${oCcy.format(item.price)}',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            'Jumlah Stok ${item.stock}',
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   crossAxisAlignment: CrossAxisAlignment.end,
+                          //   children: [
+                          //     InkWell(
+                          //       onTap: () {
+                          //         Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 EditStok(menuModel: item),
+                          //           ),
+                          //         ).then((value) => context
+                          //             .read<ListMenuBloc>()
+                          //             .add(GetListMenu(
+                          //                 'merchant2', cat.categoryId!)));
+                          //       },
+                          //       child: const Text(
+                          //         'Atur Stok',
+                          //         style: TextStyle(
+                          //           color: Colors.red,
+                          //           fontWeight: FontWeight.bold,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     const SizedBox(width: 16.0),
+                          //     InkWell(
+                          //       onTap: () {},
+                          //       child: const Text(
+                          //         'Edit',
+                          //         style: TextStyle(
+                          //           color: Colors.red,
+                          //           fontWeight: FontWeight.bold,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class BottomDaftarMenuWidget extends StatelessWidget {
+  const BottomDaftarMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(44),
+        primary: const Color(0xffEA001E),
+      ),
+      child: const Text('TAMBAH MENU ATAU KATEGORI'),
+      onPressed: () async {
+        await showModalBottomSheet(
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+          context: context,
+          builder: (context) {
+            return const _ModalBottomSheet();
+          },
+        );
+        context
+            .read<MenuMakananBloc>()
+            .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
+      },
+    );
+  }
+}
+
+// temp object for "opsi menu"
+class OpsiMenu {
+  final bool isMandatory;
+  final bool isMultipleTopping;
+  final String menuId;
+  final List<Option> option;
+  final String optionmenuId;
+  final String title;
+
+  OpsiMenu(
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  );
+}
+
+class Option {
+  final String name;
+  final int price;
+
+  Option(this.name, this.price);
+}
+// =====
+
+class OpsiMenuWidget extends StatefulWidget {
+  const OpsiMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  State<StatefulWidget> createState() => _OpsiMenuWidgetState();
+}
+
+class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
+  List<OpsiMenu> menuOptions = [];
+
+  @override
+  Widget build(BuildContext context) {
+    return Container(
+      padding: const EdgeInsets.all(16.0),
+      width: double.infinity,
+      child: menuOptions.isEmpty
+          ? const SizedBox.shrink()
+          : SizedBox(
+              width: double.infinity,
+              height: 500,
+              child: ListView.builder(
+                shrinkWrap: true,
+                physics: const NeverScrollableScrollPhysics(),
+                itemCount: menuOptions.length,
+                itemBuilder: (context, index) {
+                  return _itemOpsiMenuWidget(menuOptions[index]);
+                },
+              ),
+            ),
+    );
+  }
+
+  Widget _itemOpsiMenuWidget(OpsiMenu menu) {
+    return Column(
+      mainAxisAlignment: MainAxisAlignment.start,
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Text(
+          menu.title,
+          style: const TextStyle(
+            fontWeight: FontWeight.bold,
+            fontSize: 16,
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        Text(
+          '${menu.option.map((e) => e.name)}',
+          style: TextStyle(
+            color: Colors.black.withOpacity(0.5),
+          ),
+        ),
+        const SizedBox(height: 4.0),
+        const Text(
+          '0 menu tersambung',
+          style: TextStyle(
+            color: Colors.green,
+          ),
+        ),
+        const SizedBox(height: 6.0),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          children: [
+            InkWell(
+              onTap: () {},
+              child: const Text(
+                'Sambungkan',
+                style: TextStyle(
+                  color: Colors.red,
+                  fontWeight: FontWeight.bold,
+                ),
+              ),
+            ),
+            Row(
+              children: [
+                InkWell(
+                  onTap: () {},
+                  child: const Text(
+                    'Hapus',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+                const SizedBox(width: 16.0),
+                InkWell(
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const AddOpsiMenuPage(),
+                        settings: RouteSettings(
+                          arguments: OpsiMenu(
+                            menu.isMandatory,
+                            menu.isMultipleTopping,
+                            menu.menuId,
+                            menu.option,
+                            menu.optionmenuId,
+                            menu.title,
+                          ),
+                        ),
+                      ),
+                    ).then((value) {
+                      if (value != null) {
+                        // save to firebase
+                      }
+                    });
+                  },
+                  child: const Text(
+                    'Edit',
+                    style: TextStyle(
+                      color: Colors.red,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+        const SizedBox(height: 10.0),
+      ],
+    );
+  }
+}
+
+class BottomOpsiMenuWidget extends StatelessWidget {
+  const BottomOpsiMenuWidget({Key? key}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return ElevatedButton(
+      onPressed: () {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const AddOpsiMenuPage(),
+            settings: const RouteSettings(
+              arguments: null,
+            ),
+          ),
+        ).then((value) {});
+      },
+      child: Text("Tambah Opsi Menu".toUpperCase()),
+      style: ElevatedButton.styleFrom(
+        minimumSize: const Size.fromHeight(44),
+        primary: const Color(0xffEA001E),
+      ),
+    );
   }
 }
