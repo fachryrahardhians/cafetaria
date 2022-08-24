@@ -1,5 +1,4 @@
 import 'package:bloc/bloc.dart';
-import 'package:flutter/foundation.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
 
 import 'penjual_order_event.dart';
@@ -20,9 +19,7 @@ class PenjualOrderBloc extends Bloc<PenjualOrderEvent, PenjualOrderState> {
 
     try {
       var result = await _repository.getOrder();
-      if (kDebugMode) {
-        print("RESULT : ${result.length}");
-      }
+
       emitter(PenjualOrderSuccess(result));
     } catch (e) {
       emitter(PenjualOrderError(e.toString()));

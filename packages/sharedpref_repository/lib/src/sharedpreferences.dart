@@ -1,43 +1,27 @@
 import 'package:flutter/foundation.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-
-
-
-class AppSharedPref{
-
+class AppSharedPref {
   final SharedPreferences _sharedPreferences;
   AppSharedPref(this._sharedPreferences);
 
   final String _isLogin = "isLogin";
-  final String _userData = "userData";
 
   Future<bool?> isLogin() async {
-    try{
+    try {
       return _sharedPreferences.getBool(_isLogin);
-    }catch(e){
+    } catch (e) {
       return false;
     }
   }
 
   Future<void> setLogin(bool value) async {
-    try{
+    try {
       await _sharedPreferences.setBool(_isLogin, value);
-    }catch(e){
-      if(kDebugMode){
+    } catch (e) {
+      if (kDebugMode) {
         print(e.toString());
       }
     }
   }
-
-
-
-
-
-
-
-
-
-
-
 }

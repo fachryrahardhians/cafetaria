@@ -11,9 +11,19 @@ GoogleSignIn _googleSignIn = GoogleSignIn(
 
 /// author: @burhanwakhid
 class AuthenticationRepository {
-  const AuthenticationRepository(this._firebaseAuth);
+  AuthenticationRepository(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
+
+  /// sign out google
+  Future<void> signoutGoogle() async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+    } on Exception catch (error, stacktrace) {
+      throw AuthenticationException(error, stacktrace);
+    }
+  }
 
   /// sign user anonymously
   Future<void> signedAnonymous() async {
@@ -71,22 +81,21 @@ class AuthenticationRepository {
   }
 
   Future<void> signoutGoogle() async {
-    try{
+    try {
       final data = await _googleSignIn.signOut();
       await _firebaseAuth.signOut();
-    }catch(e){
+    } catch (e) {
       throw Exception(e);
     }
   }
 
-  Future<UserCredential> addLinkedEmail({required String email,required String
-  password})
-  async {
+  Future<UserCredential> addLinkedEmail(
+      {required String email, required String password}) async {
     try {
       final credential =
-      EmailAuthProvider.credential(email: email, password: password);
-      final userCredential = await FirebaseAuth.instance.currentUser
-          !.linkWithCredential(credential);
+          EmailAuthProvider.credential(email: email, password: password);
+      final userCredential = await FirebaseAuth.instance.currentUser!
+          .linkWithCredential(credential);
 
       return userCredential;
     } on FirebaseAuthException catch (e) {
@@ -101,12 +110,20 @@ class AuthenticationRepository {
           print("The account corresponding to the credential already exists, "
               "or is already linked to a Firebase User.");
           break;
-      // See the API reference for the full list of error codes.
+        // See the API reference for the full list of error codes.
         default:
           print("Unknown error.");
       }
       throw Exception(e);
     }
+  }
+
+  Stream<User?> get user {
+    return _firebaseAuth.authStateChanges().asyncMap(_handleAuthStateChanged);
+  }
+
+  Future<User?> _handleAuthStateChanged(User? auth) async {
+    return auth;
   }
 }
 

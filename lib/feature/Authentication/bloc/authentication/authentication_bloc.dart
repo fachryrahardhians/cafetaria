@@ -2,6 +2,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 import 'package:bloc/bloc.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 import 'authentication_event.dart';
 import 'authentication_state.dart';

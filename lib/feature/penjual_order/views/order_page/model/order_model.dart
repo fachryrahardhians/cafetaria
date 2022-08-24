@@ -46,37 +46,37 @@ class OrderModel {
   String? userId;
 
   factory OrderModel.fromJson(Map<String, dynamic> json) => OrderModel(
-        cash: json["cash"] == null ? null : json["cash"],
-        change: json["change"] == null ? null : json["change"],
-        isCultery: json["isCultery"] == null ? null : json["isCultery"],
-        isPreOrder: json["isPreOrder"] == null ? null : json["isPreOrder"],
+        cash: json["cash"],
+        change: json["change"],
+        isCultery: json["isCultery"],
+        isPreOrder: json["isPreOrder"],
         menus: json["menus"] == null
             ? null
             : List<Menu>.from(json["menus"].map((x) => Menu.fromJson(x))),
-        merchantId: json["merchantId"] == null ? null : json["merchantId"],
-        orderId: json["orderId"] == null ? null : json["orderId"],
-        pickupDate: json["pickupDate"] == null ? null : json["pickupDate"],
-        statusOrder: json["statusOrder"] == null ? null : json["statusOrder"],
-        timestamp: json["timestamp"] == null ? null : json["timestamp"],
-        total: json["total"] == null ? null : json["total"],
-        userId: json["userId"] == null ? null : json["userId"],
+        merchantId: json["merchantId"],
+        orderId: json["orderId"],
+        pickupDate: json["pickupDate"],
+        statusOrder: json["statusOrder"],
+        timestamp: json["timestamp"],
+        total: json["total"],
+        userId: json["userId"],
       );
 
   Map<String, dynamic> toJson() => {
-        "cash": cash == null ? null : cash,
-        "change": change == null ? null : change,
-        "isCultery": isCultery == null ? null : isCultery,
-        "isPreOrder": isPreOrder == null ? null : isPreOrder,
+        "cash": cash,
+        "change": change,
+        "isCultery": isCultery,
+        "isPreOrder": isPreOrder,
         "menus": menus == null
             ? null
             : List<dynamic>.from(menus!.map((x) => x.toJson())),
-        "merchantId": merchantId == null ? null : merchantId,
-        "orderId": orderId == null ? null : orderId,
-        "pickupDate": pickupDate == null ? null : pickupDate,
-        "statusOrder": statusOrder == null ? null : statusOrder,
-        "timestamp": timestamp == null ? null : timestamp,
-        "total": total == null ? null : total,
-        "userId": userId == null ? null : userId,
+        "merchantId": merchantId,
+        "orderId": orderId,
+        "pickupDate": pickupDate,
+        "statusOrder": statusOrder,
+        "timestamp": timestamp,
+        "total": total,
+        "userId": userId,
       };
 }
 
@@ -98,11 +98,11 @@ class Menu {
   List<Topping>? toppings;
 
   factory Menu.fromJson(Map<String, dynamic> json) => Menu(
-        menuId: json["menuId"] == null ? null : json["menuId"],
-        menuName: json["menuName"] == null ? null : json["menuName"],
-        notes: json["notes"] == null ? null : json["notes"],
-        price: json["price"] == null ? null : json["price"],
-        qty: json["qty"] == null ? null : json["qty"],
+        menuId: json["menuId"],
+        menuName: json["menuName"],
+        notes: json["notes"],
+        price: json["price"],
+        qty: json["qty"],
         toppings: json["toppings"] == null
             ? null
             : List<Topping>.from(
@@ -110,11 +110,11 @@ class Menu {
       );
 
   Map<String, dynamic> toJson() => {
-        "menuId": menuId == null ? null : menuId,
-        "menuName": menuName == null ? null : menuName,
-        "notes": notes == null ? null : notes,
-        "price": price == null ? null : price,
-        "qty": qty == null ? null : qty,
+        "menuId": menuId,
+        "menuName": menuName,
+        "notes": notes,
+        "price": price,
+        "qty": qty,
         "toppings": toppings == null
             ? null
             : List<dynamic>.from(toppings!.map((x) => x.toJson())),
@@ -151,12 +151,12 @@ class Item {
   int? price;
 
   factory Item.fromJson(Map<String, dynamic> json) => Item(
-        name: json["name"] == null ? null : json["name"],
-        price: json["price"] == null ? null : json["price"],
+        name: json["name"],
+        price: json["price"],
       );
 
   Map<String, dynamic> toJson() => {
-        "name": name == null ? null : name,
-        "price": price == null ? null : price,
+        "name": name,
+        "price": price,
       };
 }

@@ -1,8 +1,6 @@
-import 'package:cafetaria/components/tiles/custom_tiles.dart';
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_action_order/penjual_action_order_bloc.dart';
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_action_order/penjual_action_order_event.dart';
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_action_order/penjual_action_order_state.dart';
-import 'package:cafetaria/feature/penjual_order/views/order_page/model/order_model.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -580,7 +578,7 @@ class DetailOrderActionBuilder extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(vertical: 16),
                 decoration: BoxDecoration(
                   borderRadius: const BorderRadius.all(
-                    const Radius.circular(6),
+                    Radius.circular(6),
                   ),
                   border: Border.all(color: MyColors.red1),
                   color: Colors.white,

@@ -85,26 +85,25 @@ class PenjualOrderModel extends Equatable {
 
   factory PenjualOrderModel.fromJson(Map<String, dynamic> json, String id) =>
       PenjualOrderModel(
-        cash: json['cash'],
-        change: json['change'],
-        deviceToken: json['deviceToken'],
-        isCutlery: json['isCutlery'],
-        isPreorder: json['isPreorder'],
-        menus: json["menus"] == null
-            ? null
-            : List<PenjualOrderMenu>.from(
-                json["menus"].map((x) => PenjualOrderMenu.fromJson(x))),
-        merchantId: json['merchantId'],
-        orderId: json['orderId'],
-        pickupDate: json['pickupDate'],
-        statusOrder: json['statusOrder'],
-        timestamp: json['timestamp'],
-        total: json['total'],
-        typePickup: json['typePickup'],
-        userId: json['userId'],
-        docId: id,
-        keterangan: json['keterangan']
-      );
+          cash: json['cash'],
+          change: json['change'],
+          deviceToken: json['deviceToken'],
+          isCutlery: json['isCutlery'],
+          isPreorder: json['isPreorder'],
+          menus: json["menus"] == null
+              ? null
+              : List<PenjualOrderMenu>.from(
+                  json["menus"].map((x) => PenjualOrderMenu.fromJson(x))),
+          merchantId: json['merchantId'],
+          orderId: json['orderId'],
+          pickupDate: json['pickupDate'],
+          statusOrder: json['statusOrder'],
+          timestamp: json['timestamp'],
+          total: json['total'],
+          typePickup: json['typePickup'],
+          userId: json['userId'],
+          docId: id,
+          keterangan: json['keterangan']);
 
   Map<String, dynamic> toJson() => {
         "cash": cash,
@@ -123,7 +122,7 @@ class PenjualOrderModel extends Equatable {
         "total": total,
         "typePickup": typePickup,
         "userId": userId,
-        "keterangan" : keterangan,
+        "keterangan": keterangan,
       };
 }
 

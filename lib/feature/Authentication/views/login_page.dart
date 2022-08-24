@@ -4,15 +4,11 @@ import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
-import 'package:cafetaria/feature/Authentication/views/link_email.dart';
-
-import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
-import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
+import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class LoginPage extends StatelessWidget {
@@ -60,12 +56,13 @@ class _LoginViewState extends State<LoginView> {
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   listener: (ctx, state) {
                     if (state is AuthenticationStateSuccess) {
-                      Navigator.push(
-                        ctx,
+                      Navigator.pushReplacement(
+                        context,
                         MaterialPageRoute(
                           // builder: (context) => const HomePage(),
                           // builder: (context) => const LinkEmailPage(),
-                          builder: (ctx) => const OrderPage(),
+                          builder: (context) => const PembeliProfilePage(),
+                          // builder: (context) => const PenjualDashboardPage(),
                         ),
                       );
                     }
@@ -116,10 +113,10 @@ class _LoginViewState extends State<LoginView> {
                         fontWeight: FontWeight.bold, color: MyColors.grey2),
                   ),
                 ),
-                CustomTextfield1(
+                const CustomTextfield1(
                   label: "Email",
                 ),
-                CustomTextfield1(
+                const CustomTextfield1(
                   label: "Password",
                 ),
                 const SizedBox(
@@ -143,9 +140,9 @@ class SuccessLogin extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      body: Container(
-        child: const Center(
+    return const Scaffold(
+      body: SizedBox(
+        child: Center(
           child: Text("SUKSES LOGIN"),
         ),
       ),

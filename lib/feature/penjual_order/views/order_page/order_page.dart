@@ -3,7 +3,6 @@ import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_order_event.dart';
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_order_state.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/detail_order_page.dart';
-
 // import 'package:cafetaria/feature/penjual/views/order_page/detail_order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -32,7 +31,7 @@ class OrderPage extends StatelessWidget {
 }
 
 class OrderPageView extends StatefulWidget {
-  OrderPageView({Key? key}) : super(key: key);
+  const OrderPageView({Key? key}) : super(key: key);
 
   @override
   State<OrderPageView> createState() => _OrderPageViewState();
@@ -66,7 +65,7 @@ class _OrderPageViewState extends State<OrderPageView>
           color: MyColors.red1,
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(90),
+          preferredSize: const Size.fromHeight(90),
           child: Column(
             children: [
               Padding(
@@ -217,7 +216,7 @@ class OrderTabContent extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: ListView.builder(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) => InkWell(
               onTap: () {
                 Navigator.push(
@@ -341,7 +340,7 @@ class OrderCard extends StatelessWidget {
                         text: "Keterangan : ",
                         style: smallText.copyWith(color: MyColors.red1)),
                     TextSpan(
-                        text: "${order.keterangan ?? ''}",
+                        text: order.keterangan ?? '',
                         style: smallText.copyWith(color: MyColors.grey2))
                   ]),
                 ),

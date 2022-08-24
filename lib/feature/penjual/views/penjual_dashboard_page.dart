@@ -1,4 +1,4 @@
-import 'package:cafetaria/feature/penjual/views/atur_booking_page.dart';
+import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
@@ -239,9 +239,11 @@ class MainMenuWidget extends StatelessWidget {
                 // ),
                 route: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const AturBookingPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BookingPage(),
+                    ),
+                  );
                 },
                 image: "assets/icons/booking.png",
                 title: "Atur Booking",
