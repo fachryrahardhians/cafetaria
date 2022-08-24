@@ -15,7 +15,13 @@ class PreOrder {
   String? merchantId;
   int? maxQty;
 
-  PreOrder({this.rulepreordermenuId, this.isShowPublic, this.poDay, this.pickupTime, this.merchantId, this.maxQty});
+  PreOrder(
+      {this.rulepreordermenuId,
+      this.isShowPublic,
+      this.poDay,
+      this.pickupTime,
+      this.merchantId,
+      this.maxQty});
 
   PreOrder.fromJson(Map<String, dynamic> json) {
     rulepreordermenuId = json['rulepreordermenuId'];

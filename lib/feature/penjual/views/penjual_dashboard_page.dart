@@ -223,7 +223,10 @@ class MainMenuWidget extends StatelessWidget {
               ),
               HomeItemOrder(
                 route: () {
-                  Navigator.push(context, MaterialPageRoute(builder: (_) => const MenuCafetariaPage()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const MenuCafetariaPage()));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",
@@ -261,7 +264,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () => () {},
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
                 HomeItemInfo(
@@ -273,7 +277,8 @@ class MainMenuWidget extends StatelessWidget {
                 HomeItemInfo(
                   route: () {},
                   image: "assets/images/info-1.png",
-                  title: "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
+                  title:
+                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
                   author: "Charlie Natalie",
                 ),
               ],

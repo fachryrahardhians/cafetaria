@@ -16,8 +16,9 @@ class PembeliProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>(), appSharedPref: context.read<AppSharedPref>()),
+      create: (context) => AuthenticationBloc(
+          authenticationRepository: context.read<AuthenticationRepository>(),
+          appSharedPref: context.read<AppSharedPref>()),
       child: const PembeliProfileView(),
     );
   }
@@ -75,7 +76,8 @@ class PembeliProfileView extends StatelessWidget {
                   ),
                   Container(
                     margin: const EdgeInsets.symmetric(vertical: 24),
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 20, horizontal: 14),
                     decoration: BoxDecoration(
                       color: Colors.white,
                       borderRadius: const BorderRadius.all(Radius.circular(8)),
@@ -83,7 +85,8 @@ class PembeliProfileView extends StatelessWidget {
                         BoxShadow(
                           color: Colors.black.withOpacity(0.04),
                           blurRadius: 12,
-                          offset: const Offset(0, 4), // changes position of shadow
+                          offset:
+                              const Offset(0, 4), // changes position of shadow
                         ),
                       ],
                     ),
@@ -99,9 +102,13 @@ class PembeliProfileView extends StatelessWidget {
                       },
                       child: Row(
                         children: const [
-                          Image(image: AssetImage('assets/images/merchant_default_icon.png')),
+                          Image(
+                              image: AssetImage(
+                                  'assets/images/merchant_default_icon.png')),
                           SizedBox(width: 18),
-                          Text("Buka Toko Gratis", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+                          Text("Buka Toko Gratis",
+                              style: TextStyle(
+                                  fontSize: 16, fontWeight: FontWeight.bold)),
                           Spacer(),
                           Icon(
                             Icons.arrow_forward_ios,
@@ -115,14 +122,20 @@ class PembeliProfileView extends StatelessWidget {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("AKUN")),
+                      const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          child: Text("AKUN")),
                       const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Edit Profil", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Edit Profil",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -132,7 +145,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Kata Sandi", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Kata Sandi",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -142,7 +158,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Nomor Ponsel", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Nomor Ponsel",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -152,7 +171,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                           child: const Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Ganti Email", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            child: Text("Ganti Email",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal)),
                           ),
                           onPressed: () {},
                         ),

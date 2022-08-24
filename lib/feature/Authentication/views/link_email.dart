@@ -70,7 +70,7 @@ class _LinkEmailPageViewState extends State<LinkEmailPageView> {
           const SizedBox(height: 16),
           BlocConsumer<LinkEmailBloc, LinkEmailState>(
             listener: (ctx, state) {
-              if(state is LinkEmailSuccess){
+              if (state is LinkEmailSuccess) {
                 Navigator.push(
                   context,
                   MaterialPageRoute(

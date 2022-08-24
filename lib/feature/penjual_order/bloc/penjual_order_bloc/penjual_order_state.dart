@@ -3,17 +3,17 @@ import 'package:penjual_order_repository/penjual_order_repository.dart';
 
 abstract class PenjualOrderState extends Equatable {}
 
-
-class PenjualOrderInit extends PenjualOrderState{
+class PenjualOrderInit extends PenjualOrderState {
   @override
   List<Object?> get props => [];
 }
-class PenjualOrderLoading extends PenjualOrderState{
+
+class PenjualOrderLoading extends PenjualOrderState {
   @override
   List<Object?> get props => [];
 }
-class PenjualOrderSuccess extends PenjualOrderState{
 
+class PenjualOrderSuccess extends PenjualOrderState {
   final List<PenjualOrderModel> list;
 
   PenjualOrderSuccess(this.list);
@@ -21,7 +21,8 @@ class PenjualOrderSuccess extends PenjualOrderState{
   @override
   List<Object?> get props => [list];
 }
-class PenjualOrderError extends PenjualOrderState{
+
+class PenjualOrderError extends PenjualOrderState {
   final String error;
 
   PenjualOrderError(this.error);

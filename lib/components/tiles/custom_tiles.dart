@@ -283,8 +283,8 @@ class CustomTileTimeBadge extends StatelessWidget {
       ),
       child: Text(
         "3 Menit lalu",
-        style: normalText.copyWith(color: MyColors.green1,fontWeight: FontWeight
-            .bold),
+        style: normalText.copyWith(
+            color: MyColors.green1, fontWeight: FontWeight.bold),
       ),
     );
   }

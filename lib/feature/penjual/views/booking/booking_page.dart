@@ -118,9 +118,11 @@ class BookingPage extends StatelessWidget {
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
                             FutureBuilder<String>(
-                              future: bookC.getCategoryName(bookC.allCategoryBooking[index]),
+                              future: bookC.getCategoryName(
+                                  bookC.allCategoryBooking[index]),
                               builder: (context, snapCat) {
-                                if (snapCat.connectionState == ConnectionState.waiting) {
+                                if (snapCat.connectionState ==
+                                    ConnectionState.waiting) {
                                   return const Text(
                                     "LOADING...",
                                     style: TextStyle(
@@ -142,9 +144,11 @@ class BookingPage extends StatelessWidget {
                             FutureBuilder(
                               future: bookC.getOrderTime(),
                               builder: (context, snapTime) {
-                                if (snapTime.connectionState == ConnectionState.waiting) {
+                                if (snapTime.connectionState ==
+                                    ConnectionState.waiting) {
                                   return Column(
-                                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.stretch,
                                     children: const [
                                       Text(
                                         "Jarak Booking : - Hari",
@@ -180,7 +184,8 @@ class BookingPage extends StatelessWidget {
                                 }
 
                                 return Column(
-                                  crossAxisAlignment: CrossAxisAlignment.stretch,
+                                  crossAxisAlignment:
+                                      CrossAxisAlignment.stretch,
                                   children: [
                                     Text(
                                       "Jarak Booking : ${bookC.preOrder?.poDay ?? '-'} Hari",
@@ -217,7 +222,8 @@ class BookingPage extends StatelessWidget {
                               physics: const NeverScrollableScrollPhysics(),
                               itemCount: menuByCategory.length,
                               itemBuilder: (context, index) => Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
                                     "\u2022 ${menuByCategory[index].name}",
@@ -262,7 +268,8 @@ class BookingPage extends StatelessWidget {
                                               ),
                                               const SizedBox(height: 20),
                                               Row(
-                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.center,
                                                 children: [
                                                   OutlinedButton(
                                                     onPressed: () {
@@ -273,7 +280,8 @@ class BookingPage extends StatelessWidget {
                                                   const SizedBox(width: 15),
                                                   ElevatedButton(
                                                     onPressed: () {
-                                                      bookC.deleteBooking(menuByCategory);
+                                                      bookC.deleteBooking(
+                                                          menuByCategory);
                                                       Navigator.pop(context);
                                                     },
                                                     child: const Text("DELETE"),
@@ -298,7 +306,8 @@ class BookingPage extends StatelessWidget {
                                     await bookC.getAllBooking();
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => AturBookingPage(booking: bookC.booking),
+                                        builder: (context) => AturBookingPage(
+                                            booking: bookC.booking),
                                       ),
                                     );
                                   },
@@ -314,7 +323,9 @@ class BookingPage extends StatelessWidget {
                                     await bookC.getOrderTime();
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => BookingSettingsPage(preOrder: bookC.preOrder),
+                                        builder: (context) =>
+                                            BookingSettingsPage(
+                                                preOrder: bookC.preOrder),
                                       ),
                                     );
                                   },

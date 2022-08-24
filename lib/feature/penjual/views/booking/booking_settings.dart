@@ -110,10 +110,14 @@ class BookingSettingsPage extends StatelessWidget {
                       GetBuilder<BookingController>(
                         builder: (c) {
                           return Text(
-                            c.selectedTime == null ? "Atur jam pengambilan" : DateFormat.Hm().format(c.selectedTime!),
+                            c.selectedTime == null
+                                ? "Atur jam pengambilan"
+                                : DateFormat.Hm().format(c.selectedTime!),
                             style: TextStyle(
                               fontSize: 16,
-                              color: c.selectedTime == null ? MyColors.grey3 : MyColors.blackText,
+                              color: c.selectedTime == null
+                                  ? MyColors.grey3
+                                  : MyColors.blackText,
                               fontWeight: FontWeight.w400,
                             ),
                           );
@@ -156,8 +160,12 @@ class BookingSettingsPage extends StatelessWidget {
                     children: [
                       Obx(
                         () => Icon(
-                          bookC.showPorsi.isTrue ? Icons.radio_button_checked : Icons.radio_button_off,
-                          color: bookC.showPorsi.isTrue ? MyColors.red1 : MyColors.grey3,
+                          bookC.showPorsi.isTrue
+                              ? Icons.radio_button_checked
+                              : Icons.radio_button_off,
+                          color: bookC.showPorsi.isTrue
+                              ? MyColors.red1
+                              : MyColors.grey3,
                         ),
                       ),
                       const SizedBox(width: 5),
@@ -174,8 +182,12 @@ class BookingSettingsPage extends StatelessWidget {
                     children: [
                       Obx(
                         () => Icon(
-                          bookC.showPorsi.isTrue ? Icons.radio_button_off : Icons.radio_button_checked,
-                          color: bookC.showPorsi.isTrue ? MyColors.grey3 : MyColors.red1,
+                          bookC.showPorsi.isTrue
+                              ? Icons.radio_button_off
+                              : Icons.radio_button_checked,
+                          color: bookC.showPorsi.isTrue
+                              ? MyColors.grey3
+                              : MyColors.red1,
                         ),
                       ),
                       const SizedBox(width: 5),
@@ -199,20 +211,26 @@ class BookingSettingsPage extends StatelessWidget {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Get.delete<BookingController>();
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil mengubah booking")));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Berhasil mengubah booking")));
                       } else {
                         await bookC.addBooking();
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Get.delete<BookingController>();
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil tambah booking")));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Berhasil tambah booking")));
                       }
                     }
                   },
                   child: const Text("SIMPAN"),
                   style: ElevatedButton.styleFrom(
-                    primary: bookC.isDone.isTrue && bookC.selectedTime != null ? MyColors.red1 : MyColors.disabledRed1,
+                    primary: bookC.isDone.isTrue && bookC.selectedTime != null
+                        ? MyColors.red1
+                        : MyColors.disabledRed1,
                   ),
                 ),
               ),
