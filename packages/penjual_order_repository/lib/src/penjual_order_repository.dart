@@ -23,8 +23,7 @@ class PenjualOrderRepository {
 
   Future<void> actionToOrder(Map<String, dynamic> data, String docId) async {
     try {
-      final snapshot =
-          await _firestore.collection("order").doc(docId).update(data);
+      await _firestore.collection("order").doc(docId).update(data);
     } catch (e) {
       throw Exception("Failed to Update the Order");
     }

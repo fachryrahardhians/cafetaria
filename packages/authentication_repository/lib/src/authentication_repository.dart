@@ -75,17 +75,7 @@ class AuthenticationRepository {
       // Once signed in, return the UserCredential
       return await _firebaseAuth.signInWithCredential(credential);
     } on Exception catch (error, stacktrace) {
-      print("ERROR : $error");
       throw AuthenticationException(error, stacktrace);
-    }
-  }
-
-  Future<void> signoutGoogle() async {
-    try {
-      final data = await _googleSignIn.signOut();
-      await _firebaseAuth.signOut();
-    } catch (e) {
-      throw Exception(e);
     }
   }
 
@@ -101,18 +91,13 @@ class AuthenticationRepository {
     } on FirebaseAuthException catch (e) {
       switch (e.code) {
         case "provider-already-linked":
-          print("The provider has already been linked to the user.");
           break;
         case "invalid-credential":
-          print("The provider's credential is not valid.");
           break;
         case "credential-already-in-use":
-          print("The account corresponding to the credential already exists, "
-              "or is already linked to a Firebase User.");
           break;
         // See the API reference for the full list of error codes.
         default:
-          print("Unknown error.");
       }
       throw Exception(e);
     }

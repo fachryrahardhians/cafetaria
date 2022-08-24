@@ -64,25 +64,14 @@ dependencies:
   intl: ^0.17.0
   pull_to_refresh: ^2.0.0
   shared_preferences: ^2.0.15
-  storage:
-    path: packages/storage
   uuid: ^3.0.6
   google_sign_in: ^5.3.2
   firebase_messaging: ^11.4.1
   loading_overlay: ^0.3.0
-
-#  penjual_repository:
-#    path: packages/penjual_repository
-  sharedpref_repository:
-    path: packages/sharedpref_repository
-#  home_repository:
-#    path: packages/home_repository
-  menu_repository:
-    path: packages/menu_repository
-  rating_repository:
-    path: packages/rating_repository
-  penjual_order_repository:
-    path: packages/penjual_order_repository
+  flutter_datetime_picker: ^1.5.1
+  google_maps_flutter: ^2.1.8
+  fluttertoast: ^8.0.9
+  geocoding: ^2.0.4
 
 dev_dependencies:
   bloc_test: ^9.0.2

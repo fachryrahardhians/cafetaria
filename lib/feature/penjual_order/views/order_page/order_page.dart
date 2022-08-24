@@ -12,7 +12,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
-import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 class OrderPage extends StatelessWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -25,7 +24,7 @@ class OrderPage extends StatelessWidget {
       )..add(
           GetPenjualOrder(),
         ),
-      child: OrderPageView(),
+      child: const OrderPageView(),
     );
   }
 }
@@ -47,8 +46,8 @@ class _OrderPageViewState extends State<OrderPageView>
     _tabController = TabController(length: 5, vsync: this);
   }
 
-  final RefreshController _refreshController =
-      RefreshController(initialRefresh: false);
+  // final RefreshController _refreshController =
+  //     RefreshController(initialRefresh: false);
 
   reloadOrder(BuildContext context) {
     context.read<PenjualOrderBloc>().add(GetPenjualOrder());

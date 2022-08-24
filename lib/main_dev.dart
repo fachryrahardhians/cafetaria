@@ -7,6 +7,7 @@ import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:storage/storage.dart';
 
 void main() async {
@@ -34,7 +35,6 @@ void main() async {
       return App(
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,
-        appSharedPref: _appSharePref,
         categoryRepository: _categoryRepository,
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,
