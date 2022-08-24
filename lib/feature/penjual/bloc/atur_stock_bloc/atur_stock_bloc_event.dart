@@ -1,6 +1,6 @@
 part of 'atur_stock_bloc_bloc.dart';
 
-abstract class AturStockBlocEvent extends Equatable {
+class AturStockBlocEvent extends Equatable {
   const AturStockBlocEvent();
 
   @override

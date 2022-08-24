@@ -30,7 +30,7 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
     Emitter<AturStockBlocState> emit,
   ) async {
     try {
-      //print(event.stokBarang.toString());
+      
       emit(state.copyWith(
           status: FormzStatus.submissionInProgress,
           stokInput: state.stokInput,
@@ -141,17 +141,5 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
         tersedia: state.tersedia));
   }
 
-  //  FutureOr<void> _restokTime(
-  //   AturStokTime event,
-  //   Emitter<AturStockBlocState> emit,
-  // ) {
 
-  //   emit(state.copyWith(
-  //       status:state.status,
-  //       stokInput: state.stokInput,
-  //       tipeRestok: state.tipeRestok,
-  //       restok: state.restok,
-
-  //       tersedia: state.tersedia));
-  // }
 }
