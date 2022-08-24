@@ -25,9 +25,8 @@ void main() async {
       final _cloudStorage = CloudStorage();
       const _secureStorage = SecureStorage();
       final _appSharePref = AppSharedPref(sharedpreference);
-      final _penjualOrderRepository = PenjualOrderRepository(firestore:
-      firebaseStore);
-
+      final _penjualOrderRepository =
+          PenjualOrderRepository(firestore: firebaseStore);
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       print(fcmToken);
@@ -37,7 +36,7 @@ void main() async {
       return App(
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,
-        appSharedPref:  _appSharePref,
+        appSharedPref: _appSharePref,
         categoryRepository: _categoryRepository,
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,

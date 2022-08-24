@@ -8,19 +8,19 @@ class LinkEmailBloc extends Bloc<LinkEmailEvent, LinkEmailState> {
   final AuthenticationRepository _authenticationRepository;
 
   LinkEmailBloc({required AuthenticationRepository authenticationRepository})
-      : _authenticationRepository = authenticationRepository,super
-      (LinkEmailInit()) {
-    on<DoEmailLink>((event,emit)=>_linkEmail(emit, event));
+      : _authenticationRepository = authenticationRepository,
+        super(LinkEmailInit()) {
+    on<DoEmailLink>((event, emit) => _linkEmail(emit, event));
   }
 
-  Future<void> _linkEmail(Emitter<LinkEmailState> emit,DoEmailLink event)
-  async {
+  Future<void> _linkEmail(
+      Emitter<LinkEmailState> emit, DoEmailLink event) async {
     emit(LinkEmailLoading());
-    try{
-      final result = await _authenticationRepository.addLinkedEmail(email: event
-          .email, password: event.password);
+    try {
+      final result = await _authenticationRepository.addLinkedEmail(
+          email: event.email, password: event.password);
       emit(LinkEmailSuccess(credential: result));
-    }catch(e){
+    } catch (e) {
       emit(LinkEmailError(error: e.toString()));
     }
   }

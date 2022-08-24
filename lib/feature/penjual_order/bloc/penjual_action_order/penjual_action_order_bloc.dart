@@ -12,17 +12,18 @@ class PenjualActionOrderBloc
       : _repository = repository,
         super(const PenjualActionOrderState.initial()) {
     on<ActionPenjualToOrder>((event, emit) => _action(event, emit));
-    on<ActionPenjualInitial>((event,emit) => _initial(event, emit));
-    on<ActionPenjualUpdateKeterangan>((event, emit) => _updateKeterangan(event, emit));
+    on<ActionPenjualInitial>((event, emit) => _initial(event, emit));
+    on<ActionPenjualUpdateKeterangan>(
+        (event, emit) => _updateKeterangan(event, emit));
   }
 
-  void _initial(ActionPenjualInitial event,Emitter<PenjualActionOrderState>
-  emit){
+  void _initial(
+      ActionPenjualInitial event, Emitter<PenjualActionOrderState> emit) {
     emit(state.setOrder(event.order));
   }
-  
-  void _updateKeterangan(ActionPenjualUpdateKeterangan event, 
-      Emitter<PenjualActionOrderState> emit){
+
+  void _updateKeterangan(ActionPenjualUpdateKeterangan event,
+      Emitter<PenjualActionOrderState> emit) {
     emit(state.setKeterangan(event.value));
   }
 

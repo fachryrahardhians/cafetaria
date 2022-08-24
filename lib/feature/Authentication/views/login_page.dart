@@ -88,8 +88,8 @@ class _LoginViewState extends State<LoginView> {
                           .add(GetGoogleAuthentication());
                     },
                     child: Container(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 90, vertical: 14),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 90, vertical: 14),
                       decoration: const BoxDecoration(
                           borderRadius: BorderRadius.all(Radius.circular(8)),
                           color: Colors.white,

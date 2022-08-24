@@ -7,27 +7,25 @@ import 'penjual_order_state.dart';
 
 class PenjualOrderBloc extends Bloc<PenjualOrderEvent, PenjualOrderState> {
   final PenjualOrderRepository _repository;
-  PenjualOrderBloc(PenjualOrderRepository repository) :_repository = repository,
+  PenjualOrderBloc(PenjualOrderRepository repository)
+      : _repository = repository,
         super(PenjualOrderInit()) {
     // on<InitEvent>(_init);
     on<GetPenjualOrder>((event, emit) => _getListOrder(event, emit));
   }
 
-  Future<void> _getListOrder(GetPenjualOrder event,Emitter<PenjualOrderState>
-  emitter)
-  async {
+  Future<void> _getListOrder(
+      GetPenjualOrder event, Emitter<PenjualOrderState> emitter) async {
     emitter(PenjualOrderLoading());
 
-    try{
+    try {
       var result = await _repository.getOrder();
-      if(kDebugMode){
+      if (kDebugMode) {
         print("RESULT : ${result.length}");
       }
       emitter(PenjualOrderSuccess(result));
-
-    }catch(e){
+    } catch (e) {
       emitter(PenjualOrderError(e.toString()));
     }
-
   }
 }

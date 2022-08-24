@@ -7,8 +7,8 @@ class PenjualActionOrderState extends Equatable {
   final PenjualOrderModel? order;
   final String? keterangan;
 
-  const PenjualActionOrderState.__({required this.status, this.error,
-  this.order, this.keterangan});
+  const PenjualActionOrderState.__(
+      {required this.status, this.error, this.order, this.keterangan});
 
   const PenjualActionOrderState.initial()
       : this.__(status: PenjualActionStatus.init);
@@ -19,9 +19,11 @@ class PenjualActionOrderState extends Equatable {
     PenjualOrderModel? order,
     String? keterangan,
   }) =>
-      PenjualActionOrderState.__(status: status ?? this.status, error: error ?? '',
-          order:
-      order ?? this.order,keterangan: keterangan ?? this.keterangan);
+      PenjualActionOrderState.__(
+          status: status ?? this.status,
+          error: error ?? '',
+          order: order ?? this.order,
+          keterangan: keterangan ?? this.keterangan);
 
   ///set state initial
   PenjualActionOrderState setOrder(PenjualOrderModel order) =>
@@ -34,15 +36,17 @@ class PenjualActionOrderState extends Equatable {
   ///set state on loading
   PenjualActionOrderState setLoading() =>
       copyWith(status: PenjualActionStatus.loading);
+
   ///set state done
   PenjualActionOrderState setDone() =>
       copyWith(status: PenjualActionStatus.done);
+
   ///set state error
   PenjualActionOrderState setError({required String error}) =>
       copyWith(status: PenjualActionStatus.error, error: error);
 
   @override
-  List<Object?> get props => [status,error,order,keterangan];
+  List<Object?> get props => [status, error, order, keterangan];
 }
 
 enum PenjualActionStatus { init, loading, done, error }

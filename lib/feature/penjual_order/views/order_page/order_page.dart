@@ -48,9 +48,10 @@ class _OrderPageViewState extends State<OrderPageView>
     _tabController = TabController(length: 5, vsync: this);
   }
 
-  final RefreshController _refreshController = RefreshController(initialRefresh: false);
+  final RefreshController _refreshController =
+      RefreshController(initialRefresh: false);
 
-  reloadOrder(BuildContext context){
+  reloadOrder(BuildContext context) {
     context.read<PenjualOrderBloc>().add(GetPenjualOrder());
     // _refreshController.loadComplete();
   }
@@ -87,57 +88,57 @@ class _OrderPageViewState extends State<OrderPageView>
                   ],
                 ),
               ),
-              BlocBuilder<PenjualOrderBloc, PenjualOrderState>(builder:
-                  (context,state){
+              BlocBuilder<PenjualOrderBloc, PenjualOrderState>(
+                builder: (context, state) {
+                  if (state is PenjualOrderSuccess) {
+                    return TabBar(
+                      isScrollable: true,
+                      controller: _tabController,
+                      labelColor: MyColors.red1,
+                      tabs: const <Widget>[
+                        Tab(
+                          icon: OrderTabTitle(title: "Baru Datang"),
+                        ),
+                        Tab(
+                          icon: OrderTabTitle(title: "Booking"),
+                        ),
+                        Tab(
+                          icon: OrderTabTitle(title: "Diterima"),
+                        ),
+                        Tab(
+                          icon: OrderTabTitle(title: "Ditolak"),
+                        ),
+                        Tab(
+                          icon: OrderTabTitle(title: "Semua"),
+                        ),
+                      ],
+                    );
+                  }
 
-                if(state is PenjualOrderSuccess){
-                 return TabBar(
-                   isScrollable: true,
-                   controller: _tabController,
-                   labelColor: MyColors.red1,
-                   tabs: const <Widget>[
-                     Tab(
-                       icon: OrderTabTitle(title: "Baru Datang"),
-                     ),
-                     Tab(
-                       icon: OrderTabTitle(title: "Booking"),
-                     ),
-                     Tab(
-                       icon: OrderTabTitle(title: "Diterima"),
-                     ),
-                     Tab(
-                       icon: OrderTabTitle(title: "Ditolak"),
-                     ),
-                     Tab(
-                       icon: OrderTabTitle(title: "Semua"),
-                     ),
-                   ],
-                 );
-                }
-
-                return TabBar(
-                  isScrollable: true,
-                  controller: _tabController,
-                  labelColor: MyColors.red1,
-                  tabs: const <Widget>[
-                    Tab(
-                      icon: OrderTabTitle(title: "Baru Datang"),
-                    ),
-                    Tab(
-                      icon: OrderTabTitle(title: "Booking"),
-                    ),
-                    Tab(
-                      icon: OrderTabTitle(title: "Diterima"),
-                    ),
-                    Tab(
-                      icon: OrderTabTitle(title: "Ditolak"),
-                    ),
-                    Tab(
-                      icon: OrderTabTitle(title: "Semua"),
-                    ),
-                  ],
-                );
-              },),
+                  return TabBar(
+                    isScrollable: true,
+                    controller: _tabController,
+                    labelColor: MyColors.red1,
+                    tabs: const <Widget>[
+                      Tab(
+                        icon: OrderTabTitle(title: "Baru Datang"),
+                      ),
+                      Tab(
+                        icon: OrderTabTitle(title: "Booking"),
+                      ),
+                      Tab(
+                        icon: OrderTabTitle(title: "Diterima"),
+                      ),
+                      Tab(
+                        icon: OrderTabTitle(title: "Ditolak"),
+                      ),
+                      Tab(
+                        icon: OrderTabTitle(title: "Semua"),
+                      ),
+                    ],
+                  );
+                },
+              ),
             ],
           ),
         ),
@@ -222,16 +223,19 @@ class OrderTabContent extends StatelessWidget {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => DetailOrderPage(order:
-                    list[index],),
+                    builder: (context) => DetailOrderPage(
+                      order: list[index],
+                    ),
                   ),
-                ).then((value){
+                ).then((value) {
                   context.read<PenjualOrderBloc>().add(
-                    GetPenjualOrder(),
-                  );
+                        GetPenjualOrder(),
+                      );
                 });
               },
-              child: OrderCard(order: list[index],)),
+              child: OrderCard(
+                order: list[index],
+              )),
           itemCount: list.length,
         ),
       ),
@@ -260,7 +264,7 @@ class OrderTabTitle extends StatelessWidget {
 }
 
 class OrderCard extends StatelessWidget {
-  const OrderCard({Key? key,required this.order}) : super(key: key);
+  const OrderCard({Key? key, required this.order}) : super(key: key);
 
   final PenjualOrderModel order;
   @override
@@ -272,7 +276,7 @@ class OrderCard extends StatelessWidget {
           Container(
             clipBehavior: Clip.antiAlias,
             padding:
-            const EdgeInsets.only(top: 0, bottom: 16, left: 16, right: 16),
+                const EdgeInsets.only(top: 0, bottom: 16, left: 16, right: 16),
             decoration: const BoxDecoration(
                 color: Colors.white,
                 borderRadius: BorderRadius.all(Radius.circular(8)),
@@ -292,7 +296,9 @@ class OrderCard extends StatelessWidget {
                 ),
                 Row(
                   children: [
-                    CustomTileDateBox(timestamp: order.pickupDate!,),
+                    CustomTileDateBox(
+                      timestamp: order.pickupDate!,
+                    ),
                     const SizedBox(
                       width: 16,
                     ),
@@ -354,9 +360,8 @@ class OrderCard extends StatelessWidget {
 }
 
 class CustomTileDateBox extends StatelessWidget {
-  const CustomTileDateBox({
-    Key? key,required this.timestamp
-  }) : super(key: key);
+  const CustomTileDateBox({Key? key, required this.timestamp})
+      : super(key: key);
 
   final Timestamp timestamp;
   @override
@@ -413,8 +418,8 @@ class CustomTileTimeBadge extends StatelessWidget {
       ),
       child: Text(
         "3 Menit lalu",
-        style: normalText.copyWith(color: MyColors.green1,fontWeight: FontWeight
-            .bold),
+        style: normalText.copyWith(
+            color: MyColors.green1, fontWeight: FontWeight.bold),
       ),
     );
   }

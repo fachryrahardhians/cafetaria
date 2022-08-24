@@ -22,8 +22,8 @@ void main() async {
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
-      final _penjualOrderRepository = PenjualOrderRepository(firestore:
-      firebaseStore);
+      final _penjualOrderRepository =
+          PenjualOrderRepository(firestore: firebaseStore);
       final _cloudStorage = CloudStorage();
       const _secureStorage = SecureStorage();
 
@@ -37,7 +37,7 @@ void main() async {
       return App(
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,
-        appSharedPref:  _appSharePref,
+        appSharedPref: _appSharePref,
         categoryRepository: _categoryRepository,
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,

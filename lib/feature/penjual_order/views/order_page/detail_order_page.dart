@@ -345,8 +345,8 @@ class DetailOrderPageView extends StatelessWidget {
                       ),
                     ),
                     Visibility(
-                      visible: ['declined','finish'].contains(state.order!
-                          .statusOrder),
+                      visible: ['declined', 'finish']
+                          .contains(state.order!.statusOrder),
                       child: Padding(
                         padding: const EdgeInsets.symmetric(horizontal: 24),
                         child: Column(
@@ -359,12 +359,12 @@ class DetailOrderPageView extends StatelessWidget {
                               TextSpan(children: [
                                 TextSpan(
                                     text: "Keterangan : ",
-                                    style: bigText.copyWith(color: MyColors
-                                        .red1)),
+                                    style:
+                                        bigText.copyWith(color: MyColors.red1)),
                                 TextSpan(
                                     text: state.order!.keterangan ?? '',
-                                    style: bigText.copyWith(color: MyColors
-                                        .grey2))
+                                    style:
+                                        bigText.copyWith(color: MyColors.grey2))
                               ]),
                             ),
                           ],

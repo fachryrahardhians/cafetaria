@@ -11,8 +11,8 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
   LogoutBloc(
       {required AuthenticationRepository authenticationRepository,
       required AppSharedPref appSharedPref})
-      : _authenticationRepository = authenticationRepository, _appSharedPref
-  = appSharedPref,
+      : _authenticationRepository = authenticationRepository,
+        _appSharedPref = appSharedPref,
         super(LogoutStateInit()) {
     on<LogoutEvent>((event, emit) => _logout(emit, event));
   }

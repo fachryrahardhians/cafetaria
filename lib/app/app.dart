@@ -10,7 +10,6 @@ import 'package:menu_repository/menu_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:storage/storage.dart';
 
-
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class App extends StatelessWidget {
@@ -23,8 +22,7 @@ class App extends StatelessWidget {
     required SecureStorage secureStorage,
     required AppSharedPref appSharedPref,
     required PenjualOrderRepository penjualOrderRepository,
-  })
-      : _authenticationRepository = authenticationRepository,
+  })  : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
         _appSharedPref = appSharedPref,
         _categoryRepository = categoryRepository,

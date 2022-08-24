@@ -41,8 +41,8 @@ class CustomTextfield1 extends StatelessWidget {
         children: [
           Text(
             (label ?? '').toUpperCase(),
-            style: const TextStyle(fontSize: 12, color: MyColors.grey1,
-                letterSpacing: 1.1),
+            style: const TextStyle(
+                fontSize: 12, color: MyColors.grey1, letterSpacing: 1.1),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),
