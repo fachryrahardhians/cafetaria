@@ -17,8 +17,10 @@ class MenuRepository {
     String idCategory,
   ) async {
     try {
-      final snapshot =
-          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+      final snapshot = await _firestore
+          .collection('menuPerMerchant-$idMerchant')
+          .where('categoryId', isEqualTo: idCategory)
+          .get();
 
       final documents = snapshot.docs;
       return documents.toListMenu();

@@ -169,7 +169,7 @@ class DaftarMenuWidget extends StatelessWidget {
                               onSelected: (val) {
                                 context.read<ListMenuBloc>().add(
                                       GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.categoryId!),
+                                          item.category),
                                     );
                               },
                               label: Text(
