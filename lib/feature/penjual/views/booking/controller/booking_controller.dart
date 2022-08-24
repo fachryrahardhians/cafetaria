@@ -31,12 +31,17 @@ class BookingController extends GetxController {
 
   // STREAM
   Stream<QuerySnapshot<Map<String, dynamic>>> streamAllBooking() async* {
-    yield* _firestore.collection("menu").where("merchantId", isEqualTo: merchantId).where("isPreOrder", isEqualTo: true).snapshots();
+    yield* _firestore
+        .collection("menu")
+        .where("merchantId", isEqualTo: merchantId)
+        .where("isPreOrder", isEqualTo: true)
+        .snapshots();
   }
 
   // FUTURE
   Future<void> getAllMenu() async {
-    var querySnap = await _firestore.collection("menuPerMerchant-$merchantId").get();
+    var querySnap =
+        await _firestore.collection("menuPerMerchant-$merchantId").get();
 
     allCategoryMenu = [];
 
@@ -69,7 +74,10 @@ class BookingController extends GetxController {
   Future<void> getAllBooking() async {
     booking([]);
     booking.refresh();
-    var querySnap = await _firestore.collection("menuPerMerchant-$merchantId").where("isPreOrder", isEqualTo: true).get();
+    var querySnap = await _firestore
+        .collection("menuPerMerchant-$merchantId")
+        .where("isPreOrder", isEqualTo: true)
+        .get();
 
     allCategoryBooking = [];
 
@@ -129,13 +137,22 @@ class BookingController extends GetxController {
     for (var element in menu) {
       for (var e in element) {
         if (e.selected.isTrue) {
-          await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": true});
+          await _firestore
+              .collection("menu")
+              .doc(e.menuId)
+              .update({"isPreOrder": true});
 
-          var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+          var querySnap = await _firestore
+              .collection("rulepreordermenu")
+              .where("merchantId", isEqualTo: merchantId)
+              .get();
           late String docIdTime;
           if (querySnap.docs.isNotEmpty) {
             docIdTime = querySnap.docs.first.id;
-            await _firestore.collection("rulepreordermenu").doc(docIdTime).update({
+            await _firestore
+                .collection("rulepreordermenu")
+                .doc(docIdTime)
+                .update({
               "isShowPublic": showPorsi.value,
               "maxQty": maxPorsiC.text.isEmpty ? 0 : int.parse(maxPorsiC.text),
               "merchantId": merchantId,
@@ -152,10 +169,16 @@ class BookingController extends GetxController {
               "poDay": jarakC.text.isEmpty ? 0 : int.parse(jarakC.text),
             });
             docIdTime = queryRaw.id;
-            await _firestore.collection("rulepreordermenu").doc(docIdTime).update({"rulepreordermenuId": docIdTime});
+            await _firestore
+                .collection("rulepreordermenu")
+                .doc(docIdTime)
+                .update({"rulepreordermenuId": docIdTime});
           }
 
-          await _firestore.collection("menu").doc(e.menuId).update({"rulepreordermenuId": docIdTime});
+          await _firestore
+              .collection("menu")
+              .doc(e.menuId)
+              .update({"rulepreordermenuId": docIdTime});
         }
       }
     }
@@ -165,9 +188,15 @@ class BookingController extends GetxController {
     for (var element in menu) {
       for (var e in element) {
         if (e.selected.isTrue) {
-          await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": true});
+          await _firestore
+              .collection("menu")
+              .doc(e.menuId)
+              .update({"isPreOrder": true});
         } else {
-          await _firestore.collection("menu").doc(e.menuId).update({"isPreOrder": false});
+          await _firestore
+              .collection("menu")
+              .doc(e.menuId)
+              .update({"isPreOrder": false});
         }
       }
     }
@@ -175,7 +204,10 @@ class BookingController extends GetxController {
 
   Future<void> editSettingBooking() async {
     try {
-      var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+      var querySnap = await _firestore
+          .collection("rulepreordermenu")
+          .where("merchantId", isEqualTo: merchantId)
+          .get();
       late String docIdTime;
 
       docIdTime = querySnap.docs.first.id;
@@ -188,20 +220,21 @@ class BookingController extends GetxController {
         "rulepreordermenuId": docIdTime,
       });
     } catch (e) {
-      print("error");
+      throw Exception();
     }
   }
 
   Future<void> getOrderTime() async {
     try {
-      var querySnap = await _firestore.collection("rulepreordermenu").where("merchantId", isEqualTo: merchantId).get();
+      var querySnap = await _firestore
+          .collection("rulepreordermenu")
+          .where("merchantId", isEqualTo: merchantId)
+          .get();
       if (querySnap.docs.isNotEmpty) {
         preOrder = PreOrder.fromJson(querySnap.docs.first.data());
-        print(querySnap.docs.first.data());
       }
     } catch (e) {
       preOrder = null;
-      print(e);
     }
   }
 
@@ -210,13 +243,13 @@ class BookingController extends GetxController {
     issetSelected.value = false;
     dataMenu.selected.toggle();
 
-    menu.forEach((menuByCategory) {
-      menuByCategory.forEach((menu) {
+    for (var menuByCategory in menu) {
+      for (var menu in menuByCategory) {
         if (menu.selected.isTrue) {
           issetSelected.value = true;
         }
-      });
-    });
+      }
+    }
   }
 
   void deleteBooking(List<MenuModelObs> menuByCategory) async {
@@ -227,7 +260,8 @@ class BookingController extends GetxController {
     }
   }
 
-  void addAllDocBooking(List<QueryDocumentSnapshot<Map<String, dynamic>>> raw) async {
+  void addAllDocBooking(
+      List<QueryDocumentSnapshot<Map<String, dynamic>>> raw) async {
     booking([]);
     booking.refresh();
 

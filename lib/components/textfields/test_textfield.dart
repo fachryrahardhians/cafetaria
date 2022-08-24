@@ -14,7 +14,7 @@ class TestComponentTextfields extends StatelessWidget {
         physics: const BouncingScrollPhysics(),
         shrinkWrap: true,
         children: [
-          CustomTextfield1(
+          const CustomTextfield1(
             label: "NAMA MENU",
             hint: "Masukkan nama menu",
           ),

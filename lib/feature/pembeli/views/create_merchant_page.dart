@@ -1,21 +1,22 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_collection_literals, avoid_init_to_null
 
-import 'package:firebase_auth/firebase_auth.dart';
-import 'package:flutter/material.dart';
 import 'dart:async';
 import 'dart:io';
-import 'package:google_fonts/google_fonts.dart';
-import 'package:google_maps_flutter/google_maps_flutter.dart';
-import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
+import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:cafetaria/styles/colors.dart';
-import 'package:geocoding/geocoding.dart';
-import 'package:fluttertoast/fluttertoast.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:flutter/material.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geocoding/geocoding.dart';
+import 'package:google_fonts/google_fonts.dart';
+import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:image_picker/image_picker.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
   const PembeliCreateMerchantPage(this.user, {Key? key}) : super(key: key);
@@ -114,7 +115,26 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     });
 
     try {
-      var documentReference = await _firestore.collection('merchant').add(data);
+      final datas = {
+        'userId': userId,
+        'merchant': userId,
+        'name': _namaUsaha.text,
+        'category': _bidangUsaha,
+        'city': _kota.text,
+        'postal_code': _kodePos.text,
+        'address': _alamatLengkap.text,
+        'address_detail': _lokasiDetail.text,
+        'address_latitude': _latLngToko!.latitude,
+        'address_longitude': _latLngToko!.longitude,
+        'rating': 0,
+        'totalCountRating': 0,
+        'totalOrderToday': 0,
+        'totalSalesToday': 0,
+        'totalSalesYesterday': 0,
+        'create_at': Timestamp.now()
+      };
+      var documentReference =
+          await _firestore.collection('merchant').add(datas);
       uuid = documentReference.id;
 
       var snapshotLuar = await _storage

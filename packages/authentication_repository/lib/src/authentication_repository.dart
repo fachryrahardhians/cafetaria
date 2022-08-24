@@ -75,7 +75,6 @@ class AuthenticationRepository {
       // Once signed in, return the UserCredential
       return await _firebaseAuth.signInWithCredential(credential);
     } on Exception catch (error, stacktrace) {
-      print("ERROR : $error");
       throw AuthenticationException(error, stacktrace);
     }
   }

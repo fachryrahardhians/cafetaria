@@ -1,7 +1,8 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cafetaria/styles/colors.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:flutter/material.dart';
-import 'dart:io';
+import 'package:image_picker/image_picker.dart';
 
 class BottomBar extends StatelessWidget {
   BottomBar({

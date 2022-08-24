@@ -8,8 +8,8 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:menu_repository/menu_repository.dart';
 import 'package:get/get.dart';
+import 'package:menu_repository/menu_repository.dart';
 
 class AturBookingPage extends StatelessWidget {
   AturBookingPage({Key? key}) : super(key: key);
@@ -134,7 +134,9 @@ class ListMenuWidget extends StatelessWidget {
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
-      context.read<ListMenuBloc>().add(GetListMenu(merchantId, cat.categoryId!));
+      context
+          .read<ListMenuBloc>()
+          .add(GetListMenu(merchantId, cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -183,7 +185,6 @@ class ListMenuWidget extends StatelessWidget {
                   physics: const NeverScrollableScrollPhysics(),
                   itemCount: menuByCategory.length,
                   itemBuilder: (context, index) {
-                    MenuModel menu = menuByCategory[index];
                     if (index == 0) {
                       return Column(
                         crossAxisAlignment: CrossAxisAlignment.stretch,

@@ -1,8 +1,10 @@
+// ignore_for_file: must_be_immutable
+
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
 
 class CustomTextfield1 extends StatelessWidget {
-  CustomTextfield1({
+  const CustomTextfield1({
     Key? key,
     this.hint,
     this.label,
@@ -41,8 +43,8 @@ class CustomTextfield1 extends StatelessWidget {
         children: [
           Text(
             (label ?? '').toUpperCase(),
-            style: const TextStyle(fontSize: 12, color: MyColors.grey1,
-                letterSpacing: 1.1),
+            style: const TextStyle(
+                fontSize: 12, color: MyColors.grey1, letterSpacing: 1.1),
           ),
           Container(
             margin: const EdgeInsets.symmetric(vertical: 8, horizontal: 0),

@@ -23,7 +23,6 @@ class ItemMenu extends StatelessWidget {
       child: InkWell(
         borderRadius: BorderRadius.circular(10),
         onTap: () {
-          print("SELECT MENU : ${menu.name} => ${menu.selected}");
           bookC.checkSelected(menu);
         },
         child: Padding(
@@ -60,7 +59,9 @@ class ItemMenu extends StatelessWidget {
               ),
               Obx(
                 () => Icon(
-                  menu.selected.isTrue ? Icons.radio_button_checked : Icons.radio_button_off,
+                  menu.selected.isTrue
+                      ? Icons.radio_button_checked
+                      : Icons.radio_button_off,
                   color: menu.selected.isTrue ? MyColors.red1 : MyColors.grey3,
                 ),
               ),

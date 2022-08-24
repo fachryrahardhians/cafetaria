@@ -76,7 +76,8 @@ class AturBookingPage extends StatelessWidget {
                   itemCount: bookC.menu.length,
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   itemBuilder: (context, indexAllMenu) {
-                    List<MenuModelObs> menuByCategory = bookC.menu[indexAllMenu];
+                    List<MenuModelObs> menuByCategory =
+                        bookC.menu[indexAllMenu];
                     String categoryId = bookC.allCategoryMenu[indexAllMenu];
 
                     return ListView.builder(
@@ -86,13 +87,13 @@ class AturBookingPage extends StatelessWidget {
                       itemBuilder: (context, index) {
                         MenuModelObs menu = menuByCategory[index];
                         if (booking != null) {
-                          booking!.forEach((e) {
-                            e.forEach((element) {
+                          for (var e in booking!) {
+                            for (var element in e) {
                               if (element.menuId == menu.menuId) {
                                 menu.selected.value = true;
                               }
-                            });
-                          });
+                            }
+                          }
                         }
                         if (index == 0) {
                           return Column(
@@ -102,7 +103,8 @@ class AturBookingPage extends StatelessWidget {
                               FutureBuilder<String>(
                                 future: bookC.getCategoryName(categoryId),
                                 builder: (context, snapCat) {
-                                  if (snapCat.connectionState == ConnectionState.waiting) {
+                                  if (snapCat.connectionState ==
+                                      ConnectionState.waiting) {
                                     return const Text(
                                       "LOADING...",
                                       style: TextStyle(
@@ -145,7 +147,9 @@ class AturBookingPage extends StatelessWidget {
                         Navigator.pop(context);
                         Navigator.pop(context);
                         Get.delete<BookingController>();
-                        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(content: Text("Berhasil mengubah booking")));
+                        ScaffoldMessenger.of(context).showSnackBar(
+                            const SnackBar(
+                                content: Text("Berhasil mengubah booking")));
                       } else {
                         Navigator.of(context).push(
                           MaterialPageRoute(
@@ -164,7 +168,9 @@ class AturBookingPage extends StatelessWidget {
                   },
                   child: Text(booking != null ? "SIMPAN" : "PILIH MENU"),
                   style: ElevatedButton.styleFrom(
-                    primary: bookC.issetSelected.isTrue ? MyColors.red1 : MyColors.disabledRed1,
+                    primary: bookC.issetSelected.isTrue
+                        ? MyColors.red1
+                        : MyColors.disabledRed1,
                   ),
                 ),
               ),

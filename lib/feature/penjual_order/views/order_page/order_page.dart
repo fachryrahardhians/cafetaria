@@ -3,7 +3,6 @@ import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_order_event.dart';
 import 'package:cafetaria/feature/penjual_order/bloc/penjual_order_bloc/penjual_order_state.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/detail_order_page.dart';
-
 // import 'package:cafetaria/feature/penjual/views/order_page/detail_order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -24,14 +23,14 @@ class OrderPage extends StatelessWidget {
         )..add(
             GetPenjualOrder(),
           ),
-        child: OrderPageView(),
+        child: const OrderPageView(),
       ),
     );
   }
 }
 
 class OrderPageView extends StatefulWidget {
-  OrderPageView({Key? key}) : super(key: key);
+  const OrderPageView({Key? key}) : super(key: key);
 
   @override
   State<OrderPageView> createState() => _OrderPageViewState();
@@ -56,7 +55,7 @@ class _OrderPageViewState extends State<OrderPageView> {
           color: MyColors.red1,
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(90),
+          preferredSize: const Size.fromHeight(90),
           child: DefaultTabController(
             length: 5,
             initialIndex: 0,
@@ -138,10 +137,9 @@ class _OrderPageViewState extends State<OrderPageView> {
                 // controller: _tabController,
                 children: List.generate(
                     5,
-                        (index) =>
-                    const Center(
-                      child: CircularProgressIndicator(),
-                    )),
+                    (index) => const Center(
+                          child: CircularProgressIndicator(),
+                        )),
               );
             }
 
@@ -164,13 +162,12 @@ class _OrderPageViewState extends State<OrderPageView> {
                 children: List.generate(
                   // _tabController.length,
                   5,
-                      (index) =>
-                      Center(
-                        child: Text(
-                          "Something Wrong",
-                          style: normalText,
-                        ),
-                      ),
+                  (index) => Center(
+                    child: Text(
+                      "Something Wrong",
+                      style: normalText,
+                    ),
+                  ),
                 ),
               );
             }
@@ -180,33 +177,30 @@ class _OrderPageViewState extends State<OrderPageView> {
               children: List.generate(
                 // _tabController.length,
                 5,
-                    (index) =>
-                    Center(
-                      child: Text(
-                        "Loading",
-                        style: normalText,
-                      ),
-                    ),
+                (index) => Center(
+                  child: Text(
+                    "Loading",
+                    style: normalText,
+                  ),
+                ),
               ),
             );
-          }catch(e){
+          } catch (e) {
             return TabBarView(
               // controller: _tabController,
               children: List.generate(
                 // _tabController.length,
                 5,
-                    (index) =>
-                    Center(
-                      child: Text(
-                        "$e",
-                        style: normalText,
-                      ),
-                    ),
+                (index) => Center(
+                  child: Text(
+                    "$e",
+                    style: normalText,
+                  ),
+                ),
               ),
             );
           }
         },
-
       ),
       // body: TabBarView(
       //   controller: _tabController,
@@ -235,9 +229,9 @@ class OrderTabContent extends StatelessWidget {
   Widget build(BuildContext context) {
     return Expanded(
       child: Padding(
-        padding: EdgeInsets.symmetric(vertical: 10),
+        padding: const EdgeInsets.symmetric(vertical: 10),
         child: ListView.builder(
-          physics: BouncingScrollPhysics(),
+          physics: const BouncingScrollPhysics(),
           itemBuilder: (context, index) => InkWell(
               onTap: () {
                 Navigator.push(
@@ -247,7 +241,7 @@ class OrderTabContent extends StatelessWidget {
                   ),
                 );
               },
-              child: OrderCard()),
+              child: const OrderCard()),
           itemCount: 5,
         ),
       ),

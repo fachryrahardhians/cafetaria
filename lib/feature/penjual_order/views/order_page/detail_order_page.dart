@@ -8,7 +8,7 @@ class DetailOrderPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return DetailOrderPageView();
+    return const DetailOrderPageView();
   }
 }
 
@@ -19,15 +19,15 @@ class DetailOrderPageView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xffF9FAFB),
+        backgroundColor: const Color(0xffF9FAFB),
         elevation: 0,
-        leading: BackButton(
+        leading: const BackButton(
           color: MyColors.red1,
         ),
         bottom: PreferredSize(
-          preferredSize: Size.fromHeight(30),
+          preferredSize: const Size.fromHeight(30),
           child: Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 10,
               horizontal: 24,
             ),
@@ -44,23 +44,23 @@ class DetailOrderPageView extends StatelessWidget {
         ),
       ),
       body: ListView(
-        physics: BouncingScrollPhysics(),
+        physics: const BouncingScrollPhysics(),
         children: [
-          DetailOrderCard(),
+          const DetailOrderCard(),
           Theme(
             data: Theme.of(context).copyWith(dividerColor: Colors.transparent),
             child: ExpansionTile(
               title: Text(
                 "DETAIL PELANGGAN",
                 style: normalText.copyWith(
-                    color: Color(0xff8C8F93),
+                    color: const Color(0xff8C8F93),
                     fontWeight: FontWeight.w600,
                     letterSpacing: 0.8),
               ),
               expandedCrossAxisAlignment: CrossAxisAlignment.start,
               expandedAlignment: Alignment.centerLeft,
-              childrenPadding: EdgeInsets.symmetric(horizontal: 24),
-              tilePadding: EdgeInsets.symmetric(horizontal: 24),
+              childrenPadding: const EdgeInsets.symmetric(horizontal: 24),
+              tilePadding: const EdgeInsets.symmetric(horizontal: 24),
               children: [
                 detailPelangganTile(
                   name: "nama pelanggan",
@@ -71,10 +71,9 @@ class DetailOrderPageView extends StatelessWidget {
                   value: "081397979797",
                 ),
                 detailPelangganTile(
-                  name: "alamat",
-                  value: "Apartemen Skyline Residence",
-                  detail: "Tower A • Lantai 3A • Nomor 37"
-                ),
+                    name: "alamat",
+                    value: "Apartemen Skyline Residence",
+                    detail: "Tower A • Lantai 3A • Nomor 37"),
               ],
             ),
           ),
@@ -83,8 +82,8 @@ class DetailOrderPageView extends StatelessWidget {
     );
   }
 
-  Column detailPelangganTile({required String name, required String value,
-    String? detail}) {
+  Column detailPelangganTile(
+      {required String name, required String value, String? detail}) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       mainAxisAlignment: MainAxisAlignment.start,
@@ -92,11 +91,11 @@ class DetailOrderPageView extends StatelessWidget {
         Text(
           name.toUpperCase(),
           style: normalText.copyWith(
-              color: Color(0xff8C8F93),
+              color: const Color(0xff8C8F93),
               fontWeight: FontWeight.w600,
               letterSpacing: 0.8),
         ),
-        SizedBox(
+        const SizedBox(
           height: 5,
         ),
         Text(
@@ -105,16 +104,20 @@ class DetailOrderPageView extends StatelessWidget {
             letterSpacing: 0.8,
           ),
         ),
-        detail != null ? SizedBox(
-          height: 5,
-        ) : Container(),
-        detail != null ? Text(
-          detail,
-          style: normalText.copyWith(
-            letterSpacing: 0.8,
-          ),
-        ) : Container(),
-        SizedBox(
+        detail != null
+            ? const SizedBox(
+                height: 5,
+              )
+            : Container(),
+        detail != null
+            ? Text(
+                detail,
+                style: normalText.copyWith(
+                  letterSpacing: 0.8,
+                ),
+              )
+            : Container(),
+        const SizedBox(
           height: 15,
         ),
       ],
