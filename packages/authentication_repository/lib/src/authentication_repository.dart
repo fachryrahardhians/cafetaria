@@ -79,6 +79,30 @@ class AuthenticationRepository {
     }
   }
 
+  Future<UserCredential> addLinkedEmail(
+      {required String email, required String password}) async {
+    try {
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      final userCredential = await FirebaseAuth.instance.currentUser!
+          .linkWithCredential(credential);
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "provider-already-linked":
+          break;
+        case "invalid-credential":
+          break;
+        case "credential-already-in-use":
+          break;
+        // See the API reference for the full list of error codes.
+        default:
+      }
+      throw Exception(e);
+    }
+  }
+
   Stream<User?> get user {
     return _firebaseAuth.authStateChanges().asyncMap(_handleAuthStateChanged);
   }

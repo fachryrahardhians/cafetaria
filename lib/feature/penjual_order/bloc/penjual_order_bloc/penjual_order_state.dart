@@ -15,8 +15,27 @@ class PenjualOrderLoading extends PenjualOrderState {
 
 class PenjualOrderSuccess extends PenjualOrderState {
   final List<PenjualOrderModel> list;
+  List<PenjualOrderModel> get listBaru => _getterList("new");
+  List<PenjualOrderModel> get listBooking => _getterList("booking");
+  List<PenjualOrderModel> get diterima => _getterList("process");
+  List<PenjualOrderModel> get ditolak => _getterList("declined");
 
   PenjualOrderSuccess(this.list);
+
+  List<PenjualOrderModel> _getterList(String filter) {
+    try {
+      List<PenjualOrderModel> _temp = [];
+      // _temp.removeWhere((el) => el.statusOrder != filter);
+      for (var item in list) {
+        if (item.statusOrder == filter) {
+          _temp.add(item);
+        }
+      }
+      return _temp;
+    } catch (e) {
+      return [];
+    }
+  }
 
   @override
   List<Object?> get props => [list];
