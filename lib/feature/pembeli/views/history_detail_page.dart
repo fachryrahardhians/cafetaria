@@ -17,7 +17,9 @@ class HistoryDetailPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider<MerchantByIdBloc>(
-      create: (context) => MerchantByIdBloc(merchantRepository: context.read<MerchantRepository>())..add(GetMerchantById(item.merchantId.toString())),
+      create: (context) => MerchantByIdBloc(
+          merchantRepository: context.read<MerchantRepository>())
+        ..add(GetMerchantById(item.merchantId.toString())),
       child: HistoryDetail(
         item: item,
       ),
@@ -66,9 +68,9 @@ class _HistoryDetailState extends State<HistoryDetail> {
         padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
           BlocBuilder<MerchantByIdBloc, MerchantByIdState>(
-            builder: (context, state){
+            builder: (context, state) {
               final status = state.status;
-              if(status == MerchantByIdStatus.success){
+              if (status == MerchantByIdStatus.success) {
                 final item = state.model!;
                 return outlet(
                     'assets/images/ill_cafetaria_banner1.png',
@@ -77,10 +79,10 @@ class _HistoryDetailState extends State<HistoryDetail> {
                     '1.2 km',
                     '15 min',
                     '${item.rating} • ${item.totalCountRating} rating');
-              }
-              else if (status == MerchantByIdStatus.loading)
+              } else if (status == MerchantByIdStatus.loading)
                 return Center(child: const CircularProgressIndicator());
-              else return SizedBox();
+              else
+                return SizedBox();
             },
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
@@ -90,12 +92,14 @@ class _HistoryDetailState extends State<HistoryDetail> {
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           ListView.separated(
-            shrinkWrap: true,
+              shrinkWrap: true,
               physics: NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return menu(item.menus?[index].qty, item.menus?[index].name, item.menus?[index].price);
+                return menu(item.menus![index].qty!, item.menus![index].name!,
+                    item.menus![index].price!);
               },
-              separatorBuilder: (context, index) => SizedBox(height: SizeConfig.safeBlockVertical*1),
+              separatorBuilder: (context, index) =>
+                  SizedBox(height: SizeConfig.safeBlockVertical * 1),
               itemCount: item.menus!.length),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           Row(
@@ -211,7 +215,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
           Text(
             'Rp. $totalPrice',
             style:
-            textStyle.copyWith(fontWeight: FontWeight.w500, fontSize: 13),
+                textStyle.copyWith(fontWeight: FontWeight.w500, fontSize: 13),
           )
         ],
       ),

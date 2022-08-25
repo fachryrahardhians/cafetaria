@@ -16,9 +16,11 @@ part 'add_order_state.dart';
 class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
   final OrderRepository _orderRepository;
   final AuthenticationRepository _authtenticationRepository;
-  AddOrderBloc({
-    required OrderRepository orderRepository, required AuthenticationRepository authenticationRepository
-  })  : _orderRepository = orderRepository, _authtenticationRepository = authenticationRepository,
+  AddOrderBloc(
+      {required OrderRepository orderRepository,
+      required AuthenticationRepository authenticationRepository})
+      : _orderRepository = orderRepository,
+        _authtenticationRepository = authenticationRepository,
         super(const AddOrderState()) {
     on<SaveOrder>(_saveOrder);
     on<OrderChange>(_orderChange);

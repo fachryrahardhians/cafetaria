@@ -40,9 +40,20 @@ class $AssetsImagesGen {
   AssetGenImage get illFood =>
       const AssetGenImage('assets/images/ill_food.png');
 
+  /// File path: assets/images/ill_home.png
+  AssetGenImage get illHome =>
+      const AssetGenImage('assets/images/ill_home.png');
+
+  /// File path: assets/images/ill_merchants.png
+  AssetGenImage get illMerchants =>
+      const AssetGenImage('assets/images/ill_merchants.png');
+
   /// File path: assets/images/ill_rate.png
   AssetGenImage get illRate =>
       const AssetGenImage('assets/images/ill_rate.png');
+
+  /// File path: assets/images/ill_sad.png
+  AssetGenImage get illSad => const AssetGenImage('assets/images/ill_sad.png');
 
   /// File path: assets/images/ill_wait.png
   AssetGenImage get illWait =>

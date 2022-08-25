@@ -1,7 +1,10 @@
+import 'dart:ui';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/utilities/SizeConfig.dart';
@@ -24,14 +27,17 @@ class SummaryPage extends StatelessWidget {
         providers: [
           BlocProvider(
               create: (context) => AddOrderBloc(
-                orderRepository: context.read<OrderRepository>(),
-                authenticationRepository: context.read<AuthenticationRepository>()
-              )),
+                  orderRepository: context.read<OrderRepository>(),
+                  authenticationRepository:
+                      context.read<AuthenticationRepository>())),
           BlocProvider(
               create: (context) => MenuInCartBloc(
-                menuRepository: context.read<MenuRepository>(),
-              )..add(GetMenusInCart()))
-        ], child: KeranjangPage(merchantId: merchantId,));
+                    menuRepository: context.read<MenuRepository>(),
+                  )..add(GetMenusInCart()))
+        ],
+        child: KeranjangPage(
+          merchantId: merchantId,
+        ));
   }
 }
 
@@ -126,8 +132,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           style: TextButton.styleFrom(
                               minimumSize: Size.zero,
                               padding: EdgeInsets.zero,
-                              tapTargetSize:
-                                  MaterialTapTargetSize.shrinkWrap),
+                              tapTargetSize: MaterialTapTargetSize.shrinkWrap),
                           child: Text(
                             "Ganti",
                             style: textStyle.copyWith(
@@ -204,7 +209,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   style: textStyle,
                 ),
                 GestureDetector(
-                  onTap: () {},
+                  onTap: () {
+                    showDialog(
+                        context: context,
+                        builder: (builder) => _popUpPanelBiayaPemesanan());
+                  },
                   child: const Icon(
                     Icons.info,
                     color: Color(0xffee3124),
@@ -283,15 +292,20 @@ class _KeranjangPageState extends State<KeranjangPage> {
       bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
         listener: (context, state) {
           if (state.formzStatus == FormzStatus.submissionSuccess) {
-            var baseDialog = const AlertDialogWait(
-              title: 'Makanan Anda sedang diproses',
-              message:
-                  'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
-              buttonText: 'KEMBALI KE HOME',
-            );
-            showDialog(
-                context: context,
-                builder: (BuildContext context) => baseDialog);
+            if (_preorder) {
+              var baseDialog = const AlertDialogWait(
+                title: 'Makanan Anda sedang diproses',
+                message:
+                    'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
+                buttonText: 'KEMBALI KE HOME',
+              );
+              showDialog(
+                  context: context,
+                  builder: (BuildContext context) => baseDialog);
+            } else {
+              Navigator.push(context,
+                  MaterialPageRoute(builder: (_) => const HistoryPage()));
+            }
           } else if (state.formzStatus == FormzStatus.submissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -313,8 +327,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                 merchantId: widget.merchantId,
                                 listKeranjang: menuInKeranjang,
                                 preOrder: _preorder,
-                                grandTotalPrice:
-                                    subTotalPrice + biayaPemesanan,
+                                grandTotalPrice: subTotalPrice + biayaPemesanan,
                                 timestamp: DateTime.now().toString(),
                                 pickupDate:
                                     _selectedDay.toString().split(' ')[0] +
@@ -664,9 +677,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
 
   Widget _popUpPanel() {
     return DraggableScrollableSheet(
-      initialChildSize: 0.36,
-      minChildSize: 0.36,
-      maxChildSize: 0.36,
+      initialChildSize: 0.4,
+      minChildSize: 0.4,
+      maxChildSize: 0.4,
       builder: (context, scrollController) {
         return Container(
           alignment: Alignment.bottomCenter,
@@ -693,6 +706,71 @@ class _KeranjangPageState extends State<KeranjangPage> {
             ],
           ),
         );
+      },
+    );
+  }
+
+  Widget _popUpPanelBiayaPemesanan() {
+    return DraggableScrollableSheet(
+      initialChildSize: 0.25,
+      minChildSize: 0.25,
+      maxChildSize: 0.25,
+      builder: (context, scrollController) {
+        return Material(
+            color: Colors.transparent,
+            child: Container(
+              alignment: Alignment.bottomCenter,
+              padding: EdgeInsets.symmetric(horizontal: 14),
+              decoration: const BoxDecoration(
+                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+                  color: Colors.white),
+              child: Column(
+                children: [
+                  Container(
+                    height: 30,
+                    alignment: Alignment.center,
+                    child: Container(
+                      width: 100,
+                      height: 4,
+                      decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(100),
+                          color: Color(0xffE5E6E6)),
+                    ),
+                  ),
+                  Padding(
+                      padding: EdgeInsets.only(top: 24, bottom: 16),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          const Text(
+                            "Biaya Pemesanan",
+                            style: TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xff2E3032),
+                            ),
+                          ),
+                          Text(
+                            'Rp $biayaPemesanan',
+                            style: const TextStyle(
+                              fontSize: 16,
+                              fontWeight: FontWeight.w400,
+                              color: Color(0xff2E3032),
+                            ),
+                          )
+                        ],
+                      )),
+                  Text(
+                    "Biaya pemesanan ini akan digunakan untuk terus meningkatkan layanan kami dalam mengantarkan makanan favoritmu.",
+                    style: TextStyle(
+                        fontSize: 12,
+                        color: Color(0xff2E3032),
+                        fontWeight: FontWeight.w400,
+                        fontStyle: null),
+                  )
+                ],
+              ),
+            ));
       },
     );
   }
