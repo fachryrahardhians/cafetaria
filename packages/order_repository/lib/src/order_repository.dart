@@ -34,11 +34,14 @@ class OrderRepository {
       order.copyWith(
         orderId: _uuid.v4(),
       );
+      var orderJson = order.toJson();
+
+      orderJson["timestamp"] =
+          Timestamp.fromDate(DateTime.parse(orderJson["timestamp"]));
+      orderJson["pickupDate"] =
+          Timestamp.fromDate(DateTime.parse(orderJson["pickupDate"]));
       // add to firestore
-      await _firestore
-          .collection('order')
-          .doc(order.orderId)
-          .set(order.toJson());
+      await _firestore.collection('order').doc(order.orderId).set(orderJson);
     } catch (e) {
       throw Exception(e.toString());
     }
@@ -52,6 +55,10 @@ extension on List<QueryDocumentSnapshot> {
       final data = document.data() as Map<String, dynamic>?;
       if (data != null) {
         try {
+          var timestamp = data["timestamp"] as Timestamp;
+          data["timestamp"] = timestamp.toDate().toString();
+          var pickupDate = data["pickupDate"] as Timestamp;
+          data["pickupDate"] = pickupDate.toDate().toString();
           historyEntries.add(HistoryModel.fromJson(data));
         } catch (error) {
           throw Exception();

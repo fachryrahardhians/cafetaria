@@ -12,12 +12,12 @@ class HistoryModel extends Equatable {
   final String? deviceToken;
   final bool? isCutlery;
   final bool? isPreorder;
-  final Timestamp pickupDate;
+  final String? pickupDate;
   final String? typePickup;
   final String? merchantId;
   final String? userId;
   final int? total;
-  final Timestamp timestamp;
+  final String? timestamp;
   final String? statusOrder;
   final List<OrderMenu>? menus;
 
@@ -28,12 +28,12 @@ class HistoryModel extends Equatable {
       this.deviceToken,
       this.isCutlery,
       this.isPreorder,
-      required this.pickupDate,
+      this.pickupDate,
       this.typePickup,
       this.userId,
       this.merchantId,
       this.total,
-      required this.timestamp,
+      this.timestamp,
       this.statusOrder,
       this.menus});
 
@@ -51,13 +51,11 @@ class HistoryModel extends Equatable {
     bool? isCutlery,
     bool? isPreorder,
     String? pickupDate,
-    Timestamp? pickupDateFirestore,
     String? typePickup,
     String? userId,
     String? merchantId,
     int? total,
     String? timestamp,
-    Timestamp? timestampFirestore,
     String? statusOrder,
     List<OrderMenu>? menus,
   }) {
@@ -65,7 +63,7 @@ class HistoryModel extends Equatable {
         orderId: orderId ?? this.orderId,
         merchantId: merchantId ?? this.merchantId,
         total: total ?? this.total,
-        timestamp: timestampFirestore ?? this.timestamp,
+        timestamp: timestamp ?? this.timestamp,
         statusOrder: statusOrder ?? this.statusOrder,
         menus: menus ?? this.menus,
         cash: cash ?? this.cash,
@@ -73,7 +71,7 @@ class HistoryModel extends Equatable {
         deviceToken: deviceToken ?? this.deviceToken,
         isCutlery: isCutlery ?? this.isCutlery,
         isPreorder: isPreorder ?? this.isPreorder,
-        pickupDate: pickupDateFirestore ?? this.pickupDate,
+        pickupDate: pickupDate ?? this.pickupDate,
         typePickup: typePickup ?? this.typePickup,
         userId: userId ?? this.userId);
   }
@@ -83,6 +81,7 @@ class HistoryModel extends Equatable {
         orderId,
         merchantId,
         total,
+        timestamp,
         statusOrder,
         menus,
         cash,
@@ -90,6 +89,7 @@ class HistoryModel extends Equatable {
         deviceToken,
         isCutlery,
         isPreorder,
+        pickupDate,
         typePickup,
         userId
       ];
