@@ -107,23 +107,18 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   Future _onSubmit(context) async {
     final userId = user.uid;
 
-    late String uuid;
-
     setState(() {
       _submitLoading = true;
     });
 
     try {
-      var documentReference = await _firestore.collection('merchant').add(data);
-      uuid = documentReference.id;
-
       var snapshotLuar = await _storage
           .ref()
-          .child('images/merchant/photo_from_outside/$uuid.jpg')
+          .child('images/merchant/photo_from_outside/$userId.jpg')
           .putFile(File(_fotoLuar!.path));
       var snapshotDalam = await _storage
           .ref()
-          .child('images/merchant/photo_from_inside/$uuid.jpg')
+          .child('images/merchant/photo_from_inside/$userId.jpg')
           .putFile(File(_fotoDalam!.path));
 
       var urlLuar = await snapshotLuar.ref.getDownloadURL();
