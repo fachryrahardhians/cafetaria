@@ -8,8 +8,6 @@ class StokInput extends FormzInput<String, StokInputValidationError> {
 
   @override
   StokInputValidationError? validator(String value) {
-    return value.isNotEmpty == true
-        ? null
-        : StokInputValidationError.invalid;
+    return value.isNotEmpty == true ? null : StokInputValidationError.invalid;
   }
 }

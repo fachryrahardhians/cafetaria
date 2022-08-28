@@ -1,4 +1,3 @@
-
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +44,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
 
   TextEditingController? _stokBarang;
   TimeOfDay time = const TimeOfDay(hour: 10, minute: 30);
+  String timeRestok = "";
   final oCcy = NumberFormat("#,##0.00", "IDR");
   @override
   void initState() {
@@ -52,12 +52,27 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
     super.initState();
     _stokBarang = TextEditingController(text: widget.user.stock.toString());
     widget.user.stock == 0 ? stockActive = false : stockActive = true;
+
+    widget.user.autoResetStock == false
+        ? berulangActive = false
+        : berulangActive = true;
+    context.read<AturStockBlocBloc>().add(AturStokJumlah(_stokBarang!.text));
+    if (berulangActive == true) {
+      selectedDropdown =
+          widget.user.resetType == "" || widget.user.resetType!.isEmpty
+              ? "jam"
+              : widget.user.resetType!;
+      timeRestok = widget.user.resetTime!;
+      context.read<AturStockBlocBloc>().add(AturStokRestok(berulangActive));
+      context
+          .read<AturStockBlocBloc>()
+          .add(AturStokRestokType(selectedDropdown));
+      context.read<AturStockBlocBloc>().add(AturStokTime(timeRestok));
+    }
   }
 
   @override
   Widget build(BuildContext context) {
-    final hours = time.hour.toString().padLeft(2, '0');
-    final minute = time.minute.toString().padLeft(2, '0');
     return Scaffold(
       appBar: AppBar(
         title: const Text(
@@ -248,7 +263,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                             setState(() {
                               selectedDropdown = val.toString();
                             });
-                            print(selectedDropdown);
+
                             context
                                 .read<AturStockBlocBloc>()
                                 .add(AturStokRestokType(selectedDropdown));
@@ -287,7 +302,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                   padding: const EdgeInsets.only(
                                       top: 15, left: 12, bottom: 10),
                                   child: Text(
-                                    "${time.hour} : ${time.minute}",
+                                    timeRestok,
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 17,
@@ -318,9 +333,10 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                     //if 'OK' new time
                                     setState(() {
                                       time = newTimes;
+                                      timeRestok =
+                                          "${time.hour} : ${time.minute} ${time.period.name.toUpperCase()}";
                                       context.read<AturStockBlocBloc>().add(
-                                          AturStokTime(
-                                              "${time.hour} : ${time.minute}"));
+                                          AturStokTime(time.format(context)));
                                     });
                                   },
                                   child: const Padding(
@@ -384,7 +400,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
           return Padding(
             padding: const EdgeInsets.all(16.0),
             child: ElevatedButton(
-              onPressed: state.stokInput.valid
+              onPressed: state.stokInput.valid ||
+                      state.timeReset.valid ||
+                      state.tipeRestok.valid
                   //   &&
                   // state.tipeRestok.valid &&
                   // state.timeReset.valid

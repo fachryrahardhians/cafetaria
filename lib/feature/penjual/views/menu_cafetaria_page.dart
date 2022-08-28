@@ -493,94 +493,92 @@ class ListMenuTidakTersediaWidget extends StatelessWidget {
             final items = state.items!;
             return Padding(
               padding: const EdgeInsets.only(top: 20, left: 10),
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    // return ListTile(
-                    //   title: Text(item.name ?? '-'),
-                    //   // subtitle: Text(item.price.toString()),
-                    //   trailing: IconButton(
-                    //     icon: const Icon(Icons.delete),
-                    //     onPressed: () {
-                    //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                    //     },
-                    //   ),
-                    // );
-                    return Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${item.name}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+                  // return ListTile(
+                  //   title: Text(item.name ?? '-'),
+                  //   // subtitle: Text(item.price.toString()),
+                  //   trailing: IconButton(
+                  //     icon: const Icon(Icons.delete),
+                  //     onPressed: () {
+                  //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                  //     },
+                  //   ),
+                  // );
+                  return Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item.name}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Rp ${oCcy.format(item.price)}',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                            ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Rp ${oCcy.format(item.price)}',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
                           ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Jumlah Stok ${item.stock}',
-                            style: const TextStyle(
-                              color: Colors.red,
-                            ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Jumlah Stok ${item.stock}',
+                          style: const TextStyle(
+                            color: Colors.red,
                           ),
-                          const SizedBox(height: 6.0),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.end,
-                          //   crossAxisAlignment: CrossAxisAlignment.end,
-                          //   children: [
-                          //     InkWell(
-                          //       onTap: () {
-                          //         Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //             builder: (context) =>
-                          //                 EditStok(menuModel: item),
-                          //           ),
-                          //         ).then((value) => context
-                          //             .read<ListMenuBloc>()
-                          //             .add(GetListMenu(
-                          //                 'merchant2', cat.categoryId!)));
-                          //       },
-                          //       child: const Text(
-                          //         'Atur Stok',
-                          //         style: TextStyle(
-                          //           color: Colors.red,
-                          //           fontWeight: FontWeight.bold,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     const SizedBox(width: 16.0),
-                          //     InkWell(
-                          //       onTap: () {},
-                          //       child: const Text(
-                          //         'Edit',
-                          //         style: TextStyle(
-                          //           color: Colors.red,
-                          //           fontWeight: FontWeight.bold,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                        const SizedBox(height: 6.0),
+                        // Row(
+                        //   mainAxisAlignment: MainAxisAlignment.end,
+                        //   crossAxisAlignment: CrossAxisAlignment.end,
+                        //   children: [
+                        //     InkWell(
+                        //       onTap: () {
+                        //         Navigator.push(
+                        //           context,
+                        //           MaterialPageRoute(
+                        //             builder: (context) =>
+                        //                 EditStok(menuModel: item),
+                        //           ),
+                        //         ).then((value) => context
+                        //             .read<ListMenuBloc>()
+                        //             .add(GetListMenu(
+                        //                 'merchant2', cat.categoryId!)));
+                        //       },
+                        //       child: const Text(
+                        //         'Atur Stok',
+                        //         style: TextStyle(
+                        //           color: Colors.red,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     const SizedBox(width: 16.0),
+                        //     InkWell(
+                        //       onTap: () {},
+                        //       child: const Text(
+                        //         'Edit',
+                        //         style: TextStyle(
+                        //           color: Colors.red,
+                        //           fontWeight: FontWeight.bold,
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+                      ],
+                    ),
+                  );
+                },
               ),
             );
           }

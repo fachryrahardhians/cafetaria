@@ -18,7 +18,7 @@ class MenuRepository {
   ) async {
     try {
       final snapshot =
-          await _firestore.collection('menuPerMerchant-${idMerchant}').get();
+          await _firestore.collection('menuPerMerchant-$idMerchant').get();
 
       final documents = snapshot.docs;
       return documents.toListMenu();
@@ -33,7 +33,7 @@ class MenuRepository {
   ) async {
     try {
       final snapshot = await _firestore
-          .collection('menuPerMerchant-${idMerchant}')
+          .collection('menuPerMerchant-$idMerchant')
           .where('stock', isEqualTo: 0)
           .get();
 
@@ -55,7 +55,7 @@ class MenuRepository {
   Future<void> editStockMenu(MenuModel menu, String idMerchant) async {
     try {
       await _firestore
-          .collection('menuPerMerchant-${idMerchant}')
+          .collection('menuPerMerchant-$idMerchant')
           .doc(menu.menuId)
           .update(menu.toJson());
     } catch (e) {

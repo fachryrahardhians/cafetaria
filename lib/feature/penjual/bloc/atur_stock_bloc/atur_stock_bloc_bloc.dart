@@ -5,7 +5,7 @@ import 'package:cafetaria/feature/penjual/model/restok_tipe.dart';
 import 'package:cafetaria/feature/penjual/model/stok_input.dart';
 import 'package:cafetaria/feature/penjual/model/time_input.dart';
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
+
 import 'package:formz/formz.dart';
 import 'package:menu_repository/menu_repository.dart';
 
@@ -30,7 +30,7 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
     Emitter<AturStockBlocState> emit,
   ) async {
     try {
-      //print(event.stokBarang.toString());
+      
       emit(state.copyWith(
           status: FormzStatus.submissionInProgress,
           stokInput: state.stokInput,
@@ -39,12 +39,17 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
           timeReset: state.timeReset
           // tersedia: state.tersedia
           ));
-      final stok;
+      final MenuModel stok;
       if (state.tersedia == false) {
         stok = event.stokBarang.copyWith(
             autoResetStock: false, stock: 0, resetType: "", resetTime: "");
+      } else if (state.restok == false) {
+        stok = event.stokBarang.copyWith(
+            autoResetStock: false,
+            stock: int.parse(state.stokInput.value),
+            resetType: "",
+            resetTime: "");
       } else {
-        print(state.tipeRestok);
         stok = event.stokBarang.copyWith(
             autoResetStock: state.restok,
             stock: int.parse(state.stokInput.value),
@@ -58,7 +63,7 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
       //     resetType: state.tipeRestok.value,
       //    );
       await _menuRepository.editStockMenu(stok, "merchant2");
-      print(stok.stock);
+
       emit(
         state.copyWith(
             status: FormzStatus.submissionSuccess,
@@ -134,20 +139,7 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
         tipeRestok: type,
         restok: state.restok,
         tersedia: state.tersedia));
-    print("Tipe : ${Formz.validate([type])}");
   }
 
-  //  FutureOr<void> _restokTime(
-  //   AturStokTime event,
-  //   Emitter<AturStockBlocState> emit,
-  // ) {
 
-  //   emit(state.copyWith(
-  //       status:state.status,
-  //       stokInput: state.stokInput,
-  //       tipeRestok: state.tipeRestok,
-  //       restok: state.restok,
-
-  //       tersedia: state.tersedia));
-  // }
 }

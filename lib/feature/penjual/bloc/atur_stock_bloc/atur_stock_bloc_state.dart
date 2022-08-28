@@ -22,7 +22,7 @@ class AturStockBlocState extends Equatable {
   //list get props untuk mengambil variabel yang ingin dibaca di equatable dan copywith jika tidak dipanggil data tidak akan kebaca dan tidak akan berubah disaat dipanggil di class lain
   @override
   List<Object?> get props =>
-      [status, stokInput, restok, tersedia, message, timeReset, tipeRestok];
+      [status, stokInput, restok, tersedia, timeReset, tipeRestok];
 
   AturStockBlocState copyWith(
       {
