@@ -92,24 +92,24 @@ class _MerchantPageState extends State<MerchantPage>
                     ),
                   ),
                   SizedBox(height: SizeConfig.safeBlockVertical * 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'PROMO HARI INI',
-                        style:
-                            textStyle.copyWith(color: const Color(0xff808285)),
-                      ),
-                      Text(
-                        'Lihat semua',
-                        style: textStyle.copyWith(
-                            fontSize: 12, color: const Color(0xffee3124)),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                  promo(),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       'PROMO HARI INI',
+                  //       style:
+                  //           textStyle.copyWith(color: const Color(0xff808285)),
+                  //     ),
+                  //     Text(
+                  //       'Lihat semua',
+                  //       style: textStyle.copyWith(
+                  //           fontSize: 12, color: const Color(0xffee3124)),
+                  //     )
+                  //   ],
+                  // ),
+                  // SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  // promo(),
+                  // SizedBox(height: SizeConfig.safeBlockVertical * 3),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [

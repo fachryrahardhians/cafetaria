@@ -361,28 +361,37 @@ class _KeranjangPageState extends State<KeranjangPage> {
   }
 
   Widget _booking() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
+    return BlocBuilder<MenuInCartBloc, MenuInCartState>(
+      builder: (context, state) {
+        if(state is MenuInCartRetrieved){
+          menuInKeranjang = state.menuInCart;
+          int qty = 0;
+          state.menuInCart.forEach((element) {qty+=element.quantity;});
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
-              Checkbox(
-                  value: _preorder,
-                  fillColor: MaterialStateProperty.all(CFColors.redPrimary40),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  onChanged: (newvalue) => setState(() {
-                        _preorder = newvalue!;
-                      })),
-              const SizedBox(width: 3),
-              const Text('Booking')
+              SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Checkbox(
+                        value: _preorder,
+                        fillColor: MaterialStateProperty.all(CFColors.redPrimary40),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        onChanged: (newvalue) => setState(() {
+                          _preorder = newvalue!;
+                        })),
+                    const SizedBox(width: 3),
+                    const Text('Booking')
+                  ],
+                ),
+              ),
+              Text('$qty/50')
             ],
-          ),
-        ),
-        const Text('50/50')
-      ],
+          );
+        }else return SizedBox();
+      }
     );
   }
 
