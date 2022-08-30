@@ -65,7 +65,7 @@ class _MerchantPageState extends State<MerchantPage>
                     context,
                     MaterialPageRoute(
                         builder: (_) => MakananPage(
-                              title: selectedMerchant?.nama ??
+                              title: selectedMerchant?.name ??
                                   'Shabrina’s Kitchen - Gambir',
                               idMerchant:
                                   selectedMerchant!.merchantId.toString(),
@@ -154,7 +154,7 @@ class _MerchantPageState extends State<MerchantPage>
                                             MaterialPageRoute(
                                                 builder: (_) => MakananPage(
                                                       title: state.items?[index]
-                                                              .nama ??
+                                                              .name ??
                                                           'Shabrina’s Kitchen - Gambir',
                                                       idMerchant: state
                                                           .items![index]
@@ -185,7 +185,7 @@ class _MerchantPageState extends State<MerchantPage>
                                           Assets
                                               .images.illCafetariaBanner2.path,
                                           false,
-                                          state.items?[index].nama ??
+                                          state.items?[index].name ??
                                               'Shabrina’s Kitchen - Gambir',
                                           'Lantai 1',
                                           'Cafetaria',

@@ -75,7 +75,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 return outlet(
                     'assets/images/ill_cafetaria_banner1.png',
                     true,
-                    item.nama.toString(),
+                    item.name.toString(),
                     '1.2 km',
                     '15 min',
                     '${item.rating} • ${item.totalCountRating} rating');
