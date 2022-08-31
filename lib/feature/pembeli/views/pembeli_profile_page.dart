@@ -1,14 +1,24 @@
+// ignore_for_file: unused_field
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
+
+class Merchant {
+  String name;
+
+  Merchant(this.name);
+}
 
 class PembeliProfilePage extends StatelessWidget {
   const PembeliProfilePage({Key? key}) : super(key: key);
@@ -16,15 +26,73 @@ class PembeliProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>(), appSharedPref: context.read<AppSharedPref>()),
+      create: (context) => AuthenticationBloc(
+          authenticationRepository: context.read<AuthenticationRepository>(),
+          appSharedPref: context.read<AppSharedPref>()),
       child: const PembeliProfileView(),
     );
   }
 }
 
-class PembeliProfileView extends StatelessWidget {
+class PembeliProfileView extends StatefulWidget {
   const PembeliProfileView({Key? key}) : super(key: key);
+
+  @override
+  State<PembeliProfileView> createState() => _PembeliProfileState();
+}
+
+class _PembeliProfileState extends State<PembeliProfileView> {
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
+  Widget _merchantBanner(user) {
+    CollectionReference merchant =
+        FirebaseFirestore.instance.collection('merchant');
+
+    return FutureBuilder<DocumentSnapshot>(
+      future: merchant.doc(user.uid).get(),
+      builder:
+          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+        if (snapshot.hasError) {
+          return const Text("Something went wrong");
+        }
+
+        if (snapshot.connectionState == ConnectionState.done) {
+          Map<String, dynamic> data =
+              snapshot.data!.data() as Map<String, dynamic>;
+          return InkWell(
+            onTap: () {
+              Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (_) => snapshot.data!.exists
+                      ? const PenjualDashboardPage()
+                      : PembeliCreateMerchantPage(user),
+                ),
+              );
+            },
+            child: Row(
+              children: [
+                const Image(
+                    image:
+                        AssetImage('assets/images/merchant_default_icon.png')),
+                const SizedBox(width: 18),
+                Text(snapshot.data!.exists ? data["name"] : "Buka Toko Gratis",
+                    style: const TextStyle(
+                        fontSize: 16, fontWeight: FontWeight.bold)),
+                const Spacer(),
+                const Icon(
+                  Icons.arrow_forward_ios,
+                  size: 16,
+                  color: MyColors.red1,
+                )
+              ],
+            ),
+          );
+        }
+        return const Text("Loading ...");
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -74,55 +142,41 @@ class PembeliProfileView extends StatelessWidget {
                     ],
                   ),
                   Container(
-                    margin: const EdgeInsets.symmetric(vertical: 24),
-                    padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: const BorderRadius.all(Radius.circular(8)),
-                      boxShadow: [
-                        BoxShadow(
-                          color: Colors.black.withOpacity(0.04),
-                          blurRadius: 12,
-                          offset: const Offset(0, 4), // changes position of shadow
-                        ),
-                      ],
-                    ),
-                    height: 84,
-                    child: InkWell(
-                      onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => PembeliCreateMerchantPage(user),
+                      margin: const EdgeInsets.symmetric(vertical: 24),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 12,
+                            offset: const Offset(
+                                0, 4), // changes position of shadow
                           ),
-                        );
-                      },
-                      child: Row(
-                        children: const [
-                          Image(image: AssetImage('assets/images/merchant_default_icon.png')),
-                          SizedBox(width: 18),
-                          Text("Buka Toko Gratis", style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                          Spacer(),
-                          Icon(
-                            Icons.arrow_forward_ios,
-                            size: 16,
-                            color: MyColors.red1,
-                          )
                         ],
                       ),
-                    ),
-                  ),
+                      height: 84,
+                      child: _merchantBanner(user)),
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("AKUN")),
+                      const Padding(
+                          padding:
+                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
+                          child: Text("AKUN")),
                       const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Edit Profil", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Edit Profil",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -132,7 +186,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Kata Sandi", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Kata Sandi",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -142,7 +199,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Nomor Ponsel", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Nomor Ponsel",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -152,7 +212,10 @@ class PembeliProfileView extends StatelessWidget {
                         child: TextButton(
                           child: const Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Ganti Email", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
+                            child: Text("Ganti Email",
+                                style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.normal)),
                           ),
                           onPressed: () {},
                         ),

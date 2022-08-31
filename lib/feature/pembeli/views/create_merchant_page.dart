@@ -126,7 +126,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
       final data = {
         'userId': userId,
-        'merchant': userId,
+        'merchantId': userId,
         'name': _namaUsaha.text,
         'category': _bidangUsaha,
         'city': _kota.text,
