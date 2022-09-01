@@ -29,6 +29,17 @@ class MenuRepository {
     }
   }
 
+  Future<RulePreorderModel> getRuleById(String id) async {
+    try{
+      final snapshot = await _firestore.collection('rulepreordermenu').doc(id).get();
+
+      final documents = snapshot.data();
+      return RulePreorderModel.fromJson(documents!);
+    } catch (e){
+      throw Exception('Failed to get Preorder Rules');
+    }
+  }
+
   Future<List<MenuModel>> getRecommendedMenuByMerchant(
     String idMerchant,
   ) async {

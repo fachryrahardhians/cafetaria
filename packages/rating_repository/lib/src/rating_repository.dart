@@ -1,5 +1,4 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:uuid/uuid.dart';
 
 import 'models/models.dart';
 
@@ -9,8 +8,6 @@ class RatingRepository {
   }) : _firestore = firestore;
 
   final FirebaseFirestore _firestore;
-
-  final _uuid = const Uuid();
 
   // add discount
   Future<void> addRating(

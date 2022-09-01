@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/bloc/check_menu_preorder_bloc/check_menu_preorder_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_recomended_menu_bloc/list_recomended_menu_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/keranjang_page.dart';
@@ -71,10 +72,13 @@ class _ListMenuState extends State<ListMenu> {
   late ListMenuBloc _listMenuBloc;
   late AddMenuToCartBloc _addMenuToCartBloc;
   late ListRecomendedMenuBloc _listRecomendedMenuBloc;
+  late MenuPreorderBloc _menuPreorderBloc;
 
   int pesananCount = 0;
   int totalHarga = 0;
   List<Keranjang> listMenuInKeranjang = [];
+  bool _preOrder = false;
+
   @override
   void initState() {
     _listMenuBloc =
@@ -83,6 +87,7 @@ class _ListMenuState extends State<ListMenu> {
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     _listRecomendedMenuBloc =
         ListRecomendedMenuBloc(menuRepository: context.read<MenuRepository>());
+    _menuPreorderBloc = MenuPreorderBloc(menuRepository: context.read<MenuRepository>());
     super.initState();
   }
 
@@ -96,6 +101,7 @@ class _ListMenuState extends State<ListMenu> {
           BlocProvider(
               create: ((context) => _listRecomendedMenuBloc
                 ..add(GetListRecomendedMenu(idMerchant)))),
+          BlocProvider(create: ((context)=> _menuPreorderBloc))
         ],
         child: WillPopScope(
           onWillPop: () {
@@ -265,103 +271,114 @@ class _ListMenuState extends State<ListMenu> {
                 child: SizedBox(
                   width: SizeConfig.screenWidth,
                   height: SizeConfig.safeBlockVertical * 6.5,
-                  child: ElevatedButton(
-                    style: ButtonStyle(
-                        padding:
-                            MaterialStateProperty.all(const EdgeInsets.all(16)),
-                        elevation: MaterialStateProperty.all(0),
-                        backgroundColor:
-                            MaterialStateProperty.all(const Color(0xffee3124)),
-                        foregroundColor:
-                            MaterialStateProperty.all(const Color(0xffee3124)),
-                        shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8),
-                            side: BorderSide.none))),
-                    onPressed: () {
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) => SummaryPage(
+                  child: BlocListener<MenuPreorderBloc, MenuPreorderState>(
+                    listener: (context, checkState){
+                      if(checkState  is CheckResult) {
+                          setState(() {
+                            _preOrder = checkState.result;
+                          });
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                                builder: (context) => SummaryPage(
                                     merchantId: idMerchant,
-                                  )));
-                    },
-                    child: BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
-                      builder: ((context, state) {
-                        if (state is MenuInCartRetrieveLoading) {
-                          return const CircularProgressIndicator();
-                        } else if (state is MenuInCartRetrieved) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RichText(
-                                  text: TextSpan(
-                                      text: 'Keranjang • ',
-                                      style: normalText.copyWith(
-                                          fontSize: 14, color: Colors.white),
-                                      children: [
-                                    TextSpan(
-                                        text:
-                                            state.menuInCart.length.toString() +
-                                                ' Pesanan',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white)),
-                                  ])),
-                              Text('Rp. ' + state.totalPrice.toString(),
-                                  style: normalText.copyWith(
-                                      fontSize: 14, color: Colors.white)),
-                            ],
-                          );
-                        } else if (state is MenuInCartRetrieveFailed) {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RichText(
-                                  text: TextSpan(
-                                      text: 'Keranjang • ',
-                                      style: normalText.copyWith(
-                                          fontSize: 14, color: Colors.white),
-                                      children: [
-                                    TextSpan(
-                                        text: '0' + ' Pesanan',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white)),
-                                  ])),
-                              Text('Rp. ' + '0',
-                                  style: normalText.copyWith(
-                                      fontSize: 14, color: Colors.white)),
-                            ],
-                          );
-                        } else {
-                          return Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              RichText(
-                                  text: TextSpan(
-                                      text: 'Keranjang • ',
-                                      style: normalText.copyWith(
-                                          fontSize: 14, color: Colors.white),
-                                      children: [
-                                    TextSpan(
-                                        text: '0' + ' Pesanan',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white)),
-                                  ])),
-                              Text('Rp. ' + '0',
-                                  style: normalText.copyWith(
-                                      fontSize: 14, color: Colors.white)),
-                            ],
-                          );
-                        }
-                      }),
-                      listener: (context, state) {
-                        if (state is MenuInCartRetrieved) {
-                          pesananCount = state.menuInCart.length;
-                          totalHarga = state.totalPrice;
-                          listMenuInKeranjang = state.menuInCart;
-                          _listMenuBloc.add(GetListMenu(idMerchant));
+                                    preOrder: _preOrder
+                                )));
                         }
                       },
-                    ),
+                    child: ElevatedButton(
+                      style: ButtonStyle(
+                          padding:
+                          MaterialStateProperty.all(const EdgeInsets.all(16)),
+                          elevation: MaterialStateProperty.all(0),
+                          backgroundColor:
+                          MaterialStateProperty.all(const Color(0xffee3124)),
+                          foregroundColor:
+                          MaterialStateProperty.all(const Color(0xffee3124)),
+                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(8),
+                              side: BorderSide.none))),
+                      onPressed: () {
+                        _menuPreorderBloc.add(CheckMenuPreorder());
+                      },
+                      child: BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
+                        builder: ((context, state) {
+                          if (state is MenuInCartRetrieveLoading) {
+                            return const CircularProgressIndicator();
+                          } else if (state is MenuInCartRetrieved) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RichText(
+                                    text: TextSpan(
+                                        text: 'Keranjang • ',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white),
+                                        children: [
+                                          TextSpan(
+                                              text:
+                                              state.menuInCart.length.toString() +
+                                                  ' Pesanan',
+                                              style: normalText.copyWith(
+                                                  fontSize: 14, color: Colors.white)),
+                                        ])),
+                                Text('Rp. ' + state.totalPrice.toString(),
+                                    style: normalText.copyWith(
+                                        fontSize: 14, color: Colors.white)),
+                              ],
+                            );
+                          } else if (state is MenuInCartRetrieveFailed) {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RichText(
+                                    text: TextSpan(
+                                        text: 'Keranjang • ',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white),
+                                        children: [
+                                          TextSpan(
+                                              text: '0' + ' Pesanan',
+                                              style: normalText.copyWith(
+                                                  fontSize: 14, color: Colors.white)),
+                                        ])),
+                                Text('Rp. ' + '0',
+                                    style: normalText.copyWith(
+                                        fontSize: 14, color: Colors.white)),
+                              ],
+                            );
+                          } else {
+                            return Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                RichText(
+                                    text: TextSpan(
+                                        text: 'Keranjang • ',
+                                        style: normalText.copyWith(
+                                            fontSize: 14, color: Colors.white),
+                                        children: [
+                                          TextSpan(
+                                              text: '0' + ' Pesanan',
+                                              style: normalText.copyWith(
+                                                  fontSize: 14, color: Colors.white)),
+                                        ])),
+                                Text('Rp. ' + '0',
+                                    style: normalText.copyWith(
+                                        fontSize: 14, color: Colors.white)),
+                              ],
+                            );
+                          }
+                        }),
+                        listener: (context, state) {
+                          if (state is MenuInCartRetrieved) {
+                            pesananCount = state.menuInCart.length;
+                            totalHarga = state.totalPrice;
+                            listMenuInKeranjang = state.menuInCart;
+                            _listMenuBloc.add(GetListMenu(idMerchant));
+                          }
+                        },
+                      ),
+                    )
                   ),
                 ),
               )),
