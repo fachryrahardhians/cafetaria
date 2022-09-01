@@ -84,49 +84,53 @@ class ProcessList extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          HistoryOrderBloc(orderRepository: context.read<OrderRepository>(), authenticationRepository: context.read<AuthenticationRepository>())
-            ..add(GetHistoryOrder('process')),
+      create: (context) => HistoryOrderBloc(
+          orderRepository: context.read<OrderRepository>(),
+          authenticationRepository: context.read<AuthenticationRepository>())
+        ..add(GetHistoryOrder('process')),
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
-        builder: (context, state) {
-          final status = state.status;
-          if (status == HistoryOrderStatus.loading)
-            return Center(child: const CircularProgressIndicator());
-          else if (status == HistoryOrderStatus.failure) {
-            return Center(
-              child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+          builder: (context, state) {
+        final status = state.status;
+        if (status == HistoryOrderStatus.loading)
+          return Center(child: const CircularProgressIndicator());
+        else if (status == HistoryOrderStatus.failure) {
+          return Center(
+            child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+          );
+        } else if (status == HistoryOrderStatus.success) {
+          if (state.items != null) {
+            final items = state.items!;
+            return SizedBox(
+              height: 200,
+              child: ListView.separated(
+                  padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    DateTime date = DateTime.parse(item.timestamp!);
+                    List<String> dateFormated = DateFormat('EEE MMM d')
+                        .format(date)
+                        .toString()
+                        .trim()
+                        .split(' ');
+                    return listCard(
+                        dateFormated[0], dateFormated[2], dateFormated[1],
+                        item: item);
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+                  },
+                  itemCount: items.length),
             );
-          } else if (status == HistoryOrderStatus.success) {
-            if (state.items != null) {
-              final items = state.items!;
-              return SizedBox(
-                height: 200,
-                child: ListView.separated(
-                    padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                    itemBuilder: (context, index) {
-                      final item = items[index];
-                      DateTime date = DateTime.parse(item.timestamp!);
-                      List<String> dateFormated =
-                      DateFormat('EEE MMM d').format(date).toString().trim().split(' ');
-                      return listCard(dateFormated[0],
-                          dateFormated[2],
-                          dateFormated[1], item: item);
-                    },
-                    separatorBuilder: (context, index) {
-                      return SizedBox(height: SizeConfig.safeBlockVertical * 3);
-                    },
-                    itemCount: items.length),
-              );
-            } else
-              return Text('No Data');
-          }
-          return const SizedBox();
+          } else
+            return Text('No Data');
         }
-      ),
+        return const SizedBox();
+      }),
     );
   }
 
-  Widget listCard(String day, String date, String month, {required HistoryModel item}) {
+  Widget listCard(String day, String date, String month,
+      {required HistoryModel item}) {
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -260,9 +264,10 @@ class _DoneListState extends State<DoneList> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) =>
-          HistoryOrderBloc(orderRepository: context.read<OrderRepository>(), authenticationRepository: context.read<AuthenticationRepository>())
-            ..add(GetHistoryOrder('finish')),
+      create: (context) => HistoryOrderBloc(
+          orderRepository: context.read<OrderRepository>(),
+          authenticationRepository: context.read<AuthenticationRepository>())
+        ..add(GetHistoryOrder('finish')),
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (context, state) {
           final status = state.status;
