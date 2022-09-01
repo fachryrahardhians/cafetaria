@@ -83,7 +83,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-      other is KeranjangAdapter &&
-          runtimeType == other.runtimeType &&
-          typeId == other.typeId;
+          other is KeranjangAdapter &&
+              runtimeType == other.runtimeType &&
+              typeId == other.typeId;
 }

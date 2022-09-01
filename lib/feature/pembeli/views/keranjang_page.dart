@@ -19,7 +19,8 @@ import 'package:table_calendar/table_calendar.dart';
 
 class SummaryPage extends StatelessWidget {
   final String merchantId;
-  const SummaryPage({Key? key, required this.merchantId}) : super(key: key);
+  final bool preOrder;
+  const SummaryPage({Key? key, required this.merchantId, required this.preOrder}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -37,19 +38,23 @@ class SummaryPage extends StatelessWidget {
         ],
         child: KeranjangPage(
           merchantId: merchantId,
+          preOrder: preOrder,
         ));
   }
 }
 
 class KeranjangPage extends StatefulWidget {
   final String merchantId;
-  const KeranjangPage({Key? key, required this.merchantId}) : super(key: key);
+  final bool preOrder;
+  const KeranjangPage({Key? key, required this.merchantId, required this.preOrder}) : super(key: key);
 
   @override
-  State<KeranjangPage> createState() => _KeranjangPageState();
+  State<KeranjangPage> createState() => _KeranjangPageState(preOrder);
 }
 
 class _KeranjangPageState extends State<KeranjangPage> {
+  bool preOrder;
+  _KeranjangPageState(this.preOrder);
   TextStyle textStyle = const TextStyle(
       fontWeight: FontWeight.w400, fontSize: 13, color: Color(0xff2E3032));
   TextStyle headlineStyle = const TextStyle(
@@ -361,28 +366,40 @@ class _KeranjangPageState extends State<KeranjangPage> {
   }
 
   Widget _booking() {
-    return Row(
-      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-      children: [
-        SizedBox(
-          child: Row(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              Checkbox(
-                  value: _preorder,
-                  fillColor: MaterialStateProperty.all(CFColors.redPrimary40),
-                  shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5)),
-                  onChanged: (newvalue) => setState(() {
-                        _preorder = newvalue!;
-                      })),
-              const SizedBox(width: 3),
-              const Text('Booking')
-            ],
-          ),
-        ),
-        const Text('50/50')
-      ],
+    return Visibility(
+      visible: preOrder,
+      child: BlocBuilder<MenuInCartBloc, MenuInCartState>(
+        builder: (context, state) {
+          if(state is MenuInCartRetrieved){
+            menuInKeranjang = state.menuInCart;
+            int qty = 0;
+            state.menuInCart.forEach((element) {qty+=element.quantity;});
+            return Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                SizedBox(
+                  child: Row(
+                    mainAxisSize: MainAxisSize.min,
+                    children: [
+                      Checkbox(
+                          value: _preorder,
+                          fillColor: MaterialStateProperty.all(CFColors.redPrimary40),
+                          shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5)),
+                          onChanged: (newvalue) => setState(() {
+                            _preorder = newvalue!;
+                          })),
+                      const SizedBox(width: 3),
+                      const Text('Booking')
+                    ],
+                  ),
+                ),
+                Text('$qty/50')
+              ],
+            );
+          }else return SizedBox();
+        }
+      ),
     );
   }
 

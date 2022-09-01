@@ -65,7 +65,7 @@ class _MerchantPageState extends State<MerchantPage>
                     context,
                     MaterialPageRoute(
                         builder: (_) => MakananPage(
-                              title: selectedMerchant?.nama ??
+                              title: selectedMerchant?.name ??
                                   'Shabrina’s Kitchen - Gambir',
                               idMerchant:
                                   selectedMerchant!.merchantId.toString(),
@@ -92,24 +92,24 @@ class _MerchantPageState extends State<MerchantPage>
                     ),
                   ),
                   SizedBox(height: SizeConfig.safeBlockVertical * 4),
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(
-                        'PROMO HARI INI',
-                        style:
-                            textStyle.copyWith(color: const Color(0xff808285)),
-                      ),
-                      Text(
-                        'Lihat semua',
-                        style: textStyle.copyWith(
-                            fontSize: 12, color: const Color(0xffee3124)),
-                      )
-                    ],
-                  ),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                  promo(),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                  // Row(
+                  //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  //   children: [
+                  //     Text(
+                  //       'PROMO HARI INI',
+                  //       style:
+                  //           textStyle.copyWith(color: const Color(0xff808285)),
+                  //     ),
+                  //     Text(
+                  //       'Lihat semua',
+                  //       style: textStyle.copyWith(
+                  //           fontSize: 12, color: const Color(0xffee3124)),
+                  //     )
+                  //   ],
+                  // ),
+                  // SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  // promo(),
+                  // SizedBox(height: SizeConfig.safeBlockVertical * 3),
                   Row(
                     mainAxisAlignment: MainAxisAlignment.spaceBetween,
                     children: [
@@ -154,7 +154,7 @@ class _MerchantPageState extends State<MerchantPage>
                                             MaterialPageRoute(
                                                 builder: (_) => MakananPage(
                                                       title: state.items?[index]
-                                                              .nama ??
+                                                              .name ??
                                                           'Shabrina’s Kitchen - Gambir',
                                                       idMerchant: state
                                                           .items![index]
@@ -185,7 +185,7 @@ class _MerchantPageState extends State<MerchantPage>
                                           Assets
                                               .images.illCafetariaBanner2.path,
                                           false,
-                                          state.items?[index].nama ??
+                                          state.items?[index].name ??
                                               'Shabrina’s Kitchen - Gambir',
                                           'Lantai 1',
                                           'Cafetaria',

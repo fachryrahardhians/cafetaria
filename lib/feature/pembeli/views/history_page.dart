@@ -81,6 +81,15 @@ class ProcessList extends StatelessWidget {
       return Colors.yellow;
   }
 
+  int getDiffTime(DateTime time) {
+    DateTime now = DateTime.now();
+    Duration different = now.difference(time);
+    if (different.inMinutes > 60)
+      return 60;
+    else
+      return different.inMinutes;
+  }
+
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -107,6 +116,7 @@ class ProcessList extends StatelessWidget {
                   itemBuilder: (context, index) {
                     final item = items[index];
                     DateTime date = DateTime.parse(item.timestamp!);
+                    int minutes = getDiffTime(date);
                     List<String> dateFormated = DateFormat('EEE MMM d')
                         .format(date)
                         .toString()
@@ -114,7 +124,7 @@ class ProcessList extends StatelessWidget {
                         .split(' ');
                     return listCard(
                         dateFormated[0], dateFormated[2], dateFormated[1],
-                        item: item);
+                        item: item, minutes: minutes);
                   },
                   separatorBuilder: (context, index) {
                     return SizedBox(height: SizeConfig.safeBlockVertical * 3);
@@ -130,7 +140,7 @@ class ProcessList extends StatelessWidget {
   }
 
   Widget listCard(String day, String date, String month,
-      {required HistoryModel item}) {
+      {required HistoryModel item, required int minutes}) {
     return GestureDetector(
       onTap: () {},
       child: Container(
@@ -156,12 +166,12 @@ class ProcessList extends StatelessWidget {
                       borderRadius: BorderRadius.only(
                           topRight: Radius.circular(8),
                           bottomLeft: Radius.circular(8)),
-                      color: getStatusColor(1).withOpacity(.25)),
+                      color: getStatusColor(minutes).withOpacity(.25)),
                   child: Center(
                     child: Text(
-                      '4 menit lalu',
+                      minutes > 60 ? '>60 menit lalu' : '$minutes menit lalu',
                       style: textStyle.copyWith(
-                          color: Color(0xffFF9500),
+                          color: getStatusColor(minutes),
                           fontSize: 10,
                           fontWeight: FontWeight.w500),
                     ),
@@ -225,22 +235,22 @@ class ProcessList extends StatelessWidget {
                           style: headlineStyle.copyWith(fontSize: 14),
                         ),
                       ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      Text(
-                        'Apartemen Skyline Residence',
-                        style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * .5),
-                      Text(
-                        'Tower A • Lantai 1 • Nomor 37',
-                        style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * .5),
-                      Text(
-                        'Perkiraan waktu 08:00 - 10:00',
-                        style: textStyle.copyWith(
-                            fontSize: 11, color: Color(0xff999B9D)),
-                      )
+                      // SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                      // Text(
+                      //   'Apartemen Skyline Residence',
+                      //   style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                      // ),
+                      // SizedBox(height: SizeConfig.safeBlockVertical * .5),
+                      // Text(
+                      //   'Tower A • Lantai 1 • Nomor 37',
+                      //   style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                      // ),
+                      // SizedBox(height: SizeConfig.safeBlockVertical * .5),
+                      // Text(
+                      //   'Perkiraan waktu 08:00 - 10:00',
+                      //   style: textStyle.copyWith(
+                      //       fontSize: 11, color: Color(0xff999B9D)),
+                      // )
                     ],
                   )
                 ],
