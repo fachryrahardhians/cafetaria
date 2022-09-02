@@ -11,7 +11,8 @@ class AuthenticationBloc
   final AppSharedPref _appSharedPref;
   AuthenticationBloc(
       {required AuthenticationRepository authenticationRepository,
-      required AppSharedPref appSharedPref})
+      required AppSharedPref appSharedPref
+      })
       : _authenticationRepository = authenticationRepository,
         _appSharedPref = appSharedPref,
         super(AuthenticationStateInit()) {

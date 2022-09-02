@@ -18,7 +18,8 @@ class PembeliProfilePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
           authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()),
+          appSharedPref: context.read<AppSharedPref>()
+          ),
       child: const PembeliProfileView(),
     );
   }
