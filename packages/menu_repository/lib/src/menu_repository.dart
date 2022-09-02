@@ -16,6 +16,7 @@ class MenuRepository {
     String idMerchant,
     String idCategory,
   ) async {
+     
     try {
       final snapshot = await _firestore
           .collection('menuPerMerchant-$idMerchant')

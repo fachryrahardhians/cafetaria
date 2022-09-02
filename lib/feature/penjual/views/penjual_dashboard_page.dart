@@ -1,9 +1,15 @@
+import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:merchant_repository/merchant_repository.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
   const PenjualDashboardPage({Key? key}) : super(key: key);
@@ -14,8 +20,44 @@ class PenjualDashboardPage extends StatelessWidget {
   }
 }
 
-class PenjualDashboardView extends StatelessWidget {
+class PenjualDashboardView extends StatefulWidget {
   const PenjualDashboardView({Key? key}) : super(key: key);
+
+  @override
+  State<PenjualDashboardView> createState() => _PenjualDashboardViewState();
+}
+
+Future<MerchantModel> getMerchant(
+  String idUser,
+) async {
+  try {
+    final snapshot = await FirebaseFirestore.instance
+        .collection('merchant')
+        .where('userId', isEqualTo: idUser)
+        .get();
+
+    final documents = snapshot.docs;
+
+    return MerchantModel.fromJson(documents.first.data());
+  } catch (e) {
+    throw Exception('Failed to get merchant where id user');
+  }
+}
+
+class _PenjualDashboardViewState extends State<PenjualDashboardView> {
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+
+    context.read<AuthenticationRepository>().getCurrentUser().then((value) {
+      print(value?.uid);
+    });
+    getMerchant('j764nYylbbcKkIPP0nIeOTOGwF03').then((value) {
+      print(value);
+      context.read<AppSharedPref>().setMerchantId(value.merchantId!);
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

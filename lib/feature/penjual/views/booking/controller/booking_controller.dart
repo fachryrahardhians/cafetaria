@@ -5,6 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class BookingController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -310,11 +311,13 @@ class BookingController extends GetxController {
   }
 
   @override
-  void onInit() {
+  Future<void> onInit() async {
     super.onInit();
     // TODO: @kuldii => Penentuan merchant masih hard code
     // merchantId = "merchant1";
-    merchantId = "merchant2";
+    SharedPreferences logindata = await SharedPreferences.getInstance();
+    String idMerchant = logindata.getString('merchantId').toString();
+    merchantId = idMerchant;
   }
 
   @override

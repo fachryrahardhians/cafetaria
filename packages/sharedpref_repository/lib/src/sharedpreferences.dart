@@ -6,6 +6,7 @@ class AppSharedPref {
   AppSharedPref(this._sharedPreferences);
 
   final String _isLogin = "isLogin";
+  final String _merchantId = "merchantId";
 
   Future<bool?> isLogin() async {
     try {
@@ -24,4 +25,24 @@ class AppSharedPref {
       }
     }
   }
+
+  Future<void> setMerchantId(String value) async {
+    try {
+      await _sharedPreferences.setString(_merchantId, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  // Future<String?> getMerchantId() async {
+  //   try {
+  //     return _sharedPreferences.getString(_merchantId);
+  //   } catch (e) {
+  //     if (kDebugMode) {
+  //       print(e.toString());
+  //     }
+  //   }
+  // }
 }
