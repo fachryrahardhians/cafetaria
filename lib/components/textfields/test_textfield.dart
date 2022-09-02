@@ -13,8 +13,8 @@ class TestComponentTextfields extends StatelessWidget {
       body: ListView(
         physics: const BouncingScrollPhysics(),
         shrinkWrap: true,
-        children: const [
-          CustomTextfield1(
+        children: [
+          const CustomTextfield1(
             label: "NAMA MENU",
             hint: "Masukkan nama menu",
           ),

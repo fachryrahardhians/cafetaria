@@ -44,12 +44,12 @@ class AddMenuPenjualBloc
   final MenuRepository _menuRepository;
   final _uuid = const Uuid();
 
-  late StreamSubscription _uploadTaskSubscription;
+  StreamSubscription? _uploadTaskSubscription;
 
   //dispose
   @override
   Future<void> close() {
-    _uploadTaskSubscription.cancel();
+    _uploadTaskSubscription?.cancel();
     return super.close();
   }
 
@@ -195,7 +195,7 @@ class AddMenuPenjualBloc
 
     // final extension = event.photo.path.extension();
     final fileName = _uuid.v4();
-
+    _uploadTaskSubscription?.cancel();
     _uploadTaskSubscription = _cloudStorage
         .uploadImage(event.photo, path: 'images/menu/$fileName')
         .listen(
