@@ -36,13 +36,13 @@ class AppSharedPref {
     }
   }
 
-  // Future<String?> getMerchantId() async {
-  //   try {
-  //     return _sharedPreferences.getString(_merchantId);
-  //   } catch (e) {
-  //     if (kDebugMode) {
-  //       print(e.toString());
-  //     }
-  //   }
-  // }
+  Future<String?> getMerchantId() async {
+    try {
+      return _sharedPreferences.getString(_merchantId);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
 }

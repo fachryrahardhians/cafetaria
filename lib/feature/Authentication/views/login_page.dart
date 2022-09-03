@@ -5,6 +5,7 @@ import 'package:cafetaria/feature/Authentication/bloc/authentication/authenticat
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -19,8 +20,7 @@ class LoginPage extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
           authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()
-          ),
+          appSharedPref: context.read<AppSharedPref>()),
       child: const LoginView(),
     );
   }
@@ -34,6 +34,8 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  String id1 = "j764nYylbbcKkIPP0nIeOTOGwF03";
+  String id2 = "jvEXR7kMx7RDbIuwfbVcTJ1pOhJ2";
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -125,7 +127,15 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 ReusableButton1(
                   label: "MASUK",
-                  onPressed: () {},
+                  onPressed: () {
+                    context.read<AppSharedPref>().setMerchantId("");
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => PenjualDashboardPage(
+                                  id: id1,
+                                )));
+                  },
                 ),
               ],
             ),

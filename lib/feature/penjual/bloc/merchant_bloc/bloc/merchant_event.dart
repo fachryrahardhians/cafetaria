@@ -6,3 +6,12 @@ abstract class MerchantEvent extends Equatable {
   @override
   List<Object> get props => [];
 }
+
+class GetMerchant extends MerchantEvent {
+  final String idUser;
+
+  const GetMerchant(this.idUser);
+
+  @override
+  List<Object> get props => [idUser];
+}

@@ -22,12 +22,12 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
     Emitter<ListMenuState> emit,
   ) async {
     emit(const ListMenuState.loading());
-    SharedPreferences logindata = await SharedPreferences.getInstance();
-    String idMerchant = logindata.getString('merchantId').toString();
-    print(idMerchant);
+    SharedPreferences id = await SharedPreferences.getInstance();
+    String idMerchant = id.getString("merchantId").toString();
+
     try {
       final items = await _menuRepository.getMenu(
-        idMerchant,
+        event.idMerchant,
         event.idCategory,
       );
 
@@ -42,9 +42,8 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
     Emitter<ListMenuState> emit,
   ) async {
     emit(const ListMenuState.loading());
-    SharedPreferences logindata = await SharedPreferences.getInstance();
-    String idMerchant = logindata.getString('merchantId').toString();
-    print(idMerchant);
+    SharedPreferences id = await SharedPreferences.getInstance();
+    String idMerchant = id.getString("merchantId").toString();
     try {
       final items = await _menuRepository.getMenuStokTidakTersedia(
         idMerchant,

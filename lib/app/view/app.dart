@@ -77,6 +77,6 @@ class AppView extends StatelessWidget {
     return MaterialApp(
         theme: CFTheme.themeData,
         title: 'Cafetaria',
-        home: const PenjualDashboardPage());
+        home: const LoginPage());
   }
 }

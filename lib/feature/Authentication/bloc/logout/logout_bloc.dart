@@ -22,6 +22,7 @@ class LogoutBloc extends Bloc<LogoutEvent, LogoutState> {
     try {
       await _authenticationRepository.signoutGoogle();
       _appSharedPref.setLogin(false);
+      _appSharedPref.setMerchantId("");
       emit(LogoutStateSuccess());
     } catch (e) {
       emit(LogoutStateError(e.toString()));

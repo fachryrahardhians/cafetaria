@@ -8,6 +8,7 @@ import 'package:equatable/equatable.dart';
 
 import 'package:formz/formz.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 part 'atur_stock_bloc_event.dart';
 part 'atur_stock_bloc_state.dart';
@@ -30,7 +31,6 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
     Emitter<AturStockBlocState> emit,
   ) async {
     try {
-      
       emit(state.copyWith(
           status: FormzStatus.submissionInProgress,
           stokInput: state.stokInput,
@@ -47,12 +47,14 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
         stok = event.stokBarang.copyWith(
             autoResetStock: false,
             stock: int.parse(state.stokInput.value),
+            defaultStock: int.parse(state.stokInput.value),
             resetType: "",
             resetTime: "");
       } else {
         stok = event.stokBarang.copyWith(
             autoResetStock: state.restok,
             stock: int.parse(state.stokInput.value),
+            defaultStock: int.parse(state.stokInput.value),
             resetType: state.tipeRestok.value,
             resetTime: state.timeReset.value);
       }
@@ -62,7 +64,9 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
       //     stock: int.parse(state.stokInput.value),
       //     resetType: state.tipeRestok.value,
       //    );
-      await _menuRepository.editStockMenu(stok, "merchant2");
+      SharedPreferences logindata = await SharedPreferences.getInstance();
+      String idMerchant = logindata.getString('merchantId').toString();
+      await _menuRepository.editStockMenu(stok, idMerchant);
 
       emit(
         state.copyWith(
@@ -140,6 +144,4 @@ class AturStockBlocBloc extends Bloc<AturStockBlocEvent, AturStockBlocState> {
         restok: state.restok,
         tersedia: state.tersedia));
   }
-
-
 }

@@ -315,8 +315,11 @@ class BookingController extends GetxController {
     super.onInit();
     // TODO: @kuldii => Penentuan merchant masih hard code
     // merchantId = "merchant1";
+
+    //get id merchant menggunakan shared preference
     SharedPreferences logindata = await SharedPreferences.getInstance();
     String idMerchant = logindata.getString('merchantId').toString();
+
     merchantId = idMerchant;
   }
 

@@ -20,6 +20,7 @@ MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
       resetTime: json['resetTime'] as String?,
       resetType: json['resetType'] as String?,
       rulepreordermenuId: json['rulepreordermenuId'] as String?,
+      defaultStock: json['defaultStock'] as int?,
       stock: json['stock'] as int?,
       tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
     );
@@ -39,5 +40,6 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'resetType': instance.resetType,
       'rulepreordermenuId': instance.rulepreordermenuId,
       'stock': instance.stock,
+      'defaultStock': instance.defaultStock,
       'tags': instance.tags,
     };

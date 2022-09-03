@@ -13,6 +13,7 @@ class MenuModel extends Equatable {
   final String? desc;
   final String? image;
   final bool? isPreOrder;
+  final int? defaultStock;
   final bool? isRecomended;
   final int? price;
   final String? resetTime;
@@ -28,6 +29,7 @@ class MenuModel extends Equatable {
     this.autoResetStock,
     this.categoryId,
     this.desc,
+    this.defaultStock,
     this.image,
     this.isPreOrder,
     this.isRecomended,
@@ -47,6 +49,7 @@ class MenuModel extends Equatable {
   /// Copy with a new [MenuModel].
   MenuModel copyWith({
     String? menuId,
+    int? defaultStock,
     String? merchantId,
     String? name,
     bool? autoResetStock,
@@ -69,6 +72,7 @@ class MenuModel extends Equatable {
       autoResetStock: autoResetStock ?? this.autoResetStock,
       categoryId: categoryId ?? this.categoryId,
       desc: desc ?? this.desc,
+      defaultStock: defaultStock ?? this.defaultStock,
       image: image ?? this.image,
       isPreOrder: isPreOrder ?? this.isPreOrder,
       isRecomended: isRecomended ?? this.isRecomended,

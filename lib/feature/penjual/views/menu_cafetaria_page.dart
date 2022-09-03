@@ -12,6 +12,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key}) : super(key: key);
@@ -475,9 +477,10 @@ class ListMenuTidakTersediaWidget extends StatelessWidget {
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
+
       context
           .read<ListMenuBloc>()
-          .add(GetListMenuTidakTersedia('merchant2', cat.categoryId!));
+          .add(GetListMenuTidakTersedia(cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;

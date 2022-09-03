@@ -1,10 +1,9 @@
-import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/styles/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,11 +11,17 @@ import 'package:merchant_repository/merchant_repository.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
-  const PenjualDashboardPage({Key? key}) : super(key: key);
-
+  const PenjualDashboardPage({Key? key, this.id = ""}) : super(key: key);
+  final String id;
   @override
   Widget build(BuildContext context) {
-    return const PenjualDashboardView();
+    return BlocProvider(
+      create: (context) => MerchantBloc(
+          merchantRepository: context.read<MerchantRepository>(),
+          appSharedPref: context.read<AppSharedPref>())
+        ..add(GetMerchant(id)),
+      child: const PenjualDashboardView(),
+    );
   }
 }
 
@@ -27,38 +32,7 @@ class PenjualDashboardView extends StatefulWidget {
   State<PenjualDashboardView> createState() => _PenjualDashboardViewState();
 }
 
-Future<MerchantModel> getMerchant(
-  String idUser,
-) async {
-  try {
-    final snapshot = await FirebaseFirestore.instance
-        .collection('merchant')
-        .where('userId', isEqualTo: idUser)
-        .get();
-
-    final documents = snapshot.docs;
-
-    return MerchantModel.fromJson(documents.first.data());
-  } catch (e) {
-    throw Exception('Failed to get merchant where id user');
-  }
-}
-
 class _PenjualDashboardViewState extends State<PenjualDashboardView> {
-  @override
-  void initState() {
-    // TODO: implement initState
-    super.initState();
-
-    context.read<AuthenticationRepository>().getCurrentUser().then((value) {
-      print(value?.uid);
-    });
-    getMerchant('j764nYylbbcKkIPP0nIeOTOGwF03').then((value) {
-      print(value);
-      context.read<AppSharedPref>().setMerchantId(value.merchantId!);
-    });
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,133 +41,156 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
-              "Halo Shabrina",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              "Ayam Pangeran - Gambir",
-              style: TextStyle(color: MyColors.grey3),
-            ),
-            const SizedBox(height: 30),
-            // Container Total Penjualan
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+            BlocBuilder<MerchantBloc, MerchantState>(
+              builder: (context, state) {
+                final status = state.status;
+                if (status == MerchantStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == MerchantStatus.failure) {
+                  return Center(
+                    child: Text(state.error.toString()),
+                  );
+                } else if (status == MerchantStatus.success) {
+                  final items = state.merchantModel;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Image.asset(
-                          "assets/icons/wallet.png",
-                          fit: BoxFit.contain,
+                      Text(
+                        "Halo ${items?.name}",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Total penjualan hari ini",
-                            style: TextStyle(color: MyColors.white),
-                          ),
-                          RichText(
-                            text: const TextSpan(
-                              text: "Rp ",
+                      const SizedBox(height: 5),
+                      const Text(
+                        "Ayam Pangeran - Gambir",
+                        style: TextStyle(color: MyColors.grey3),
+                      ),
+                      const SizedBox(height: 30),
+                      // Container Total Penjualan
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                TextSpan(
-                                  text: "2.350.100",
-                                  style: TextStyle(
-                                    color: MyColors.white,
-                                    fontSize: 24,
+                                SizedBox(
+                                  height: 60,
+                                  width: 60,
+                                  child: Image.asset(
+                                    "assets/icons/wallet.png",
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Total penjualan hari ini",
+                                      style: TextStyle(color: MyColors.white),
+                                    ),
+                                    RichText(
+                                      text: const TextSpan(
+                                        text: "Rp ",
+                                        children: [
+                                          TextSpan(
+                                            text: "2.350.100",
+                                            style: TextStyle(
+                                              color: MyColors.white,
+                                              fontSize: 24,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: const [
+                                Text(
+                                  "Dari kemarin",
+                                  style: TextStyle(color: MyColors.white),
+                                ),
+                                Text(
+                                  "Rp1.750.500",
+                                  style: TextStyle(color: MyColors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/background.png"),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // 250 Pesanan
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: "250 ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: MyColors.blackText,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Pesanan",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    color: MyColors.blackText,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Container(
+                            color: Colors.black,
+                            width: 2,
+                            height: 15,
+                          ),
+                          const SizedBox(width: 20),
+                          RichText(
+                            text: const TextSpan(
+                              text: "1.7K ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: MyColors.blackText,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Pembayaran QR",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    color: MyColors.blackText,
+                                  ),
+                                )
                               ],
                             ),
                           ),
                         ],
                       ),
                     ],
-                  ),
-                  Column(
-                    children: const [
-                      Text(
-                        "Dari kemarin",
-                        style: TextStyle(color: MyColors.white),
-                      ),
-                      Text(
-                        "Rp1.750.500",
-                        style: TextStyle(color: MyColors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: const DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage("assets/images/background.png"),
-                ),
-              ),
-            ),
-            const SizedBox(height: 20),
-            // 250 Pesanan
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RichText(
-                  text: const TextSpan(
-                    text: "250 ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: MyColors.blackText,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Pesanan",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: MyColors.blackText,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  color: Colors.black,
-                  width: 2,
-                  height: 15,
-                ),
-                const SizedBox(width: 20),
-                RichText(
-                  text: const TextSpan(
-                    text: "1.7K ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: MyColors.blackText,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Pembayaran QR",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: MyColors.blackText,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
             const SizedBox(height: 20),
             const MainMenuWidget(),
