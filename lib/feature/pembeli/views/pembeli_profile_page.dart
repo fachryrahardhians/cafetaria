@@ -26,9 +26,8 @@ class PembeliProfilePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-      create: (context) => AuthenticationBloc(
-          authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()),
+      create: (context) =>
+          AuthenticationBloc(authenticationRepository: context.read<AuthenticationRepository>(), appSharedPref: context.read<AppSharedPref>()),
       child: const PembeliProfileView(),
     );
   }
@@ -45,40 +44,35 @@ class _PembeliProfileState extends State<PembeliProfileView> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
 
   Widget _merchantBanner(user) {
-    CollectionReference merchant =
-        FirebaseFirestore.instance.collection('merchant');
+    CollectionReference merchant = FirebaseFirestore.instance.collection('merchant');
 
     return FutureBuilder<DocumentSnapshot>(
       future: merchant.doc(user.uid).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
+      builder: (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
         if (snapshot.hasError) {
           return const Text("Something went wrong");
         }
 
         if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data =
-              snapshot.data!.data() as Map<String, dynamic>;
+          Map<String, dynamic> data = {};
+          if (snapshot.data?.data() != null) {
+            print("ADA DATA <<<<<");
+            data = data = snapshot.data!.data() as Map<String, dynamic>;
+          }
           return InkWell(
             onTap: () {
-              Navigator.push(
+              Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(
-                  builder: (_) => snapshot.data!.exists
-                      ? const PenjualDashboardPage()
-                      : PembeliCreateMerchantPage(user),
+                  builder: (_) => snapshot.data!.exists ? const PenjualDashboardPage() : PembeliCreateMerchantPage(user),
                 ),
               );
             },
             child: Row(
               children: [
-                const Image(
-                    image:
-                        AssetImage('assets/images/merchant_default_icon.png')),
+                const Image(image: AssetImage('assets/images/merchant_default_icon.png')),
                 const SizedBox(width: 18),
-                Text(snapshot.data!.exists ? data["name"] : "Buka Toko Gratis",
-                    style: const TextStyle(
-                        fontSize: 16, fontWeight: FontWeight.bold)),
+                Text(snapshot.data!.exists ? data["name"] : "Buka Toko Gratis", style: const TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
                 const Spacer(),
                 const Icon(
                   Icons.arrow_forward_ios,
@@ -143,18 +137,15 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                   ),
                   Container(
                       margin: const EdgeInsets.symmetric(vertical: 24),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 20, horizontal: 14),
+                      padding: const EdgeInsets.symmetric(vertical: 20, horizontal: 14),
                       decoration: BoxDecoration(
                         color: Colors.white,
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(8)),
+                        borderRadius: const BorderRadius.all(Radius.circular(8)),
                         boxShadow: [
                           BoxShadow(
                             color: Colors.black.withOpacity(0.04),
                             blurRadius: 12,
-                            offset: const Offset(
-                                0, 4), // changes position of shadow
+                            offset: const Offset(0, 4), // changes position of shadow
                           ),
                         ],
                       ),
@@ -163,20 +154,14 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                   Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      const Padding(
-                          padding:
-                              EdgeInsets.symmetric(horizontal: 8, vertical: 8),
-                          child: Text("AKUN")),
+                      const Padding(padding: EdgeInsets.symmetric(horizontal: 8, vertical: 8), child: Text("AKUN")),
                       const SizedBox(height: 20),
                       SizedBox(
                         width: double.infinity,
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Edit Profil",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal)),
+                              child: Text("Edit Profil", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -186,10 +171,7 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Kata Sandi",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Kata Sandi", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -199,10 +181,7 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                         child: TextButton(
                             child: const Align(
                               alignment: Alignment.centerLeft,
-                              child: Text("Ganti Nomor Ponsel",
-                                  style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.normal)),
+                              child: Text("Ganti Nomor Ponsel", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                             ),
                             onPressed: () {}),
                       ),
@@ -212,10 +191,7 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                         child: TextButton(
                           child: const Align(
                             alignment: Alignment.centerLeft,
-                            child: Text("Ganti Email",
-                                style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.normal)),
+                            child: Text("Ganti Email", style: TextStyle(color: Colors.black, fontWeight: FontWeight.normal)),
                           ),
                           onPressed: () {},
                         ),

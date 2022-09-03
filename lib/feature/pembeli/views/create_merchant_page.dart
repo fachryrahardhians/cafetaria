@@ -1,5 +1,6 @@
 // ignore_for_file: prefer_const_literals_to_create_immutables, prefer_collection_literals, avoid_init_to_null
 
+import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'dart:async';
@@ -32,8 +33,7 @@ class PembeliCreateMerchantView extends StatefulWidget {
   const PembeliCreateMerchantView(this.user, {Key? key}) : super(key: key);
   final User user;
   @override
-  State<PembeliCreateMerchantView> createState() =>
-      _PembeliCreateMerchantState();
+  State<PembeliCreateMerchantView> createState() => _PembeliCreateMerchantState();
 }
 
 class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
@@ -60,8 +60,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   bool _submitLoading = false;
 
   Future _handleUpload(String type) async {
-    final XFile? photo =
-        await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
     setState(() {
       if (type == "dalam") {
         _fotoDalam = photo;
@@ -84,8 +83,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     if (latLng != null) {
       if (_latLngToko != null) {
         final GoogleMapController controller = await _mapController.future;
-        controller.moveCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: latLng, zoom: 17)));
+        controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 17)));
       }
 
       setState(() {
@@ -94,9 +92,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         _latLngToko = latLng;
       });
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(
-          latLng.latitude, latLng.longitude,
-          localeIdentifier: "id");
+      List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude, localeIdentifier: "id");
       Placemark placemark = placemarks[0];
 
       _alamatLengkap.text =
@@ -112,14 +108,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     });
 
     try {
-      var snapshotLuar = await _storage
-          .ref()
-          .child('images/merchant/photo_from_outside/$userId.jpg')
-          .putFile(File(_fotoLuar!.path));
-      var snapshotDalam = await _storage
-          .ref()
-          .child('images/merchant/photo_from_inside/$userId.jpg')
-          .putFile(File(_fotoDalam!.path));
+      var snapshotLuar = await _storage.ref().child('images/merchant/photo_from_outside/$userId.jpg').putFile(File(_fotoLuar!.path));
+      var snapshotDalam = await _storage.ref().child('images/merchant/photo_from_inside/$userId.jpg').putFile(File(_fotoDalam!.path));
 
       var urlLuar = await snapshotLuar.ref.getDownloadURL();
       var urlDalam = await snapshotDalam.ref.getDownloadURL();
@@ -146,9 +136,13 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       };
 
       await _firestore.collection('merchant').doc(userId).set(data);
-      Navigator.pop(context);
-      Fluttertoast.showToast(
-          msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+      Navigator.pushReplacement(
+        context,
+        MaterialPageRoute(
+          builder: (context) => const PembeliProfileView(),
+        ),
+      );
+      Fluttertoast.showToast(msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
       Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
     } finally {
@@ -198,148 +192,150 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      backgroundColor: MyColors.whiteGrey2,
-      appBar: AppBar(
-        centerTitle: true,
-        backgroundColor: Colors.white,
-        elevation: 0,
-        leading: IconButton(
-          icon: const Icon(Icons.arrow_back, color: Colors.red),
-          onPressed: () {
-            Navigator.pop(context);
-          },
-        ),
-        title: Text(
-          "INFORMASI USAHA",
-          style: GoogleFonts.ubuntu(
-            fontWeight: FontWeight.bold,
-            fontSize: 20,
-            color: const Color(
-              0xff333435,
+    return WillPopScope(
+      onWillPop: () async {
+        return false;
+      },
+      child: Scaffold(
+        backgroundColor: MyColors.whiteGrey2,
+        appBar: AppBar(
+          centerTitle: true,
+          backgroundColor: Colors.white,
+          elevation: 0,
+          leading: IconButton(
+            icon: const Icon(Icons.arrow_back, color: Colors.red),
+            onPressed: () {
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => const PembeliProfileView(),
+                ),
+              );
+            },
+          ),
+          title: Text(
+            "INFORMASI USAHA",
+            style: GoogleFonts.ubuntu(
+              fontWeight: FontWeight.bold,
+              fontSize: 20,
+              color: const Color(
+                0xff333435,
+              ),
             ),
           ),
         ),
-      ),
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-          child: Column(
-            children: [
-              CustomTextfield2(
-                label: "NAMA USAHA",
-                hint: "Masukkan nama usaha",
-                controller: _namaUsaha,
-              ),
-              DropdownTextfield1(
-                label: "BIDANG USAHA",
-                hint: "Pilih bidang usaha",
-                value: _bidangUsaha,
-                items: _listBidangUsaha,
-                onChanged: (value) {
-                  setState(() {
-                    _bidangUsaha = value;
-                  });
-                },
-              ),
-              CustomTextfield2(
-                label: "KOTA ATAU KABUPATEN",
-                hint: "Pilih kota",
-                controller: _kota,
-              ),
-              CustomTextfield2(
-                label: "KODE POS",
-                hint: "Masukkan kode pos",
-                controller: _kodePos,
-              ),
-              const SizedBox(height: 10),
-              CustomBoxPicker(
-                  label: "LOKASI TOKO",
-                  hint: "PILIH LOKASI",
-                  icon: const Icon(
-                    Icons.pin_drop,
-                    color: MyColors.red1,
-                    size: 32,
-                  ),
-                  onTap: _handleMapsPicker,
-                  child: _latLngToko == null
-                      ? null
-                      : Stack(
-                          children: [
-                            GoogleMap(
-                              mapType: MapType.normal,
-                              mapToolbarEnabled: false,
-                              myLocationEnabled: false,
-                              zoomControlsEnabled: false,
-                              initialCameraPosition: CameraPosition(
-                                target: _latLngInit,
-                                zoom: 17,
+        body: SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+            child: Column(
+              children: [
+                CustomTextfield2(
+                  label: "NAMA USAHA",
+                  hint: "Masukkan nama usaha",
+                  controller: _namaUsaha,
+                ),
+                DropdownTextfield1(
+                  label: "BIDANG USAHA",
+                  hint: "Pilih bidang usaha",
+                  value: _bidangUsaha,
+                  items: _listBidangUsaha,
+                  onChanged: (value) {
+                    setState(() {
+                      _bidangUsaha = value;
+                    });
+                  },
+                ),
+                CustomTextfield2(
+                  label: "KOTA ATAU KABUPATEN",
+                  hint: "Pilih kota",
+                  controller: _kota,
+                ),
+                CustomTextfield2(
+                  label: "KODE POS",
+                  hint: "Masukkan kode pos",
+                  controller: _kodePos,
+                ),
+                const SizedBox(height: 10),
+                CustomBoxPicker(
+                    label: "LOKASI TOKO",
+                    hint: "PILIH LOKASI",
+                    icon: const Icon(
+                      Icons.pin_drop,
+                      color: MyColors.red1,
+                      size: 32,
+                    ),
+                    onTap: _handleMapsPicker,
+                    child: _latLngToko == null
+                        ? null
+                        : Stack(
+                            children: [
+                              GoogleMap(
+                                mapType: MapType.normal,
+                                mapToolbarEnabled: false,
+                                myLocationEnabled: false,
+                                zoomControlsEnabled: false,
+                                initialCameraPosition: CameraPosition(
+                                  target: _latLngInit,
+                                  zoom: 17,
+                                ),
+                                onMapCreated: (GoogleMapController controller) {
+                                  _mapController.complete(controller);
+                                },
+                                markers: Set.from(_marker),
                               ),
-                              onMapCreated: (GoogleMapController controller) {
-                                _mapController.complete(controller);
-                              },
-                              markers: Set.from(_marker),
-                            ),
-                            GestureDetector(
-                                onTap: _handleMapsPicker,
-                                child: Expanded(
-                                    child: Container(
-                                        color: Colors.black.withOpacity(0))))
-                          ],
-                        )),
-              const SizedBox(height: 20),
-              CustomTextfield2(
-                  label: "ALAMAT LENGKAP TOKO",
-                  controller: _alamatLengkap,
-                  maxLine: 4,
-                  hint:
-                      "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
-              CustomTextfield2(
-                label: "LOKASI DETAIL",
-                hint: "Misalkan: Depan Circle K",
-                controller: _lokasiDetail,
-              ),
-              const SizedBox(height: 10),
-              CustomBoxPicker(
-                  label: "UNGGAH FOTO TOKO DARI LUAR",
-                  hint: "UNGGAH FOTO",
-                  icon: const Icon(
-                    Icons.upload,
-                    color: MyColors.red1,
-                    size: 32,
-                  ),
-                  onTap: () => _handleUpload("luar"),
-                  child: _fotoLuar == null
-                      ? null
-                      : Image.file(File(_fotoLuar!.path), fit: BoxFit.contain)),
-              const SizedBox(height: 32),
-              CustomBoxPicker(
-                  label: "UNGGAH FOTO TOKO DARI DALAM",
-                  hint: "UNGGAH FOTO",
-                  icon: const Icon(
-                    Icons.upload,
-                    color: MyColors.red1,
-                    size: 32,
-                  ),
-                  onTap: () => _handleUpload("dalam"),
-                  child: _fotoDalam == null
-                      ? null
-                      : Image.file(File(_fotoDalam!.path),
-                          fit: BoxFit.contain)),
-              const SizedBox(height: 40),
-              SizedBox(
+                              GestureDetector(onTap: _handleMapsPicker, child: Expanded(child: Container(color: Colors.black.withOpacity(0))))
+                            ],
+                          )),
+                const SizedBox(height: 20),
+                CustomTextfield2(
+                    label: "ALAMAT LENGKAP TOKO",
+                    controller: _alamatLengkap,
+                    maxLine: 4,
+                    hint: "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
+                CustomTextfield2(
+                  label: "LOKASI DETAIL",
+                  hint: "Misalkan: Depan Circle K",
+                  controller: _lokasiDetail,
+                ),
+                const SizedBox(height: 10),
+                CustomBoxPicker(
+                    label: "UNGGAH FOTO TOKO DARI LUAR",
+                    hint: "UNGGAH FOTO",
+                    icon: const Icon(
+                      Icons.upload,
+                      color: MyColors.red1,
+                      size: 32,
+                    ),
+                    onTap: () => _handleUpload("luar"),
+                    child: _fotoLuar == null ? null : Image.file(File(_fotoLuar!.path), fit: BoxFit.contain)),
+                const SizedBox(height: 32),
+                CustomBoxPicker(
+                    label: "UNGGAH FOTO TOKO DARI DALAM",
+                    hint: "UNGGAH FOTO",
+                    icon: const Icon(
+                      Icons.upload,
+                      color: MyColors.red1,
+                      size: 32,
+                    ),
+                    onTap: () => _handleUpload("dalam"),
+                    child: _fotoDalam == null ? null : Image.file(File(_fotoDalam!.path), fit: BoxFit.contain)),
+                const SizedBox(height: 40),
+                SizedBox(
                   width: double.infinity,
                   height: 50,
                   child: ReusableButton1(
-                      label: "SIMPAN",
-                      onPressed: () {
-                        _onSubmit(context);
-                      },
-                      padding: const EdgeInsets.all(0),
-                      margin: const EdgeInsets.all(0),
-                      disabled: _checkDisableButton(),
-                      loading: _submitLoading))
-            ],
+                    label: "SIMPAN",
+                    onPressed: () {
+                      _onSubmit(context);
+                    },
+                    padding: const EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    disabled: _checkDisableButton(),
+                    loading: _submitLoading,
+                  ),
+                ),
+              ],
+            ),
           ),
         ),
       ),
