@@ -12,12 +12,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
-  const MenuCafetariaPage({Key? key}) : super(key: key);
-
+  const MenuCafetariaPage({Key? key, this.idMerchant}) : super(key: key);
+  final String? idMerchant;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -25,7 +25,7 @@ class MenuCafetariaPage extends StatelessWidget {
         BlocProvider(
           create: (context) => MenuMakananBloc(
             categoryRepository: context.read<CategoryRepository>(),
-          )..add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
+          )..add(GetMenuMakanan(idMerchant.toString())),
         ),
         BlocProvider(
           create: (context) => ListMenuBloc(
@@ -122,70 +122,80 @@ class DaftarMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BlocBuilder<MenuMakananBloc, MenuMakananState>(
-          builder: (context, state) {
-            final status = state.status;
+    getmerchant() async {
+      String? id = await context.read<AppSharedPref>().getMerchantId();
+      return id.toString();
+    }
 
-            if (status == MenuMakananStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (status == MenuMakananStatus.failure) {
-              return const Center(
-                child: Text('Terjadi kesalahan'),
-              );
-            } else if (status == MenuMakananStatus.success) {
-              final items = state.items!;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      // width: 50,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ChoiceChip(
-                              padding: const EdgeInsets.all(9),
-                              onSelected: (val) {
-                                context.read<ListMenuBloc>().add(
-                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.category),
-                                    );
-                              },
-                              label: Text(
-                                item.category,
-                                style: GoogleFonts.ubuntu(
-                                    color: const Color(0xffEA001E)),
-                              ),
-                              side: const BorderSide(
-                                color: Color(0xffEA001E),
-                              ),
-                              selected: false,
-                              backgroundColor: const Color(0xffFEDED8),
-                            ),
-                          );
-                        },
-                      ),
+    return FutureBuilder<String>(
+      future: getmerchant(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return Column(
+          children: [
+            BlocBuilder<MenuMakananBloc, MenuMakananState>(
+              builder: (context, state) {
+                final status = state.status;
+
+                if (status == MenuMakananStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == MenuMakananStatus.failure) {
+                  return const Center(
+                    child: Text('Terjadi kesalahan'),
+                  );
+                } else if (status == MenuMakananStatus.success) {
+                  final items = state.items!;
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          // width: 50,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: items.length,
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ChoiceChip(
+                                  padding: const EdgeInsets.all(9),
+                                  onSelected: (val) {
+                                    context.read<ListMenuBloc>().add(
+                                          GetListMenu(
+                                              snapshot.data!, item.categoryId!),
+                                        );
+                                  },
+                                  label: Text(
+                                    item.category,
+                                    style: GoogleFonts.ubuntu(
+                                        color: const Color(0xffEA001E)),
+                                  ),
+                                  side: const BorderSide(
+                                    color: Color(0xffEA001E),
+                                  ),
+                                  selected: false,
+                                  backgroundColor: const Color(0xffFEDED8),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-        const ListMenuWidget(),
-      ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            ListMenuWidget(idMerchant: snapshot.data.toString()),
+          ],
+        );
+      },
     );
   }
 }
@@ -323,14 +333,13 @@ class ListMenu extends StatelessWidget {
 }
 
 class ListMenuWidget extends StatelessWidget {
-  const ListMenuWidget({
-    Key? key,
-  }) : super(key: key);
-
+  const ListMenuWidget({Key? key, this.idMerchant = ""}) : super(key: key);
+  final String idMerchant;
   @override
   Widget build(BuildContext context) {
     final status = context.watch<MenuMakananBloc>().state.status;
     final oCcy = NumberFormat("#,##0.00", "IDR");
+
     if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -344,7 +353,7 @@ class ListMenuWidget extends StatelessWidget {
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu('merchant2', cat.categoryId!));
+          .add(GetListMenu(idMerchant, 'Ca7QNFUudrFbc63yRT8d'));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -397,7 +406,7 @@ class ListMenuWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4.0),
                         const Text(
-                          '1 opsi menu tersambung',
+                          '0 opsi menu tersambung',
                           style: TextStyle(
                             color: Colors.green,
                           ),
@@ -418,7 +427,7 @@ class ListMenuWidget extends StatelessWidget {
                                 ).then((value) => context
                                     .read<ListMenuBloc>()
                                     .add(GetListMenu(
-                                        'merchant2', cat.categoryId!)));
+                                        idMerchant, 'Ca7QNFUudrFbc63yRT8d')));
                               },
                               child: const Text(
                                 'Atur Stok',

@@ -302,7 +302,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                   padding: const EdgeInsets.only(
                                       top: 15, left: 12, bottom: 10),
                                   child: Text(
-                                    timeRestok,
+                                    timeRestok == ""
+                                        ? ""
+                                        : "${DateTime.parse(timeRestok).hour} : ${DateTime.parse(timeRestok).minute}",
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 17,
@@ -326,17 +328,22 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                     //   });
                                     // }
                                     TimeOfDay? newTimes = await showTimePicker(
-                                        context: context, initialTime: time);
+                                      context: context,
+                                      initialTime: time,
+                                    );
 
                                     if (newTimes == null) return;
+                                    final now = DateTime.now();
 
                                     //if 'OK' new time
                                     setState(() {
                                       time = newTimes;
-                                      timeRestok =
-                                          "${time.hour} : ${time.minute} ${time.period.name.toUpperCase()}";
-                                      context.read<AturStockBlocBloc>().add(
-                                          AturStokTime(time.format(context)));
+                                      timeRestok = DateTime(now.year, now.month,
+                                              now.day, time.hour, time.minute)
+                                          .toString();
+                                      context
+                                          .read<AturStockBlocBloc>()
+                                          .add(AturStokTime(timeRestok));
                                     });
                                   },
                                   child: const Padding(
@@ -364,9 +371,40 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      const Text(
-                        'Jumat, 5 Maret 2022 pada 08:00',
-                        style: TextStyle(
+                      Text(
+                        widget.user.resetType == 'jam'
+                            ? convertDateTime(
+                                DateTime.parse(
+                                    widget.user.resetTime.toString()),
+                                (DateTime.parse(widget.user.resetTime.toString())
+                                            .hour +
+                                        1)
+                                    .toString(),
+                                (DateTime.parse(widget.user.resetTime.toString())
+                                        .day)
+                                    .toString())
+                            : widget.user.resetType == 'hari'
+                                ? convertDateTime(
+                                    DateTime.parse(
+                                        widget.user.resetTime.toString()),
+                                    (DateTime.parse(widget.user.resetTime.toString())
+                                            .hour)
+                                        .toString(),
+                                    (DateTime.parse(widget.user.resetTime.toString()).day + 1)
+                                        .toString())
+                                : widget.user.resetType == 'minggu'
+                                    ? convertDateTime(
+                                        DateTime.parse(
+                                            widget.user.resetTime.toString()),
+                                        (DateTime.parse(widget.user.resetTime.toString())
+                                                .hour)
+                                            .toString(),
+                                        (DateTime.parse(widget.user.resetTime.toString())
+                                                    .day +
+                                                7)
+                                            .toString())
+                                    : "",
+                        style: const TextStyle(
                           fontWeight: FontWeight.bold,
                           fontSize: 16,
                         ),
@@ -425,4 +463,48 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
       ),
     );
   }
+}
+
+String convertDateTime(DateTime dateTime, String hour, String day) {
+  String month;
+
+  switch (dateTime.month) {
+    case 1:
+      month = 'Januari';
+      break;
+    case 2:
+      month = 'Febuari';
+      break;
+    case 3:
+      month = 'Maret';
+      break;
+    case 4:
+      month = 'April';
+      break;
+    case 5:
+      month = 'Mei';
+      break;
+    case 6:
+      month = 'Juni';
+      break;
+    case 7:
+      month = 'Juli';
+      break;
+    case 8:
+      month = 'Agustus';
+      break;
+    case 9:
+      month = 'September';
+      break;
+    case 10:
+      month = 'Oktober';
+      break;
+    case 11:
+      month = 'November';
+      break;
+    default:
+      month = 'Desember';
+  }
+
+  return ' $day $month ${dateTime.year} pada $hour:${dateTime.minute}';
 }

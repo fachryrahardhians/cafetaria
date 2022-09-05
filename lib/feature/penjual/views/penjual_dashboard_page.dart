@@ -186,14 +186,14 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
+                      MainMenuWidget(merchantModel: items),
                     ],
                   );
                 }
                 return const SizedBox.shrink();
               },
             ),
-            const SizedBox(height: 20),
-            const MainMenuWidget(),
           ],
         ),
       ),
@@ -239,10 +239,8 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
 }
 
 class MainMenuWidget extends StatelessWidget {
-  const MainMenuWidget({
-    Key? key,
-  }) : super(key: key);
-
+  const MainMenuWidget({Key? key, this.merchantModel}) : super(key: key);
+  final MerchantModel? merchantModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -265,7 +263,9 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const MenuCafetariaPage()));
+                          builder: (_) => MenuCafetariaPage(
+                                idMerchant: merchantModel?.merchantId,
+                              )));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",

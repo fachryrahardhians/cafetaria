@@ -75,8 +75,11 @@ class AppView extends StatelessWidget {
   Widget build(BuildContext context) {
     final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
-        theme: CFTheme.themeData,
-        title: 'Cafetaria',
-        home: const LoginPage());
+      theme: CFTheme.themeData,
+      title: 'Cafetaria',
+      home: statusApp == AppStatus.authenticated
+          ? const PembeliDashboard()
+          : const LoginPage(),
+    );
   }
 }
