@@ -1,14 +1,23 @@
+import 'dart:async';
+
 import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
+
+import '../../../firebase_options.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
   const PenjualDashboardPage({Key? key, this.id = ""}) : super(key: key);
@@ -25,6 +34,83 @@ class PenjualDashboardPage extends StatelessWidget {
   }
 }
 
+onStart() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final service = FlutterBackgroundService();
+  //listen get data from ui or foreground
+  service.onDataReceived.listen((event) {
+    if (event?['action'] == 'stopService') {
+      service.stopBackgroundService();
+    } else if (event?['merchantId'] != null) {
+      update(event?['merchantId']);
+    }
+  });
+}
+
+Future update(String id) async {
+  final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
+
+  //fungsi akan melakukan reload selama waktu atau duration yang diberikan
+  Timer.periodic(const Duration(minutes: 30), (time) async {
+    List<MenuModel> data =
+        await menurepository.getMenu(id, 'Ca7QNFUudrFbc63yRT8d');
+    //fungsi perulangan untuk mengecek tipe auto restok
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].resetType == 'jam' &&
+          DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour) {
+        final docuser = FirebaseFirestore.instance
+            .collection('menuPerMerchant-$id')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day,
+                  DateTime.parse(data[i].resetTime!).hour + 1,
+                  DateTime.now().minute)
+              .toString()
+        });
+      } else if (data[i].resetType == 'hari' &&
+          (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
+              DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
+        final docuser = FirebaseFirestore.instance
+            .collection('menuPerMerchant-$id')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day + 1,
+                  DateTime.parse(data[i].resetTime!).hour,
+                  DateTime.now().minute)
+              .toString()
+        });
+      } else if (data[i].resetType == 'minggu' &&
+          (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
+              DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
+        final docuser = FirebaseFirestore.instance
+            .collection('menuPerMerchant-$id')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day + 7,
+                  DateTime.parse(data[i].resetTime!).hour,
+                  DateTime.now().minute)
+              .toString()
+        });
+      }
+    }
+  });
+}
+
 class PenjualDashboardView extends StatefulWidget {
   const PenjualDashboardView({Key? key}) : super(key: key);
 
@@ -33,6 +119,28 @@ class PenjualDashboardView extends StatefulWidget {
 }
 
 class _PenjualDashboardViewState extends State<PenjualDashboardView> {
+  String? id;
+  @override
+  void initState() {
+    // TODO: implement initState
+    super.initState();
+    //menginisialisasi fungsi background service disaat app dibuka
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterBackgroundService.initialize(onStart);
+
+    context.read<AppSharedPref>().getMerchantId().then((value) {
+      setState(() {
+        id = value.toString();
+      });
+      //print(value);
+      if (value!.isNotEmpty || value != "") {
+        FlutterBackgroundService().sendData({'merchantId': value});
+      } else {
+        FlutterBackgroundService().sendData({'action': 'stopService'});
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
