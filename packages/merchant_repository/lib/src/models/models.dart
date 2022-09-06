@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, non_constant_identifier_names
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
@@ -8,7 +10,7 @@ part 'models.g.dart';
 class MerchantModel extends Equatable {
   //final List<String> tags;
 
-  MerchantModel({
+  const MerchantModel({
     this.userId,
     this.merchantId,
     this.name,
@@ -24,6 +26,9 @@ class MerchantModel extends Equatable {
     this.photo_from_outside,
     this.postal_code,
   });
+
+  factory MerchantModel.fromJson(Map<String, dynamic> json) =>
+      _$MerchantModelFromJson(json);
   final String? userId;
   final String? merchantId;
   final String? name;
@@ -38,9 +43,6 @@ class MerchantModel extends Equatable {
   final String? photo_from_inside;
   final String? photo_from_outside;
   final String? postal_code;
-  
-  factory MerchantModel.fromJson(Map<String, dynamic> json) =>
-      _$MerchantModelFromJson(json);
 
   Map<String, dynamic> toJson() => _$MerchantModelToJson(this);
 

@@ -28,20 +28,3 @@ class MerchantRepository {
     }
   }
 }
-
-extension on List<QueryDocumentSnapshot> {
-  List<MerchantModel> toListMenu() {
-    final leaderboardEntries = <MerchantModel>[];
-    for (final document in this) {
-      final data = document.data() as Map<String, dynamic>?;
-      if (data != null) {
-        try {
-          leaderboardEntries.add(MerchantModel.fromJson(data));
-        } catch (error) {
-          throw Exception();
-        }
-      }
-    }
-    return leaderboardEntries;
-  }
-}

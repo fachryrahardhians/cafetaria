@@ -353,7 +353,7 @@ class ListMenuWidget extends StatelessWidget {
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu(idMerchant, 'Ca7QNFUudrFbc63yRT8d'));
+          .add(GetListMenu(idMerchant, cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;

@@ -40,9 +40,7 @@ class AppSharedPref {
     try {
       return _sharedPreferences.getString(_merchantId);
     } catch (e) {
-      if (kDebugMode) {
-        print(e.toString());
-      }
+      return null;
     }
   }
 }

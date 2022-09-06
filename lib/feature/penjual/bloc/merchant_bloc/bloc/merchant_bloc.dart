@@ -31,7 +31,6 @@ class MerchantBloc extends Bloc<MerchantEvent, MerchantState> {
       String? idMerchant;
 
       if (idMerchant != null) {
-        print("ID MERCHANT ADA");
         emit(MerchantState.success(items));
       } else {
         _appSharedPref.setMerchantId(items.merchantId.toString());

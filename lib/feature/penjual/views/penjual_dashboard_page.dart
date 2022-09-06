@@ -14,7 +14,7 @@ import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 import '../../../firebase_options.dart';
@@ -34,6 +34,7 @@ class PenjualDashboardPage extends StatelessWidget {
   }
 }
 
+//fungsi flutter background service
 onStart() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(
@@ -119,19 +120,14 @@ class PenjualDashboardView extends StatefulWidget {
 }
 
 class _PenjualDashboardViewState extends State<PenjualDashboardView> {
-  String? id;
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     //menginisialisasi fungsi background service disaat app dibuka
     WidgetsFlutterBinding.ensureInitialized();
     FlutterBackgroundService.initialize(onStart);
 
     context.read<AppSharedPref>().getMerchantId().then((value) {
-      setState(() {
-        id = value.toString();
-      });
       //print(value);
       if (value!.isNotEmpty || value != "") {
         FlutterBackgroundService().sendData({'merchantId': value});
