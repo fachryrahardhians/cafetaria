@@ -1,14 +1,13 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
+import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:cafetaria/feature/pembeli/widget/widget.dart';
-import 'package:cafetaria/components/buttons/reusables_buttons.dart';
-import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PembeliProfilePage extends StatelessWidget {
   const PembeliProfilePage({Key? key}) : super(key: key);
@@ -17,8 +16,8 @@ class PembeliProfilePage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
-          authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()),
+        authenticationRepository: context.read<AuthenticationRepository>(),
+      ),
       child: const PembeliProfileView(),
     );
   }
