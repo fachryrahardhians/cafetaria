@@ -177,7 +177,17 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      return item(
+                      if(_preorder){
+                        if(menuInKeranjang[index].rulepreordermenuId=='')
+                          return disabledItem(
+                              menuInKeranjang[index].quantity,
+                              menuInKeranjang[index].name.toString(),
+                              menuInKeranjang[index].totalPrice);
+                          else return item(
+                            menuInKeranjang[index].quantity,
+                            menuInKeranjang[index].name.toString(),
+                            menuInKeranjang[index].totalPrice);
+                      } else return item(
                           menuInKeranjang[index].quantity,
                           menuInKeranjang[index].name.toString(),
                           menuInKeranjang[index].totalPrice);
@@ -327,17 +337,22 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   : const Text('SIMPAN'),
               onPressed: state.orderInput.valid
                   ? () {
-                      context.read<AddOrderBloc>().add(
-                            SaveOrder(
-                                merchantId: widget.merchantId,
-                                listKeranjang: menuInKeranjang,
-                                preOrder: _preorder,
-                                grandTotalPrice: subTotalPrice + biayaPemesanan,
-                                timestamp: DateTime.now().toString(),
-                                pickupDate:
-                                    _selectedDay.toString().split(' ')[0] +
-                                        ' 08:00:00.000'),
-                          );
+                      if(_preorder) {
+                        showDialog(
+                            context: context,
+                            builder: (BuildContext context) => _warningAlert());
+                      }else context.read<AddOrderBloc>().add(
+                        SaveOrder(
+                            merchantId: widget.merchantId,
+                            listKeranjang: menuInKeranjang,
+                            preOrder: _preorder,
+                            grandTotalPrice:
+                            subTotalPrice + biayaPemesanan,
+                            timestamp: DateTime.now().toString(),
+                            pickupDate:
+                            _selectedDay.toString().split(' ')[0] +
+                                ' 08:00:00.000'),
+                      );
                     }
                   : null,
             );
@@ -692,6 +707,45 @@ class _KeranjangPageState extends State<KeranjangPage> {
     );
   }
 
+  Widget disabledItem(int itemCount, String itemName, int totalPrice) {
+    return IntrinsicHeight(
+      child: Row(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Text('${itemCount}x',
+              style: textStyle.copyWith(color: Color(0xffB1B5BA),
+                  fontWeight: FontWeight.w500, fontSize: 13)),
+          SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(itemName,
+                  style: textStyle.copyWith(color: Color(0xffB1B5BA),
+                      fontWeight: FontWeight.w500, fontSize: 13)),
+              SizedBox(height: SizeConfig.safeBlockVertical * 1),
+              GestureDetector(
+                onTap: () async {},
+                child: Text(
+                  'Edit',
+                  style: textStyle.copyWith(
+                      fontWeight: FontWeight.w500,
+                      color: const Color(0xffB1B5BA),
+                      fontSize: 11),
+                ),
+              )
+            ],
+          ),
+          const Spacer(),
+          Text(
+            'Rp. $totalPrice',
+            style:
+            textStyle.copyWith(color: Color(0xffB1B5BA), fontWeight: FontWeight.w500, fontSize: 13),
+          )
+        ],
+      ),
+    );
+  }
+
   Widget _popUpPanel() {
     return DraggableScrollableSheet(
       initialChildSize: 0.4,
@@ -904,6 +958,99 @@ class _KeranjangPageState extends State<KeranjangPage> {
             child: Text("PILIH KEMBALI PENGAMBILAN",
                 style: TextStyle(color: Colors.white, fontSize: 14)),
           ),
+        ),
+      ],
+    );
+  }
+
+  Widget _warningAlert() {
+    return AlertDialog(
+      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
+      content: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Image.asset("assets/images/ic_grfx_warning.png"),
+          Text(
+            "Apakah anda yakin ingin melanjutkan?",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff222222),
+                fontSize: 18,
+                fontWeight: FontWeight.w700),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+          Text(
+            "Menu yang tidak dapat di booking akan otomatis di batalkan",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff808285),
+                fontSize: 12,
+                fontWeight: FontWeight.w400),
+          )
+        ],
+      ),
+      actions: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              width: SizeConfig.safeBlockHorizontal*35,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                    elevation: MaterialStateProperty.all(0),
+                    backgroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                    foregroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide.none))),
+                onPressed: () {
+                  Navigator.pop(context);
+                },
+                child: Text("Tidak",
+                    style: TextStyle(color: Colors.white, fontSize: 14)),
+              ),
+            ),
+            Spacer(),
+            SizedBox(
+              width: SizeConfig.safeBlockHorizontal*35,
+              child: ElevatedButton(
+                style: ButtonStyle(
+                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                    elevation: MaterialStateProperty.all(0),
+                    backgroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                    foregroundColor:
+                    MaterialStateProperty.all(const Color(0xffee3124)),
+                    shape: MaterialStateProperty.all(RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(8),
+                        side: BorderSide.none))),
+                onPressed: () {
+                  List<Keranjang> lists = List.empty(growable: true);
+                  menuInKeranjang.forEach((element) {
+                    if(element.rulepreordermenuId!='')
+                      lists.add(element);
+                  });
+                  context.read<AddOrderBloc>().add(
+                    SaveOrder(
+                        merchantId: widget.merchantId,
+                        listKeranjang: lists,
+                        preOrder: _preorder,
+                        grandTotalPrice:
+                        subTotalPrice + biayaPemesanan,
+                        timestamp: DateTime.now().toString(),
+                        pickupDate:
+                        _selectedDay.toString().split(' ')[0] +
+                            ' 08:00:00.000'),
+                  );
+                },
+                child: Text("Ya",
+                    style: TextStyle(color: Colors.white, fontSize: 14)),
+              ),
+            ),
+          ],
         ),
       ],
     );
