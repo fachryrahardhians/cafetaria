@@ -36,47 +36,40 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
               const SizedBox()
             ],
           ),
-          bottomNavigationBar: Container(
-            height: SizeConfig.safeBlockVertical * 7,
-            decoration: BoxDecoration(
-              boxShadow: boxShadows,
-              color: Colors.white,
-            ),
-            child: TabBar(
-              indicator: const BoxDecoration(),
-              labelColor: const Color(0xffee3124),
-              unselectedLabelColor: const Color(0xffB1B5BA),
-              unselectedLabelStyle: textStyle,
-              labelStyle: textStyle,
-              tabs: const [
-                Tab(
-                  text: 'Home',
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  icon: Icon(Icons.home_filled),
+          bottomNavigationBar: TabBar(
+            indicator: const BoxDecoration(),
+            labelColor: const Color(0xffee3124),
+            unselectedLabelColor: const Color(0xffB1B5BA),
+            unselectedLabelStyle: textStyle,
+            labelStyle: textStyle,
+            tabs: const [
+              Tab(
+                text: 'Home',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(Icons.home_filled),
+              ),
+              Tab(
+                text: 'Pesan',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.mail_rounded,
                 ),
-                Tab(
-                  text: 'Pesan',
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  icon: Icon(
-                    Icons.mail_rounded,
-                  ),
+              ),
+              Tab(
+                text: 'History',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.history,
                 ),
-                Tab(
-                  text: 'History',
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  icon: Icon(
-                    Icons.history,
-                  ),
+              ),
+              Tab(
+                text: 'Profile',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.person_rounded,
                 ),
-                Tab(
-                  text: 'Profile',
-                  iconMargin: EdgeInsets.only(bottom: 4),
-                  icon: Icon(
-                    Icons.person_rounded,
-                  ),
-                )
-              ],
-            ),
+              )
+            ],
           ),
         ),
       ),

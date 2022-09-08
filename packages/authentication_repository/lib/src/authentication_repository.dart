@@ -1,5 +1,6 @@
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 GoogleSignIn _googleSignIn = GoogleSignIn(
   scopes: <String>[
@@ -14,6 +15,16 @@ class AuthenticationRepository {
   const AuthenticationRepository(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
+  final String fcm = "fcmTokenOy";
+  Future<bool> saveFcmToken(String token) async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return await sf.setString(fcm, token);
+  }
+
+  Future<String> getFcmToken() async {
+    SharedPreferences sf = await SharedPreferences.getInstance();
+    return sf.getString(fcm) ?? "";
+  }
 
   /// sign user anonymously
   Future<void> signedAnonymous() async {

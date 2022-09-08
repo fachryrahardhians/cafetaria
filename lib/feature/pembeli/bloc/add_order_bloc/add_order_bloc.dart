@@ -47,9 +47,7 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
       }).toList();
       User? user = await _authtenticationRepository.getCurrentUser();
       await _orderRepository.addOrder(HistoryModel(
-          cash: 0,
-          change: '0',
-          deviceToken: null,
+          deviceToken: await _authtenticationRepository.getFcmToken(),
           orderId: _uuid.v4(),
           isCutlery: true,
           isPreorder: event.preOrder,
