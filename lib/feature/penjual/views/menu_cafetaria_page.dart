@@ -1,17 +1,17 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
-import 'package:cafetaria/feature/penjual/bloc/opsi_menu_makanan_bloc/opsi_menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
-import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
+import 'package:cafetaria/feature/penjual/views/choose_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
+import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
-import 'package:option_menu_repository/option_menu_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key}) : super(key: key);
@@ -29,11 +29,6 @@ class MenuCafetariaPage extends StatelessWidget {
           create: (context) => ListMenuBloc(
             menuRepository: context.read<MenuRepository>(),
           ),
-        ),
-         BlocProvider(
-          create: (context) => OpsiMenuMakananBloc(
-            opsimenuRepository: context.read<OptionMenuRepository>(),
-          )..add(const GetOpsiMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
       child: const MenuCafetariaView(),
@@ -99,7 +94,7 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
           children: [
             DaftarMenuWidget(),
             OpsiMenuWidget(),
-            SizedBox.shrink(),
+            ListMenuTidakTersediaWidget(),
           ],
         ),
         bottomNavigationBar: Container(
@@ -187,7 +182,7 @@ class DaftarMenuWidget extends StatelessWidget {
             return const SizedBox.shrink();
           },
         ),
-        const ListMenuWidget()
+        const ListMenuWidget(),
       ],
     );
   }
@@ -279,7 +274,7 @@ class ListMenu extends StatelessWidget {
               color: Color.fromRGBO(0, 0, 0, 0.04),
               offset: Offset(0, 4),
               blurRadius: 12,
-            )
+            ),
           ],
         ),
         child: Padding(
@@ -333,7 +328,7 @@ class ListMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final status = context.watch<MenuMakananBloc>().state.status;
-
+    final oCcy = NumberFormat("#,##0.00", "IDR");
     if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -347,11 +342,10 @@ class ListMenuWidget extends StatelessWidget {
       final cat = context.watch<MenuMakananBloc>().state.items!.first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu('0DzobjgsR7jF8qWvCoG0', cat.categoryId!));
+          .add(GetListMenu('merchant2', cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
-
           if (status == ListMenuStatus.loading) {
             return const Center(
               child: CircularProgressIndicator(),
@@ -367,17 +361,226 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  return ListTile(
-                    title: Text(item.name ?? '-'),
-                    // subtitle: Text(item.price.toString()),
-                    trailing: IconButton(
-                      icon: const Icon(Icons.delete),
-                      onPressed: () {
-                        // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                      },
+                  // return ListTile(
+                  //   title: Text(item.name ?? '-'),
+                  //   // subtitle: Text(item.price.toString()),
+                  //   trailing: IconButton(
+                  //     icon: const Icon(Icons.delete),
+                  //     onPressed: () {
+                  //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                  //     },
+                  //   ),
+                  // );
+                  return Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 4.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item.name}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Rp ${oCcy.format(item.price)}',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        const Text(
+                          '1 opsi menu tersambung',
+                          style: TextStyle(
+                            color: Colors.green,
+                          ),
+                        ),
+                        const SizedBox(height: 6.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          crossAxisAlignment: CrossAxisAlignment.end,
+                          children: [
+                            InkWell(
+                              onTap: () {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        EditStok(menuModel: item),
+                                  ),
+                                ).then((value) => context
+                                    .read<ListMenuBloc>()
+                                    .add(GetListMenu(
+                                        'merchant2', cat.categoryId!)));
+                              },
+                              child: const Text(
+                                'Atur Stok',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                            const SizedBox(width: 16.0),
+                            InkWell(
+                              onTap: () {},
+                              child: const Text(
+                                'Edit',
+                                style: TextStyle(
+                                  color: Colors.red,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ],
                     ),
                   );
                 },
+              ),
+            );
+          }
+          return const SizedBox.shrink();
+        },
+      );
+    }
+
+    return const SizedBox.shrink();
+  }
+}
+
+class ListMenuTidakTersediaWidget extends StatelessWidget {
+  const ListMenuTidakTersediaWidget({
+    Key? key,
+  }) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    final status = context.watch<MenuMakananBloc>().state.status;
+    final oCcy = NumberFormat("#,##0.00", "IDR");
+    if (status == MenuMakananStatus.loading) {
+      return const Center(
+        child: CircularProgressIndicator(),
+      );
+    } else if (status == MenuMakananStatus.failure) {
+      return const Center(
+        child: Text('Terjadi kesalahan'),
+      );
+    } else if (status == MenuMakananStatus.success) {
+      // final cat = categoryState.items.first;
+      final cat = context.watch<MenuMakananBloc>().state.items!.first;
+      context
+          .read<ListMenuBloc>()
+          .add(GetListMenuTidakTersedia('merchant2', cat.categoryId!));
+      return BlocBuilder<ListMenuBloc, ListMenuState>(
+        builder: (context, state) {
+          final status = state.status;
+          if (status == ListMenuStatus.loading) {
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          } else if (status == ListMenuStatus.failure) {
+            return const Center(
+              child: Text('Terjadi kesalahan'),
+            );
+          } else if (status == ListMenuStatus.success) {
+            final items = state.items!;
+            return Padding(
+              padding: const EdgeInsets.only(top: 20, left: 10),
+              child: Expanded(
+                child: ListView.builder(
+                  itemCount: items.length,
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    // return ListTile(
+                    //   title: Text(item.name ?? '-'),
+                    //   // subtitle: Text(item.price.toString()),
+                    //   trailing: IconButton(
+                    //     icon: const Icon(Icons.delete),
+                    //     onPressed: () {
+                    //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
+                    //     },
+                    //   ),
+                    // );
+                    return Container(
+                      color: Colors.white,
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12.0, vertical: 8.0),
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Text(
+                            '${item.name}',
+                            style: const TextStyle(
+                              fontWeight: FontWeight.bold,
+                              fontSize: 16,
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            'Rp ${oCcy.format(item.price)}',
+                            style: TextStyle(
+                              color: Colors.black.withOpacity(0.5),
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          Text(
+                            'Jumlah Stok ${item.stock}',
+                            style: const TextStyle(
+                              color: Colors.red,
+                            ),
+                          ),
+                          const SizedBox(height: 6.0),
+                          // Row(
+                          //   mainAxisAlignment: MainAxisAlignment.end,
+                          //   crossAxisAlignment: CrossAxisAlignment.end,
+                          //   children: [
+                          //     InkWell(
+                          //       onTap: () {
+                          //         Navigator.push(
+                          //           context,
+                          //           MaterialPageRoute(
+                          //             builder: (context) =>
+                          //                 EditStok(menuModel: item),
+                          //           ),
+                          //         ).then((value) => context
+                          //             .read<ListMenuBloc>()
+                          //             .add(GetListMenu(
+                          //                 'merchant2', cat.categoryId!)));
+                          //       },
+                          //       child: const Text(
+                          //         'Atur Stok',
+                          //         style: TextStyle(
+                          //           color: Colors.red,
+                          //           fontWeight: FontWeight.bold,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     const SizedBox(width: 16.0),
+                          //     InkWell(
+                          //       onTap: () {},
+                          //       child: const Text(
+                          //         'Edit',
+                          //         style: TextStyle(
+                          //           color: Colors.red,
+                          //           fontWeight: FontWeight.bold,
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+                        ],
+                      ),
+                    );
+                  },
+                ),
               ),
             );
           }
@@ -417,7 +620,32 @@ class BottomDaftarMenuWidget extends StatelessWidget {
   }
 }
 
+// temp object for "opsi menu"
+class OpsiMenu {
+  final bool isMandatory;
+  final bool isMultipleTopping;
+  final String menuId;
+  final List<Option> option;
+  final String optionmenuId;
+  final String title;
 
+  OpsiMenu(
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  );
+}
+
+class Option {
+  final String name;
+  final int price;
+
+  Option(this.name, this.price);
+}
+// =====
 
 class OpsiMenuWidget extends StatefulWidget {
   const OpsiMenuWidget({Key? key}) : super(key: key);
@@ -427,168 +655,154 @@ class OpsiMenuWidget extends StatefulWidget {
 }
 
 class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
-  List<OptionMenuModel> menuOptions = [];
+  List<OpsiMenu> menuOptions = [];
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BlocBuilder<OpsiMenuMakananBloc, OpsiMenuMakananState>(
-          builder: (context, state) {
-            final status = state.status;
-
-            if (status == OpsiMenuMakananStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (status == OpsiMenuMakananStatus.failure) {
-              return const Center(
-                child: Text('Terjadi kesalahan'),
-              );
-            } else if (status == OpsiMenuMakananStatus.success) {
-              final items = state.items!;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      // width: 50,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ChoiceChip(
-                              padding: const EdgeInsets.all(9),
-                              onSelected: (val) {
-                                context.read<ListMenuBloc>().add(
-                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.categoryId!),
-                                    );
-                              },
-                              label: Text(
-                               ' items.category',
-                                style: GoogleFonts.ubuntu(
-                                    color: const Color(0xffEA001E)),
-                              ),
-                              side: const BorderSide(
-                                color: Color(0xffEA001E),
-                              ),
-                              selected: false,
-                              backgroundColor: const Color(0xffFEDED8),
-                            ),
-                          );
-                        },
+    return BlocBuilder<MenuMakananBloc, MenuMakananState>(
+      builder: (context, state) {
+        final status = state.status;
+        if (status == MenuMakananStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (status == MenuMakananStatus.failure) {
+          return const Center(
+            child: Text('Terjadi kesalahan'),
+          );
+        } else if (status == MenuMakananStatus.success) {
+          final items = state.items!;
+          return items.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/icons/no-menu.png'),
+                      const Text(
+                        'Anda belum memiliki menu',
+                        style: TextStyle(color: Colors.grey),
                       ),
-                    ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-        const ListMenuWidget()
-      ],
-    );
-  }
-
-  Widget _itemOpsiMenuWidget(OptionMenuModel menu) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-        '  menu.title',
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          // '${menu.option.map((e) => e.name)}',
-          'test',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.5),
-          ),
-        ),
-        const SizedBox(height: 4.0),
-        const Text(
-          '0 menu tersambung',
-          style: TextStyle(
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(height: 6.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: () {},
-              child: const Text(
-                'Sambungkan',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: const Text(
-                    'Hapus',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    ],
                   ),
-                ),
-                const SizedBox(width: 16.0),
-                InkWell(
-                  onTap: () {
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     builder: (context) => const AddOpsiMenuPage(),
-                    //     settings: RouteSettings(
-                    //       arguments: OpsiMenu(
-                    //         menu.isMandatory,
-                    //         menu.isMultipleTopping,
-                    //         menu.menuId,
-                    //         menu.option,
-                    //         menu.optionmenuId,
-                    //         menu.title,
-                    //       ),
-                    //     ),
-                    //   ),
-                    // ).then((value) {
-                    //   if (value != null) {
-                    //     // save to firebase
-                    //   }
-                    // });
-                  },
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+                )
+              : Container(
+                  padding: const EdgeInsets.all(16.0),
+                  width: double.infinity,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    // physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.all(16.0),
+                        margin: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.04),
+                              offset: Offset(0, 4),
+                              blurRadius: 12,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(width: 16.0),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      'Nasi Ayam Panggang',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text('Rp25.000'),
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            const Text(
+                              'Opsi menu:',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            // ListView.builder
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  ' • Sambal: ',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                // ListView.builder
+                                Text(
+                                  'Level 1, Level 2',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  child: const Text(
+                                    'Hapus',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20.0),
+                                InkWell(
+                                  onTap: () {},
+                                  child: const Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 10.0),
-      ],
+                );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -600,17 +814,23 @@ class BottomOpsiMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const AddOpsiMenuPage(),
+        //     settings: const RouteSettings(
+        //       arguments: null,
+        //     ),
+        //   ),
+        // ).then((value) {});
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const AddOpsiMenuPage(),
-            settings: const RouteSettings(
-              arguments: null,
-            ),
+            builder: (context) => const ChooseMenuPage(),
           ),
-        ).then((value) {});
+        );
       },
-      child: Text("Tambah Opsi Menu".toUpperCase()),
+      child: Text("Pilih Menu".toUpperCase()),
       style: ElevatedButton.styleFrom(
         minimumSize: const Size.fromHeight(44),
         primary: const Color(0xffEA001E),

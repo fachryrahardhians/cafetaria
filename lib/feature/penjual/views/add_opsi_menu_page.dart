@@ -4,7 +4,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
 
 class AddOpsiMenuPage extends StatelessWidget {
-  const AddOpsiMenuPage({Key? key}) : super(key: key);
+  const AddOpsiMenuPage({Key? key, required this.menuId}) : super(key: key);
+  final String menuId;
 
   @override
   Widget build(BuildContext context) {
@@ -309,10 +310,6 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
           onPressed: () {
             final title = _textController.text;
             if (title.isNotEmpty && option.isNotEmpty) {
-              // save to firebase
-
-              // Navigator.pop(context);
-
               // temp
               final result = OpsiMenu(
                 isMandatory,
@@ -322,7 +319,54 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                 'optionmenuId',
                 title,
               );
-              Navigator.pop(context, result);
+              showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) {
+                  return Dialog(
+                    child: Container(
+                      width: MediaQuery.of(context).size.width - 40,
+                      height: 235,
+                      padding: const EdgeInsets.all(16.0),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Column(
+                        children: [
+                          Image.asset('assets/icons/pop-up-success.png'),
+                          const SizedBox(height: 4.0),
+                          const Text(
+                            'Berhasil!',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
+                          const SizedBox(height: 4.0),
+                          const Text('Opsi Menu baru berhasil ditambah.'),
+                          const SizedBox(height: 16.0),
+                          SizedBox(
+                            height: 44,
+                            width: double.infinity,
+                            child: ElevatedButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pop(context, result);
+                              },
+                              child: const Text('OK'),
+                              style: ElevatedButton.styleFrom(
+                                primary: Colors.red,
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  );
+                },
+              );
+              // Navigator.pop(context, result);
             }
           },
           child: const Text(
