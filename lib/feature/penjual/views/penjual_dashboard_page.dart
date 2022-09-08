@@ -5,6 +5,7 @@ import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
+import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_core/firebase_core.dart';
@@ -43,6 +44,7 @@ onStart() async {
   );
   final service = FlutterBackgroundService();
   final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
+  // service.setAutoStartOnBootMode(true);
   //listen get data from ui or foreground
   service.onDataReceived.listen((event) {
     if (event?['action'] == 'stopService') {
@@ -53,8 +55,8 @@ onStart() async {
   //akan melakukan reload selama waktu atau duration yang diberikan
   Timer.periodic(const Duration(minutes: 30), (time) async {
     final idMerchant = await SharedPreferences.getInstance();
-    List<MenuModel> data = await menurepository.getMenu(
-        idMerchant.getString("merchantId").toString(), 'Ca7QNFUudrFbc63yRT8d');
+    List<MenuModel> data = await menurepository
+        .getAllMenu(idMerchant.getString("merchantId").toString());
     //fungsi perulangan untuk mengecek tipe auto restok
     for (var i = 0; i < data.length; i++) {
       //mengecek jika data resetTime sama dengan null akan break fungsi
@@ -120,66 +122,6 @@ onStart() async {
     }
   });
 }
-
-// Stream update(String id) async* {
-//   final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
-//   //fungsi akan melakukan reload selama waktu atau duration yang diberikan
-//   Timer.periodic(const Duration(minutes: 2), (time) async {
-//     List<MenuModel> data =
-//         await menurepository.getMenu(id, 'Ca7QNFUudrFbc63yRT8d');
-//     //fungsi perulangan untuk mengecek tipe auto restok
-//     for (var i = 0; i < data.length; i++) {
-//       if (data[i].resetType == 'jam' &&
-//           DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour) {
-//         final docuser = FirebaseFirestore.instance
-//             .collection('menuPerMerchant-$id')
-//             .doc(data[i].menuId);
-//         docuser.update({
-//           'stock': data[i].defaultStock!,
-//           'resetTime': DateTime(
-//                   DateTime.now().year,
-//                   DateTime.now().month,
-//                   DateTime.now().day,
-//                   DateTime.parse(data[i].resetTime!).hour + 1,
-//                   DateTime.now().minute)
-//               .toString()
-//         });
-//       } else if (data[i].resetType == 'hari' &&
-//           (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
-//               DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
-//         final docuser = FirebaseFirestore.instance
-//             .collection('menuPerMerchant-$id')
-//             .doc(data[i].menuId);
-//         docuser.update({
-//           'stock': data[i].defaultStock!,
-//           'resetTime': DateTime(
-//                   DateTime.now().year,
-//                   DateTime.now().month,
-//                   DateTime.now().day + 1,
-//                   DateTime.parse(data[i].resetTime!).hour,
-//                   DateTime.now().minute)
-//               .toString()
-//         });
-//       } else if (data[i].resetType == 'minggu' &&
-//           (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
-//               DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
-//         final docuser = FirebaseFirestore.instance
-//             .collection('menuPerMerchant-$id')
-//             .doc(data[i].menuId);
-//         docuser.update({
-//           'stock': data[i].defaultStock!,
-//           'resetTime': DateTime(
-//                   DateTime.now().year,
-//                   DateTime.now().month,
-//                   DateTime.now().day + 7,
-//                   DateTime.parse(data[i].resetTime!).hour,
-//                   DateTime.now().minute)
-//               .toString()
-//         });
-//       }
-//     }
-//   });
-// }
 
 class PenjualDashboardView extends StatefulWidget {
   const PenjualDashboardView({Key? key}) : super(key: key);
@@ -425,6 +367,8 @@ class MainMenuWidget extends StatelessWidget {
             children: [
               HomeItemOrder(
                 route: () {
+                  Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const OrderPage()));
                   // print("Pesanan");
                 },
                 image: "assets/icons/paper.png",

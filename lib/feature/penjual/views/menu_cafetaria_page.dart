@@ -148,44 +148,40 @@ class DaftarMenuWidget extends StatelessWidget {
                   final items = state.items!;
                   return Padding(
                     padding: const EdgeInsets.all(8.0),
-                    child: Column(
-                      children: [
-                        SizedBox(
-                          height: 50,
-                          // width: 50,
-                          width: MediaQuery.of(context).size.width,
-                          child: ListView.builder(
-                            shrinkWrap: true,
-                            scrollDirection: Axis.horizontal,
-                            itemCount: items.length,
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              return Padding(
-                                padding: const EdgeInsets.all(4.0),
-                                child: ChoiceChip(
-                                  padding: const EdgeInsets.all(9),
-                                  onSelected: (val) {
-                                    context.read<ListMenuBloc>().add(
-                                          GetListMenu(
-                                              snapshot.data!, item.categoryId!),
-                                        );
-                                  },
-                                  label: Text(
-                                    item.category,
-                                    style: GoogleFonts.ubuntu(
-                                        color: const Color(0xffEA001E)),
-                                  ),
-                                  side: const BorderSide(
-                                    color: Color(0xffEA001E),
-                                  ),
-                                  selected: false,
-                                  backgroundColor: const Color(0xffFEDED8),
-                                ),
-                              );
-                            },
-                          ),
-                        ),
-                      ],
+                    child: SizedBox(
+                      height: 50,
+                      // width: 50,
+                      width: MediaQuery.of(context).size.width,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.horizontal,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          return Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: ChoiceChip(
+                              padding: const EdgeInsets.all(9),
+                              onSelected: (val) {
+                                context.read<ListMenuBloc>().add(
+                                      GetListMenu(
+                                          snapshot.data!, item.categoryId!),
+                                    );
+                              },
+                              label: Text(
+                                item.category,
+                                style: GoogleFonts.ubuntu(
+                                    color: const Color(0xffEA001E)),
+                              ),
+                              side: const BorderSide(
+                                color: Color(0xffEA001E),
+                              ),
+                              selected: false,
+                              backgroundColor: const Color(0xffFEDED8),
+                            ),
+                          );
+                        },
+                      ),
                     ),
                   );
                 }
@@ -350,15 +346,9 @@ class ListMenuWidget extends StatelessWidget {
       );
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
-      final cat = context
-          .watch<MenuMakananBloc>()
-          .state
-          .items!
-          .where((element) => element.merchantId == idMerchant)
-          .first;
-      context
-          .read<ListMenuBloc>()
-          .add(GetListMenu(idMerchant, cat.categoryId!));
+      final cat = context.watch<MenuMakananBloc>().state.items!.first;
+      String id = idMerchant == cat.merchantId ? cat.categoryId.toString() : "";
+      context.read<ListMenuBloc>().add(GetListMenu(idMerchant, id));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;

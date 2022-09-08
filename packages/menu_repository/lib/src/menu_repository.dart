@@ -16,7 +16,6 @@ class MenuRepository {
     String idMerchant,
     String idCategory,
   ) async {
-     
     try {
       final snapshot = await _firestore
           .collection('menuPerMerchant-$idMerchant')
@@ -29,6 +28,20 @@ class MenuRepository {
       throw Exception('Failed to get menu');
     }
   } // get  menu per merchant
+
+  Future<List<MenuModel>> getAllMenu(
+    String idMerchant,
+  ) async {
+    try {
+      final snapshot =
+          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+
+      final documents = snapshot.docs;
+      return documents.toListMenu();
+    } catch (e) {
+      throw Exception('Failed to get All menu');
+    }
+  } // get menu per merchant
 
   Future<List<MenuModel>> getMenuStokTidakTersedia(
     String idMerchant,
