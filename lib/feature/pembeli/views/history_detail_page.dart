@@ -12,7 +12,8 @@ import 'package:order_repository/order_repository.dart';
 
 class HistoryDetailPage extends StatelessWidget {
   final HistoryModel item;
-  const HistoryDetailPage({Key? key, required this.item}) : super(key: key);
+  final MerchantModel merchant;
+  const HistoryDetailPage({Key? key, required this.item, required this.merchant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
