@@ -9,6 +9,7 @@ abstract class AddOrderEvent extends Equatable {
 
 class SaveOrder extends AddOrderEvent {
   final bool preOrder;
+  final bool alat;
   final String timestamp;
   final String pickupDate;
   final int grandTotalPrice;
@@ -17,6 +18,7 @@ class SaveOrder extends AddOrderEvent {
 
   const SaveOrder(
       {required this.preOrder,
+      required this.alat,
       required this.grandTotalPrice,
       required this.timestamp,
       required this.pickupDate,
@@ -24,7 +26,7 @@ class SaveOrder extends AddOrderEvent {
       required this.listKeranjang});
 
   @override
-  List<Object> get props => [preOrder, timestamp, pickupDate];
+  List<Object> get props => [preOrder, alat, timestamp, pickupDate];
 }
 
 class OrderChange extends AddOrderEvent {

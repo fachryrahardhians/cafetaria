@@ -22,7 +22,6 @@ class OrderRepository {
           .get();
 
       final documents = snapshot.docs;
-
       return documents.toListHistory();
     } catch (e) {
       throw Exception('Failed to get history');
