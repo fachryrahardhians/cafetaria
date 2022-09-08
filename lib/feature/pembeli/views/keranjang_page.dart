@@ -329,6 +329,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
               Navigator.push(context,
                   MaterialPageRoute(builder: (_) => const HistoryPage()));
             }
+            menuInKeranjang.forEach((element) {
+              context.read<MenuInCartBloc>().add(DeleteMenuInCart(element));
+            });
           } else if (state.formzStatus == FormzStatus.submissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
