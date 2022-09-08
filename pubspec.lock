@@ -737,6 +737,13 @@ packages:
       url: "https://pub.dartlang.org"
     source: hosted
     version: "2.0.1"
+  option_menu_repository:
+    dependency: "direct main"
+    description:
+      path: "packages/option_menu_repository"
+      relative: true
+    source: path
+    version: "1.0.0+1"
   package_config:
     dependency: transitive
     description:

@@ -28,7 +28,7 @@ class MenuRepository {
     } catch (e) {
       throw Exception('Failed to get menu');
     }
-  } // get  menu per merchant
+  } 
 
   Future<List<MenuModel>> getMenuStokTidakTersedia(
     String idMerchant,

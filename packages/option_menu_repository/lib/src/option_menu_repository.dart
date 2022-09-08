@@ -13,19 +13,21 @@ class OptionMenuRepository {
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
 
-  // get opsi menu
-  Future<List<OptionMenuModel>> getOptionMenu(
-    String menuId,
+  // get  menu per menu
+  Future<List<OptionMenuModel>> getOpsi(
     String idMerchant,
+    String idMenu,
   ) async {
     try {
-      final snapshot =
-          await _firestore.collection('menuPerMerchant-$idMerchant').get();
+      final snapshot = await _firestore
+          .collection('optionmenu')
+          .where('menuId', isEqualTo: idMenu)
+          .get();
 
       final documents = snapshot.docs;
       return documents.toListOpsiMenu();
     } catch (e) {
-      throw Exception('Failed to get Option');
+      throw Exception('Failed to get menu');
     }
   }
 }
