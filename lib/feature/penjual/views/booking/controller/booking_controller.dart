@@ -279,8 +279,8 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     // TODO: @kuldii => Penentuan merchant masih hard code
-    // merchantId = "merchant1";
-    merchantId = "merchant2";
+    merchantId = "merchant1";
+    // merchantId = "JNaMiyXIvYYcOYP2JJgB7OxW9Zm2";
   }
 
   @override
