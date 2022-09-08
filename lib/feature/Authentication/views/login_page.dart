@@ -34,7 +34,6 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
-  String id1 = "j764nYylbbcKkIPP0nIeOTOGwF03";
   String id2 = "jvEXR7kMx7RDbIuwfbVcTJ1pOhJ2";
   @override
   Widget build(BuildContext context) {
@@ -127,15 +126,7 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 ReusableButton1(
                   label: "MASUK",
-                  onPressed: () {
-                    context.read<AppSharedPref>().setMerchantId("");
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => PenjualDashboardPage(
-                                  id: id1,
-                                )));
-                  },
+                  onPressed: () {},
                 ),
               ],
             ),

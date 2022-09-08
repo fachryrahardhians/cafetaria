@@ -350,7 +350,12 @@ class ListMenuWidget extends StatelessWidget {
       );
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
-      final cat = context.watch<MenuMakananBloc>().state.items!.first;
+      final cat = context
+          .watch<MenuMakananBloc>()
+          .state
+          .items!
+          .where((element) => element.merchantId == idMerchant)
+          .first;
       context
           .read<ListMenuBloc>()
           .add(GetListMenu(idMerchant, cat.categoryId!));

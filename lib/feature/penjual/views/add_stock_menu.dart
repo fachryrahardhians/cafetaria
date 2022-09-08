@@ -48,7 +48,6 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
   final oCcy = NumberFormat("#,##0.00", "IDR");
   @override
   void initState() {
-    // TODO: implement initState
     super.initState();
     _stokBarang = TextEditingController(text: widget.user.stock.toString());
     widget.user.stock == 0 ? stockActive = false : stockActive = true;
@@ -371,44 +370,44 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      Text(
-                        widget.user.resetType == 'jam'
-                            ? convertDateTime(
-                                DateTime.parse(
-                                    widget.user.resetTime.toString()),
-                                (DateTime.parse(widget.user.resetTime.toString())
-                                            .hour +
-                                        1)
-                                    .toString(),
-                                (DateTime.parse(widget.user.resetTime.toString())
-                                        .day)
-                                    .toString())
-                            : widget.user.resetType == 'hari'
-                                ? convertDateTime(
-                                    DateTime.parse(
-                                        widget.user.resetTime.toString()),
-                                    (DateTime.parse(widget.user.resetTime.toString())
-                                            .hour)
-                                        .toString(),
-                                    (DateTime.parse(widget.user.resetTime.toString()).day + 1)
-                                        .toString())
-                                : widget.user.resetType == 'minggu'
-                                    ? convertDateTime(
-                                        DateTime.parse(
-                                            widget.user.resetTime.toString()),
-                                        (DateTime.parse(widget.user.resetTime.toString())
-                                                .hour)
-                                            .toString(),
-                                        (DateTime.parse(widget.user.resetTime.toString())
-                                                    .day +
-                                                7)
-                                            .toString())
-                                    : "",
-                        style: const TextStyle(
-                          fontWeight: FontWeight.bold,
-                          fontSize: 16,
-                        ),
-                      ),
+                      widget.user.resetTime == ""
+                          ? Container()
+                          : Text(
+                              widget.user.resetType == 'jam'
+                                  ? convertDateTime(
+                                      DateTime.parse(
+                                          widget.user.resetTime.toString()),
+                                      (DateTime.parse(widget.user.resetTime.toString())
+                                                  .hour +
+                                              1)
+                                          .toString(),
+                                      (DateTime.parse(widget.user.resetTime.toString())
+                                              .day)
+                                          .toString())
+                                  : widget.user.resetType == 'hari'
+                                      ? convertDateTime(
+                                          DateTime.parse(
+                                              widget.user.resetTime.toString()),
+                                          (DateTime.parse(widget.user.resetTime.toString())
+                                                  .hour)
+                                              .toString(),
+                                          (DateTime.parse(widget.user.resetTime.toString()).day + 1)
+                                              .toString())
+                                      : widget.user.resetType == 'minggu'
+                                          ? convertDateTime(
+                                              DateTime.parse(widget.user.resetTime
+                                                  .toString()),
+                                              (DateTime.parse(widget.user.resetTime.toString())
+                                                      .hour)
+                                                  .toString(),
+                                              (DateTime.parse(widget.user.resetTime.toString()).day + 7)
+                                                  .toString())
+                                          : "",
+                              style: const TextStyle(
+                                fontWeight: FontWeight.bold,
+                                fontSize: 16,
+                              ),
+                            ),
                     ],
                   ),
                 ),
@@ -419,7 +418,6 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
       ),
       bottomNavigationBar: BlocConsumer<AturStockBlocBloc, AturStockBlocState>(
         listener: (context, state) {
-          // TODO: implement listener
           if (state.status == FormzStatus.submissionSuccess) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
