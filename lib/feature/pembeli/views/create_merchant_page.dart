@@ -3,6 +3,7 @@
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'dart:async';
 import 'dart:io';
 import 'package:google_fonts/google_fonts.dart';
@@ -17,6 +18,7 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:firebase_storage/firebase_storage.dart';
+import 'package:intl/intl.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
   const PembeliCreateMerchantPage(this.user, {Key? key}) : super(key: key);
@@ -46,6 +48,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   final ImagePicker _picker = ImagePicker();
   final TextEditingController _namaUsaha = TextEditingController();
   final TextEditingController _kota = TextEditingController();
+  final TextEditingController _bukaToko = TextEditingController();
+  final TextEditingController _tutupToko = TextEditingController();
   final TextEditingController _kodePos = TextEditingController();
   final TextEditingController _alamatLengkap = TextEditingController();
   final TextEditingController _lokasiDetail = TextEditingController();
@@ -57,7 +61,52 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   XFile? _fotoLuar;
   XFile? _fotoDalam;
 
+  DateTime? _buka;
+  DateTime? _tutup;
+
   bool _submitLoading = false;
+
+  void _pickBuka() async {
+    DateTime? pick = await DatePicker.showTime12hPicker(
+      context,
+      showTitleActions: true,
+      currentTime: DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+      theme: const DatePickerTheme(
+        backgroundColor: MyColors.white,
+      ),
+    );
+
+    if (pick != null) {
+      setState(() {
+        _buka = pick;
+      });
+    }
+  }
+
+  void _pickTutup() async {
+    DateTime? pick = await DatePicker.showTime12hPicker(
+      context,
+      showTitleActions: true,
+      currentTime: DateTime(
+        DateTime.now().year,
+        DateTime.now().month,
+        DateTime.now().day,
+      ),
+      theme: const DatePickerTheme(
+        backgroundColor: MyColors.white,
+      ),
+    );
+
+    if (pick != null) {
+      setState(() {
+        _tutup = pick;
+      });
+    }
+  }
 
   Future _handleUpload(String type) async {
     final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
@@ -120,6 +169,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'name': _namaUsaha.text,
         'category': _bidangUsaha,
         'city': _kota.text,
+        'buka_toko': _buka!.toIso8601String(),
+        'tutup_toko': _tutup!.toIso8601String(),
         'postal_code': _kodePos.text,
         'address': _alamatLengkap.text,
         'address_detail': _lokasiDetail.text,
@@ -160,6 +211,12 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       return true;
     }
     if (_kota.text.isEmpty) {
+      return true;
+    }
+    if (_buka == null) {
+      return true;
+    }
+    if (_tutup == null) {
       return true;
     }
     if (_kodePos.text.isEmpty) {
@@ -254,6 +311,96 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   label: "KODE POS",
                   hint: "Masukkan kode pos",
                   controller: _kodePos,
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "TOKO BUKA",
+                        style: TextStyle(fontSize: 13, color: MyColors.grey1, fontWeight: FontWeight.bold),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _pickBuka();
+                        },
+                        child: Container(
+                          height: 60,
+                          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, 0),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                            ),
+                          ]),
+                          child: Row(
+                            children: [
+                              Text(
+                                _buka == null
+                                    ? "Atur jam buka"
+                                    : "${_buka!.hour < 10 ? "0${_buka!.hour}" : _buka!.hour}:${_buka!.minute < 10 ? "0${_buka!.minute}" : _buka!.minute}",
+                                style: TextStyle(
+                                  color: _buka == null ? Colors.grey : Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+                Container(
+                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                  child: Column(
+                    mainAxisSize: MainAxisSize.min,
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      const Text(
+                        "TOKO TUTUP",
+                        style: TextStyle(fontSize: 13, color: MyColors.grey1, fontWeight: FontWeight.bold),
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          _pickTutup();
+                        },
+                        child: Container(
+                          height: 60,
+                          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
+                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
+                          clipBehavior: Clip.antiAlias,
+                          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey,
+                              offset: Offset(0, 0),
+                              spreadRadius: 0,
+                              blurRadius: 1,
+                            ),
+                          ]),
+                          child: Row(
+                            children: [
+                              Text(
+                                _tutup == null
+                                    ? "Atur jam tutup"
+                                    : "${_tutup!.hour < 10 ? "0${_tutup!.hour}" : _tutup!.hour}:${_tutup!.minute < 10 ? "0${_tutup!.minute}" : _tutup!.minute}",
+                                style: TextStyle(
+                                  color: _tutup == null ? Colors.grey : Colors.black,
+                                  fontSize: 16,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
                 const SizedBox(height: 10),
                 CustomBoxPicker(
