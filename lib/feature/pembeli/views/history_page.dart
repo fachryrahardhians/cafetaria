@@ -121,11 +121,9 @@ class ProcessList extends StatelessWidget {
                 return BlocBuilder<ListMerchantBloc, ListMerchantState>(
                     builder: (context, merchantState) {
                       final merchantStatus = merchantState.status;
-                      print(merchantStatus);
                       if(merchantStatus == ListMerchantStatus.loading) {
                         return Center(child: CircularProgressIndicator());
                       } else if(merchantStatus == ListMerchantStatus.success) {
-                        print('sada');
                         return SizedBox(
                           height: 200,
                           child: ListView.separated(
@@ -145,7 +143,6 @@ class ProcessList extends StatelessWidget {
                                   if (element.merchantId == item.merchantId)
                                     merchant = element;
                                 });
-                                print(merchant);
                                 return listCard(dateFormated[0], dateFormated[2],
                                     dateFormated[1], context,
                                     item: item, minutes: minutes, merchant: merchant!);
@@ -334,7 +331,6 @@ class _DoneListState extends State<DoneList> {
               return BlocBuilder<ListMerchantBloc, ListMerchantState>(
                   builder: (context, merchantState) {
                     final merchantStatus = merchantState.status;
-                    print(merchantStatus);
                     if(merchantStatus == ListMerchantStatus.loading)
                       return Center(child: const CircularProgressIndicator());
                     else if(merchantStatus == ListMerchantStatus.success) {
@@ -344,7 +340,6 @@ class _DoneListState extends State<DoneList> {
                             padding:
                                 EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                             itemBuilder: (context, index) {
-                              print('hello');
                               final item = items[index];
                               MerchantModel? merchant;
                               merchantState.items!.forEach((element) {
