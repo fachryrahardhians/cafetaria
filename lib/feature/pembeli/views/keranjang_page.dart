@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
@@ -314,11 +315,12 @@ class _KeranjangPageState extends State<KeranjangPage> {
         listener: (context, state) {
           if (state.formzStatus == FormzStatus.submissionSuccess) {
             if (_preorder) {
-              var baseDialog = const AlertDialogWait(
+              var baseDialog = AlertDialogWait(
                 title: 'Makanan Anda sedang diproses',
                 message:
                     'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
                 buttonText: 'KEMBALI KE HOME',
+                onPressAction: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>PembeliDashboard()), (route) => false),
               );
               showDialog(
                   context: context,

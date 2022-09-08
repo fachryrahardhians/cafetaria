@@ -7,8 +7,6 @@ part 'history_model.g.dart';
 @JsonSerializable(explicitToJson: true)
 class HistoryModel extends Equatable {
   final String? orderId;
-  final int? cash;
-  final String? change;
   final String? deviceToken;
   final bool? isCutlery;
   final bool? isPreorder;
@@ -24,8 +22,6 @@ class HistoryModel extends Equatable {
 
   const HistoryModel(
       {this.orderId,
-      this.cash,
-      this.change,
       this.deviceToken,
       this.isCutlery,
       this.isPreorder,
@@ -47,8 +43,6 @@ class HistoryModel extends Equatable {
   /// Copy with a new [HistoryModel].
   HistoryModel copyWith({
     String? orderId,
-    int? cash,
-    String? change,
     String? deviceToken,
     bool? isCutlery,
     bool? isPreorder,
@@ -70,8 +64,6 @@ class HistoryModel extends Equatable {
         timestamp: timestamp ?? this.timestamp,
         statusOrder: statusOrder ?? this.statusOrder,
         menus: menus ?? this.menus,
-        cash: cash ?? this.cash,
-        change: change ?? this.change,
         deviceToken: deviceToken ?? this.deviceToken,
         isCutlery: isCutlery ?? this.isCutlery,
         isPreorder: isPreorder ?? this.isPreorder,
@@ -88,8 +80,6 @@ class HistoryModel extends Equatable {
         timestamp,
         statusOrder,
         menus,
-        cash,
-        change,
         deviceToken,
         isCutlery,
         isPreorder,

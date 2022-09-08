@@ -8,13 +8,12 @@ part of 'history_model.dart';
 
 HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       orderId: json['orderId'] as String?,
-      cash: json['cash'] as int?,
-      change: json['change'] as String?,
       deviceToken: json['deviceToken'] as String?,
       isCutlery: json['isCutlery'] as bool?,
       isPreorder: json['isPreorder'] as bool?,
       pickupDate: json['pickupDate'] as String?,
       typePickup: json['typePickup'] as String?,
+      ratingId: json['ratingId'] as String?,
       userId: json['userId'] as String?,
       merchantId: json['merchantId'] as String?,
       total: json['total'] as int?,
@@ -28,14 +27,13 @@ HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
 Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>
     <String, dynamic>{
       'orderId': instance.orderId,
-      'cash': instance.cash,
-      'change': instance.change,
       'deviceToken': instance.deviceToken,
       'isCutlery': instance.isCutlery,
       'isPreorder': instance.isPreorder,
       'pickupDate': instance.pickupDate,
       'typePickup': instance.typePickup,
       'merchantId': instance.merchantId,
+          'ratingId': instance.ratingId,
       'userId': instance.userId,
       'total': instance.total,
       'timestamp': instance.timestamp,

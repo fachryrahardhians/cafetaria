@@ -169,17 +169,20 @@ class _HistoryDetailState extends State<HistoryDetail> {
           ),
         ],
       ),
-      bottomNavigationBar: ReusableButton1(
-        label: 'BELI NILAI DAN ULASAN',
-        onPressed: () {
-          Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (_) => RatingPage(
-                        orderId: item.orderId ?? '',
-                        merchantId: item.merchantId ?? '',
-                      )));
-        },
+      bottomNavigationBar: Visibility(
+        visible: item.ratingId==''&&item.statusOrder=='done',
+        child: ReusableButton1(
+          label: 'BELI NILAI DAN ULASAN',
+          onPressed: () {
+            Navigator.push(
+                context,
+                MaterialPageRoute(
+                    builder: (_) => RatingPage(
+                          orderId: item.orderId ?? '',
+                          merchantId: item.merchantId ?? '',
+                        )));
+          },
+        ),
       ),
     );
   }
