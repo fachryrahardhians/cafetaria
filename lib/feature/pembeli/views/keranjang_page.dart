@@ -20,7 +20,9 @@ import 'package:table_calendar/table_calendar.dart';
 class SummaryPage extends StatelessWidget {
   final String merchantId;
   final bool preOrder;
-  const SummaryPage({Key? key, required this.merchantId, required this.preOrder}) : super(key: key);
+  const SummaryPage(
+      {Key? key, required this.merchantId, required this.preOrder})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -46,7 +48,9 @@ class SummaryPage extends StatelessWidget {
 class KeranjangPage extends StatefulWidget {
   final String merchantId;
   final bool preOrder;
-  const KeranjangPage({Key? key, required this.merchantId, required this.preOrder}) : super(key: key);
+  const KeranjangPage(
+      {Key? key, required this.merchantId, required this.preOrder})
+      : super(key: key);
 
   @override
   State<KeranjangPage> createState() => _KeranjangPageState(preOrder);
@@ -177,20 +181,22 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     physics: const NeverScrollableScrollPhysics(),
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
-                      if(_preorder){
-                        if(menuInKeranjang[index].rulepreordermenuId=='')
+                      if (_preorder) {
+                        if (menuInKeranjang[index].rulepreordermenuId == '')
                           return disabledItem(
                               menuInKeranjang[index].quantity,
                               menuInKeranjang[index].name.toString(),
                               menuInKeranjang[index].totalPrice);
-                          else return item(
+                        else
+                          return item(
+                              menuInKeranjang[index].quantity,
+                              menuInKeranjang[index].name.toString(),
+                              menuInKeranjang[index].totalPrice);
+                      } else
+                        return item(
                             menuInKeranjang[index].quantity,
                             menuInKeranjang[index].name.toString(),
                             menuInKeranjang[index].totalPrice);
-                      } else return item(
-                          menuInKeranjang[index].quantity,
-                          menuInKeranjang[index].name.toString(),
-                          menuInKeranjang[index].totalPrice);
                     },
                     separatorBuilder: (context, index) => SizedBox(
                           height: SizeConfig.safeBlockVertical * 3,
@@ -337,22 +343,24 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   : const Text('SIMPAN'),
               onPressed: state.orderInput.valid
                   ? () {
-                      if(_preorder) {
+                      if (_preorder) {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) => _warningAlert());
-                      }else context.read<AddOrderBloc>().add(
-                        SaveOrder(
-                            merchantId: widget.merchantId,
-                            listKeranjang: menuInKeranjang,
-                            preOrder: _preorder,
-                            grandTotalPrice:
-                            subTotalPrice + biayaPemesanan,
-                            timestamp: DateTime.now().toString(),
-                            pickupDate:
-                            _selectedDay.toString().split(' ')[0] +
-                                ' 08:00:00.000'),
-                      );
+                      } else
+                        context.read<AddOrderBloc>().add(
+                              SaveOrder(
+                                  merchantId: widget.merchantId,
+                                  listKeranjang: menuInKeranjang,
+                                  preOrder: _preorder,
+                                  alat: alat,
+                                  grandTotalPrice:
+                                      subTotalPrice + biayaPemesanan,
+                                  timestamp: DateTime.now().toString(),
+                                  pickupDate:
+                                      _selectedDay.toString().split(' ')[0] +
+                                          ' 08:00:00.000'),
+                            );
                     }
                   : null,
             );
@@ -367,6 +375,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           merchantId: widget.merchantId,
                           listKeranjang: menuInKeranjang,
                           preOrder: _preorder,
+                          alat: alat,
                           grandTotalPrice: subTotalPrice + biayaPemesanan,
                           timestamp: DateTime.now().toString(),
                           pickupDate: _selectedDay.toString().split(' ')[0] +
@@ -384,37 +393,40 @@ class _KeranjangPageState extends State<KeranjangPage> {
     return Visibility(
       visible: preOrder,
       child: BlocBuilder<MenuInCartBloc, MenuInCartState>(
-        builder: (context, state) {
-          if(state is MenuInCartRetrieved){
-            menuInKeranjang = state.menuInCart;
-            int qty = 0;
-            state.menuInCart.forEach((element) {qty+=element.quantity;});
-            return Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                SizedBox(
-                  child: Row(
-                    mainAxisSize: MainAxisSize.min,
-                    children: [
-                      Checkbox(
-                          value: _preorder,
-                          fillColor: MaterialStateProperty.all(CFColors.redPrimary40),
-                          shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(5)),
-                          onChanged: (newvalue) => setState(() {
-                            _preorder = newvalue!;
-                          })),
-                      const SizedBox(width: 3),
-                      const Text('Booking')
-                    ],
-                  ),
+          builder: (context, state) {
+        if (state is MenuInCartRetrieved) {
+          menuInKeranjang = state.menuInCart;
+          int qty = 0;
+          state.menuInCart.forEach((element) {
+            qty += element.quantity;
+          });
+          return Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              SizedBox(
+                child: Row(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Checkbox(
+                        value: _preorder,
+                        fillColor:
+                            MaterialStateProperty.all(CFColors.redPrimary40),
+                        shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5)),
+                        onChanged: (newvalue) => setState(() {
+                              _preorder = newvalue!;
+                            })),
+                    const SizedBox(width: 3),
+                    const Text('Booking')
+                  ],
                 ),
-                Text('$qty/50')
-              ],
-            );
-          }else return SizedBox();
-        }
-      ),
+              ),
+              Text('$qty/50')
+            ],
+          );
+        } else
+          return SizedBox();
+      }),
     );
   }
 
@@ -713,15 +725,19 @@ class _KeranjangPageState extends State<KeranjangPage> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Text('${itemCount}x',
-              style: textStyle.copyWith(color: Color(0xffB1B5BA),
-                  fontWeight: FontWeight.w500, fontSize: 13)),
+              style: textStyle.copyWith(
+                  color: Color(0xffB1B5BA),
+                  fontWeight: FontWeight.w500,
+                  fontSize: 13)),
           SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               Text(itemName,
-                  style: textStyle.copyWith(color: Color(0xffB1B5BA),
-                      fontWeight: FontWeight.w500, fontSize: 13)),
+                  style: textStyle.copyWith(
+                      color: Color(0xffB1B5BA),
+                      fontWeight: FontWeight.w500,
+                      fontSize: 13)),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               GestureDetector(
                 onTap: () async {},
@@ -738,8 +754,10 @@ class _KeranjangPageState extends State<KeranjangPage> {
           const Spacer(),
           Text(
             'Rp. $totalPrice',
-            style:
-            textStyle.copyWith(color: Color(0xffB1B5BA), fontWeight: FontWeight.w500, fontSize: 13),
+            style: textStyle.copyWith(
+                color: Color(0xffB1B5BA),
+                fontWeight: FontWeight.w500,
+                fontSize: 13),
           )
         ],
       ),
@@ -994,15 +1012,16 @@ class _KeranjangPageState extends State<KeranjangPage> {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             SizedBox(
-              width: SizeConfig.safeBlockHorizontal*35,
+              width: SizeConfig.safeBlockHorizontal * 35,
               child: ElevatedButton(
                 style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(16)),
                     elevation: MaterialStateProperty.all(0),
                     backgroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
+                        MaterialStateProperty.all(const Color(0xffee3124)),
                     foregroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
+                        MaterialStateProperty.all(const Color(0xffee3124)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: BorderSide.none))),
@@ -1015,36 +1034,35 @@ class _KeranjangPageState extends State<KeranjangPage> {
             ),
             Spacer(),
             SizedBox(
-              width: SizeConfig.safeBlockHorizontal*35,
+              width: SizeConfig.safeBlockHorizontal * 35,
               child: ElevatedButton(
                 style: ButtonStyle(
-                    padding: MaterialStateProperty.all(const EdgeInsets.all(16)),
+                    padding:
+                        MaterialStateProperty.all(const EdgeInsets.all(16)),
                     elevation: MaterialStateProperty.all(0),
                     backgroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
+                        MaterialStateProperty.all(const Color(0xffee3124)),
                     foregroundColor:
-                    MaterialStateProperty.all(const Color(0xffee3124)),
+                        MaterialStateProperty.all(const Color(0xffee3124)),
                     shape: MaterialStateProperty.all(RoundedRectangleBorder(
                         borderRadius: BorderRadius.circular(8),
                         side: BorderSide.none))),
                 onPressed: () {
                   List<Keranjang> lists = List.empty(growable: true);
                   menuInKeranjang.forEach((element) {
-                    if(element.rulepreordermenuId!='')
-                      lists.add(element);
+                    if (element.rulepreordermenuId != '') lists.add(element);
                   });
                   context.read<AddOrderBloc>().add(
-                    SaveOrder(
-                        merchantId: widget.merchantId,
-                        listKeranjang: lists,
-                        preOrder: _preorder,
-                        grandTotalPrice:
-                        subTotalPrice + biayaPemesanan,
-                        timestamp: DateTime.now().toString(),
-                        pickupDate:
-                        _selectedDay.toString().split(' ')[0] +
-                            ' 08:00:00.000'),
-                  );
+                        SaveOrder(
+                            merchantId: widget.merchantId,
+                            listKeranjang: lists,
+                            preOrder: _preorder,
+                            alat: alat,
+                            grandTotalPrice: subTotalPrice + biayaPemesanan,
+                            timestamp: DateTime.now().toString(),
+                            pickupDate: _selectedDay.toString().split(' ')[0] +
+                                ' 08:00:00.000'),
+                      );
                 },
                 child: Text("Ya",
                     style: TextStyle(color: Colors.white, fontSize: 14)),
