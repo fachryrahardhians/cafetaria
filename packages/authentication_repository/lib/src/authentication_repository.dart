@@ -15,6 +15,16 @@ class AuthenticationRepository {
 
   final FirebaseAuth _firebaseAuth;
 
+  /// sign out google
+  Future<void> signoutGoogle() async {
+    try {
+      await _firebaseAuth.signOut();
+      await _googleSignIn.signOut();
+    } on Exception catch (error, stacktrace) {
+      throw AuthenticationException(error, stacktrace);
+    }
+  }
+
   /// sign user anonymously
   Future<void> signedAnonymous() async {
     try {
@@ -50,10 +60,9 @@ class AuthenticationRepository {
 
   /// sign user with gmail
   /// [email] and [password] must not be null
-  Future<GoogleSignInAccount?> signedWithGoogle() async {
+  Future<UserCredential?> signedWithGoogle() async {
     try {
       final data = await _googleSignIn.signIn();
-
       // Obtain the auth details from the request
       final GoogleSignInAuthentication? googleAuth = await data!.authentication;
 
@@ -64,10 +73,33 @@ class AuthenticationRepository {
       );
 
       // Once signed in, return the UserCredential
-      await FirebaseAuth.instance.signInWithCredential(credential);
-      return data;
+      return await _firebaseAuth.signInWithCredential(credential);
     } on Exception catch (error, stacktrace) {
       throw AuthenticationException(error, stacktrace);
+    }
+  }
+
+  Future<UserCredential> addLinkedEmail(
+      {required String email, required String password}) async {
+    try {
+      final credential =
+          EmailAuthProvider.credential(email: email, password: password);
+      final userCredential = await FirebaseAuth.instance.currentUser!
+          .linkWithCredential(credential);
+
+      return userCredential;
+    } on FirebaseAuthException catch (e) {
+      switch (e.code) {
+        case "provider-already-linked":
+          break;
+        case "invalid-credential":
+          break;
+        case "credential-already-in-use":
+          break;
+        // See the API reference for the full list of error codes.
+        default:
+      }
+      throw Exception(e);
     }
   }
 

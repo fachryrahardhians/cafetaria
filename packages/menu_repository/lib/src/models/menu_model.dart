@@ -1,9 +1,10 @@
 import 'package:equatable/equatable.dart';
+
 import 'package:json_annotation/json_annotation.dart';
 
 part 'menu_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MenuModel extends Equatable {
   final String? menuId;
   final String? merchantId;
@@ -13,7 +14,9 @@ class MenuModel extends Equatable {
   final String? desc;
   final String? image;
   final bool? isPreOrder;
+  final int? defaultStock;
   final bool? isRecomended;
+  final CategoryDetail? category;
   final int? price;
   final String? resetTime;
   final String? resetType;
@@ -28,6 +31,7 @@ class MenuModel extends Equatable {
     this.autoResetStock,
     this.categoryId,
     this.desc,
+    this.defaultStock,
     this.image,
     this.isPreOrder,
     this.isRecomended,
@@ -35,6 +39,7 @@ class MenuModel extends Equatable {
     this.resetTime,
     this.resetType,
     this.rulepreordermenuId,
+    this.category,
     this.stock,
     required this.tags,
   });
@@ -47,6 +52,7 @@ class MenuModel extends Equatable {
   /// Copy with a new [MenuModel].
   MenuModel copyWith({
     String? menuId,
+    int? defaultStock,
     String? merchantId,
     String? name,
     bool? autoResetStock,
@@ -61,6 +67,7 @@ class MenuModel extends Equatable {
     String? rulepreordermenuId,
     int? stock,
     List<String>? tags,
+    CategoryDetail? category,
   }) {
     return MenuModel(
       menuId: menuId ?? this.menuId,
@@ -69,6 +76,7 @@ class MenuModel extends Equatable {
       autoResetStock: autoResetStock ?? this.autoResetStock,
       categoryId: categoryId ?? this.categoryId,
       desc: desc ?? this.desc,
+      defaultStock: defaultStock ?? this.defaultStock,
       image: image ?? this.image,
       isPreOrder: isPreOrder ?? this.isPreOrder,
       isRecomended: isRecomended ?? this.isRecomended,
@@ -78,6 +86,7 @@ class MenuModel extends Equatable {
       rulepreordermenuId: rulepreordermenuId ?? this.rulepreordermenuId,
       stock: stock ?? this.stock,
       tags: tags ?? this.tags,
+      category: category ?? this.category,
     );
   }
 
@@ -99,4 +108,20 @@ class MenuModel extends Equatable {
         stock,
         tags
       ];
+}
+
+@JsonSerializable()
+class CategoryDetail extends Equatable {
+  final String? category;
+  final String? categoryId;
+  final String? merchantId;
+
+  const CategoryDetail({this.category, this.categoryId, this.merchantId});
+  factory CategoryDetail.fromJson(Map<String, dynamic> json) =>
+      _$CategoryDetailFromJson(json);
+
+  Map<String, dynamic> toJson() => _$CategoryDetailToJson(this);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [category, categoryId, merchantId];
 }

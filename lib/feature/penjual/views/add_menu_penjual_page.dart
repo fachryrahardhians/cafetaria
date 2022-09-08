@@ -77,7 +77,7 @@ class AddMenuPenjualView extends StatelessWidget {
               ),
             );
         }
-        if (state.uploadProgress!.status == UploadStatus.uploaded) {
+        if (state.uploadProgress?.status == UploadStatus.uploaded) {
           ScaffoldMessenger.of(context)
             ..hideCurrentSnackBar()
             ..showSnackBar(
@@ -88,6 +88,11 @@ class AddMenuPenjualView extends StatelessWidget {
         }
       },
       child: Scaffold(
+        appBar: AppBar(
+          title: const Text(
+            'TAMBAH MENU',
+          ),
+        ),
         backgroundColor: CFColors.grey,
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(24.0),
@@ -107,6 +112,17 @@ class AddMenuPenjualView extends StatelessWidget {
           padding: const EdgeInsets.all(24.0),
           child: ListView(
             children: [
+              Text(
+                'NAMA MENU',
+                style: TextStyle(
+                  color: CFColors.grayscaleBlack80,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
               CFTextFormField(
                 decoration: const InputDecoration(
                   labelText: "Nama Menu",
@@ -117,6 +133,17 @@ class AddMenuPenjualView extends StatelessWidget {
               ),
               const SizedBox(
                 height: 16,
+              ),
+              Text(
+                'DESKRIPSI MENU',
+                style: TextStyle(
+                  color: CFColors.grayscaleBlack80,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
               ),
               CFTextFormField(
                 decoration: const InputDecoration(
@@ -133,6 +160,17 @@ class AddMenuPenjualView extends StatelessWidget {
               ),
               const SizedBox(
                 height: 16,
+              ),
+              Text(
+                'KATEGORI MENU',
+                style: TextStyle(
+                  color: CFColors.grayscaleBlack80,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
               ),
               context.watch<MenuMakananBloc>().state.status ==
                       MenuMakananStatus.success
@@ -183,33 +221,63 @@ class AddMenuPenjualView extends StatelessWidget {
                       child: AnimatedOpacity(
                         opacity: checkStock == true ? 1.0 : 0.0,
                         duration: const Duration(seconds: 3),
-                        child: CFTextFormField(
-                          decoration: const InputDecoration(
-                            labelText: "Harga Jual",
-                          ),
-                          onChanged: (val) {
-                            // context.read<AddMenuPenjualBloc>().add(DescriptionChange(val));
-                          },
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Text(
+                              'Harga Jual',
+                              style: TextStyle(
+                                color: CFColors.grayscaleBlack80,
+                                fontSize: 12,
+                                fontWeight: FontWeight.w500,
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            CFTextFormField(
+                              decoration: const InputDecoration(
+                                labelText: "Harga Jual",
+                              ),
+                              onChanged: (val) {
+                                context
+                                    .read<AddMenuPenjualBloc>()
+                                    .add(HargaJualChange(val));
+                                // context.read<AddMenuPenjualBloc>().add(DescriptionChange(val));
+                              },
+                            ),
+                          ],
                         ),
                       ),
                     )
                   : const SizedBox.shrink(),
+              // const SizedBox(
+              //   height: 16,
+              // ),
+              // CFTextFormField(
+              //   decoration: const InputDecoration(
+              //     labelText: "Harga",
+              //     border: OutlineInputBorder(
+              //       borderSide: BorderSide(color: Colors.grey),
+              //     ),
+              //   ),
+              //   onChanged: (val) {
+              //     context.read<AddMenuPenjualBloc>().add(HargaJualChange(val));
+              //   },
+              // ),
               const SizedBox(
                 height: 16,
               ),
-              CFTextFormField(
-                decoration: const InputDecoration(
-                  labelText: "Harga",
-                  border: OutlineInputBorder(
-                    borderSide: BorderSide(color: Colors.grey),
-                  ),
+              Text(
+                'TAGGING',
+                style: TextStyle(
+                  color: CFColors.grayscaleBlack80,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
                 ),
-                onChanged: (val) {
-                  context.read<AddMenuPenjualBloc>().add(HargaJualChange(val));
-                },
               ),
               const SizedBox(
-                height: 16,
+                height: 8,
               ),
               Row(
                 children: [
@@ -249,27 +317,61 @@ class AddMenuPenjualView extends StatelessWidget {
                   for (var tag in listTagging)
                     Padding(
                       padding: const EdgeInsets.all(8.0),
-                      child: Row(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text(tag),
-                          InkWell(
-                            onTap: () {
-                              context
-                                  .read<AddMenuPenjualBloc>()
-                                  .add(DeleteTag(tag));
-                            },
-                            child: const Icon(Icons.close),
+                      child: DecoratedBox(
+                        decoration: BoxDecoration(
+                          color: CFColors.redPrimary40,
+                          borderRadius: BorderRadius.circular(4),
+                        ),
+                        child: Padding(
+                          padding: const EdgeInsets.all(4.0),
+                          child: Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Text(
+                                tag,
+                                style: const TextStyle(
+                                  color: Colors.white,
+                                  fontSize: 11,
+                                ),
+                              ),
+                              const SizedBox(
+                                width: 6,
+                              ),
+                              InkWell(
+                                onTap: () {
+                                  context
+                                      .read<AddMenuPenjualBloc>()
+                                      .add(DeleteTag(tag));
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                  color: Colors.white,
+                                  size: 11,
+                                ),
+                              ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
                 ],
               ),
+
               const SizedBox(
                 height: 16,
               ),
-              const Text('Foto Menu'),
+              Text(
+                'FOTO MENU',
+                style: TextStyle(
+                  color: CFColors.grayscaleBlack80,
+                  fontSize: 12,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
+              const SizedBox(
+                height: 8,
+              ),
+
               InkWell(
                 onTap: () async {
                   final XFile? image =
@@ -281,37 +383,51 @@ class AddMenuPenjualView extends StatelessWidget {
                         );
                   }
                 },
-                child: Container(
-                  width: 100,
-                  height: 100,
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey),
-                    borderRadius: BorderRadius.circular(8),
-                    color: Colors.grey,
-                  ),
-                  child: image != null
-                      ? Center(
-                          child: Stack(
-                            children: [
-                              Image.file(image),
-                              Positioned(
-                                top: 0,
-                                right: 0,
-                                child: InkWell(
-                                  onTap: () {
-                                    context
-                                        .read<AddMenuPenjualBloc>()
-                                        .add(DeleteImage());
-                                  },
-                                  child: const Icon(
-                                    Icons.close,
+                child: Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    width: 140,
+                    height: 140,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(8),
+                      color: CFColors.grey30,
+                    ),
+                    child: image != null
+                        ? Center(
+                            child: Stack(
+                              children: [
+                                Image.file(image),
+                                Positioned(
+                                  top: 0,
+                                  right: 0,
+                                  child: InkWell(
+                                    onTap: () {
+                                      context
+                                          .read<AddMenuPenjualBloc>()
+                                          .add(DeleteImage());
+                                    },
+                                    child: const Icon(
+                                      Icons.close,
+                                    ),
                                   ),
-                                ),
-                              )
+                                )
+                              ],
+                            ),
+                          )
+                        : Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: const [
+                              Icon(
+                                Icons.upload_file,
+                                size: 36,
+                              ),
+                              SizedBox(
+                                height: 5.5,
+                              ),
+                              Text('UNGGAH FOTO'),
                             ],
                           ),
-                        )
-                      : const SizedBox.shrink(),
+                  ),
                 ),
               ),
               const SizedBox(
@@ -340,7 +456,14 @@ class AddMenuPenjualView extends StatelessWidget {
                   const SizedBox(
                     width: 8,
                   ),
-                  const Text('Menu yang direkomendasikan'),
+                  Text(
+                    'Menu yang direkomendasikan',
+                    style: TextStyle(
+                      color: CFColors.slateGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
               const SizedBox(
@@ -359,7 +482,14 @@ class AddMenuPenjualView extends StatelessWidget {
                   const SizedBox(
                     width: 8,
                   ),
-                  const Text('Menu bisa dibooking'),
+                  Text(
+                    'Menu bisa dibooking',
+                    style: TextStyle(
+                      color: CFColors.slateGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
                 ],
               ),
             ],

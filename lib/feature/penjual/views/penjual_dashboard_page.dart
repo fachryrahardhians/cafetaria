@@ -1,21 +1,210 @@
-import 'package:cafetaria/feature/penjual/views/atur_booking_page.dart';
+import 'dart:async';
+
+import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
+import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
+
 import 'package:flutter/material.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:merchant_repository/merchant_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import 'package:sharedpref_repository/sharedpref_repository.dart';
+
+import '../../../firebase_options.dart';
 
 class PenjualDashboardPage extends StatelessWidget {
-  const PenjualDashboardPage({Key? key}) : super(key: key);
-
+  const PenjualDashboardPage({Key? key, this.id = ""}) : super(key: key);
+  final String id;
   @override
   Widget build(BuildContext context) {
-    return const PenjualDashboardView();
+    return BlocProvider(
+      create: (context) => MerchantBloc(
+          merchantRepository: context.read<MerchantRepository>(),
+          appSharedPref: context.read<AppSharedPref>())
+        ..add(GetMerchant(id)),
+      child: const PenjualDashboardView(),
+    );
   }
 }
 
-class PenjualDashboardView extends StatelessWidget {
+//fungsi flutter background service
+onStart() async {
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+  final service = FlutterBackgroundService();
+  final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
+  //listen get data from ui or foreground
+  service.onDataReceived.listen((event) {
+    if (event?['action'] == 'stopService') {
+      service.stopBackgroundService();
+    }
+  });
+
+  //akan melakukan reload selama waktu atau duration yang diberikan
+  Timer.periodic(const Duration(minutes: 30), (time) async {
+    final idMerchant = await SharedPreferences.getInstance();
+    List<MenuModel> data = await menurepository.getMenu(
+        idMerchant.getString("merchantId").toString(), 'Ca7QNFUudrFbc63yRT8d');
+    //fungsi perulangan untuk mengecek tipe auto restok
+    for (var i = 0; i < data.length; i++) {
+      //mengecek jika data resetTime sama dengan null akan break fungsi
+      if (data[i].resetTime.toString() == "" || data[i].resetTime!.isEmpty) {
+        //print("Data time kosong");
+        break;
+      } else if ((data[i].resetType == 'jam') &&
+          (DateTime.now().hour >=
+              DateTime.parse(data[i].resetTime.toString()).hour)) {
+        final docuser = FirebaseFirestore.instance
+            .collection(
+                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day,
+                  DateTime.parse(data[i].resetTime!).hour + 1,
+                  DateTime.now().minute)
+              .toString()
+        });
+      } else if ((data[i].resetType == 'hari') &&
+          ((DateTime.now().day >=
+                  DateTime.parse(data[i].resetTime.toString()).day) &&
+              (DateTime.now().hour >=
+                  DateTime.parse(data[i].resetTime.toString()).hour))) {
+        final docuser = FirebaseFirestore.instance
+            .collection(
+                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day + 1,
+                  DateTime.parse(data[i].resetTime!).hour,
+                  DateTime.now().minute)
+              .toString()
+        });
+      } else if ((data[i].resetType == 'minggu') &&
+          ((DateTime.now().day >=
+                  DateTime.parse(data[i].resetTime.toString()).day) &&
+              (DateTime.now().hour >=
+                  DateTime.parse(data[i].resetTime.toString()).hour))) {
+        final docuser = FirebaseFirestore.instance
+            .collection(
+                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+            .doc(data[i].menuId);
+        docuser.update({
+          'stock': data[i].defaultStock!,
+          'resetTime': DateTime(
+                  DateTime.now().year,
+                  DateTime.now().month,
+                  DateTime.now().day + 7,
+                  DateTime.parse(data[i].resetTime!).hour,
+                  DateTime.now().minute)
+              .toString()
+        });
+      }
+    }
+  });
+}
+
+// Stream update(String id) async* {
+//   final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
+//   //fungsi akan melakukan reload selama waktu atau duration yang diberikan
+//   Timer.periodic(const Duration(minutes: 2), (time) async {
+//     List<MenuModel> data =
+//         await menurepository.getMenu(id, 'Ca7QNFUudrFbc63yRT8d');
+//     //fungsi perulangan untuk mengecek tipe auto restok
+//     for (var i = 0; i < data.length; i++) {
+//       if (data[i].resetType == 'jam' &&
+//           DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour) {
+//         final docuser = FirebaseFirestore.instance
+//             .collection('menuPerMerchant-$id')
+//             .doc(data[i].menuId);
+//         docuser.update({
+//           'stock': data[i].defaultStock!,
+//           'resetTime': DateTime(
+//                   DateTime.now().year,
+//                   DateTime.now().month,
+//                   DateTime.now().day,
+//                   DateTime.parse(data[i].resetTime!).hour + 1,
+//                   DateTime.now().minute)
+//               .toString()
+//         });
+//       } else if (data[i].resetType == 'hari' &&
+//           (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
+//               DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
+//         final docuser = FirebaseFirestore.instance
+//             .collection('menuPerMerchant-$id')
+//             .doc(data[i].menuId);
+//         docuser.update({
+//           'stock': data[i].defaultStock!,
+//           'resetTime': DateTime(
+//                   DateTime.now().year,
+//                   DateTime.now().month,
+//                   DateTime.now().day + 1,
+//                   DateTime.parse(data[i].resetTime!).hour,
+//                   DateTime.now().minute)
+//               .toString()
+//         });
+//       } else if (data[i].resetType == 'minggu' &&
+//           (DateTime.now().day >= DateTime.parse(data[i].resetTime!).day &&
+//               DateTime.now().hour >= DateTime.parse(data[i].resetTime!).hour)) {
+//         final docuser = FirebaseFirestore.instance
+//             .collection('menuPerMerchant-$id')
+//             .doc(data[i].menuId);
+//         docuser.update({
+//           'stock': data[i].defaultStock!,
+//           'resetTime': DateTime(
+//                   DateTime.now().year,
+//                   DateTime.now().month,
+//                   DateTime.now().day + 7,
+//                   DateTime.parse(data[i].resetTime!).hour,
+//                   DateTime.now().minute)
+//               .toString()
+//         });
+//       }
+//     }
+//   });
+// }
+
+class PenjualDashboardView extends StatefulWidget {
   const PenjualDashboardView({Key? key}) : super(key: key);
+
+  @override
+  State<PenjualDashboardView> createState() => _PenjualDashboardViewState();
+}
+
+class _PenjualDashboardViewState extends State<PenjualDashboardView> {
+  @override
+  void initState() {
+    super.initState();
+    //menginisialisasi fungsi background service disaat app dibuka
+    WidgetsFlutterBinding.ensureInitialized();
+    FlutterBackgroundService.initialize(onStart);
+
+    context.read<AppSharedPref>().getMerchantId().then((value) {
+      //print(value);
+      if (value!.isNotEmpty || value != "") {
+        FlutterBackgroundService().sendData({'merchantId': value});
+      } else {
+        FlutterBackgroundService().sendData({'action': 'stopService'});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -25,136 +214,159 @@ class PenjualDashboardView extends StatelessWidget {
         child: ListView(
           padding: const EdgeInsets.all(20),
           children: [
-            const Text(
-              "Halo Shabrina",
-              style: TextStyle(
-                fontSize: 24,
-                fontWeight: FontWeight.bold,
-              ),
-            ),
-            const SizedBox(height: 5),
-            const Text(
-              "Ayam Pangeran - Gambir",
-              style: TextStyle(color: MyColors.grey3),
-            ),
-            const SizedBox(height: 30),
-            // Container Total Penjualan
-            Container(
-              padding: const EdgeInsets.all(20),
-              child: Row(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Row(
+            BlocBuilder<MerchantBloc, MerchantState>(
+              builder: (context, state) {
+                final status = state.status;
+                if (status == MerchantStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == MerchantStatus.failure) {
+                  return Center(
+                    child: Text(state.error.toString()),
+                  );
+                } else if (status == MerchantStatus.success) {
+                  final items = state.merchantModel;
+                  return Column(
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      SizedBox(
-                        height: 60,
-                        width: 60,
-                        child: Image.asset(
-                          "assets/icons/wallet.png",
-                          fit: BoxFit.contain,
+                      Text(
+                        "Halo ${items?.name}",
+                        style: const TextStyle(
+                          fontSize: 24,
+                          fontWeight: FontWeight.bold,
                         ),
                       ),
-                      const SizedBox(width: 10),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          const Text(
-                            "Total penjualan hari ini",
-                            style: TextStyle(color: MyColors.white),
-                          ),
-                          RichText(
-                            text: const TextSpan(
-                              text: "Rp ",
+                      const SizedBox(height: 5),
+                      const Text(
+                        "Ayam Pangeran - Gambir",
+                        style: TextStyle(color: MyColors.grey3),
+                      ),
+                      const SizedBox(height: 30),
+                      // Container Total Penjualan
+                      Container(
+                        padding: const EdgeInsets.all(20),
+                        child: Row(
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
                               children: [
-                                TextSpan(
-                                  text: "2.350.100",
-                                  style: TextStyle(
-                                    color: MyColors.white,
-                                    fontSize: 24,
+                                SizedBox(
+                                  height: 60,
+                                  width: 60,
+                                  child: Image.asset(
+                                    "assets/icons/wallet.png",
+                                    fit: BoxFit.contain,
                                   ),
                                 ),
+                                const SizedBox(width: 10),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      "Total penjualan hari ini",
+                                      style: TextStyle(color: MyColors.white),
+                                    ),
+                                    RichText(
+                                      text: const TextSpan(
+                                        text: "Rp ",
+                                        children: [
+                                          TextSpan(
+                                            text: "2.350.100",
+                                            style: TextStyle(
+                                              color: MyColors.white,
+                                              fontSize: 24,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                            Column(
+                              children: const [
+                                Text(
+                                  "Dari kemarin",
+                                  style: TextStyle(color: MyColors.white),
+                                ),
+                                Text(
+                                  "Rp1.750.500",
+                                  style: TextStyle(color: MyColors.white),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/background.png"),
+                          ),
+                        ),
+                      ),
+                      const SizedBox(height: 20),
+                      // 250 Pesanan
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          RichText(
+                            text: const TextSpan(
+                              text: "250 ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: MyColors.blackText,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Pesanan",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    color: MyColors.blackText,
+                                  ),
+                                )
+                              ],
+                            ),
+                          ),
+                          const SizedBox(width: 20),
+                          Container(
+                            color: Colors.black,
+                            width: 2,
+                            height: 15,
+                          ),
+                          const SizedBox(width: 20),
+                          RichText(
+                            text: const TextSpan(
+                              text: "1.7K ",
+                              style: TextStyle(
+                                fontWeight: FontWeight.bold,
+                                color: MyColors.blackText,
+                              ),
+                              children: [
+                                TextSpan(
+                                  text: "Pembayaran QR",
+                                  style: TextStyle(
+                                    fontWeight: FontWeight.normal,
+                                    color: MyColors.blackText,
+                                  ),
+                                )
                               ],
                             ),
                           ),
                         ],
                       ),
+                      const SizedBox(height: 20),
+                      MainMenuWidget(merchantModel: items),
                     ],
-                  ),
-                  Column(
-                    children: const [
-                      Text(
-                        "Dari kemarin",
-                        style: TextStyle(color: MyColors.white),
-                      ),
-                      Text(
-                        "Rp1.750.500",
-                        style: TextStyle(color: MyColors.white),
-                      ),
-                    ],
-                  ),
-                ],
-              ),
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10),
-                image: const DecorationImage(
-                  fit: BoxFit.cover,
-                  image: AssetImage("assets/images/background.png"),
-                ),
-              ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
             ),
-            const SizedBox(height: 20),
-            // 250 Pesanan
-            Row(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                RichText(
-                  text: const TextSpan(
-                    text: "250 ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: MyColors.blackText,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Pesanan",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: MyColors.blackText,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(width: 20),
-                Container(
-                  color: Colors.black,
-                  width: 2,
-                  height: 15,
-                ),
-                const SizedBox(width: 20),
-                RichText(
-                  text: const TextSpan(
-                    text: "1.7K ",
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: MyColors.blackText,
-                    ),
-                    children: [
-                      TextSpan(
-                        text: "Pembayaran QR",
-                        style: TextStyle(
-                          fontWeight: FontWeight.normal,
-                          color: MyColors.blackText,
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-              ],
-            ),
-            const SizedBox(height: 20),
-            const MainMenuWidget(),
           ],
         ),
       ),
@@ -200,10 +412,8 @@ class PenjualDashboardView extends StatelessWidget {
 }
 
 class MainMenuWidget extends StatelessWidget {
-  const MainMenuWidget({
-    Key? key,
-  }) : super(key: key);
-
+  const MainMenuWidget({Key? key, this.merchantModel}) : super(key: key);
+  final MerchantModel? merchantModel;
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -226,7 +436,9 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                       context,
                       MaterialPageRoute(
-                          builder: (_) => const MenuCafetariaPage()));
+                          builder: (_) => MenuCafetariaPage(
+                                idMerchant: merchantModel?.merchantId,
+                              )));
                 },
                 image: "assets/icons/menu.png",
                 title: "Menu",
@@ -239,9 +451,11 @@ class MainMenuWidget extends StatelessWidget {
                 // ),
                 route: () {
                   Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                          builder: (_) => const AturBookingPage()));
+                    context,
+                    MaterialPageRoute(
+                      builder: (_) => BookingPage(),
+                    ),
+                  );
                 },
                 image: "assets/icons/booking.png",
                 title: "Atur Booking",
