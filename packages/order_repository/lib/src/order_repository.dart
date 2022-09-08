@@ -42,6 +42,7 @@ class OrderRepository {
           Timestamp.fromDate(DateTime.parse(orderJson["pickupDate"]));
       // add to firestore
       await _firestore.collection('order').doc(order.orderId).set(orderJson);
+      print(order.orderId);
     } catch (e) {
       throw Exception(e.toString());
     }
