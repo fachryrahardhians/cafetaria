@@ -17,7 +17,8 @@ class BookingPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    bookC.merchantId = merchantId;
+    // bookC.merchantId = merchantId;
+    bookC.merchantId = "merchant2";
     return Scaffold(
       appBar: AppBar(
         title: const Text('BOOKING'),

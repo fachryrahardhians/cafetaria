@@ -65,7 +65,7 @@ class AturBookingPage extends StatelessWidget {
           const SizedBox(height: 10),
           Expanded(
             child: FutureBuilder(
-              future: bookC.getAllMenu(),
+              future: bookC.getAllMenu(isEdit: booking != null ? true : false),
               builder: (context, snap) {
                 if (snap.connectionState == ConnectionState.waiting) {
                   return const Center(

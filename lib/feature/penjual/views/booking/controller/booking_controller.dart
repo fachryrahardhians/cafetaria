@@ -35,8 +35,13 @@ class BookingController extends GetxController {
   }
 
   // FUTURE
-  Future<void> getAllMenu() async {
-    var querySnap = await _firestore.collection("menuPerMerchant-$merchantId").get();
+  Future<void> getAllMenu({bool isEdit = false}) async {
+    late QuerySnapshot<Map<String, dynamic>> querySnap;
+    if (isEdit == false) {
+      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").where("isPreOrder", isEqualTo: false).get();
+    } else {
+      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").get();
+    }
 
     allCategoryMenu = [];
 
@@ -273,14 +278,6 @@ class BookingController extends GetxController {
         }
       }
     }
-  }
-
-  @override
-  void onInit() {
-    super.onInit();
-    // TODO: @kuldii => Penentuan merchant masih hard code
-    // merchantId = "merchant1";
-    // merchantId = "JNaMiyXIvYYcOYP2JJgB7OxW9Zm2";
   }
 
   @override
