@@ -15,6 +15,7 @@ import 'package:menu_repository/menu_repository.dart';
 class MakananPage extends StatelessWidget {
   final String title;
   final String idMerchant;
+  final String alamat;
   final double? rating;
   final int? jumlahUlasan;
   final int? minPrice;
@@ -23,6 +24,7 @@ class MakananPage extends StatelessWidget {
       {Key? key,
       required this.title,
       required this.idMerchant,
+      required this.alamat,
       required this.rating,
       required this.jumlahUlasan,
       required this.minPrice,
@@ -34,6 +36,7 @@ class MakananPage extends StatelessWidget {
     return ListMenu(
       title: title,
       idMerchant: idMerchant,
+      alamat: alamat,
       rating: rating,
       jumlahUlasan: jumlahUlasan,
       minPrice: minPrice,
@@ -45,6 +48,7 @@ class MakananPage extends StatelessWidget {
 class ListMenu extends StatefulWidget {
   final String title;
   final String idMerchant;
+  final String alamat;
   final double? rating;
   final int? jumlahUlasan;
   final int? minPrice;
@@ -54,6 +58,7 @@ class ListMenu extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.idMerchant,
+      required this.alamat,
       required this.rating,
       required this.jumlahUlasan,
       required this.minPrice,
@@ -87,7 +92,8 @@ class _ListMenuState extends State<ListMenu> {
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     _listRecomendedMenuBloc =
         ListRecomendedMenuBloc(menuRepository: context.read<MenuRepository>());
-    _menuPreorderBloc = MenuPreorderBloc(menuRepository: context.read<MenuRepository>());
+    _menuPreorderBloc =
+        MenuPreorderBloc(menuRepository: context.read<MenuRepository>());
     super.initState();
   }
 
@@ -101,7 +107,7 @@ class _ListMenuState extends State<ListMenu> {
           BlocProvider(
               create: ((context) => _listRecomendedMenuBloc
                 ..add(GetListRecomendedMenu(idMerchant)))),
-          BlocProvider(create: ((context)=> _menuPreorderBloc))
+          BlocProvider(create: ((context) => _menuPreorderBloc))
         ],
         child: WillPopScope(
           onWillPop: () {
@@ -272,114 +278,123 @@ class _ListMenuState extends State<ListMenu> {
                   width: SizeConfig.screenWidth,
                   height: SizeConfig.safeBlockVertical * 6.5,
                   child: BlocListener<MenuPreorderBloc, MenuPreorderState>(
-                    listener: (context, checkState){
-                      if(checkState  is CheckResult) {
+                      listener: (context, checkState) {
+                        if (checkState is CheckResult) {
                           setState(() {
                             _preOrder = checkState.result;
                           });
                           Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                                builder: (context) => SummaryPage(
-                                    merchantId: idMerchant,
-                                    preOrder: _preOrder
-                                )));
+                              context,
+                              MaterialPageRoute(
+                                  builder: (context) => SummaryPage(
+                                      merchantId: idMerchant,
+                                      preOrder: _preOrder)));
                         }
                       },
-                    child: ElevatedButton(
-                      style: ButtonStyle(
-                          padding:
-                          MaterialStateProperty.all(const EdgeInsets.all(16)),
-                          elevation: MaterialStateProperty.all(0),
-                          backgroundColor:
-                          MaterialStateProperty.all(const Color(0xffee3124)),
-                          foregroundColor:
-                          MaterialStateProperty.all(const Color(0xffee3124)),
-                          shape: MaterialStateProperty.all(RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                              side: BorderSide.none))),
-                      onPressed: () {
-                        _menuPreorderBloc.add(CheckMenuPreorder());
-                      },
-                      child: BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
-                        builder: ((context, state) {
-                          if (state is MenuInCartRetrieveLoading) {
-                            return const CircularProgressIndicator();
-                          } else if (state is MenuInCartRetrieved) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RichText(
-                                    text: TextSpan(
-                                        text: 'Keranjang • ',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white),
-                                        children: [
-                                          TextSpan(
-                                              text:
-                                              state.menuInCart.length.toString() +
-                                                  ' Pesanan',
-                                              style: normalText.copyWith(
-                                                  fontSize: 14, color: Colors.white)),
-                                        ])),
-                                Text('Rp. ' + state.totalPrice.toString(),
-                                    style: normalText.copyWith(
-                                        fontSize: 14, color: Colors.white)),
-                              ],
-                            );
-                          } else if (state is MenuInCartRetrieveFailed) {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RichText(
-                                    text: TextSpan(
-                                        text: 'Keranjang • ',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white),
-                                        children: [
-                                          TextSpan(
-                                              text: '0' + ' Pesanan',
-                                              style: normalText.copyWith(
-                                                  fontSize: 14, color: Colors.white)),
-                                        ])),
-                                Text('Rp. ' + '0',
-                                    style: normalText.copyWith(
-                                        fontSize: 14, color: Colors.white)),
-                              ],
-                            );
-                          } else {
-                            return Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                RichText(
-                                    text: TextSpan(
-                                        text: 'Keranjang • ',
-                                        style: normalText.copyWith(
-                                            fontSize: 14, color: Colors.white),
-                                        children: [
-                                          TextSpan(
-                                              text: '0' + ' Pesanan',
-                                              style: normalText.copyWith(
-                                                  fontSize: 14, color: Colors.white)),
-                                        ])),
-                                Text('Rp. ' + '0',
-                                    style: normalText.copyWith(
-                                        fontSize: 14, color: Colors.white)),
-                              ],
-                            );
-                          }
-                        }),
-                        listener: (context, state) {
-                          if (state is MenuInCartRetrieved) {
-                            pesananCount = state.menuInCart.length;
-                            totalHarga = state.totalPrice;
-                            listMenuInKeranjang = state.menuInCart;
-                            _listMenuBloc.add(GetListMenu(idMerchant));
-                          }
+                      child: ElevatedButton(
+                        style: ButtonStyle(
+                            padding: MaterialStateProperty.all(
+                                const EdgeInsets.all(16)),
+                            elevation: MaterialStateProperty.all(0),
+                            backgroundColor: MaterialStateProperty.all(
+                                const Color(0xffee3124)),
+                            foregroundColor: MaterialStateProperty.all(
+                                const Color(0xffee3124)),
+                            shape: MaterialStateProperty.all(
+                                RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(8),
+                                    side: BorderSide.none))),
+                        onPressed: () {
+                          _menuPreorderBloc.add(CheckMenuPreorder());
                         },
-                      ),
-                    )
-                  ),
+                        child:
+                            BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
+                          builder: ((context, state) {
+                            if (state is MenuInCartRetrieveLoading) {
+                              return const CircularProgressIndicator();
+                            } else if (state is MenuInCartRetrieved) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RichText(
+                                      text: TextSpan(
+                                          text: 'Keranjang • ',
+                                          style: normalText.copyWith(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                          children: [
+                                        TextSpan(
+                                            text: state.menuInCart.length
+                                                    .toString() +
+                                                ' Pesanan',
+                                            style: normalText.copyWith(
+                                                fontSize: 14,
+                                                color: Colors.white)),
+                                      ])),
+                                  Text('Rp. ' + state.totalPrice.toString(),
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white)),
+                                ],
+                              );
+                            } else if (state is MenuInCartRetrieveFailed) {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RichText(
+                                      text: TextSpan(
+                                          text: 'Keranjang • ',
+                                          style: normalText.copyWith(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                          children: [
+                                        TextSpan(
+                                            text: '0' + ' Pesanan',
+                                            style: normalText.copyWith(
+                                                fontSize: 14,
+                                                color: Colors.white)),
+                                      ])),
+                                  Text('Rp. ' + '0',
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white)),
+                                ],
+                              );
+                            } else {
+                              return Row(
+                                mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                children: [
+                                  RichText(
+                                      text: TextSpan(
+                                          text: 'Keranjang • ',
+                                          style: normalText.copyWith(
+                                              fontSize: 14,
+                                              color: Colors.white),
+                                          children: [
+                                        TextSpan(
+                                            text: '0' + ' Pesanan',
+                                            style: normalText.copyWith(
+                                                fontSize: 14,
+                                                color: Colors.white)),
+                                      ])),
+                                  Text('Rp. ' + '0',
+                                      style: normalText.copyWith(
+                                          fontSize: 14, color: Colors.white)),
+                                ],
+                              );
+                            }
+                          }),
+                          listener: (context, state) {
+                            if (state is MenuInCartRetrieved) {
+                              pesananCount = state.menuInCart.length;
+                              totalHarga = state.totalPrice;
+                              listMenuInKeranjang = state.menuInCart;
+                              _listMenuBloc.add(GetListMenu(idMerchant));
+                            }
+                          },
+                        ),
+                      )),
                 ),
               )),
         ));
@@ -506,22 +521,21 @@ class _ListMenuState extends State<ListMenu> {
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Text('Shabrina',
-                    style: normalText.copyWith(
-                        color: Colors.white.withOpacity(.7))),
-                SizedBox(height: SizeConfig.safeBlockVertical * .5),
-                Text(
-                  '6281397979797',
-                  style: normalText.copyWith(
-                      fontWeight: FontWeight.w500,
-                      fontSize: 15,
-                      color: Colors.white),
-                ),
+                // Text('Shabrina',
+                //     style: normalText.copyWith(
+                //         color: Colors.white.withOpacity(.7))),
+                // SizedBox(height: SizeConfig.safeBlockVertical * .5),
+                // Text(
+                //   '',
+                //   style: normalText.copyWith(
+                //       fontWeight: FontWeight.w500,
+                //       fontSize: 15,
+                //       color: Colors.white),
+                // ),
                 SizedBox(height: SizeConfig.safeBlockVertical * .25),
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 50,
-                  child: Text(
-                      'Jl. HR Rasuna Said One Kav No.62, RT.18/RW.2, Kel. Karet Kuningan, Kec. Setiabudi, Jakarta Selatan',
+                  child: Text(widget.alamat,
                       style: normalText.copyWith(
                           fontWeight: FontWeight.w500,
                           fontSize: 12,

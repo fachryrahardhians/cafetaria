@@ -19,6 +19,10 @@ MerchantModel _$MerchantModelFromJson(Map<String, dynamic> json) =>
       totalSalesToday: json['totalSalesToday'] as int?,
       totalSalesYesterday: json['totalSalesYesterday'] as int?,
       userId: json['userId'] as String?,
+      address: json['address'] as String?,
+      address_detail: json['address_detail'] as String?,
+      address_latitude: (json['address_latitude'] as num?)?.toDouble(),
+      address_longitude: (json['address_longitude'] as num?)?.toDouble(),
     );
 
 Map<String, dynamic> _$MerchantModelToJson(MerchantModel instance) =>
@@ -34,4 +38,8 @@ Map<String, dynamic> _$MerchantModelToJson(MerchantModel instance) =>
       'totalSalesToday': instance.totalSalesToday,
       'totalSalesYesterday': instance.totalSalesYesterday,
       'userId': instance.userId,
+      'address': instance.address,
+      'address_detail': instance.address_detail,
+      'address_latitude': instance.address_latitude,
+      'address_longitude': instance.address_longitude,
     };

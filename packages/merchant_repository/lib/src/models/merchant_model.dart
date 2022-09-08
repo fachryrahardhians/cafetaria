@@ -16,6 +16,10 @@ class MerchantModel extends Equatable {
   final int? totalSalesToday;
   final int? totalSalesYesterday;
   final String? userId;
+  final String? address;
+  final String? address_detail;
+  final double? address_latitude;
+  final double? address_longitude;
 
   const MerchantModel(
       {this.maxPrice,
@@ -28,7 +32,11 @@ class MerchantModel extends Equatable {
       this.totalOrderToday,
       this.totalSalesToday,
       this.totalSalesYesterday,
-      this.userId});
+      this.userId,
+      this.address,
+      this.address_detail,
+      this.address_latitude,
+      this.address_longitude});
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) =>
       _$MerchantModelFromJson(json);
@@ -36,19 +44,22 @@ class MerchantModel extends Equatable {
   Map<String, dynamic> toJson() => _$MerchantModelToJson(this);
 
   /// Copy with a new [MerchantModel].
-  MerchantModel copyWith({
-    int? maxPrice,
-    String? merchantId,
-    int? minPrice,
-    String? nama,
-    double? rating,
-    String? test,
-    int? totalCountRating,
-    int? totalOrderToday,
-    int? totalSalesToday,
-    int? totalSalesYesterday,
-    String? userId,
-  }) {
+  MerchantModel copyWith(
+      {int? maxPrice,
+      String? merchantId,
+      int? minPrice,
+      String? nama,
+      double? rating,
+      String? test,
+      int? totalCountRating,
+      int? totalOrderToday,
+      int? totalSalesToday,
+      int? totalSalesYesterday,
+      String? userId,
+      String? address,
+      String? address_detail,
+      double? address_latitude,
+      double? address_longitude}) {
     return MerchantModel(
       maxPrice: maxPrice ?? this.maxPrice,
       merchantId: merchantId ?? this.merchantId,
@@ -61,6 +72,10 @@ class MerchantModel extends Equatable {
       totalSalesToday: totalSalesToday ?? this.totalSalesToday,
       totalSalesYesterday: totalSalesYesterday ?? this.totalSalesYesterday,
       userId: userId ?? this.userId,
+      address: address ?? this.address,
+      address_detail: address_detail ?? this.address_detail,
+      address_latitude: address_latitude ?? this.address_latitude,
+      address_longitude: address_longitude ?? this.address_longitude,
     );
   }
 

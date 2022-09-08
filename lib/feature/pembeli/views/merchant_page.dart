@@ -69,6 +69,7 @@ class _MerchantPageState extends State<MerchantPage>
                                   'Shabrina’s Kitchen - Gambir',
                               idMerchant:
                                   selectedMerchant!.merchantId.toString(),
+                              alamat: selectedMerchant!.address.toString(),
                               rating: selectedMerchant?.rating,
                               jumlahUlasan: selectedMerchant?.totalCountRating,
                               minPrice: selectedMerchant?.minPrice,
@@ -159,6 +160,9 @@ class _MerchantPageState extends State<MerchantPage>
                                                       idMerchant: state
                                                           .items![index]
                                                           .merchantId
+                                                          .toString(),
+                                                      alamat: state
+                                                          .items![index].address
                                                           .toString(),
                                                       rating: state
                                                           .items?[index].rating,
