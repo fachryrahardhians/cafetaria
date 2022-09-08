@@ -9,12 +9,15 @@ import 'package:get/get.dart';
 import 'package:intl/intl.dart';
 
 class BookingPage extends StatelessWidget {
-  BookingPage({Key? key}) : super(key: key);
+  BookingPage(this.merchantId, {Key? key}) : super(key: key);
+
+  String merchantId;
 
   final bookC = Get.put(BookingController());
 
   @override
   Widget build(BuildContext context) {
+    bookC.merchantId = merchantId;
     return Scaffold(
       appBar: AppBar(
         title: const Text('BOOKING'),

@@ -27,7 +27,7 @@ class BookingController extends GetxController {
   // ALL BOOKING => isPreOrder = true
   RxList<List<MenuModelObs>> booking = List<List<MenuModelObs>>.empty().obs;
   List<String> allCategoryBooking = [];
-  late String merchantId;
+  String merchantId = "";
 
   // STREAM
   Stream<QuerySnapshot<Map<String, dynamic>>> streamAllBooking() async* {
@@ -279,7 +279,7 @@ class BookingController extends GetxController {
   void onInit() {
     super.onInit();
     // TODO: @kuldii => Penentuan merchant masih hard code
-    merchantId = "merchant1";
+    // merchantId = "merchant1";
     // merchantId = "JNaMiyXIvYYcOYP2JJgB7OxW9Zm2";
   }
 

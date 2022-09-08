@@ -199,7 +199,7 @@ class PenjualDashboardView extends StatelessWidget {
                     ],
                   ),
                   const SizedBox(height: 20),
-                  const MainMenuWidget(),
+                  MainMenuWidget(store["merchantId"]),
                 ],
               ),
             );
@@ -246,9 +246,12 @@ class PenjualDashboardView extends StatelessWidget {
 }
 
 class MainMenuWidget extends StatelessWidget {
-  const MainMenuWidget({
+  const MainMenuWidget(
+    this.merchantId, {
     Key? key,
   }) : super(key: key);
+
+  final String merchantId;
 
   @override
   Widget build(BuildContext context) {
@@ -284,7 +287,7 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => BookingPage(),
+                      builder: (_) => BookingPage(merchantId),
                     ),
                   );
                 },
