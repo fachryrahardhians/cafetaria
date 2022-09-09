@@ -26,7 +26,7 @@ class HomeItemOrder extends StatelessWidget {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.start,
           children: [
-            Container(
+            SizedBox(
               width: 75,
               height: 75,
               child: Stack(

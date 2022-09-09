@@ -1,6 +1,9 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:discount_repository/src/models/models.dart';
+
 import 'package:uuid/uuid.dart';
+
+import 'models/discount_model.dart';
+
 
 class DiscountRepository {
   DiscountRepository({

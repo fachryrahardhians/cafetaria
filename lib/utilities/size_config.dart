@@ -6,15 +6,15 @@ import 'package:flutter/material.dart';
 /// 3. width: SizeConfig.safeBlockHorizontal * 8,
 ///
 class SizeConfig {
-  static MediaQueryData _mediaQueryData = MediaQueryData();
+  static MediaQueryData _mediaQueryData = const MediaQueryData();
   static double screenWidth = 0;
-  static double screenHeight= 0;
-  static double blockSizeHorizontal= 0;
-  static double blockSizeVertical= 0;
-  static double _safeAreaHorizontal= 0;
-  static double _safeAreaVertical= 0;
-  static double safeBlockHorizontal= 0;
-  static double safeBlockVertical= 0;
+  static double screenHeight = 0;
+  static double blockSizeHorizontal = 0;
+  static double blockSizeVertical = 0;
+  static double _safeAreaHorizontal = 0;
+  static double _safeAreaVertical = 0;
+  static double safeBlockHorizontal = 0;
+  static double safeBlockVertical = 0;
 
   void init(BuildContext context) {
     _mediaQueryData = MediaQuery.of(context);

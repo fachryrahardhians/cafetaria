@@ -23,6 +23,12 @@
 		</dict>
 	</array>
 	<!-- End of the Google Sign-in Section -->
+	<key>NSPhotoLibraryUsageDescription</key>
+	<string>To access your photos on this device</string>
+	<key>NSCameraUsageDescription</key>
+	<string>To access your camera on this device</string>
+	<key>NSMicrophoneUsageDescription</key>
+	<string>To access your microphone on this device</string>
 	<key>CFBundleDevelopmentRegion</key>
 	<string>$(DEVELOPMENT_LANGUAGE)</string>
 	<key>CFBundleDisplayName</key>
@@ -66,5 +72,10 @@
 	<false/>
 	<key>CADisableMinimumFrameDurationOnPhone</key>
 	<true/>
+	<!-- GEOLOCATOR -->
+	<key>NSLocationWhenInUseUsageDescription</key>
+	<string>This app needs access to location when open.</string>
+	<key>NSLocationAlwaysUsageDescription</key>
+	<string>This app needs access to location when in the background.</string>
 </dict>
 </plist>

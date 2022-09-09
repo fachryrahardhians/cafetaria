@@ -81,6 +81,21 @@ class CloudStorage {
     }
   }
 
+  /// Delete an image from the cloud storage
+  Future<void> deleteImage(String downloadUrl) async {
+    try {
+      await _storage.refFromURL(downloadUrl).delete();
+    } on FirebaseException catch (e) {
+      if ([
+        FirebaseExceptions.errorNotAuthenticated,
+        FirebaseExceptions.errorNotAuthorized,
+      ].contains(e.code)) {
+        throw UnAuthorizedException();
+      }
+      throw StorageException();
+    }
+  }
+
   /// Returns the file size in MegaBytes
   double getFileSizeInMbs(File file) {
     return file.lengthSync() / 1024 / 1024;

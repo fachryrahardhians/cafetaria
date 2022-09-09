@@ -7,7 +7,7 @@ import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bl
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -461,10 +461,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           gradient: LinearGradient(
                               begin: Alignment.topLeft,
                               end: Alignment.bottomRight,
-                              colors: [
-                                const Color(0xffF8091E),
-                                Color(0xffA9085A)
-                              ])),
+                              colors: [Color(0xffF8091E), Color(0xffA9085A)])),
                       child: Center(
                           child: Text('i',
                               style: headlineStyle.copyWith(
@@ -599,8 +596,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 child: TextFormField(
                   initialValue: '08:00',
                   autofocus: false,
-                  style: const TextStyle(
-                      fontSize: 13, color: const Color(0xffB1B5BA)),
+                  style:
+                      const TextStyle(fontSize: 13, color: Color(0xffB1B5BA)),
                   decoration: InputDecoration(
                     filled: true,
                     fillColor: const Color(0xffF2F4F6),

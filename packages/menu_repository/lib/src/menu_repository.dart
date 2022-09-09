@@ -30,12 +30,13 @@ class MenuRepository {
   }
 
   Future<RulePreorderModel> getRuleById(String id) async {
-    try{
-      final snapshot = await _firestore.collection('rulepreordermenu').doc(id).get();
+    try {
+      final snapshot =
+          await _firestore.collection('rulepreordermenu').doc(id).get();
 
       final documents = snapshot.data();
       return RulePreorderModel.fromJson(documents!);
-    } catch (e){
+    } catch (e) {
       throw Exception('Failed to get Preorder Rules');
     }
   }
@@ -66,6 +67,14 @@ class MenuRepository {
 
       final documents = snapshot.docs;
       return documents.toListMenu();
+    } catch (e) {
+      throw Exception('Failed to get menu');
+    }
+  }
+
+  Future<void> addMenu(MenuModel menu) async {
+    try {
+      await _firestore.collection('menu').doc(menu.menuId).set(menu.toJson());
     } catch (e) {
       throw Exception('Failed to get menu');
     }

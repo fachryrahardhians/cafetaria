@@ -3,14 +3,14 @@ import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bl
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 
-enum type { Sama, Beda }
+enum type { sama, beda }
 
 class SelectToppingPage extends StatelessWidget {
   final MenuModel model;
@@ -40,7 +40,7 @@ class SelectTopping extends StatefulWidget {
 }
 
 class _SelectToppingState extends State<SelectTopping> {
-  type? _toppingType = type.Sama;
+  type? _toppingType = type.sama;
   MenuModel item;
   _SelectToppingState(this.item);
   final TextEditingController _catatanController = TextEditingController();
@@ -139,7 +139,7 @@ class _SelectToppingState extends State<SelectTopping> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio<type>(
-                                value: type.Sama,
+                                value: type.sama,
                                 groupValue: _toppingType!,
                                 onChanged: (type? value) {
                                   setState(() {
@@ -157,7 +157,7 @@ class _SelectToppingState extends State<SelectTopping> {
                             mainAxisSize: MainAxisSize.min,
                             children: [
                               Radio<type>(
-                                value: type.Beda,
+                                value: type.beda,
                                 groupValue: _toppingType!,
                                 onChanged: (type? value) {
                                   setState(() {
@@ -442,11 +442,4 @@ class _SelectToppingState extends State<SelectTopping> {
       ),
     );
   }
-}
-
-class _ListTopping {
-  _ListTopping({required this.name, required this.price});
-  final String name;
-  final int price;
-  bool value = false;
 }

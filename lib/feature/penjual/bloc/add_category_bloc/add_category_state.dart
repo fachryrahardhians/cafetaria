@@ -16,7 +16,6 @@ class AddCategoryState extends Equatable {
       ];
 
   AddCategoryState copyWith({
-    String? errorMessage,
     FormzStatus? formzStatus,
     CategoryInput? categoryInput,
   }) {

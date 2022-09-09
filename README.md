@@ -11,6 +11,13 @@ This project has the following flavors:
 Coming soon
 ```
 
+## How to run unit testing
+
+
+```bash
+./tool/coverage.sh
+```
+
 
 ## Generating assets 🖼️
 

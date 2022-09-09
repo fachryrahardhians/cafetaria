@@ -7,7 +7,7 @@ import 'package:cafetaria/feature/pembeli/views/topping_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';

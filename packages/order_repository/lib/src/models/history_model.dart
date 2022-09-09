@@ -6,9 +6,13 @@ part 'history_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class HistoryModel extends Equatable {
+  factory HistoryModel.fromJson(Map<String, dynamic> json) =>
+      _$HistoryModelFromJson(json);
+
+  Map<String, dynamic> toJson() => _$HistoryModelToJson(this);
+
   final String? orderId;
-  final int? cash;
-  final String? change;
+
   final String? deviceToken;
   final bool? isCutlery;
   final bool? isPreorder;
@@ -24,8 +28,6 @@ class HistoryModel extends Equatable {
 
   const HistoryModel(
       {this.orderId,
-      this.cash,
-      this.change,
       this.deviceToken,
       this.isCutlery,
       this.isPreorder,
@@ -38,11 +40,6 @@ class HistoryModel extends Equatable {
       this.timestamp,
       this.statusOrder,
       this.menus});
-
-  factory HistoryModel.fromJson(Map<String, dynamic> json) =>
-      _$HistoryModelFromJson(json);
-
-  Map<String, dynamic> toJson() => _$HistoryModelToJson(this);
 
   /// Copy with a new [HistoryModel].
   HistoryModel copyWith({
@@ -70,8 +67,6 @@ class HistoryModel extends Equatable {
         timestamp: timestamp ?? this.timestamp,
         statusOrder: statusOrder ?? this.statusOrder,
         menus: menus ?? this.menus,
-        cash: cash ?? this.cash,
-        change: change ?? this.change,
         deviceToken: deviceToken ?? this.deviceToken,
         isCutlery: isCutlery ?? this.isCutlery,
         isPreorder: isPreorder ?? this.isPreorder,
@@ -88,8 +83,6 @@ class HistoryModel extends Equatable {
         timestamp,
         statusOrder,
         menus,
-        cash,
-        change,
         deviceToken,
         isCutlery,
         isPreorder,
@@ -147,18 +140,16 @@ class OrderMenu extends Equatable {
 
 @JsonSerializable()
 class OrderTopping extends Equatable {
-  final List<ToppingItem>? items;
-
   const OrderTopping({this.items});
-
   factory OrderTopping.fromJson(Map<String, dynamic> json) =>
       _$OrderToppingFromJson(json);
+  final List<ToppingItem>? items;
 
   Map<String, dynamic> toJson() => _$OrderToppingToJson(this);
 
   OrderTopping copyWith({List<ToppingItem>? toppings}) {
     return OrderTopping(
-      items: items ?? this.items,
+      items: items ?? items,
     );
   }
 
@@ -168,13 +159,11 @@ class OrderTopping extends Equatable {
 
 @JsonSerializable()
 class ToppingItem extends Equatable {
-  final String? name;
-  final int? price;
-
   const ToppingItem({this.name, this.price});
-
   factory ToppingItem.fromJson(Map<String, dynamic> json) =>
       _$ToppingItemFromJson(json);
+  final String? name;
+  final int? price;
 
   Map<String, dynamic> toJson() => _$ToppingItemToJson(this);
 

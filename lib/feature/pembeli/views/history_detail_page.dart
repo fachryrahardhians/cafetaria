@@ -4,7 +4,7 @@ import 'package:cafetaria/feature/pembeli/bloc/merchant_byId_bloc/merchant_byId_
 import 'package:cafetaria/feature/pembeli/views/rating_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:merchant_repository/merchant_repository.dart';
@@ -13,7 +13,9 @@ import 'package:order_repository/order_repository.dart';
 class HistoryDetailPage extends StatelessWidget {
   final HistoryModel item;
   final MerchantModel merchant;
-  const HistoryDetailPage({Key? key, required this.item, required this.merchant}) : super(key: key);
+  const HistoryDetailPage(
+      {Key? key, required this.item, required this.merchant})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -66,7 +68,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
         centerTitle: true,
       ),
       body: ListView(
-        padding: EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+        padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
         children: [
           BlocBuilder<MerchantByIdBloc, MerchantByIdState>(
             builder: (context, state) {

@@ -5,7 +5,7 @@ import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/promo_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';

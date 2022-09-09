@@ -34,13 +34,14 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       tags: (fields[14] as List?)?.cast<String>(),
       quantity: fields[15] as int,
       totalPrice: fields[16] as int,
+      notes: fields[17] as String?,
     );
   }
 
   @override
   void write(BinaryWriter writer, Keranjang obj) {
     writer
-      ..writeByte(17)
+      ..writeByte(18)
       ..writeByte(0)
       ..write(obj.menuId)
       ..writeByte(1)
@@ -74,7 +75,9 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       ..writeByte(15)
       ..write(obj.quantity)
       ..writeByte(16)
-      ..write(obj.totalPrice);
+      ..write(obj.totalPrice)
+      ..writeByte(17)
+      ..write(obj.notes);
   }
 
   @override
@@ -83,7 +86,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   @override
   bool operator ==(Object other) =>
       identical(this, other) ||
-          other is KeranjangAdapter &&
-              runtimeType == other.runtimeType &&
-              typeId == other.typeId;
+      other is KeranjangAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
 }

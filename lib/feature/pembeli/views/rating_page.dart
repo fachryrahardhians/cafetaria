@@ -5,7 +5,7 @@ import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -22,9 +22,8 @@ class RatingPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (context) => AddRatingBloc(
-              ratingRepository: context.read<RatingRepository>(),
-              authenticationRepository: context.read<AuthenticationRepository>()
-            ),
+            ratingRepository: context.read<RatingRepository>(),
+            authenticationRepository: context.read<AuthenticationRepository>()),
         child: Rating(
           orderId: orderId,
           merchantId: merchantId,

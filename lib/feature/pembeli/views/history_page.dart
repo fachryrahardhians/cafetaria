@@ -5,7 +5,7 @@ import 'package:cafetaria/feature/pembeli/views/history_detail_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/SizeConfig.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
@@ -17,7 +17,7 @@ class HistoryPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return History();
+    return const History();
   }
 }
 
@@ -101,80 +101,89 @@ class ProcessList extends StatelessWidget {
         BlocProvider<HistoryOrderBloc>(
           create: (context) => HistoryOrderBloc(
               orderRepository: context.read<OrderRepository>(),
-              authenticationRepository: context.read<AuthenticationRepository>())
+              authenticationRepository:
+                  context.read<AuthenticationRepository>())
             ..add(GetHistoryOrder('process')),
         ),
-        BlocProvider<ListMerchantBloc>(create: (context)=>ListMerchantBloc(merchantRepository: context.read<MerchantRepository>())..add(GetListMerchant()))
+        BlocProvider<ListMerchantBloc>(
+            create: (context) => ListMerchantBloc(
+                merchantRepository: context.read<MerchantRepository>())
+              ..add(GetListMerchant()))
       ],
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
           builder: (context, state) {
-            final status = state.status;
-            if (status == HistoryOrderStatus.loading) {
-              return Center(child: const CircularProgressIndicator());
-            } else if (status == HistoryOrderStatus.failure) {
-              return Center(
-                child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
-              );
-            } else if (status == HistoryOrderStatus.success) {
-              if (state.items != null) {
-                final items = state.items!;
-                return BlocBuilder<ListMerchantBloc, ListMerchantState>(
-                    builder: (context, merchantState) {
-                      final merchantStatus = merchantState.status;
-                      if(merchantStatus == ListMerchantStatus.loading) {
-                        return Center(child: CircularProgressIndicator());
-                      } else if(merchantStatus == ListMerchantStatus.success) {
+        final status = state.status;
+        if (status == HistoryOrderStatus.loading) {
+          return Center(child: const CircularProgressIndicator());
+        } else if (status == HistoryOrderStatus.failure) {
+          return Center(
+            child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+          );
+        } else if (status == HistoryOrderStatus.success) {
+          if (state.items != null) {
+            final items = state.items!;
+            return BlocBuilder<ListMerchantBloc, ListMerchantState>(
+                builder: (context, merchantState) {
+              final merchantStatus = merchantState.status;
+              if (merchantStatus == ListMerchantStatus.loading) {
+                return Center(child: CircularProgressIndicator());
+              } else if (merchantStatus == ListMerchantStatus.success) {
+                return SizedBox(
+                  height: 200,
+                  child: ListView.separated(
+                      padding:
+                          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                      itemBuilder: (context, index) {
+                        final item = items[index];
+                        DateTime date = DateTime.parse(item.timestamp!);
+                        int minutes = getDiffTime(date);
+                        List<String> dateFormated = DateFormat('EEE MMM d')
+                            .format(date)
+                            .toString()
+                            .trim()
+                            .split(' ');
+                        MerchantModel? merchant;
+                        merchantState.items!.forEach((element) {
+                          if (element.merchantId == item.merchantId)
+                            merchant = element;
+                        });
+                        return listCard(dateFormated[0], dateFormated[2],
+                            dateFormated[1], context,
+                            item: item, minutes: minutes, merchant: merchant!);
+                      },
+                      separatorBuilder: (context, index) {
                         return SizedBox(
-                          height: 200,
-                          child: ListView.separated(
-                              padding:
-                              EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                              itemBuilder: (context, index) {
-                                final item = items[index];
-                                DateTime date = DateTime.parse(item.timestamp!);
-                                int minutes = getDiffTime(date);
-                                List<String> dateFormated = DateFormat('EEE MMM d')
-                                    .format(date)
-                                    .toString()
-                                    .trim()
-                                    .split(' ');
-                                MerchantModel? merchant;
-                                merchantState.items!.forEach((element) {
-                                  if (element.merchantId == item.merchantId)
-                                    merchant = element;
-                                });
-                                return listCard(dateFormated[0], dateFormated[2],
-                                    dateFormated[1], context,
-                                    item: item, minutes: minutes, merchant: merchant!);
-                              },
-                              separatorBuilder: (context, index) {
-                                return SizedBox(
-                                    height: SizeConfig.safeBlockVertical * 3);
-                              },
-                              itemCount: items.length),
-                        );
-                      } else if(merchantStatus == ListMerchantStatus.failure)
-                          return Text(merchantState.errorMessage!);
-                        else return SizedBox();
-                      });
-              } else {
-                return Text('No Data');
-              }
-            }
-            return const SizedBox();
-          }),
+                            height: SizeConfig.safeBlockVertical * 3);
+                      },
+                      itemCount: items.length),
+                );
+              } else if (merchantStatus == ListMerchantStatus.failure)
+                return Text(merchantState.errorMessage!);
+              else
+                return SizedBox();
+            });
+          } else {
+            return Text('No Data');
+          }
+        }
+        return const SizedBox();
+      }),
     );
   }
 
   Widget listCard(String day, String date, String month, BuildContext context,
-      {required HistoryModel item, required int minutes, required MerchantModel merchant}) {
+      {required HistoryModel item,
+      required int minutes,
+      required MerchantModel merchant}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
-            MaterialPageRoute( builder: (_) => HistoryDetailPage(
-              item: item, merchant: merchant,
-            )));
+            MaterialPageRoute(
+                builder: (_) => HistoryDetailPage(
+                      item: item,
+                      merchant: merchant,
+                    )));
       },
       child: Container(
         width: SizeConfig.screenWidth,
@@ -183,7 +192,7 @@ class ProcessList extends StatelessWidget {
             color: Colors.white,
             boxShadow: [
               BoxShadow(
-                  offset: Offset(0, 4),
+                  offset: const Offset(0, 4),
                   color: Colors.black.withOpacity(.04),
                   blurRadius: 12)
             ]),
@@ -196,7 +205,7 @@ class ProcessList extends StatelessWidget {
                   width: SizeConfig.safeBlockHorizontal * 30,
                   height: SizeConfig.safeBlockVertical * 3,
                   decoration: BoxDecoration(
-                      borderRadius: BorderRadius.only(
+                      borderRadius: const BorderRadius.only(
                           topRight: Radius.circular(8),
                           bottomLeft: Radius.circular(8)),
                       color: getStatusColor(minutes).withOpacity(.25)),
@@ -219,12 +228,13 @@ class ProcessList extends StatelessWidget {
                 mainAxisAlignment: MainAxisAlignment.start,
                 children: [
                   Container(
-                    padding: EdgeInsets.symmetric(horizontal: 16, vertical: 4),
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 16, vertical: 4),
                     width: SizeConfig.safeBlockVertical * 9,
                     height: SizeConfig.safeBlockVertical * 9,
                     decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(8),
-                        gradient: LinearGradient(
+                        gradient: const LinearGradient(
                             begin: Alignment.topCenter,
                             end: Alignment.bottomCenter,
                             colors: [
@@ -234,7 +244,7 @@ class ProcessList extends StatelessWidget {
                             ]),
                         boxShadow: [
                           BoxShadow(
-                              offset: Offset(0, 4),
+                              offset: const Offset(0, 4),
                               color: Colors.black.withOpacity(.04),
                               blurRadius: 12)
                         ]),
@@ -270,7 +280,7 @@ class ProcessList extends StatelessWidget {
                       ),
                       SizedBox(height: SizeConfig.safeBlockVertical * 1),
                       Text(
-                        merchant.name??'No name',
+                        merchant.name ?? 'No name',
                         style: textStyle.copyWith(fontWeight: FontWeight.w500),
                       ),
                       // SizedBox(height: SizeConfig.safeBlockVertical * .5),
@@ -311,10 +321,14 @@ class _DoneListState extends State<DoneList> {
         BlocProvider<HistoryOrderBloc>(
           create: (context) => HistoryOrderBloc(
               orderRepository: context.read<OrderRepository>(),
-              authenticationRepository: context.read<AuthenticationRepository>())
+              authenticationRepository:
+                  context.read<AuthenticationRepository>())
             ..add(GetHistoryOrder('done')),
         ),
-        BlocProvider<ListMerchantBloc>(create: (context)=>ListMerchantBloc(merchantRepository: context.read<MerchantRepository>())..add(GetListMerchant()))
+        BlocProvider<ListMerchantBloc>(
+            create: (context) => ListMerchantBloc(
+                merchantRepository: context.read<MerchantRepository>())
+              ..add(GetListMerchant()))
       ],
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (childContext, state) {
@@ -330,33 +344,33 @@ class _DoneListState extends State<DoneList> {
               final items = state.items!;
               return BlocBuilder<ListMerchantBloc, ListMerchantState>(
                   builder: (context, merchantState) {
-                    final merchantStatus = merchantState.status;
-                    if(merchantStatus == ListMerchantStatus.loading)
-                      return Center(child: const CircularProgressIndicator());
-                    else if(merchantStatus == ListMerchantStatus.success) {
-                      return SizedBox(
-                        height: 200,
-                        child: ListView.separated(
-                            padding:
-                                EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                            itemBuilder: (context, index) {
-                              final item = items[index];
-                              MerchantModel? merchant;
-                              merchantState.items!.forEach((element) {
-                                if (element.merchantId == item.merchantId)
-                                  merchant = element;
-                              });
-                              return _doneCard(item: item, merchant: merchant!);
-                            },
-                            separatorBuilder: (context, index) {
-                              return SizedBox(
-                                  height: SizeConfig.safeBlockVertical * 3);
-                            },
-                            itemCount: items.length),
-                      );
-                } else return SizedBox();
-                  }
-              );
+                final merchantStatus = merchantState.status;
+                if (merchantStatus == ListMerchantStatus.loading)
+                  return Center(child: const CircularProgressIndicator());
+                else if (merchantStatus == ListMerchantStatus.success) {
+                  return SizedBox(
+                    height: 200,
+                    child: ListView.separated(
+                        padding:
+                            EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+                          MerchantModel? merchant;
+                          merchantState.items!.forEach((element) {
+                            if (element.merchantId == item.merchantId)
+                              merchant = element;
+                          });
+                          return _doneCard(item: item, merchant: merchant!);
+                        },
+                        separatorBuilder: (context, index) {
+                          return SizedBox(
+                              height: SizeConfig.safeBlockVertical * 3);
+                        },
+                        itemCount: items.length),
+                  );
+                } else
+                  return SizedBox();
+              });
             } else {
               return Text('No Data');
             }
@@ -367,18 +381,20 @@ class _DoneListState extends State<DoneList> {
     );
   }
 
-  Widget _doneCard({required HistoryModel item, required MerchantModel merchant}) {
+  Widget _doneCard(
+      {required HistoryModel item, required MerchantModel merchant}) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
             context,
             MaterialPageRoute(
                 builder: (_) => HistoryDetailPage(
-                  item: item, merchant: merchant,
-                )));
+                      item: item,
+                      merchant: merchant,
+                    )));
       },
       child: Container(
-        padding: EdgeInsets.all(16),
+        padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(8),
             color: Colors.white,
