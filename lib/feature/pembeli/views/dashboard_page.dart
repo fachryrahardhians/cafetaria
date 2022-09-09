@@ -1,5 +1,6 @@
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
+import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/size_config.dart';
@@ -33,7 +34,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
               MerchantPage(),
               SizedBox(),
               HistoryPage(),
-              SizedBox(),
+              PembeliProfilePage(),
             ],
           ),
           bottomNavigationBar: TabBar(

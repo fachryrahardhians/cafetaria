@@ -113,7 +113,6 @@ class _PembeliProfileState extends State<PembeliProfileView> {
         User user = snap.data!;
         return Scaffold(
           backgroundColor: MyColors.whiteGrey2,
-          bottomNavigationBar: BottomBar(index: 3),
           body: SafeArea(
             child: Padding(
               padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
