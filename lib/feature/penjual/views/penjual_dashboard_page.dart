@@ -44,7 +44,7 @@ onStart() async {
   );
   final service = FlutterBackgroundService();
   final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
-  // service.setAutoStartOnBootMode(true);
+
   //listen get data from ui or foreground
   service.onDataReceived.listen((event) {
     if (event?['action'] == 'stopService') {
@@ -58,6 +58,7 @@ onStart() async {
     List<MenuModel> data = await menurepository
         .getAllMenu(idMerchant.getString("merchantId").toString());
     //fungsi perulangan untuk mengecek tipe auto restok
+
     for (var i = 0; i < data.length; i++) {
       //mengecek jika data resetTime sama dengan null akan break fungsi
       if (data[i].resetTime.toString() == "" || data[i].resetTime!.isEmpty) {
@@ -137,15 +138,7 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
     //menginisialisasi fungsi background service disaat app dibuka
     WidgetsFlutterBinding.ensureInitialized();
     FlutterBackgroundService.initialize(onStart);
-
-    context.read<AppSharedPref>().getMerchantId().then((value) {
-      //print(value);
-      if (value!.isNotEmpty || value != "") {
-        FlutterBackgroundService().sendData({'merchantId': value});
-      } else {
-        FlutterBackgroundService().sendData({'action': 'stopService'});
-      }
-    });
+    //context.read<AppSharedPref>().setMerchantId("");
   }
 
   @override
@@ -366,7 +359,7 @@ class MainMenuWidget extends StatelessWidget {
           Row(
             children: [
               HomeItemOrder(
-                route: () {
+                route: () async {
                   Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const OrderPage()));
                   // print("Pesanan");

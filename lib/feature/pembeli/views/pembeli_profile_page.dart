@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
@@ -18,8 +19,7 @@ class PembeliProfilePage extends StatelessWidget {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
           authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()
-          ),
+          appSharedPref: context.read<AppSharedPref>()),
       child: const PembeliProfileView(),
     );
   }
@@ -189,6 +189,7 @@ class PembeliProfileView extends StatelessWidget {
                     child: ReusableButton1(
                       label: "KELUAR",
                       onPressed: () async {
+                        WidgetsFlutterBinding.ensureInitialized();
                         await auth.signoutGoogle();
                         Navigator.pushReplacement(
                           context,
@@ -196,6 +197,13 @@ class PembeliProfileView extends StatelessWidget {
                             builder: (context) => const LoginPage(),
                           ),
                         );
+                        var isRunning =
+                            await FlutterBackgroundService().isServiceRunning();
+                        if (isRunning) {
+                          FlutterBackgroundService().sendData(
+                            {"action": "stopService"},
+                          );
+                        }
                       },
                       padding: const EdgeInsets.all(0),
                       margin: const EdgeInsets.all(0),

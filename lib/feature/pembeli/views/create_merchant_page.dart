@@ -7,6 +7,7 @@ import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -172,6 +173,12 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
       await _firestore.collection('merchant').doc(userId).set(data);
       Navigator.pop(context);
+      Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (_) => PenjualDashboardPage(
+                    id: userId,
+                  )));
       Fluttertoast.showToast(
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
