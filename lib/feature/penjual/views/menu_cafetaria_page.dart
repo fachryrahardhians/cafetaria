@@ -1,9 +1,10 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
+import 'package:cafetaria/feature/penjual/bloc/option_menu_bloc/opsi_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
+import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
-import 'package:cafetaria/feature/penjual/views/choose_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -12,10 +13,13 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
+
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
-  const MenuCafetariaPage({Key? key}) : super(key: key);
-
+  const MenuCafetariaPage({Key? key, this.idMerchant}) : super(key: key);
+  final String? idMerchant;
   @override
   Widget build(BuildContext context) {
     return MultiBlocProvider(
@@ -23,13 +27,18 @@ class MenuCafetariaPage extends StatelessWidget {
         BlocProvider(
           create: (context) => MenuMakananBloc(
             categoryRepository: context.read<CategoryRepository>(),
-          )..add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
+          )..add(GetMenuMakanan(idMerchant.toString())),
         ),
         BlocProvider(
           create: (context) => ListMenuBloc(
             menuRepository: context.read<MenuRepository>(),
           ),
         ),
+        // BlocProvider(
+        //   create: (context) => OpsiMenuBloc(
+        //     opsimenuRepository: context.read<OptionMenuRepository>(),
+        //   ),
+        // ),
       ],
       child: const MenuCafetariaView(),
     );
@@ -120,70 +129,80 @@ class DaftarMenuWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        BlocBuilder<MenuMakananBloc, MenuMakananState>(
-          builder: (context, state) {
-            final status = state.status;
+    getmerchant() async {
+      String? id = await context.read<AppSharedPref>().getMerchantId();
+      return id.toString();
+    }
 
-            if (status == MenuMakananStatus.loading) {
-              return const Center(
-                child: CircularProgressIndicator(),
-              );
-            } else if (status == MenuMakananStatus.failure) {
-              return const Center(
-                child: Text('Terjadi kesalahan'),
-              );
-            } else if (status == MenuMakananStatus.success) {
-              final items = state.items!;
-              return Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: Column(
-                  children: [
-                    SizedBox(
-                      height: 50,
-                      // width: 50,
-                      width: MediaQuery.of(context).size.width,
-                      child: ListView.builder(
-                        shrinkWrap: true,
-                        scrollDirection: Axis.horizontal,
-                        itemCount: items.length,
-                        itemBuilder: (context, index) {
-                          final item = items[index];
-                          return Padding(
-                            padding: const EdgeInsets.all(4.0),
-                            child: ChoiceChip(
-                              padding: const EdgeInsets.all(9),
-                              onSelected: (val) {
-                                context.read<ListMenuBloc>().add(
-                                      GetListMenu('0DzobjgsR7jF8qWvCoG0',
-                                          item.categoryId!),
-                                    );
-                              },
-                              label: Text(
-                                item.category,
-                                style: GoogleFonts.ubuntu(
-                                    color: const Color(0xffEA001E)),
-                              ),
-                              side: const BorderSide(
-                                color: Color(0xffEA001E),
-                              ),
-                              selected: false,
-                              backgroundColor: const Color(0xffFEDED8),
-                            ),
-                          );
-                        },
-                      ),
+    return FutureBuilder<String>(
+      future: getmerchant(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return Column(
+          children: [
+            BlocBuilder<MenuMakananBloc, MenuMakananState>(
+              builder: (context, state) {
+                final status = state.status;
+
+                if (status == MenuMakananStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == MenuMakananStatus.failure) {
+                  return const Center(
+                    child: Text('Terjadi kesalahan'),
+                  );
+                } else if (status == MenuMakananStatus.success) {
+                  final items = state.items!;
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Column(
+                      children: [
+                        SizedBox(
+                          height: 50,
+                          // width: 50,
+                          width: MediaQuery.of(context).size.width,
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            scrollDirection: Axis.horizontal,
+                            itemCount: items.length,
+                            itemBuilder: (context, index) {
+                              final item = items[index];
+                              return Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ChoiceChip(
+                                  padding: const EdgeInsets.all(9),
+                                  onSelected: (val) {
+                                    context.read<ListMenuBloc>().add(
+                                          GetListMenu(
+                                              snapshot.data!, item.categoryId!),
+                                        );
+                                  },
+                                  label: Text(
+                                    item.category,
+                                    style: GoogleFonts.ubuntu(
+                                        color: const Color(0xffEA001E)),
+                                  ),
+                                  side: const BorderSide(
+                                    color: Color(0xffEA001E),
+                                  ),
+                                  selected: false,
+                                  backgroundColor: const Color(0xffFEDED8),
+                                ),
+                              );
+                            },
+                          ),
+                        ),
+                      ],
                     ),
-                  ],
-                ),
-              );
-            }
-            return const SizedBox.shrink();
-          },
-        ),
-        const ListMenuWidget(),
-      ],
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+            ListMenuWidget(idMerchant: snapshot.data.toString()),
+          ],
+        );
+      },
     );
   }
 }
@@ -274,7 +293,7 @@ class ListMenu extends StatelessWidget {
               color: Color.fromRGBO(0, 0, 0, 0.04),
               offset: Offset(0, 4),
               blurRadius: 12,
-            ),
+            )
           ],
         ),
         child: Padding(
@@ -321,14 +340,13 @@ class ListMenu extends StatelessWidget {
 }
 
 class ListMenuWidget extends StatelessWidget {
-  const ListMenuWidget({
-    Key? key,
-  }) : super(key: key);
-
+  const ListMenuWidget({Key? key, this.idMerchant = ""}) : super(key: key);
+  final String idMerchant;
   @override
   Widget build(BuildContext context) {
     final status = context.watch<MenuMakananBloc>().state.status;
     final oCcy = NumberFormat("#,##0.00", "IDR");
+
     if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -339,10 +357,15 @@ class ListMenuWidget extends StatelessWidget {
       );
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
-      final cat = context.watch<MenuMakananBloc>().state.items!.first;
+      final cat = context
+          .watch<MenuMakananBloc>()
+          .state
+          .items!
+          .where((element) => element.merchantId == idMerchant)
+          .first;
       context
           .read<ListMenuBloc>()
-          .add(GetListMenu('merchant2', cat.categoryId!));
+          .add(GetListMenu(idMerchant, cat.categoryId!));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -361,16 +384,7 @@ class ListMenuWidget extends StatelessWidget {
                 itemCount: items.length,
                 itemBuilder: (context, index) {
                   final item = items[index];
-                  // return ListTile(
-                  //   title: Text(item.name ?? '-'),
-                  //   // subtitle: Text(item.price.toString()),
-                  //   trailing: IconButton(
-                  //     icon: const Icon(Icons.delete),
-                  //     onPressed: () {
-                  //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                  //     },
-                  //   ),
-                  // );
+
                   return Container(
                     color: Colors.white,
                     padding: const EdgeInsets.symmetric(
@@ -395,7 +409,7 @@ class ListMenuWidget extends StatelessWidget {
                         ),
                         const SizedBox(height: 4.0),
                         const Text(
-                          '1 opsi menu tersambung',
+                          '0 opsi menu tersambung',
                           style: TextStyle(
                             color: Colors.green,
                           ),
@@ -416,7 +430,7 @@ class ListMenuWidget extends StatelessWidget {
                                 ).then((value) => context
                                     .read<ListMenuBloc>()
                                     .add(GetListMenu(
-                                        'merchant2', cat.categoryId!)));
+                                        idMerchant, 'Ca7QNFUudrFbc63yRT8d')));
                               },
                               child: const Text(
                                 'Atur Stok',
@@ -473,11 +487,7 @@ class ListMenuTidakTersediaWidget extends StatelessWidget {
         child: Text('Terjadi kesalahan'),
       );
     } else if (status == MenuMakananStatus.success) {
-      // final cat = categoryState.items.first;
-      final cat = context.watch<MenuMakananBloc>().state.items!.first;
-      context
-          .read<ListMenuBloc>()
-          .add(GetListMenuTidakTersedia('merchant2', cat.categoryId!));
+      context.read<ListMenuBloc>().add(GetListMenuTidakTersedia());
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -493,94 +503,45 @@ class ListMenuTidakTersediaWidget extends StatelessWidget {
             final items = state.items!;
             return Padding(
               padding: const EdgeInsets.only(top: 20, left: 10),
-              child: Expanded(
-                child: ListView.builder(
-                  itemCount: items.length,
-                  itemBuilder: (context, index) {
-                    final item = items[index];
-                    // return ListTile(
-                    //   title: Text(item.name ?? '-'),
-                    //   // subtitle: Text(item.price.toString()),
-                    //   trailing: IconButton(
-                    //     icon: const Icon(Icons.delete),
-                    //     onPressed: () {
-                    //       // context.read<ListMenuBloc>().add(DeleteListMenu(item));
-                    //     },
-                    //   ),
-                    // );
-                    return Container(
-                      color: Colors.white,
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12.0, vertical: 8.0),
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            '${item.name}',
-                            style: const TextStyle(
-                              fontWeight: FontWeight.bold,
-                              fontSize: 16,
-                            ),
+              child: ListView.builder(
+                itemCount: items.length,
+                itemBuilder: (context, index) {
+                  final item = items[index];
+
+                  return Container(
+                    color: Colors.white,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 12.0, vertical: 8.0),
+                    child: Column(
+                      mainAxisAlignment: MainAxisAlignment.start,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Text(
+                          '${item.name}',
+                          style: const TextStyle(
+                            fontWeight: FontWeight.bold,
+                            fontSize: 16,
                           ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Rp ${oCcy.format(item.price)}',
-                            style: TextStyle(
-                              color: Colors.black.withOpacity(0.5),
-                            ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Rp ${oCcy.format(item.price)}',
+                          style: TextStyle(
+                            color: Colors.black.withOpacity(0.5),
                           ),
-                          const SizedBox(height: 4.0),
-                          Text(
-                            'Jumlah Stok ${item.stock}',
-                            style: const TextStyle(
-                              color: Colors.red,
-                            ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        Text(
+                          'Jumlah Stok ${item.stock}',
+                          style: const TextStyle(
+                            color: Colors.red,
                           ),
-                          const SizedBox(height: 6.0),
-                          // Row(
-                          //   mainAxisAlignment: MainAxisAlignment.end,
-                          //   crossAxisAlignment: CrossAxisAlignment.end,
-                          //   children: [
-                          //     InkWell(
-                          //       onTap: () {
-                          //         Navigator.push(
-                          //           context,
-                          //           MaterialPageRoute(
-                          //             builder: (context) =>
-                          //                 EditStok(menuModel: item),
-                          //           ),
-                          //         ).then((value) => context
-                          //             .read<ListMenuBloc>()
-                          //             .add(GetListMenu(
-                          //                 'merchant2', cat.categoryId!)));
-                          //       },
-                          //       child: const Text(
-                          //         'Atur Stok',
-                          //         style: TextStyle(
-                          //           color: Colors.red,
-                          //           fontWeight: FontWeight.bold,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     const SizedBox(width: 16.0),
-                          //     InkWell(
-                          //       onTap: () {},
-                          //       child: const Text(
-                          //         'Edit',
-                          //         style: TextStyle(
-                          //           color: Colors.red,
-                          //           fontWeight: FontWeight.bold,
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-                        ],
-                      ),
-                    );
-                  },
-                ),
+                        ),
+                        const SizedBox(height: 6.0),
+                      ],
+                    ),
+                  );
+                },
               ),
             );
           }
@@ -620,188 +581,330 @@ class BottomDaftarMenuWidget extends StatelessWidget {
   }
 }
 
-// temp object for "opsi menu"
-class OpsiMenu {
-  final bool isMandatory;
-  final bool isMultipleTopping;
-  final String menuId;
-  final List<Option> option;
-  final String optionmenuId;
-  final String title;
-
-  OpsiMenu(
-    this.isMandatory,
-    this.isMultipleTopping,
-    this.menuId,
-    this.option,
-    this.optionmenuId,
-    this.title,
-  );
-}
-
-class Option {
-  final String name;
-  final int price;
-
-  Option(this.name, this.price);
-}
-// =====
-
-class OpsiMenuWidget extends StatefulWidget {
-  const OpsiMenuWidget({Key? key}) : super(key: key);
-
-  @override
-  State<StatefulWidget> createState() => _OpsiMenuWidgetState();
-}
-
-class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
-  List<OpsiMenu> menuOptions = [];
+class OpsiMenuWidget extends StatelessWidget {
+  const OpsiMenuWidget({
+    Key? key,
+  }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuMakananBloc, MenuMakananState>(
-      builder: (context, state) {
-        final status = state.status;
-        if (status == MenuMakananStatus.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (status == MenuMakananStatus.failure) {
-          return const Center(
-            child: Text('Terjadi kesalahan'),
-          );
-        } else if (status == MenuMakananStatus.success) {
-          final items = state.items!;
-          return items.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/icons/no-menu.png'),
-                      const Text(
-                        'Anda belum memiliki menu',
-                        style: TextStyle(color: Colors.grey),
+    getmerchant() async {
+      String? id = await context.read<AppSharedPref>().getMerchantId();
+      return id.toString();
+    }
+
+    // context.read<ListMenuBloc>().add(GetListMenu());
+    final oCcy = NumberFormat("#,##0.00", "IDR");
+
+    // final status = context.watch<ListMenuBloc>().state.status;
+    // final oCcy = NumberFormat("#,##0.00", "IDR");
+    // if (status == ListMenuStatus.loading) {
+    //   return const Center(
+    //     child: CircularProgressIndicator(),
+    //   );
+    // } else if (status == ListMenuStatus.failure) {
+    //   return const Center(
+    //     child: Text('Terjadi kesalahan'),
+    //   );
+    // } else if (status == ListMenuStatus.success) {
+    //   //  context
+    //   //     .read<OpsiMenuBloc>()
+    //   //     .add(GetOpsiMenu());
+
+    //   return BlocBuilder<ListMenuBloc, ListMenuState>(
+    //     builder: (context, state) {
+    //       final status = state.status;
+    //       if (status == OpsiMenuStatus.loading) {
+    //         return const Center(
+    //           child: CircularProgressIndicator(),
+    //         );
+    //       } else if (status == OpsiMenuStatus.failure) {
+    //         return const Center(
+    //           child: Text('Terjadi kesalahan'),
+    //         );
+    //       } else if (status == OpsiMenuStatus.success) {
+    //         final items = state.items!;
+    // return Padding(
+    //   padding: const EdgeInsets.only(top: 20, left: 10),
+    //   child: ListView.builder(
+    //     itemCount: items.length,
+    //     itemBuilder: (context, index) {
+    //       final item = items[index];
+
+    //       return Container(
+    //         color: Colors.white,
+    //         padding: const EdgeInsets.symmetric(
+    //             horizontal: 12.0, vertical: 8.0),
+    //         child: Column(
+    //           mainAxisAlignment: MainAxisAlignment.start,
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Text(
+    //               '${item.name}',
+    //               style: const TextStyle(
+    //                 fontWeight: FontWeight.bold,
+    //                 fontSize: 16,
+    //               ),
+    //             ),
+    //             const SizedBox(height: 4.0),
+    //             Text(
+    //               'Rp ${oCcy.format(item.name)}',
+    //               style: TextStyle(
+    //                 color: Colors.black.withOpacity(0.5),
+    //               ),
+    //             ),
+    //             const SizedBox(height: 4.0),
+    //             Text(
+    //               'Jumlah Stok ${item.name}',
+    //               style: const TextStyle(
+    //                 color: Colors.red,
+    //               ),
+    //             ),
+    //             const SizedBox(height: 6.0),
+    //           ],
+    //         ),
+    //       );
+    //     },
+    //   ),
+    // );
+    //       }
+    //       return const SizedBox.shrink();
+    //     },
+    //   );
+    // }
+
+    // return Column(
+    //   children: [
+    //     BlocBuilder<ListMenuBloc, ListMenuState>(
+    //       builder: (context, state) {
+    //         final status = state.status;
+    //         final oCcy = NumberFormat("#,##0.00", "IDR");
+
+    //         if (status == ListMenuStatus.loading) {
+    //           return const Center(
+    //             child: CircularProgressIndicator(),
+    //           );
+    //         } else if (status == ListMenuStatus.failure) {
+    //           return const Center(
+    //             child: Text('Terjadi kesalahan'),
+    //           );
+    //         } else if (status == ListMenuStatus.success) {
+    //           final items = state.items!;
+    //           return Padding(
+    //             padding: const EdgeInsets.only(top: 20, left: 10),
+    //             child: ListView.builder(
+    //               itemCount: items.length,
+    //               itemBuilder: (context, index) {
+    //                 final item = items[index];
+
+    //                 return Container(
+    //                   color: Colors.white,
+    //                   padding: const EdgeInsets.symmetric(
+    //                       horizontal: 12.0, vertical: 8.0),
+    //                   child: Column(
+    //                     mainAxisAlignment: MainAxisAlignment.start,
+    //                     crossAxisAlignment: CrossAxisAlignment.start,
+    //                     children: [
+    //                       Text(
+    //                         '${item.name}',
+    //                         style: const TextStyle(
+    //                           fontWeight: FontWeight.bold,
+    //                           fontSize: 16,
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 4.0),
+    //                       Text(
+    //                         'Rp ${oCcy.format(item.price)}',
+    //                         style: TextStyle(
+    //                           color: Colors.black.withOpacity(0.5),
+    //                         ),
+    //                       ),
+    //                       const SizedBox(height: 6.0),
+    //                     ],
+    //                   ),
+    //                 );
+    //               },
+    //             ),
+    //           );
+    //         }
+    //         return const SizedBox.shrink();
+    //       },
+    //     )
+    //   ],
+    // );
+    return FutureBuilder<String>(
+      future: getmerchant(),
+      builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+        return Column(
+          children: [
+            BlocBuilder<ListMenuBloc, ListMenuState>(
+              builder: (context, state) {
+                final status = state.status;
+
+                if (status == ListMenuStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == ListMenuStatus.failure) {
+                  return const Center(
+                    child: Text('Terjadi kesalahan'),
+                  );
+                } else if (status == ListMenuStatus.success) {
+                  final items = state.items!;
+                  return Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: SizedBox(
+                      height: MediaQuery.of(context).size.height,
+                      child: ListView.builder(
+                        shrinkWrap: true,
+                        scrollDirection: Axis.vertical,
+                        itemCount: items.length,
+                        itemBuilder: (context, index) {
+                          final item = items[index];
+
+                          return Column(
+                            children: [
+                              Padding(
+                                  padding: const EdgeInsets.all(4.0),
+                                  child: Container(
+                                    color: Colors.white,
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12.0, vertical: 8.0),
+                                    child: Column(
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.start,
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          '${item.name}',
+                                          style: const TextStyle(
+                                            fontWeight: FontWeight.bold,
+                                            fontSize: 16,
+                                          ),
+                                        ),
+                                        const SizedBox(height: 4.0),
+                                        Text(
+                                          'Rp ${oCcy.format(item.price)}',
+                                          style: TextStyle(
+                                            color:
+                                                Colors.black.withOpacity(0.5),
+                                          ),
+                                        ),
+                                        Text(
+                                          'Opsi menu:',
+                                          style: TextStyle(
+                                            color:
+                                                Color.fromARGB(255, 8, 255, 69)
+                                                    .withOpacity(0.5),
+                                          ),
+                                        ),
+                                        const SizedBox(height: 6.0),
+                                        BlocProvider(
+                                          create: (context) => OpsiMenuBloc(
+                                            opsimenuRepository: context
+                                                .read<OptionMenuRepository>(),
+                                          )..add(GetOpsiMenu(
+                                              item.menuId.toString())),
+                                          child: BlocBuilder<OpsiMenuBloc,
+                                              OpsiMenuState>(
+                                            builder: (context, state) {
+                                              final status = state.status;
+                                              // print(state.items?.length);
+
+                                              if (status ==
+                                                  OpsiMenuStatus.loading) {
+                                                return const Center(
+                                                  child:
+                                                      CircularProgressIndicator(),
+                                                );
+                                              } else if (status ==
+                                                  OpsiMenuStatus.failure) {
+                                                return const Center(
+                                                  child:
+                                                      Text('Terjadi kesalahan'),
+                                                );
+                                              } else if (status ==
+                                                  OpsiMenuStatus.success) {
+                                                // print('hahah');
+                                                final opsi = state.items!;
+
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.all(8.0),
+                                                  child: Column(
+                                                    children: [
+                                                      SizedBox(
+                                                        height: 80,
+                                                        child: ListView.builder(
+                                                          shrinkWrap: true,
+                                                          itemCount:
+                                                              opsi.length,
+                                                          itemBuilder:
+                                                              (context, index) {
+                                                            final options =
+                                                                opsi[index];
+                                                            return Container(
+                                                              // color: Colors.white,
+                                                              padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                  horizontal:
+                                                                      12.0,
+                                                                  vertical:
+                                                                      8.0),
+                                                              height: 50,
+                                                              child: ListView
+                                                                  .builder(
+                                                                scrollDirection:
+                                                                    Axis.horizontal,
+                                                                itemCount:
+                                                                    options
+                                                                        .option
+                                                                        ?.length,
+                                                                itemBuilder:
+                                                                    (context,
+                                                                        index) {
+                                                                  final toping =
+                                                                      options.option?[
+                                                                          index];
+                                                                  return Text(
+                                                                      '${toping?.name}, ',
+                                                                      style:
+                                                                          const TextStyle(
+                                                                        fontWeight:
+                                                                            FontWeight.bold,
+                                                                        fontSize:
+                                                                            16,
+                                                                      ));
+                                                                },
+                                                              ),
+                                                            );
+                                                          },
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              }
+                                              return const SizedBox.shrink();
+                                            },
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  )),
+                            ],
+                          );
+                        },
                       ),
-                    ],
-                  ),
-                )
-              : Container(
-                  padding: const EdgeInsets.all(16.0),
-                  width: double.infinity,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: const EdgeInsets.all(16.0),
-                        margin: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.04),
-                              offset: Offset(0, 4),
-                              blurRadius: 12,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(width: 16.0),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'Nasi Ayam Panggang',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text('Rp25.000'),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            const Text(
-                              'Opsi menu:',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4.0),
-                            // ListView.builder
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  ' • Sambal: ',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                // ListView.builder
-                                Text(
-                                  'Level 1, Level 2',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'Hapus',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 20.0),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
-                );
-        }
-        return const SizedBox.shrink();
+                    ),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        );
       },
     );
   }
@@ -813,24 +916,8 @@ class BottomOpsiMenuWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ElevatedButton(
-      onPressed: () {
-        // Navigator.push(
-        //   context,
-        //   MaterialPageRoute(
-        //     builder: (context) => const AddOpsiMenuPage(),
-        //     settings: const RouteSettings(
-        //       arguments: null,
-        //     ),
-        //   ),
-        // ).then((value) {});
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => const ChooseMenuPage(),
-          ),
-        );
-      },
-      child: Text("Pilih Menu".toUpperCase()),
+      onPressed: () {},
+      child: Text("Tambah Opsi Menu".toUpperCase()),
       style: ElevatedButton.styleFrom(
         minimumSize: const Size.fromHeight(44),
         primary: const Color(0xffEA001E),

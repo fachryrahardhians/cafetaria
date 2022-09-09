@@ -8,19 +8,9 @@ abstract class OpsiMenuEvent extends Equatable {
 }
 
 class GetOpsiMenu extends OpsiMenuEvent {
-  final String idMerchant;
   final String idMenu;
 
-  const GetOpsiMenu(this.idMerchant, this.idMenu);
-
-  @override
-  List<Object> get props => [idMerchant, idMenu];
-}
-
-class GetOpsiMenuTidakTersedia extends OpsiMenuEvent {
-  final String idMenu;
-
-  const GetOpsiMenuTidakTersedia(this.idMenu);
+  const GetOpsiMenu(this.idMenu);
 
   @override
   List<Object> get props => [idMenu];

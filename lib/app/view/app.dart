@@ -10,6 +10,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 import 'package:storage/storage.dart';
@@ -23,12 +24,14 @@ class App extends StatelessWidget {
     required CategoryRepository categoryRepository,
     required CloudStorage cloudStorage,
     required MerchantRepository merchantRepository,
+    required OptionMenuRepository optionMenuRepository,
     required SecureStorage secureStorage,
     required PenjualOrderRepository penjualOrderRepository,
   })  : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
         _categoryRepository = categoryRepository,
         _merchantRepository = merchantRepository,
+        _opsimenuRepository= optionMenuRepository,
         _appSharedPref = appSharedPref,
         _cloudStorage = cloudStorage,
         _secureStorage = secureStorage,
@@ -38,6 +41,7 @@ class App extends StatelessWidget {
   final AuthenticationRepository _authenticationRepository;
   final MenuRepository _menuRepository;
   final AppSharedPref _appSharedPref;
+  final OptionMenuRepository _opsimenuRepository;
   final CategoryRepository _categoryRepository;
   final CloudStorage _cloudStorage;
   final SecureStorage _secureStorage;
@@ -54,6 +58,7 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _cloudStorage),
         RepositoryProvider.value(value: _penjualOrderRepository),
         RepositoryProvider.value(value: _merchantRepository),
+        RepositoryProvider.value(value: _opsimenuRepository),
         RepositoryProvider.value(value: _appSharedPref),
       ],
       child: BlocProvider(

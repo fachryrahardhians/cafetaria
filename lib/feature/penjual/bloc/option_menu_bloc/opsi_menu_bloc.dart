@@ -21,13 +21,13 @@ class OpsiMenuBloc extends Bloc<OpsiMenuEvent, OpsiMenuState> {
     Emitter<OpsiMenuState> emit,
   ) async {
     emit(const OpsiMenuState.loading());
-
+    SharedPreferences id = await SharedPreferences.getInstance();
+    String idMerchant = id.getString("merchantId").toString();
     try {
-      final items = await _opsimenuRepository.getOpsi(
-        event.idMerchant,
+      final items = await _opsimenuRepository.getOpsiMenu(
+        idMerchant,
         event.idMenu,
       );
-
       emit(OpsiMenuState.success(items));
     } catch (error) {
       emit(OpsiMenuState.failure(error.toString()));

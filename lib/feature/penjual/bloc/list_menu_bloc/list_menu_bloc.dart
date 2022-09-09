@@ -45,6 +45,25 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
     try {
       final items = await _menuRepository.getMenuStokTidakTersedia(
         idMerchant,
+   
+      );
+
+      emit(ListMenuState.success(items));
+    } catch (error) {
+      emit(ListMenuState.failure(error.toString()));
+    }
+  }
+
+    Future<void> _getListOpsiMenu(
+    GetListMenu event,
+    Emitter<ListMenuState> emit,
+  ) async {
+    emit(const ListMenuState.loading());
+    SharedPreferences id = await SharedPreferences.getInstance();
+    String idMerchant = id.getString("merchantId").toString();
+    try {
+      final items = await _menuRepository.getMenu(
+       idMerchant,
         event.idCategory,
       );
 

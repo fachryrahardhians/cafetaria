@@ -6,15 +6,15 @@ import 'package:uuid/uuid.dart';
 import 'models/models.dart';
 
 class OptionMenuRepository {
-  final FirebaseFirestore _firestore;
-  final uuid = const Uuid();
 
   OptionMenuRepository({
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
+  final FirebaseFirestore _firestore;
+  final uuid = const Uuid();
 
   // get  menu per menu
-  Future<List<OptionMenuModel>> getOpsi(
+  Future<List<OptionMenuModel>> getOpsiMenu(
     String idMerchant,
     String idMenu,
   ) async {

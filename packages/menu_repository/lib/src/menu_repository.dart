@@ -32,7 +32,6 @@ class MenuRepository {
 
   Future<List<MenuModel>> getMenuStokTidakTersedia(
     String idMerchant,
-    String idCategory,
   ) async {
     try {
       final snapshot = await _firestore
