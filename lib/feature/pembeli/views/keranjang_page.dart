@@ -326,8 +326,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   context: context,
                   builder: (BuildContext context) => baseDialog);
             } else {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const HistoryPage()));
+              Navigator.pushAndRemoveUntil(context,
+                  MaterialPageRoute(builder: (_) => const PembeliDashboardPage(index: 2)), (route) => false);
             }
             menuInKeranjang.forEach((element) {
               context.read<MenuInCartBloc>().add(DeleteMenuInCart(element));

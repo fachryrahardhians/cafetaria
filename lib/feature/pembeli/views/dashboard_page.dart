@@ -7,26 +7,32 @@ import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
 class PembeliDashboardPage extends StatelessWidget {
-  const PembeliDashboardPage({Key? key}) : super(key: key);
+  final int index;
+  const PembeliDashboardPage({Key? key, this.index=0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const PembeliDashboard();
+    return PembeliDashboard(index: index);
   }
 }
 
 class PembeliDashboard extends StatefulWidget {
-  const PembeliDashboard({Key? key}) : super(key: key);
+  final int index;
+  const PembeliDashboard({Key? key, this.index=0}) : super(key: key);
 
   @override
-  State<PembeliDashboard> createState() => _PembeliDashboardState();
+  State<PembeliDashboard> createState() => _PembeliDashboardState(index);
 }
 
 class _PembeliDashboardState extends State<PembeliDashboard> {
+  int index;
+  _PembeliDashboardState(this.index);
+
   @override
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
+      initialIndex: index,
       child: SafeArea(
         child: Scaffold(
           body: const TabBarView(
@@ -43,6 +49,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
             unselectedLabelColor: const Color(0xffB1B5BA),
             unselectedLabelStyle: textStyle,
             labelStyle: textStyle,
+
             tabs: const [
               Tab(
                 text: 'Home',
