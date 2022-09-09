@@ -16,6 +16,7 @@ class RatingRepository {
 
   /// add discount
   Future<void> addRating(
+    String orderId,
     RatingModel rating,
   ) async {
     // add to firestore
@@ -23,5 +24,9 @@ class RatingRepository {
         .collection('rating')
         .doc(rating.ratingId)
         .set(rating.toJson());
+    await _firestore
+        .collection('order')
+        .doc(orderId)
+        .update({'ratingId': rating.ratingId});
   }
 }

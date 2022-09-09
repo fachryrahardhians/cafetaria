@@ -36,12 +36,10 @@ class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
     ));
     User? user = await _authenticationRepository.getCurrentUser();
     try {
-      await _ratingRepository.addRating(RatingModel(
+      await _ratingRepository.addRating(event.orderId,RatingModel(
           feedback: event.catatan,
           rating: event.rating,
-          orderId: event.orderId,
           ratingId: _uuid.v4(),
-          userId: user?.uid,
           merchantId: event.merchantId));
 
       emit(state.copyWith(

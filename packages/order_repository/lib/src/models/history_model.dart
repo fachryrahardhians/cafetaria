@@ -44,8 +44,6 @@ class HistoryModel extends Equatable {
   /// Copy with a new [HistoryModel].
   HistoryModel copyWith({
     String? orderId,
-    int? cash,
-    String? change,
     String? deviceToken,
     bool? isCutlery,
     bool? isPreorder,
