@@ -38,15 +38,31 @@ class PenjualDashboardPage extends StatelessWidget {
   }
 }
 
+//fungsi listing merchant menu
+extension on List<QueryDocumentSnapshot> {
+  List<MenuModel> toListMenu() {
+    final leaderboardEntries = <MenuModel>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          leaderboardEntries.add(MenuModel.fromJson(data));
+        } catch (error) {
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
+  }
+}
+
 //fungsi flutter background service
 onStart() async {
   WidgetsFlutterBinding.ensureInitialized();
-
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
   final service = FlutterBackgroundService();
-  final menurepository = MenuRepository(firestore: FirebaseFirestore.instance);
 
   //listen get data from ui or foreground
   service.onDataReceived.listen((event) {
@@ -54,14 +70,27 @@ onStart() async {
       service.stopBackgroundService();
     }
   });
+  Future<List<MenuModel>> getAllMenu(
+    String idMerchant,
+  ) async {
+    try {
+      final snapshot = await FirebaseFirestore.instance
+          .collection('menuPerMerchant-$idMerchant')
+          .get();
+
+      final documents = snapshot.docs;
+      return documents.toListMenu();
+    } catch (e) {
+      throw Exception('Failed to get All menu');
+    }
+  }
 
   //akan melakukan reload selama waktu atau duration yang diberikan
-  Timer.periodic(const Duration(seconds: 10), (time) async {
+  Timer.periodic(const Duration(minutes: 30), (time) async {
     final idMerchant = await SharedPreferences.getInstance();
-    List<MenuModel> data = await menurepository
-        .getAllMenu(idMerchant.getString("merchantId").toString());
+    List<MenuModel> data =
+        await getAllMenu(idMerchant.getString("merchantId").toString());
     //fungsi perulangan untuk mengecek tipe auto restok
-
     for (var i = 0; i < data.length; i++) {
       //mengecek jika data resetTime sama dengan null akan break fungsi
       if (data[i].resetTime.toString() == "" || data[i].resetTime!.isEmpty) {
