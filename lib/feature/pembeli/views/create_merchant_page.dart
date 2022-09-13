@@ -118,7 +118,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     try {
       final datas = {
         'userId': userId,
-        'merchant': userId,
+        'merchantId': userId,
         'name': _namaUsaha.text,
         'category': _bidangUsaha,
         'city': _kota.text,
@@ -152,7 +152,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
 
       final data = {
         'userId': userId,
-        'merchant': userId,
+        'merchantId': userId,
         'name': _namaUsaha.text,
         'category': _bidangUsaha,
         'city': _kota.text,
@@ -366,6 +366,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                       label: "SIMPAN",
                       onPressed: () {
                         _onSubmit(context);
+
                       },
                       padding: const EdgeInsets.all(0),
                       margin: const EdgeInsets.all(0),
