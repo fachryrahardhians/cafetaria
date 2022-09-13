@@ -25,7 +25,7 @@ class MerchantBloc extends Bloc<MerchantEvent, MerchantState> {
     emit(const MerchantState.loading());
 
     try {
-      final items = await _merchantRepository.getMerchant(
+      final items = await _merchantRepository.getMerchantDetail(
         event.idUser,
       );
       String? idMerchant;
