@@ -24,7 +24,7 @@ MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
       // category:
       //     CategoryDetail.fromJson(json['category'] as Map<String, dynamic>),
       stock: json['stock'] as int?,
-      tags: (json['tags'] as List<dynamic>).map((e) => e as String).toList(),
+      tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
 Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{

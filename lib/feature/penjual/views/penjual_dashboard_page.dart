@@ -8,8 +8,7 @@ import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_core/firebase_core.dart';
-
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -143,6 +142,7 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationRepository auth = context.read<AuthenticationRepository>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -334,9 +334,17 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
             label: "Riwayat",
           ),
           BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset("assets/icons/bottom-profile.png"),
+            icon: GestureDetector(
+              onTap: () {
+                Navigator.pushReplacement(
+                    context,
+                    MaterialPageRoute(
+                        builder: (_) => const PembeliDashboardPage()));
+              },
+              child: Padding(
+                padding: const EdgeInsets.symmetric(vertical: 10),
+                child: Image.asset("assets/icons/bottom-profile.png"),
+              ),
             ),
             label: "Profile",
           ),
@@ -390,7 +398,7 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => BookingPage(),
+                      builder: (_) => BookingPage(merchantId),
                     ),
                   );
                 },
@@ -400,39 +408,6 @@ class MainMenuWidget extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 20),
-          const Text(
-            "PAPAN INFO",
-            style: TextStyle(color: MyColors.grey3),
-          ),
-          const SizedBox(height: 10),
-          // Papan Info
-          SingleChildScrollView(
-            scrollDirection: Axis.horizontal,
-            child: Row(
-              children: [
-                HomeItemInfo(
-                  route: () => () {},
-                  image: "assets/images/info-1.png",
-                  title:
-                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
-                  author: "Charlie Natalie",
-                ),
-                HomeItemInfo(
-                  route: () {},
-                  image: "assets/images/info-2.png",
-                  title: "Training Professional Tenant & Property Management",
-                  author: "Charlie Natalie",
-                ),
-                HomeItemInfo(
-                  route: () {},
-                  image: "assets/images/info-1.png",
-                  title:
-                      "Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja",
-                  author: "Charlie Natalie",
-                ),
-              ],
-            ),
-          ),
         ],
       ),
     );

@@ -4,6 +4,8 @@ import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
+import 'package:cafetaria/feature/Authentication/views/link_email.dart';
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
@@ -63,8 +65,8 @@ class _LoginViewState extends State<LoginView> {
                         MaterialPageRoute(
                           // builder: (context) => const HomePage(),
                           // builder: (context) => const LinkEmailPage(),
-                          builder: (context) => const PembeliProfilePage(),
-                          // builder: (context) => const PenjualDashboardPage(),
+                          // builder: (context) => const PembeliProfilePage(),
+                          builder: (context) => const PembeliDashboardPage(),
                         ),
                       );
                     }

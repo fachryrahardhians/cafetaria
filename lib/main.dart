@@ -6,10 +6,16 @@ import 'package:cafetaria/bootstrap.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
+import 'package:hive/hive.dart';
+import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
+import 'package:menu_repository/menu_repository.dart';
+import 'package:merchant_repository/merchant_repository.dart';
+import 'package:order_repository/order_repository.dart';
+import 'package:rating_repository/rating_repository.dart';
 import 'package:storage/storage.dart';
 
 void main() async {
@@ -20,6 +26,13 @@ void main() async {
       sharedpreference,
     ) async {
       //
+      var appDocumentDirectory =
+          await pathProvider.getApplicationDocumentsDirectory();
+
+      Hive.init(appDocumentDirectory.path);
+      Hive.registerAdapter<Keranjang>(KeranjangAdapter());
+
+      await Hive.openBox<Keranjang>('keranjangBox');
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
@@ -29,8 +42,11 @@ void main() async {
           PenjualOrderRepository(firestore: firebaseStore);
       final _cloudStorage = CloudStorage();
       const _secureStorage = SecureStorage();
+      final _ratingRepository = RatingRepository(firestore: firebaseStore);
+      final _orderRepository = OrderRepository(firestore: firebaseStore);
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
+      _authenticationRepository.saveFcmToken(fcmToken ?? "");
 
       print(fcmToken);
 
@@ -39,11 +55,13 @@ void main() async {
       return App(
         appSharedPref: _sharedPref,
         authenticationRepository: _authenticationRepository,
-        merchantRepository: _merchantRepository,
         menuRepository: _menuRepository,
         categoryRepository: _categoryRepository,
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,
+        ratingRepository: _ratingRepository,
+        orderRepository: _orderRepository,
+        merchantRepository: _merchantRepository,
         penjualOrderRepository: _penjualOrderRepository,
       );
     },

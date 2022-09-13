@@ -16,33 +16,31 @@ class MenuModel extends Equatable {
   final bool? isPreOrder;
   final int? defaultStock;
   final bool? isRecomended;
-  final CategoryDetail? category;
   final int? price;
   final String? resetTime;
   final String? resetType;
   final String? rulepreordermenuId;
   final int? stock;
-  final List<String> tags;
+  final List<String>? tags;
 
-  const MenuModel({
-    this.menuId,
-    this.merchantId,
-    this.name,
-    this.autoResetStock,
-    this.categoryId,
-    this.desc,
+  const MenuModel(
+      {this.menuId,
+      this.merchantId,
+      this.name,
+      this.autoResetStock,
+      this.categoryId,
+      this.desc,
     this.defaultStock,
-    this.image,
-    this.isPreOrder,
-    this.isRecomended,
-    this.price,
-    this.resetTime,
-    this.resetType,
-    this.rulepreordermenuId,
-    this.category,
-    this.stock,
-    required this.tags,
-  });
+      this.image,
+      this.isPreOrder,
+      this.isRecomended,
+      this.price,
+      this.resetTime,
+      this.resetType,
+      this.rulepreordermenuId,
+
+      this.stock,
+      this.tags});
 
   factory MenuModel.fromJson(Map<String, dynamic> json) =>
       _$MenuModelFromJson(json);
@@ -50,25 +48,23 @@ class MenuModel extends Equatable {
   Map<String, dynamic> toJson() => _$MenuModelToJson(this);
 
   /// Copy with a new [MenuModel].
-  MenuModel copyWith({
-    String? menuId,
-    int? defaultStock,
-    String? merchantId,
-    String? name,
-    bool? autoResetStock,
-    String? categoryId,
-    String? desc,
-    String? image,
-    bool? isPreOrder,
-    bool? isRecomended,
-    int? price,
-    String? resetTime,
-    String? resetType,
-    String? rulepreordermenuId,
-    int? stock,
-    List<String>? tags,
-    CategoryDetail? category,
-  }) {
+  MenuModel copyWith(
+      {String? menuId,
+      String? merchantId,
+      int? defaultStock,
+      String? name,
+      bool? autoResetStock,
+      String? categoryId,
+      String? desc,
+      String? image,
+      bool? isPreOrder,
+      bool? isRecomended,
+      int? price,
+      String? resetTime,
+      String? resetType,
+      String? rulepreordermenuId,
+      int? stock,
+      List<String>? tags}) {
     return MenuModel(
       menuId: menuId ?? this.menuId,
       merchantId: merchantId ?? this.merchantId,
@@ -76,7 +72,6 @@ class MenuModel extends Equatable {
       autoResetStock: autoResetStock ?? this.autoResetStock,
       categoryId: categoryId ?? this.categoryId,
       desc: desc ?? this.desc,
-      defaultStock: defaultStock ?? this.defaultStock,
       image: image ?? this.image,
       isPreOrder: isPreOrder ?? this.isPreOrder,
       isRecomended: isRecomended ?? this.isRecomended,
@@ -86,11 +81,9 @@ class MenuModel extends Equatable {
       rulepreordermenuId: rulepreordermenuId ?? this.rulepreordermenuId,
       stock: stock ?? this.stock,
       tags: tags ?? this.tags,
-      category: category ?? this.category,
     );
   }
-
-  @override
+@override
   List<Object?> get props => [
         menuId,
         merchantId,
@@ -108,20 +101,4 @@ class MenuModel extends Equatable {
         stock,
         tags
       ];
-}
-
-@JsonSerializable()
-class CategoryDetail extends Equatable {
-  final String? category;
-  final String? categoryId;
-  final String? merchantId;
-
-  const CategoryDetail({this.category, this.categoryId, this.merchantId});
-  factory CategoryDetail.fromJson(Map<String, dynamic> json) =>
-      _$CategoryDetailFromJson(json);
-
-  Map<String, dynamic> toJson() => _$CategoryDetailToJson(this);
-  @override
-  // TODO: implement props
-  List<Object?> get props => [category, categoryId, merchantId];
 }

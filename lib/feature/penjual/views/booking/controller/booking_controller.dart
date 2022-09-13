@@ -28,7 +28,7 @@ class BookingController extends GetxController {
   // ALL BOOKING => isPreOrder = true
   RxList<List<MenuModelObs>> booking = List<List<MenuModelObs>>.empty().obs;
   List<String> allCategoryBooking = [];
-  late String merchantId;
+  String merchantId = "";
 
   // STREAM
   Stream<QuerySnapshot<Map<String, dynamic>>> streamAllBooking() async* {
@@ -40,9 +40,13 @@ class BookingController extends GetxController {
   }
 
   // FUTURE
-  Future<void> getAllMenu() async {
-    var querySnap =
-        await _firestore.collection("menuPerMerchant-$merchantId").get();
+  Future<void> getAllMenu({bool isEdit = false}) async {
+    late QuerySnapshot<Map<String, dynamic>> querySnap;
+    if (isEdit == false) {
+      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").where("isPreOrder", isEqualTo: false).get();
+    } else {
+      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").get();
+    }
 
     allCategoryMenu = [];
 
@@ -308,19 +312,6 @@ class BookingController extends GetxController {
         }
       }
     }
-  }
-
-  @override
-  Future<void> onInit() async {
-    super.onInit();
-    // TODO: @kuldii => Penentuan merchant masih hard code
-    // merchantId = "merchant1";
-
-    //get id merchant menggunakan shared preference
-    SharedPreferences logindata = await SharedPreferences.getInstance();
-    String idMerchant = logindata.getString('merchantId').toString();
-
-    merchantId = idMerchant;
   }
 
   @override

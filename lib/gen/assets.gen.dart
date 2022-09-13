@@ -12,9 +12,17 @@ import 'package:flutter/widgets.dart';
 class $AssetsImagesGen {
   const $AssetsImagesGen();
 
+  /// File path: assets/images/background.png
+  AssetGenImage get background =>
+      const AssetGenImage('assets/images/background.png');
+
   /// File path: assets/images/card_overlay_orange.png
   AssetGenImage get cardOverlayOrange =>
       const AssetGenImage('assets/images/card_overlay_orange.png');
+
+  /// File path: assets/images/ic_grfx_warning.png
+  AssetGenImage get icGrfxWarning =>
+      const AssetGenImage('assets/images/ic_grfx_warning.png');
 
   /// File path: assets/images/ill_cafetaria.png
   AssetGenImage get illCafetaria =>
@@ -32,13 +40,30 @@ class $AssetsImagesGen {
   AssetGenImage get illFood =>
       const AssetGenImage('assets/images/ill_food.png');
 
+  /// File path: assets/images/ill_home.png
+  AssetGenImage get illHome =>
+      const AssetGenImage('assets/images/ill_home.png');
+
+  /// File path: assets/images/ill_merchants.png
+  AssetGenImage get illMerchants =>
+      const AssetGenImage('assets/images/ill_merchants.png');
+
   /// File path: assets/images/ill_rate.png
   AssetGenImage get illRate =>
       const AssetGenImage('assets/images/ill_rate.png');
 
+  /// File path: assets/images/ill_sad.png
+  AssetGenImage get illSad => const AssetGenImage('assets/images/ill_sad.png');
+
   /// File path: assets/images/ill_wait.png
   AssetGenImage get illWait =>
       const AssetGenImage('assets/images/ill_wait.png');
+
+  /// File path: assets/images/info-1.png
+  AssetGenImage get info1 => const AssetGenImage('assets/images/info-1.png');
+
+  /// File path: assets/images/info-2.png
+  AssetGenImage get info2 => const AssetGenImage('assets/images/info-2.png');
 
   /// File path: assets/images/maskgroup.png
   AssetGenImage get maskgroup =>
@@ -52,6 +77,18 @@ class $AssetsImagesGen {
 
   /// File path: assets/images/offer_3.png
   AssetGenImage get offer3 => const AssetGenImage('assets/images/offer_3.png');
+
+  /// File path: assets/images/product-1.png
+  AssetGenImage get product1 =>
+      const AssetGenImage('assets/images/product-1.png');
+
+  /// File path: assets/images/product-2.png
+  AssetGenImage get product2 =>
+      const AssetGenImage('assets/images/product-2.png');
+
+  /// File path: assets/images/product-3.png
+  AssetGenImage get product3 =>
+      const AssetGenImage('assets/images/product-3.png');
 }
 
 class Assets {
@@ -72,7 +109,7 @@ class AssetGenImage {
     ImageErrorWidgetBuilder? errorBuilder,
     String? semanticLabel,
     bool excludeFromSemantics = false,
-    double? scale,
+    double? scale = 1.0,
     double? width,
     double? height,
     Color? color,
@@ -119,6 +156,4 @@ class AssetGenImage {
   }
 
   String get path => _assetName;
-
-  String get keyName => _assetName;
 }
