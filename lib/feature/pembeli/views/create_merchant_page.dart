@@ -39,7 +39,8 @@ class PembeliCreateMerchantView extends StatefulWidget {
   const PembeliCreateMerchantView(this.user, {Key? key}) : super(key: key);
   final User user;
   @override
-  State<PembeliCreateMerchantView> createState() => _PembeliCreateMerchantState();
+  State<PembeliCreateMerchantView> createState() =>
+      _PembeliCreateMerchantState();
 }
 
 class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
@@ -113,7 +114,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   }
 
   Future _handleUpload(String type) async {
-    final XFile? photo = await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
+    final XFile? photo =
+        await _picker.pickImage(source: ImageSource.camera, imageQuality: 25);
     setState(() {
       if (type == "dalam") {
         _fotoDalam = photo;
@@ -136,7 +138,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     if (latLng != null) {
       if (_latLngToko != null) {
         final GoogleMapController controller = await _mapController.future;
-        controller.moveCamera(CameraUpdate.newCameraPosition(CameraPosition(target: latLng, zoom: 17)));
+        controller.moveCamera(CameraUpdate.newCameraPosition(
+            CameraPosition(target: latLng, zoom: 17)));
       }
 
       setState(() {
@@ -145,7 +148,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         _latLngToko = latLng;
       });
 
-      List<Placemark> placemarks = await placemarkFromCoordinates(latLng.latitude, latLng.longitude, localeIdentifier: "id");
+      List<Placemark> placemarks = await placemarkFromCoordinates(
+          latLng.latitude, latLng.longitude,
+          localeIdentifier: "id");
       Placemark placemark = placemarks[0];
 
       _alamatLengkap.text =
@@ -161,8 +166,14 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
     });
 
     try {
-      var snapshotLuar = await _storage.ref().child('images/merchant/photo_from_outside/$userId.jpg').putFile(File(_fotoLuar!.path));
-      var snapshotDalam = await _storage.ref().child('images/merchant/photo_from_inside/$userId.jpg').putFile(File(_fotoDalam!.path));
+      var snapshotLuar = await _storage
+          .ref()
+          .child('images/merchant/photo_from_outside/$userId.jpg')
+          .putFile(File(_fotoLuar!.path));
+      var snapshotDalam = await _storage
+          .ref()
+          .child('images/merchant/photo_from_inside/$userId.jpg')
+          .putFile(File(_fotoDalam!.path));
 
       var urlLuar = await snapshotLuar.ref.getDownloadURL();
       var urlDalam = await snapshotDalam.ref.getDownloadURL();
@@ -194,10 +205,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => const PembeliProfileView(),
+          builder: (context) => PenjualDashboardPage(id: user.uid),
         ),
       );
-      Fluttertoast.showToast(msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+      Fluttertoast.showToast(
+          msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
       Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
     } finally {
@@ -317,14 +329,18 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   controller: _kodePos,
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         "TOKO BUKA",
-                        style: TextStyle(fontSize: 13, color: MyColors.grey1, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: MyColors.grey1,
+                            fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -332,17 +348,23 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                         },
                         child: Container(
                           height: 60,
-                          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 18),
                           clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, 0),
-                              spreadRadius: 0,
-                              blurRadius: 1,
-                            ),
-                          ]),
+                          decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(0, 0),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                ),
+                              ]),
                           child: Row(
                             children: [
                               Text(
@@ -350,7 +372,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                                     ? "Atur jam buka"
                                     : "${_buka!.hour < 10 ? "0${_buka!.hour}" : _buka!.hour}:${_buka!.minute < 10 ? "0${_buka!.minute}" : _buka!.minute}",
                                 style: TextStyle(
-                                  color: _buka == null ? Colors.grey : Colors.black,
+                                  color: _buka == null
+                                      ? Colors.grey
+                                      : Colors.black,
                                   fontSize: 16,
                                 ),
                               ),
@@ -362,14 +386,18 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                   ),
                 ),
                 Container(
-                  margin: const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                  margin:
+                      const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
                   child: Column(
                     mainAxisSize: MainAxisSize.min,
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       const Text(
                         "TOKO TUTUP",
-                        style: TextStyle(fontSize: 13, color: MyColors.grey1, fontWeight: FontWeight.bold),
+                        style: TextStyle(
+                            fontSize: 13,
+                            color: MyColors.grey1,
+                            fontWeight: FontWeight.bold),
                       ),
                       GestureDetector(
                         onTap: () {
@@ -377,17 +405,23 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                         },
                         child: Container(
                           height: 60,
-                          margin: const EdgeInsets.symmetric(vertical: 12, horizontal: 0),
-                          padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 18),
+                          margin: const EdgeInsets.symmetric(
+                              vertical: 12, horizontal: 0),
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 5, horizontal: 18),
                           clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(borderRadius: BorderRadius.all(Radius.circular(8)), color: Colors.white, boxShadow: [
-                            BoxShadow(
-                              color: Colors.grey,
-                              offset: Offset(0, 0),
-                              spreadRadius: 0,
-                              blurRadius: 1,
-                            ),
-                          ]),
+                          decoration: const BoxDecoration(
+                              borderRadius:
+                                  BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(0, 0),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                ),
+                              ]),
                           child: Row(
                             children: [
                               Text(
@@ -395,7 +429,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                                     ? "Atur jam tutup"
                                     : "${_tutup!.hour < 10 ? "0${_tutup!.hour}" : _tutup!.hour}:${_tutup!.minute < 10 ? "0${_tutup!.minute}" : _tutup!.minute}",
                                 style: TextStyle(
-                                  color: _tutup == null ? Colors.grey : Colors.black,
+                                  color: _tutup == null
+                                      ? Colors.grey
+                                      : Colors.black,
                                   fontSize: 16,
                                 ),
                               ),
@@ -434,7 +470,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                                 },
                                 markers: Set.from(_marker),
                               ),
-                              GestureDetector(onTap: _handleMapsPicker, child: Expanded(child: Container(color: Colors.black.withOpacity(0))))
+                              GestureDetector(
+                                  onTap: _handleMapsPicker,
+                                  child: Expanded(
+                                      child: Container(
+                                          color: Colors.black.withOpacity(0))))
                             ],
                           )),
                 const SizedBox(height: 20),
@@ -442,7 +482,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                     label: "ALAMAT LENGKAP TOKO",
                     controller: _alamatLengkap,
                     maxLine: 4,
-                    hint: "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
+                    hint:
+                        "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
                 CustomTextfield2(
                   label: "LOKASI DETAIL",
                   hint: "Misalkan: Depan Circle K",
@@ -458,7 +499,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                       size: 32,
                     ),
                     onTap: () => _handleUpload("luar"),
-                    child: _fotoLuar == null ? null : Image.file(File(_fotoLuar!.path), fit: BoxFit.contain)),
+                    child: _fotoLuar == null
+                        ? null
+                        : Image.file(File(_fotoLuar!.path),
+                            fit: BoxFit.contain)),
                 const SizedBox(height: 32),
                 CustomBoxPicker(
                     label: "UNGGAH FOTO TOKO DARI DALAM",
@@ -469,7 +513,10 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                       size: 32,
                     ),
                     onTap: () => _handleUpload("dalam"),
-                    child: _fotoDalam == null ? null : Image.file(File(_fotoDalam!.path), fit: BoxFit.contain)),
+                    child: _fotoDalam == null
+                        ? null
+                        : Image.file(File(_fotoDalam!.path),
+                            fit: BoxFit.contain)),
                 const SizedBox(height: 40),
                 SizedBox(
                   width: double.infinity,

@@ -104,6 +104,7 @@ class AddMenuPenjualView extends StatelessWidget {
                     menuPenjualState.tagging.isNotEmpty
                 ? () {
                     context.read<AddMenuPenjualBloc>().add(SaveMenu());
+                    Navigator.of(context).pop();
                   }
                 : null,
           ),

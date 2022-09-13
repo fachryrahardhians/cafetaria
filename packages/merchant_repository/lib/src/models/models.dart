@@ -1,101 +1,86 @@
 // ignore_for_file: public_member_api_docs, non_constant_identifier_names
 
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'models.g.dart';
 
 @JsonSerializable()
+// ignore: public_member_api_docs
 class MerchantModel extends Equatable {
-  //final List<String> tags;
-
-  const MerchantModel({
-    this.userId,
-    this.merchantId,
-    this.name,
-    this.address,
-    this.address_detail,
-    this.address_latitude,
-    this.address_longitud,
-    this.category,
-    this.city,
-    this.create_at,
-    this.maxPrice,
-    this.photo_from_inside,
-    this.photo_from_outside,
-    this.postal_code,
-  });
+  const MerchantModel(
+      {this.maxPrice,
+      this.merchantId,
+      this.minPrice,
+      this.name,
+      this.rating,
+      this.test,
+      this.totalCountRating,
+      this.totalOrderToday,
+      this.totalSalesToday,
+      this.totalSalesYesterday,
+      this.userId,
+      this.address,
+      this.address_detail,
+      this.address_latitude,
+      this.address_longitude});
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) =>
       _$MerchantModelFromJson(json);
-  final String? userId;
+  final int? maxPrice;
   final String? merchantId;
+  final int? minPrice;
   final String? name;
+  final double? rating;
+  final String? test;
+  final int? totalCountRating;
+  final int? totalOrderToday;
+  final int? totalSalesToday;
+  final int? totalSalesYesterday;
+  final String? userId;
   final String? address;
   final String? address_detail;
   final double? address_latitude;
-  final double? address_longitud;
-  final String? category;
-  final String? city;
-  final DateTime? create_at;
-  final int? maxPrice;
-  final String? photo_from_inside;
-  final String? photo_from_outside;
-  final String? postal_code;
+  final double? address_longitude;
 
   Map<String, dynamic> toJson() => _$MerchantModelToJson(this);
 
   /// Copy with a new [MerchantModel].
-  MerchantModel copyWith({
-    String? userId,
-    String? merchantId,
-    String? name,
-    String? address,
-    String? address_detail,
-    double? address_latitude,
-    double? address_longitud,
-    String? category,
-    String? city,
-    DateTime? create_at,
-    int? maxPrice,
-    String? photo_from_inside,
-    String? photo_from_outside,
-    String? postal_code,
-  }) {
+  MerchantModel copyWith(
+      {int? maxPrice,
+      String? merchantId,
+      int? minPrice,
+      String? name,
+      double? rating,
+      String? test,
+      int? totalCountRating,
+      int? totalOrderToday,
+      int? totalSalesToday,
+      int? totalSalesYesterday,
+      String? userId,
+      String? address,
+      String? address_detail,
+      double? address_latitude,
+      double? address_longitude}) {
     return MerchantModel(
-      userId: userId ?? this.userId,
+      maxPrice: maxPrice ?? this.maxPrice,
       merchantId: merchantId ?? this.merchantId,
+      minPrice: minPrice ?? this.minPrice,
       name: name ?? this.name,
+      rating: rating ?? this.rating,
+      test: test ?? this.test,
+      totalCountRating: totalCountRating ?? this.totalCountRating,
+      totalOrderToday: totalOrderToday ?? this.totalOrderToday,
+      totalSalesToday: totalSalesToday ?? this.totalSalesToday,
+      totalSalesYesterday: totalSalesYesterday ?? this.totalSalesYesterday,
+      userId: userId ?? this.userId,
       address: address ?? this.address,
       address_detail: address_detail ?? this.address_detail,
       address_latitude: address_latitude ?? this.address_latitude,
-      address_longitud: address_longitud ?? this.address_longitud,
-      category: category ?? this.category,
-      city: city ?? this.city,
-      create_at: create_at ?? this.create_at,
-      maxPrice: maxPrice ?? this.maxPrice,
-      photo_from_inside: photo_from_inside ?? this.photo_from_inside,
-      photo_from_outside: photo_from_outside ?? this.photo_from_outside,
-      postal_code: postal_code ?? this.postal_code,
+      address_longitude: address_longitude ?? this.address_longitude,
     );
   }
 
   @override
-  List<Object?> get props => [
-        userId,
-        merchantId,
-        name,
-        address,
-        address_detail,
-        address_latitude,
-        address_longitud,
-        category,
-        city,
-        create_at,
-        maxPrice,
-        photo_from_inside,
-        photo_from_outside,
-        postal_code,
-      ];
+  List<Object?> get props => [];
 }

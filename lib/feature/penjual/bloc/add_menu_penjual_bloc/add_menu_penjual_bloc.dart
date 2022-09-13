@@ -11,6 +11,7 @@ import 'package:cloud_storage/cloud_storage.dart';
 import 'package:equatable/equatable.dart';
 import 'package:formz/formz.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 import 'package:uuid/uuid.dart';
 
 part 'add_menu_penjual_event.dart';
@@ -326,11 +327,13 @@ class AddMenuPenjualBloc
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
     ));
+    SharedPreferences idmercahnt = await SharedPreferences.getInstance();
+    String id = idmercahnt.getString("merchantId").toString();
     final menu = MenuModel(
       menuId: _uuid.v4(),
 
       /// TODO(@Burhan): id merchant still hardcode
-      merchantId: '0DzobjgsR7jF8qWvCoG0',
+      merchantId: id,
       name: state.menuInput.value,
       autoResetStock: state.checkStockAccepted,
       categoryId: state.categoryInput.value,

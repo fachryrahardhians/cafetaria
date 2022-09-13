@@ -38,7 +38,7 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'isPreOrder': instance.isPreOrder,
       'defaultStock': instance.defaultStock,
       'isRecomended': instance.isRecomended,
-      'category': instance.category?.toJson(),
+     
       'price': instance.price,
       'resetTime': instance.resetTime,
       'resetType': instance.resetType,
@@ -47,16 +47,3 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'tags': instance.tags,
     };
 
-CategoryDetail _$CategoryDetailFromJson(Map<String, dynamic> json) =>
-    CategoryDetail(
-      category: json['category'] as String?,
-      categoryId: json['categoryId'] as String?,
-      merchantId: json['merchantId'] as String?,
-    );
-
-Map<String, dynamic> _$CategoryDetailToJson(CategoryDetail instance) =>
-    <String, dynamic>{
-      'category': instance.category,
-      'categoryId': instance.categoryId,
-      'merchantId': instance.merchantId,
-    };

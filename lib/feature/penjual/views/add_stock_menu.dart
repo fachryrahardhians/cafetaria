@@ -44,7 +44,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
 
   TextEditingController? _stokBarang;
   TimeOfDay time = const TimeOfDay(hour: 10, minute: 30);
-  String timeRestok = "";
+  String? timeRestok = "";
   final oCcy = NumberFormat("#,##0.00", "IDR");
   @override
   void initState() {
@@ -58,15 +58,17 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
     context.read<AturStockBlocBloc>().add(AturStokJumlah(_stokBarang!.text));
     if (berulangActive == true) {
       selectedDropdown =
-          widget.user.resetType == "" || widget.user.resetType!.isEmpty
+          widget.user.resetType == "" || widget.user.resetType == null
               ? "jam"
-              : widget.user.resetType!;
-      timeRestok = widget.user.resetTime!;
+              : widget.user.resetType.toString();
+      timeRestok = widget.user.resetTime;
       context.read<AturStockBlocBloc>().add(AturStokRestok(berulangActive));
       context
           .read<AturStockBlocBloc>()
           .add(AturStokRestokType(selectedDropdown));
-      context.read<AturStockBlocBloc>().add(AturStokTime(timeRestok));
+      context
+          .read<AturStockBlocBloc>()
+          .add(AturStokTime(timeRestok.toString()));
     }
   }
 
@@ -301,9 +303,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                   padding: const EdgeInsets.only(
                                       top: 15, left: 12, bottom: 10),
                                   child: Text(
-                                    timeRestok == ""
+                                    timeRestok == "" || timeRestok == null
                                         ? ""
-                                        : "${DateTime.parse(timeRestok).hour} : ${DateTime.parse(timeRestok).minute}",
+                                        : "${DateTime.parse(timeRestok.toString()).hour} : ${DateTime.parse(timeRestok.toString()).minute}",
                                     style: const TextStyle(
                                       color: Colors.black,
                                       fontSize: 17,
@@ -340,9 +342,8 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                       timeRestok = DateTime(now.year, now.month,
                                               now.day, time.hour, time.minute)
                                           .toString();
-                                      context
-                                          .read<AturStockBlocBloc>()
-                                          .add(AturStokTime(timeRestok));
+                                      context.read<AturStockBlocBloc>().add(
+                                          AturStokTime(timeRestok.toString()));
                                     });
                                   },
                                   child: const Padding(
@@ -443,11 +444,11 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                   // state.tipeRestok.valid &&
                   // state.timeReset.valid
                   ? () {
+                      Navigator.pop(context);
                       final stok = widget.user;
                       context.read<AturStockBlocBloc>().add(
                             AturStok(stok),
                           );
-                      Navigator.pop(context);
                     }
                   : null,
               child: const Text('SIMPAN'),

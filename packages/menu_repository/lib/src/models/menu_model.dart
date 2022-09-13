@@ -30,7 +30,7 @@ class MenuModel extends Equatable {
       this.autoResetStock,
       this.categoryId,
       this.desc,
-    this.defaultStock,
+      this.defaultStock,
       this.image,
       this.isPreOrder,
       this.isRecomended,
@@ -38,7 +38,6 @@ class MenuModel extends Equatable {
       this.resetTime,
       this.resetType,
       this.rulepreordermenuId,
-
       this.stock,
       this.tags});
 
@@ -70,6 +69,7 @@ class MenuModel extends Equatable {
       merchantId: merchantId ?? this.merchantId,
       name: name ?? this.name,
       autoResetStock: autoResetStock ?? this.autoResetStock,
+      defaultStock: defaultStock ?? this.defaultStock,
       categoryId: categoryId ?? this.categoryId,
       desc: desc ?? this.desc,
       image: image ?? this.image,
@@ -83,9 +83,11 @@ class MenuModel extends Equatable {
       tags: tags ?? this.tags,
     );
   }
-@override
+
+  @override
   List<Object?> get props => [
         menuId,
+        defaultStock,
         merchantId,
         name,
         autoResetStock,

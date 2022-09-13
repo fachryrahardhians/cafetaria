@@ -1,37 +1,51 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
-import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
+import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:order_repository/order_repository.dart';
+import 'package:rating_repository/rating_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
-import 'package:sharedpref_repository/sharedpref_repository.dart';
 import 'package:storage/storage.dart';
 
+import 'package:sharedpref_repository/sharedpref_repository.dart';
+
 class App extends StatelessWidget {
-  const App({
-    Key? key,
-    required AuthenticationRepository authenticationRepository,
-    required MenuRepository menuRepository,
-    required AppSharedPref appSharedPref,
-    required CategoryRepository categoryRepository,
-    required CloudStorage cloudStorage,
-    required MerchantRepository merchantRepository,
-    required SecureStorage secureStorage,
-    required PenjualOrderRepository penjualOrderRepository,
-  })  : _authenticationRepository = authenticationRepository,
+  const App(
+      {Key? key,
+      required AuthenticationRepository authenticationRepository,
+      required MenuRepository menuRepository,
+      required CategoryRepository categoryRepository,
+      required CloudStorage cloudStorage,
+      required SecureStorage secureStorage,
+      required AppSharedPref appSharedPref,
+      required PenjualOrderRepository penjualOrderRepository,
+      required RatingRepository ratingRepository,
+      required OrderRepository orderRepository,
+      required MerchantRepository merchantRepository})
+
+      //     : _authenticationRepository = authenticationRepository,
+      // const App(
+      //     {Key? key,
+      //     required AuthenticationRepository authenticationRepository,
+      //     required MenuRepository menuRepository,
+      //     required AppSharedPref appSharedPref})
+      : _authenticationRepository = authenticationRepository,
         _menuRepository = menuRepository,
-        _categoryRepository = categoryRepository,
-        _merchantRepository = merchantRepository,
         _appSharedPref = appSharedPref,
+        _categoryRepository = categoryRepository,
         _cloudStorage = cloudStorage,
         _secureStorage = secureStorage,
+        _ratingRepository = ratingRepository,
+        _orderRepository = orderRepository,
+        _merchantRepository = merchantRepository,
         _penjualOrderRepository = penjualOrderRepository,
         super(key: key);
 
@@ -41,8 +55,11 @@ class App extends StatelessWidget {
   final CategoryRepository _categoryRepository;
   final CloudStorage _cloudStorage;
   final SecureStorage _secureStorage;
-  final PenjualOrderRepository _penjualOrderRepository;
+  final RatingRepository _ratingRepository;
+  final OrderRepository _orderRepository;
   final MerchantRepository _merchantRepository;
+  final PenjualOrderRepository _penjualOrderRepository;
+
   @override
   Widget build(BuildContext context) {
     return MultiRepositoryProvider(
@@ -52,16 +69,13 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _categoryRepository),
         RepositoryProvider.value(value: _secureStorage),
         RepositoryProvider.value(value: _cloudStorage),
-        RepositoryProvider.value(value: _penjualOrderRepository),
+        RepositoryProvider.value(value: _ratingRepository),
+        RepositoryProvider.value(value: _orderRepository),
         RepositoryProvider.value(value: _merchantRepository),
+        RepositoryProvider.value(value: _penjualOrderRepository),
         RepositoryProvider.value(value: _appSharedPref),
       ],
-      child: BlocProvider(
-        create: (context) => AppBloc(
-          authenticationRepository: _authenticationRepository,
-        ),
-        child: const AppView(),
-      ),
+      child: const AppView(),
     );
   }
 }
@@ -73,13 +87,17 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
+      localizationsDelegates: const [
+        GlobalMaterialLocalizations.delegate,
+      ],
       theme: CFTheme.themeData,
       title: 'Cafetaria',
-      home: statusApp == AppStatus.authenticated
-          ? const PembeliDashboard()
-          : const LoginPage(),
+      home: const LoginPage(),
+      // theme: ThemeData(
+      //   primarySwatch: Colors.red,
+      //   fontFamily: GoogleFonts.ubuntu().fontFamily,
+      // ),
     );
   }
 }

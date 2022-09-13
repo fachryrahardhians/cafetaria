@@ -11,6 +11,7 @@ import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
+import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
@@ -64,11 +65,13 @@ class _PembeliProfileState extends State<PembeliProfileView> {
 
           return InkWell(
             onTap: () {
-              Navigator.pushReplacement(
+              Navigator.push(
                 context,
                 MaterialPageRoute(
                   builder: (_) => snapshot.data!.exists
-                      ? const PenjualDashboardPage()
+                      ? PenjualDashboardPage(
+                          id: user.uid,
+                        )
                       : PembeliCreateMerchantPage(user),
                 ),
               );
@@ -231,7 +234,6 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                     child: ReusableButton1(
                       label: "KELUAR",
                       onPressed: () async {
-                        WidgetsFlutterBinding.ensureInitialized();
                         await auth.signoutGoogle();
                         Navigator.pushReplacement(
                           context,
@@ -239,6 +241,7 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                             builder: (context) => const LoginPage(),
                           ),
                         );
+                        WidgetsFlutterBinding.ensureInitialized();
                         var isRunning =
                             await FlutterBackgroundService().isServiceRunning();
                         if (isRunning) {

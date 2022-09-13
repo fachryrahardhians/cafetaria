@@ -1,5 +1,6 @@
 import 'dart:async';
 
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
@@ -8,10 +9,12 @@ import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive/hive.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -38,6 +41,7 @@ class PenjualDashboardPage extends StatelessWidget {
 //fungsi flutter background service
 onStart() async {
   WidgetsFlutterBinding.ensureInitialized();
+
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
   );
@@ -52,7 +56,7 @@ onStart() async {
   });
 
   //akan melakukan reload selama waktu atau duration yang diberikan
-  Timer.periodic(const Duration(minutes: 30), (time) async {
+  Timer.periodic(const Duration(seconds: 10), (time) async {
     final idMerchant = await SharedPreferences.getInstance();
     List<MenuModel> data = await menurepository
         .getAllMenu(idMerchant.getString("merchantId").toString());
@@ -142,7 +146,6 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
 
   @override
   Widget build(BuildContext context) {
-    AuthenticationRepository auth = context.read<AuthenticationRepository>();
     return Scaffold(
       backgroundColor: Colors.white,
       body: SafeArea(
@@ -174,10 +177,10 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                         ),
                       ),
                       const SizedBox(height: 5),
-                      const Text(
-                        "Ayam Pangeran - Gambir",
-                        style: TextStyle(color: MyColors.grey3),
-                      ),
+                      // const Text(
+                      //   "Ayam Pangeran - Gambir",
+                      //   style: TextStyle(color: MyColors.grey3),
+                      // ),
                       const SizedBox(height: 30),
                       // Container Total Penjualan
                       Container(
@@ -205,12 +208,12 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                                       style: TextStyle(color: MyColors.white),
                                     ),
                                     RichText(
-                                      text: const TextSpan(
+                                      text: TextSpan(
                                         text: "Rp ",
                                         children: [
                                           TextSpan(
-                                            text: "2.350.100",
-                                            style: TextStyle(
+                                            text: "${items?.totalSalesToday}",
+                                            style: const TextStyle(
                                               color: MyColors.white,
                                               fontSize: 24,
                                             ),
@@ -223,13 +226,13 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                               ],
                             ),
                             Column(
-                              children: const [
-                                Text(
+                              children: [
+                                const Text(
                                   "Dari kemarin",
                                   style: TextStyle(color: MyColors.white),
                                 ),
                                 Text(
-                                  "Rp1.750.500",
+                                  "Rp ${items?.totalSalesYesterday}",
                                   style: TextStyle(color: MyColors.white),
                                 ),
                               ],
@@ -250,15 +253,15 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                         mainAxisAlignment: MainAxisAlignment.center,
                         children: [
                           RichText(
-                            text: const TextSpan(
-                              text: "250 ",
-                              style: TextStyle(
+                            text: TextSpan(
+                              text: items?.totalOrderToday.toString(),
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 color: MyColors.blackText,
                               ),
-                              children: [
+                              children: const [
                                 TextSpan(
-                                  text: "Pesanan",
+                                  text: " Pesanan",
                                   style: TextStyle(
                                     fontWeight: FontWeight.normal,
                                     color: MyColors.blackText,
@@ -374,7 +377,7 @@ class MainMenuWidget extends StatelessWidget {
                 },
                 image: "assets/icons/paper.png",
                 title: "Pesanan",
-                total: 4,
+                total: merchantModel!.totalOrderToday!,
               ),
               HomeItemOrder(
                 route: () {
@@ -398,7 +401,7 @@ class MainMenuWidget extends StatelessWidget {
                   Navigator.push(
                     context,
                     MaterialPageRoute(
-                      builder: (_) => BookingPage(merchantId),
+                      builder: (_) => BookingPage(merchantModel!.merchantId!),
                     ),
                   );
                 },
