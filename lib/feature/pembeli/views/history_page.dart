@@ -323,7 +323,7 @@ class _DoneListState extends State<DoneList> {
               orderRepository: context.read<OrderRepository>(),
               authenticationRepository:
                   context.read<AuthenticationRepository>())
-            ..add(GetHistoryOrder('done')),
+            ..add(GetHistoryOrder('finish')),
         ),
         BlocProvider<ListMerchantBloc>(
             create: (context) => ListMerchantBloc(
@@ -351,8 +351,8 @@ class _DoneListState extends State<DoneList> {
                   return SizedBox(
                     height: 200,
                     child: ListView.separated(
-                        padding:
-                            EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 24, vertical: 16),
                         itemBuilder: (context, index) {
                           final item = items[index];
                           MerchantModel? merchant;

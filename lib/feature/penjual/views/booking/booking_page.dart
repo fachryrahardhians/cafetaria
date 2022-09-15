@@ -121,7 +121,7 @@ class BookingPage extends StatelessWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.stretch,
                           children: [
-                            FutureBuilder<String>(
+                            FutureBuilder<String?>(
                               future: bookC.getCategoryName(
                                   bookC.allCategoryBooking[index]),
                               builder: (context, snapCat) {
@@ -136,7 +136,7 @@ class BookingPage extends StatelessWidget {
                                   );
                                 }
                                 return Text(
-                                  snapCat.data!,
+                                  snapCat.data.toString(),
                                   style: const TextStyle(
                                     fontSize: 15,
                                     fontWeight: FontWeight.bold,

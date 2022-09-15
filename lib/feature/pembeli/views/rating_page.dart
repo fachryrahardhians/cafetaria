@@ -81,7 +81,7 @@ class _RatingState extends State<Rating> {
               Text('Bagaimana Makananmu?',
                   style: textStyle.copyWith(
                       fontWeight: FontWeight.w500, height: 16)),
-              Container(
+              SizedBox(
                 height: SizeConfig.safeBlockVertical * 5,
                 child: ListView.separated(
                     shrinkWrap: true,

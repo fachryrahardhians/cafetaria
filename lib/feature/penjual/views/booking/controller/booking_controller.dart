@@ -5,7 +5,7 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_datetime_picker/flutter_datetime_picker.dart';
 import 'package:get/get.dart';
-import 'package:shared_preferences/shared_preferences.dart';
+
 
 class BookingController extends GetxController {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
@@ -43,9 +43,13 @@ class BookingController extends GetxController {
   Future<void> getAllMenu({bool isEdit = false}) async {
     late QuerySnapshot<Map<String, dynamic>> querySnap;
     if (isEdit == false) {
-      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").where("isPreOrder", isEqualTo: false).get();
+      querySnap = await _firestore
+          .collection("menuPerMerchant-$merchantId")
+          .where("isPreOrder", isEqualTo: false)
+          .get();
     } else {
-      querySnap = await _firestore.collection("menuPerMerchant-$merchantId").get();
+      querySnap =
+          await _firestore.collection("menuPerMerchant-$merchantId").get();
     }
 
     allCategoryMenu = [];
@@ -112,9 +116,9 @@ class BookingController extends GetxController {
     booking.refresh();
   }
 
-  Future<String> getCategoryName(String catId) async {
+  Future<String?> getCategoryName(String catId) async {
     var query = await _firestore.collection("category").doc(catId).get();
-    return query.data()!["category"].toString().toUpperCase();
+    return query.data()?["category"].toString().toUpperCase();
   }
 
   Future<void> aturJamPengambilan(context) async {

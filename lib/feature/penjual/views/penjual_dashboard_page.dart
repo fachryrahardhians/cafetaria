@@ -93,7 +93,7 @@ onStart() async {
     //fungsi perulangan untuk mengecek tipe auto restok
     for (var i = 0; i < data.length; i++) {
       //mengecek jika data resetTime sama dengan null akan break fungsi
-      if (data[i].resetTime.toString() == "" || data[i].resetTime!.isEmpty) {
+      if (data[i].resetTime.toString() == "" || data[i].resetTime == null) {
         //print("Data time kosong");
         break;
       } else if ((data[i].resetType == 'jam') &&
@@ -101,7 +101,7 @@ onStart() async {
               DateTime.parse(data[i].resetTime.toString()).hour)) {
         final docuser = FirebaseFirestore.instance
             .collection(
-                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+                'menu')
             .doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,
@@ -120,7 +120,7 @@ onStart() async {
                   DateTime.parse(data[i].resetTime.toString()).hour))) {
         final docuser = FirebaseFirestore.instance
             .collection(
-                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+                'menu')
             .doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,
@@ -139,7 +139,7 @@ onStart() async {
                   DateTime.parse(data[i].resetTime.toString()).hour))) {
         final docuser = FirebaseFirestore.instance
             .collection(
-                'menuPerMerchant-${idMerchant.getString("merchantId").toString()}')
+                'menu')
             .doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,

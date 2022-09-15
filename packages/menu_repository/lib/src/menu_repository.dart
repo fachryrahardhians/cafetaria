@@ -116,7 +116,7 @@ class MenuRepository {
   Future<void> editStockMenu(MenuModel menu, String idMerchant) async {
     try {
       await _firestore
-          .collection('menuPerMerchant-$idMerchant')
+          .collection('menu')
           .doc(menu.menuId)
           .update(menu.toJson());
     } catch (e) {

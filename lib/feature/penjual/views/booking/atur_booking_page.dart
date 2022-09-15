@@ -100,7 +100,7 @@ class AturBookingPage extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.stretch,
                             mainAxisSize: MainAxisSize.min,
                             children: [
-                              FutureBuilder<String>(
+                              FutureBuilder<String?>(
                                 future: bookC.getCategoryName(categoryId),
                                 builder: (context, snapCat) {
                                   if (snapCat.connectionState ==

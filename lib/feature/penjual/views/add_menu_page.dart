@@ -4,6 +4,7 @@ import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class AddMenuPage extends StatelessWidget {
   const AddMenuPage({Key? key}) : super(key: key);
@@ -114,21 +115,31 @@ class _ButtonSave extends StatelessWidget {
         }
       },
       builder: (context, state) {
-        return CFButton.primary(
-          child: (state.formzStatus == FormzStatus.submissionInProgress)
-              ? const CircularProgressIndicator()
-              : const Text('SIMPAN'),
-          onPressed: state.categoryInput.valid
-              ? () {
-                  context.read<AddCategoryBloc>().add(
-                        SaveCategory(
-                          category: _menuController.text,
-                          idMerchant: '0DzobjgsR7jF8qWvCoG0',
-                        ),
-                      );
-                }
-              : null,
-        );
+        getmerchant() async {
+          String? id = await context.read<AppSharedPref>().getMerchantId();
+          return id.toString();
+        }
+
+        return FutureBuilder<String>(
+            future: getmerchant(),
+            builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+              return CFButton.primary(
+                child: (state.formzStatus == FormzStatus.submissionInProgress)
+                    ? const CircularProgressIndicator()
+                    : const Text('SIMPAN'),
+                onPressed: state.categoryInput.valid
+                    ? () {
+                        context.read<AddCategoryBloc>().add(
+                              SaveCategory(
+                                category: _menuController.text,
+                                idMerchant: snapshot.data.toString(),
+                              ),
+                            );
+                        Navigator.of(context).pop();
+                      }
+                    : null,
+              );
+            });
       },
     );
   }

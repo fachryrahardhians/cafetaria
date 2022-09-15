@@ -1,5 +1,7 @@
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 
 import 'package:cafetaria_ui/cafetaria_ui.dart';
@@ -75,7 +77,12 @@ class App extends StatelessWidget {
         RepositoryProvider.value(value: _penjualOrderRepository),
         RepositoryProvider.value(value: _appSharedPref),
       ],
-      child: const AppView(),
+      child: BlocProvider(
+        create: (context) => AppBloc(
+          authenticationRepository: _authenticationRepository,
+        ),
+        child: const AppView(),
+      ),
     );
   }
 }
@@ -87,17 +94,13 @@ class AppView extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return MaterialApp(
-      localizationsDelegates: const [
-        GlobalMaterialLocalizations.delegate,
-      ],
       theme: CFTheme.themeData,
       title: 'Cafetaria',
-      home: const LoginPage(),
-      // theme: ThemeData(
-      //   primarySwatch: Colors.red,
-      //   fontFamily: GoogleFonts.ubuntu().fontFamily,
-      // ),
+      home: statusApp == AppStatus.authenticated
+          ? const PembeliDashboardPage()
+          : const LoginPage(),
     );
   }
 }

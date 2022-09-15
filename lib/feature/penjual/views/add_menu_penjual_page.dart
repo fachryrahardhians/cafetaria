@@ -188,7 +188,7 @@ class AddMenuPenjualView extends StatelessWidget {
                       onChanged: (val) {
                         context
                             .read<AddMenuPenjualBloc>()
-                            .add(KategoriChange(val!.category));
+                            .add(KategoriChange(val!.categoryId.toString()));
                       },
                     )
                   : const SizedBox.shrink(),
