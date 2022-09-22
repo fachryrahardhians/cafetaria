@@ -99,10 +99,8 @@ onStart() async {
       } else if ((data[i].resetType == 'jam') &&
           (DateTime.now().hour >=
               DateTime.parse(data[i].resetTime.toString()).hour)) {
-        final docuser = FirebaseFirestore.instance
-            .collection(
-                'menu')
-            .doc(data[i].menuId);
+        final docuser =
+            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,
           'resetTime': DateTime(
@@ -118,18 +116,12 @@ onStart() async {
                   DateTime.parse(data[i].resetTime.toString()).day) &&
               (DateTime.now().hour >=
                   DateTime.parse(data[i].resetTime.toString()).hour))) {
-        final docuser = FirebaseFirestore.instance
-            .collection(
-                'menu')
-            .doc(data[i].menuId);
+        final docuser =
+            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,
-          'resetTime': DateTime(
-                  DateTime.now().year,
-                  DateTime.now().month,
-                  DateTime.now().day + 1,
-                  DateTime.parse(data[i].resetTime!).hour,
-                  DateTime.now().minute)
+          'resetTime': DateTime.parse(data[i].resetTime!)
+              .add(const Duration(days: 1))
               .toString()
         });
       } else if ((data[i].resetType == 'minggu') &&
@@ -137,18 +129,12 @@ onStart() async {
                   DateTime.parse(data[i].resetTime.toString()).day) &&
               (DateTime.now().hour >=
                   DateTime.parse(data[i].resetTime.toString()).hour))) {
-        final docuser = FirebaseFirestore.instance
-            .collection(
-                'menu')
-            .doc(data[i].menuId);
+        final docuser =
+            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
         docuser.update({
           'stock': data[i].defaultStock!,
-          'resetTime': DateTime(
-                  DateTime.now().year,
-                  DateTime.now().month,
-                  DateTime.now().day + 7,
-                  DateTime.parse(data[i].resetTime!).hour,
-                  DateTime.now().minute)
+          'resetTime': DateTime.parse(data[i].resetTime!)
+              .add(const Duration(days: 7))
               .toString()
         });
       }

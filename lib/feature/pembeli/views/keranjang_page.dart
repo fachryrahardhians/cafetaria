@@ -71,7 +71,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
   //DateTime selectedDate = DateTime.now();
   DateTime _selectedDay = DateTime.now().add(const Duration(days: 1));
   DateTime _focusedDay = DateTime.now().add(const Duration(days: 1));
-  DateTime _availableDay = DateTime.now();
+  final DateTime _availableDay = DateTime.now();
   List<Keranjang> menuInKeranjang = [];
 
   int subTotalPrice = 0;
@@ -183,21 +183,23 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     shrinkWrap: true,
                     itemBuilder: (context, index) {
                       if (_preorder) {
-                        if (menuInKeranjang[index].rulepreordermenuId == '')
+                        if (menuInKeranjang[index].rulepreordermenuId == '') {
                           return disabledItem(
                               menuInKeranjang[index].quantity,
                               menuInKeranjang[index].name.toString(),
                               menuInKeranjang[index].totalPrice);
-                        else
+                        } else {
                           return item(
                               menuInKeranjang[index].quantity,
                               menuInKeranjang[index].name.toString(),
                               menuInKeranjang[index].totalPrice);
-                      } else
+                        }
+                      } else {
                         return item(
                             menuInKeranjang[index].quantity,
                             menuInKeranjang[index].name.toString(),
                             menuInKeranjang[index].totalPrice);
+                      }
                     },
                     separatorBuilder: (context, index) => SizedBox(
                           height: SizeConfig.safeBlockVertical * 3,
@@ -305,7 +307,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           fontWeight: FontWeight.w500, fontSize: 15),
                     );
                   } else {
-                    return SizedBox();
+                    return const SizedBox();
                   }
                 }))
               ],
@@ -320,18 +322,24 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 message:
                     'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
                 buttonText: 'KEMBALI KE HOME',
-                onPressAction: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>PembeliDashboard()), (route) => false),
+                onPressAction: () => Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (_) => PembeliDashboard()),
+                    (route) => false),
               );
               showDialog(
                   context: context,
                   builder: (BuildContext context) => baseDialog);
             } else {
-              Navigator.pushAndRemoveUntil(context,
-                  MaterialPageRoute(builder: (_) => const PembeliDashboardPage(index: 2)), (route) => false);
+              Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => const PembeliDashboardPage(index: 2)),
+                  (route) => false);
             }
-            menuInKeranjang.forEach((element) {
+            for (var element in menuInKeranjang) {
               context.read<MenuInCartBloc>().add(DeleteMenuInCart(element));
-            });
+            }
           } else if (state.formzStatus == FormzStatus.submissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -352,7 +360,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         showDialog(
                             context: context,
                             builder: (BuildContext context) => _warningAlert());
-                      } else
+                      } else {
                         context.read<AddOrderBloc>().add(
                               SaveOrder(
                                   merchantId: widget.merchantId,
@@ -366,6 +374,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                       _selectedDay.toString().split(' ')[0] +
                                           ' 08:00:00.000'),
                             );
+                      }
                     }
                   : null,
             );
@@ -402,9 +411,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
         if (state is MenuInCartRetrieved) {
           menuInKeranjang = state.menuInCart;
           int qty = 0;
-          state.menuInCart.forEach((element) {
+          for (var element in state.menuInCart) {
             qty += element.quantity;
-          });
+          }
           return Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
             children: [
@@ -429,13 +438,15 @@ class _KeranjangPageState extends State<KeranjangPage> {
               Text('$qty/50')
             ],
           );
-        } else
-          return SizedBox();
+        } else {
+          return const SizedBox();
+        }
       }),
     );
   }
 
   Widget _bookingOption(BuildContext context) {
+    // ignore: unused_local_variable
     final isRatingValid = context.select(
       (AddOrderBloc bloc) =>
           bloc.state.orderInput.pure ||
@@ -503,7 +514,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
               headerStyle: HeaderStyle(
                   leftChevronIcon: const Icon(
                     Icons.chevron_left_rounded,
-                    color: const Color(0xffEE3124),
+                    color: Color(0xffEE3124),
                   ),
                   rightChevronIcon: const Icon(
                     Icons.chevron_right_rounded,
@@ -523,7 +534,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 selectedDecoration: BoxDecoration(
                     color: Color(0xFFee3124), shape: BoxShape.circle),
               ),
-              locale: 'id_ID',
               firstDay: DateTime.utc(1980, 01, 01),
               lastDay: DateTime.utc(2030, 12, 31),
               calendarFormat: CalendarFormat.month,
@@ -613,8 +623,8 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         borderSide: BorderSide.none,
                         borderRadius: BorderRadius.circular(8)),
                     hintText: "Tentukan jam pengambilan",
-                    hintStyle: const TextStyle(
-                        fontSize: 13, color: const Color(0xffCACCCF)),
+                    hintStyle:
+                        const TextStyle(fontSize: 13, color: Color(0xffCACCCF)),
                   ),
                   validator: (value) {
                     if (value!.isEmpty) {

@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
@@ -49,7 +51,8 @@ class _MerchantPageState extends State<MerchantPage>
     return MultiBlocProvider(
         providers: [
           BlocProvider(
-              create: ((context) => listMerchantBloc..add(GetListMerchant()))),
+              create: ((context) =>
+                  listMerchantBloc..add(const GetListMerchant()))),
           BlocProvider(
               create: ((context) => addMenuToCartBloc..add(GetMenusInCart())))
         ],
@@ -127,79 +130,125 @@ class _MerchantPageState extends State<MerchantPage>
                     ],
                   ),
                   SizedBox(height: SizeConfig.safeBlockVertical * 2),
-
                   BlocBuilder<ListMerchantBloc, ListMerchantState>(
                       builder: ((context, state) {
                     if (state.status == ListMerchantStatus.loading) {
-                      return CircularProgressIndicator();
+                      return const CircularProgressIndicator();
                     } else if (state.status == ListMerchantStatus.success) {
-                      return Expanded(
-                          child: ListView.builder(
-                              itemCount: state.items!.length,
-                              itemBuilder: ((context, index) {
-                                return InkWell(
-                                    onTap: () {
-                                      selectedMerchant = state.items?[index];
-                                      if (merchantIdInKeranjang != null &&
-                                          state.items?[index].merchantId !=
-                                              merchantIdInKeranjang) {
-                                        showDialog(
-                                            context: context,
-                                            builder: ((context) {
-                                              return dialogWarnCart(
-                                                  state.items?[index]);
-                                            }));
-                                      } else {
-                                        Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) => MakananPage(
-                                                      title: state.items?[index]
-                                                              .name ??
-                                                          'Shabrina’s Kitchen - Gambir',
-                                                      idMerchant: state
-                                                          .items![index]
-                                                          .merchantId
-                                                          .toString(),
-                                                      alamat: state
-                                                          .items![index].address
-                                                          .toString(),
-                                                      rating: state
-                                                          .items?[index].rating,
-                                                      jumlahUlasan: state
-                                                          .items?[index]
-                                                          .totalCountRating,
-                                                      minPrice: state
-                                                          .items?[index]
-                                                          .minPrice,
-                                                      maxPrice: state
-                                                          .items?[index]
-                                                          .maxPrice,
-                                                    ))).then((value) => {
-                                              addMenuToCartBloc
-                                                ..add(GetMenusInCart())
-                                            });
-                                      }
-                                    },
-                                    child: Padding(
-                                      padding: EdgeInsets.only(
-                                          top:
-                                              SizeConfig.safeBlockVertical * 3),
-                                      child: outlet(
-                                          Assets
-                                              .images.illCafetariaBanner2.path,
-                                          false,
-                                          state.items?[index].name ??
-                                              'Shabrina’s Kitchen - Gambir',
-                                          'Lantai 1',
-                                          'Cafetaria',
-                                          '${state.items?[index].rating} • ${state.items?[index].totalCountRating} rating'),
-                                    ));
-                              })));
+                      //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
+                      List<MerchantModel> merchant = [];
+                      Future<List<MerchantModel>> listmerchant() async {
+                        for (var element in state.items!) {
+                          final menu = await context
+                              .read<MenuRepository>()
+                              .getAllMenu(element.merchantId.toString());
+                          if (menu.isEmpty) {
+                            print("data Kosong");
+                          } else {
+                            try {
+                              merchant.add(element);
+                            } catch (e) {
+                              throw Exception('Failed to get All menu');
+                            }
+                          }
+                        }
+                        return merchant;
+                      }
+
+                      return FutureBuilder<List<MerchantModel>>(
+                          future: listmerchant(),
+                          builder: (context, snapshot) {
+                           // print(snapshot.data?.length);
+                            return snapshot.data?.length == null
+                                ? const CircularProgressIndicator()
+                                : Expanded(
+                                    child: ListView.builder(
+                                        itemCount: snapshot.data?.length,
+                                        itemBuilder: ((context, index) {
+                                          return InkWell(
+                                              onTap: () {
+                                                selectedMerchant =
+                                                    state.items?[index];
+                                                if (merchantIdInKeranjang !=
+                                                        null &&
+                                                    state.items?[index]
+                                                            .merchantId !=
+                                                        merchantIdInKeranjang) {
+                                                  showDialog(
+                                                      context: context,
+                                                      builder: ((context) {
+                                                        return dialogWarnCart(
+                                                            state
+                                                                .items?[index]);
+                                                      }));
+                                                } else {
+                                                  Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  MakananPage(
+                                                                    title: snapshot
+                                                                            .data?[index]
+                                                                            .name ??
+                                                                        'Shabrina’s Kitchen - Gambir',
+                                                                    idMerchant: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .merchantId
+                                                                        .toString(),
+                                                                    alamat: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .address
+                                                                        .toString(),
+                                                                    rating: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .rating,
+                                                                    jumlahUlasan: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .totalCountRating,
+                                                                    minPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .minPrice,
+                                                                    maxPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .maxPrice,
+                                                                  )))
+                                                      .then((value) => {
+                                                            addMenuToCartBloc
+                                                              ..add(
+                                                                  GetMenusInCart())
+                                                          });
+                                                }
+                                              },
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    top: SizeConfig
+                                                            .safeBlockVertical *
+                                                        3),
+                                                child: outlet(
+                                                    Assets
+                                                        .images
+                                                        .illCafetariaBanner2
+                                                        .path,
+                                                    false,
+                                                    snapshot.data?[index]
+                                                            .name ??
+                                                        'Shabrina’s Kitchen - Gambir',
+                                                    'Lantai 1',
+                                                    'Cafetaria',
+                                                    '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
+                                              ));
+                                        })));
+                          });
                     } else if (state.status == ListMerchantStatus.failure) {
                       return Text(state.errorMessage.toString());
                     } else {
-                      return SizedBox();
+                      return const SizedBox();
                     }
                   })),
                   // GestureDetector(

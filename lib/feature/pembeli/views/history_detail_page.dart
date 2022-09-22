@@ -172,7 +172,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
         ],
       ),
       bottomNavigationBar: Visibility(
-        visible: item.ratingId==''&&item.statusOrder=='finish',
+        visible: (item.ratingId == "" && item.statusOrder == 'finish'),
         child: ReusableButton1(
           label: 'BELI NILAI DAN ULASAN',
           onPressed: () {

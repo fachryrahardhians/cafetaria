@@ -66,6 +66,7 @@ class ListMenu extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<ListMenu> createState() => _ListMenuState(title, idMerchant);
 }
 

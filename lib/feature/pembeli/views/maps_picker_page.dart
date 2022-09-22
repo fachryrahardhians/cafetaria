@@ -35,7 +35,7 @@ class _MapsPickerState extends State<MapsPickerView> {
   final Completer<GoogleMapController> _mapController = Completer();
   List<Marker> _marker = [];
   LatLng? _latLng;
-
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -105,9 +105,17 @@ class _MapsPickerState extends State<MapsPickerView> {
                     width: double.infinity,
                     height: 50,
                     child: ReusableButton1(
-                      label: "SIMPAN",
+                      label: loading ? "LOADING" : "SIMPAN",
                       onPressed: () {
-                        Navigator.pop(context, _latLng);
+                        setState(() {
+                          loading = true;
+                        });
+                        Timer(const Duration(seconds: 3), () {
+                          Navigator.pop(context, _latLng);
+                          setState(() {
+                            loading = false;
+                          });
+                        });
                       },
                       padding: const EdgeInsets.all(0),
                       margin: const EdgeInsets.all(0),

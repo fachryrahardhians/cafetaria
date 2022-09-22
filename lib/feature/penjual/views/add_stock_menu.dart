@@ -374,36 +374,17 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                       widget.user.resetTime == ""
                           ? Container()
                           : Text(
-                              widget.user.resetType == 'jam'
-                                  ? convertDateTime(
-                                      DateTime.parse(
-                                          widget.user.resetTime.toString()),
-                                      (DateTime.parse(widget.user.resetTime.toString())
-                                                  .hour +
-                                              1)
-                                          .toString(),
-                                      (DateTime.parse(widget.user.resetTime.toString())
-                                              .day)
-                                          .toString())
-                                  : widget.user.resetType == 'hari'
-                                      ? convertDateTime(
-                                          DateTime.parse(
-                                              widget.user.resetTime.toString()),
-                                          (DateTime.parse(widget.user.resetTime.toString())
-                                                  .hour)
-                                              .toString(),
-                                          (DateTime.parse(widget.user.resetTime.toString()).day + 1)
-                                              .toString())
-                                      : widget.user.resetType == 'minggu'
-                                          ? convertDateTime(
-                                              DateTime.parse(widget.user.resetTime
-                                                  .toString()),
-                                              (DateTime.parse(widget.user.resetTime.toString())
-                                                      .hour)
-                                                  .toString(),
-                                              (DateTime.parse(widget.user.resetTime.toString()).day + 7)
-                                                  .toString())
-                                          : "",
+                              convertDateTime(
+                                  DateTime.parse(
+                                      widget.user.resetTime.toString()),
+                                  (DateTime.parse(
+                                              widget.user.resetTime.toString())
+                                          .hour)
+                                      .toString(),
+                                  (DateTime.parse(
+                                              widget.user.resetTime.toString())
+                                          .day)
+                                      .toString()),
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
