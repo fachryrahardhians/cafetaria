@@ -108,6 +108,17 @@ class MenuCanBooked extends AddMenuPenjualEvent {
 
 class SaveMenu extends AddMenuPenjualEvent {}
 
+class UpdateMenu extends AddMenuPenjualEvent {
+  final bool updatePhoto;
+  final String photoUrl;
+  final String menuId;
+
+  const UpdateMenu(this.photoUrl, {required this.updatePhoto, required this.menuId});
+
+  @override
+  List<Object> get props => [updatePhoto, photoUrl, menuId];
+}
+
 class DeleteImage extends AddMenuPenjualEvent {}
 
 class DeleteTag extends AddMenuPenjualEvent {

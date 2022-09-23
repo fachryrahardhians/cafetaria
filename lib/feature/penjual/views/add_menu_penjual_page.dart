@@ -12,7 +12,8 @@ import 'package:image_picker/image_picker.dart';
 import 'package:menu_repository/menu_repository.dart';
 
 class AddMenuPenjualPage extends StatelessWidget {
-  const AddMenuPenjualPage({Key? key}) : super(key: key);
+  final MenuModel? menu;
+  const AddMenuPenjualPage({Key? key, this.menu}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -32,24 +33,77 @@ class AddMenuPenjualPage extends StatelessWidget {
           )..add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0')),
         ),
       ],
-      child: const AddMenuPenjualView(),
+      child: AddMenuPenjualView(menu: menu),
     );
   }
 }
 
-class AddMenuPenjualView extends StatelessWidget {
-  const AddMenuPenjualView({Key? key}) : super(key: key);
+class AddMenuPenjualView extends StatefulWidget {
+  final MenuModel? menu;
+  const AddMenuPenjualView({Key? key, this.menu}) : super(key: key);
 
+  @override
+  State<AddMenuPenjualView> createState() => _AddMenuPenjualViewState();
+}
+
+class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
+  bool showPhoto = false;
+  @override
+  void initState() {
+    if(widget.menu!=null){
+      context.read<AddMenuPenjualBloc>().add(MenuChange(widget.menu!.name.toString()));
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(DescriptionChange(widget.menu!.desc.toString()));
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(KategoriChange(widget.menu!.categoryId.toString()));
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(HargaJualChange(widget.menu!.price.toString()));
+      widget.menu!.tags!.forEach((element) {
+        context
+            .read<AddMenuPenjualBloc>()
+            .add(TageMenuChange(element));
+        context
+            .read<AddMenuPenjualBloc>()
+            .add(const AddTagMenu('dsf'));
+      });
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(CheckedRecommendedMenu(widget.menu!.isRecomended!));
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(MenuCanBooked(widget.menu!.isPreOrder!));
+    }
+    super.initState();
+  }
+
+  bool checkButton(File? image, AddMenuPenjualState menuPenjualState){
+    if(showPhoto){
+      if(image!=null &&
+          menuPenjualState.menuInput.valid &&
+          menuPenjualState.deskripsiInput.valid &&
+          menuPenjualState.categoryInput.valid &&
+          menuPenjualState.tagging.isNotEmpty)
+        return true;
+      else return false;
+    } else if(menuPenjualState.menuInput.valid &&
+        menuPenjualState.deskripsiInput.valid &&
+        menuPenjualState.categoryInput.valid &&
+        menuPenjualState.tagging.isNotEmpty)
+      return true;
+    else return false;
+  }
   @override
   Widget build(BuildContext context) {
     final _picker = ImagePicker();
-    final menuPenjualState =
-        context.select((AddMenuPenjualBloc bloc) => bloc.state);
-    final listTagging =
-        context.select((AddMenuPenjualBloc bloc) => bloc.state.tagging);
-
+    final listTagging = context.select((AddMenuPenjualBloc bloc) => bloc.state.tagging);
     final checkStock = context
         .select((AddMenuPenjualBloc bloc) => bloc.state.checkStockAccepted);
+    final menuPenjualState =
+        context.select((AddMenuPenjualBloc bloc) => bloc.state);
+
     final checkMenuRecomended = context.select(
         (AddMenuPenjualBloc bloc) => bloc.state.checkMenuRecomendAccepted);
     final checkBookedMenu = context.select(
@@ -98,12 +152,11 @@ class AddMenuPenjualView extends StatelessWidget {
           padding: const EdgeInsets.all(24.0),
           child: CFButton.primary(
             child: const Text('SIMPAN'),
-            onPressed: menuPenjualState.menuInput.valid &&
-                    menuPenjualState.deskripsiInput.valid &&
-                    menuPenjualState.categoryInput.valid &&
-                    menuPenjualState.tagging.isNotEmpty
+            onPressed:  checkButton(image, menuPenjualState)
                 ? () {
-                    context.read<AddMenuPenjualBloc>().add(SaveMenu());
+                    if(widget.menu==null)
+                      context.read<AddMenuPenjualBloc>().add(SaveMenu());
+                    else context.read<AddMenuPenjualBloc>().add(UpdateMenu(widget.menu!.image.toString(), updatePhoto: showPhoto, menuId: widget.menu!.menuId.toString()));
                     Navigator.of(context).pop();
                   }
                 : null,
@@ -128,6 +181,7 @@ class AddMenuPenjualView extends StatelessWidget {
                 decoration: const InputDecoration(
                   labelText: "Nama Menu",
                 ),
+                initialValue: widget.menu==null?'':widget.menu!.name,
                 onChanged: (val) {
                   context.read<AddMenuPenjualBloc>().add(MenuChange(val));
                 },
@@ -153,6 +207,7 @@ class AddMenuPenjualView extends StatelessWidget {
                     borderSide: BorderSide(color: Colors.grey),
                   ),
                 ),
+                initialValue: widget.menu==null?'':widget.menu!.desc,
                 onChanged: (val) {
                   context
                       .read<AddMenuPenjualBloc>()
@@ -185,6 +240,16 @@ class AddMenuPenjualView extends StatelessWidget {
                                 child: Text(category.category),
                               ))
                           .toList(),
+                      value: widget.menu==null?context
+                          .watch<MenuMakananBloc>()
+                          .state
+                          .items![0]:context
+                          .watch<MenuMakananBloc>()
+                          .state
+                          .items![context
+                          .watch<MenuMakananBloc>()
+                          .state
+                          .items!.indexWhere((element) => element.categoryId==widget.menu!.categoryId)],
                       onChanged: (val) {
                         context
                             .read<AddMenuPenjualBloc>()
@@ -240,6 +305,7 @@ class AddMenuPenjualView extends StatelessWidget {
                               decoration: const InputDecoration(
                                 labelText: "Harga Jual",
                               ),
+                              initialValue: widget.menu==null?'':widget.menu!.price.toString(),
                               onChanged: (val) {
                                 context
                                     .read<AddMenuPenjualBloc>()
@@ -315,46 +381,45 @@ class AddMenuPenjualView extends StatelessWidget {
               ),
               Wrap(
                 children: [
-                  for (var tag in listTagging)
-                    Padding(
-                      padding: const EdgeInsets.all(8.0),
-                      child: DecoratedBox(
-                        decoration: BoxDecoration(
-                          color: CFColors.redPrimary40,
-                          borderRadius: BorderRadius.circular(4),
-                        ),
-                        child: Padding(
-                          padding: const EdgeInsets.all(4.0),
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Text(
-                                tag,
-                                style: const TextStyle(
-                                  color: Colors.white,
-                                  fontSize: 11,
-                                ),
+                  ...listTagging.map((e) => Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: DecoratedBox(
+                      decoration: BoxDecoration(
+                        color: CFColors.redPrimary40,
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(4.0),
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Text(
+                              e,
+                              style: const TextStyle(
+                                color: Colors.white,
+                                fontSize: 11,
                               ),
-                              const SizedBox(
-                                width: 6,
+                            ),
+                            const SizedBox(
+                              width: 6,
+                            ),
+                            InkWell(
+                              onTap: () {
+                                context
+                                    .read<AddMenuPenjualBloc>()
+                                    .add(DeleteTag(e));
+                              },
+                              child: const Icon(
+                                Icons.close,
+                                color: Colors.white,
+                                size: 11,
                               ),
-                              InkWell(
-                                onTap: () {
-                                  context
-                                      .read<AddMenuPenjualBloc>()
-                                      .add(DeleteTag(tag));
-                                },
-                                child: const Icon(
-                                  Icons.close,
-                                  color: Colors.white,
-                                  size: 11,
-                                ),
-                              ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
                       ),
                     ),
+                  ))
                 ],
               ),
 
@@ -372,19 +437,67 @@ class AddMenuPenjualView extends StatelessWidget {
               const SizedBox(
                 height: 8,
               ),
+              Visibility(
+                visible: showPhoto,
+                child: InkWell(
+                  onTap: () async {
+                    final XFile? image =
+                        await _picker.pickImage(source: ImageSource.gallery);
 
-              InkWell(
-                onTap: () async {
-                  final XFile? image =
-                      await _picker.pickImage(source: ImageSource.gallery);
-
-                  if (image != null) {
-                    context.read<AddMenuPenjualBloc>().add(
-                          ChoosePhoto(File(image.path)),
-                        );
-                  }
-                },
-                child: Align(
+                    if (image != null) {
+                      context.read<AddMenuPenjualBloc>().add(
+                            ChoosePhoto(File(image.path)),
+                          );
+                    }
+                  },
+                  child: Align(
+                    alignment: Alignment.topLeft,
+                    child: Container(
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: CFColors.grey30,
+                      ),
+                      child: image != null
+                          ? Center(
+                              child: Stack(
+                                children: [
+                                  Image.file(image),
+                                  Positioned(
+                                    top: 0,
+                                    right: 0,
+                                    child: InkWell(
+                                      onTap: () {
+                                        context
+                                            .read<AddMenuPenjualBloc>()
+                                            .add(DeleteImage());
+                                      },
+                                      child: const Icon(
+                                        Icons.close,
+                                      ),
+                                    ),
+                                  )
+                                ],
+                              ),
+                            )
+                          : Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: const [
+                                Icon(
+                                  Icons.upload_file,
+                                  size: 36,
+                                ),
+                                SizedBox(
+                                  height: 5.5,
+                                ),
+                                Text('UNGGAH FOTO'),
+                              ],
+                            ),
+                    ),
+                  ),
+                ),
+                replacement: Align(
                   alignment: Alignment.topLeft,
                   child: Container(
                     width: 140,
@@ -393,41 +506,27 @@ class AddMenuPenjualView extends StatelessWidget {
                       borderRadius: BorderRadius.circular(8),
                       color: CFColors.grey30,
                     ),
-                    child: image != null
-                        ? Center(
-                            child: Stack(
-                              children: [
-                                Image.file(image),
-                                Positioned(
-                                  top: 0,
-                                  right: 0,
-                                  child: InkWell(
-                                    onTap: () {
-                                      context
-                                          .read<AddMenuPenjualBloc>()
-                                          .add(DeleteImage());
-                                    },
-                                    child: const Icon(
-                                      Icons.close,
-                                    ),
-                                  ),
-                                )
-                              ],
+                    child: Center(
+                      child: Stack(
+                        children: [
+                          Image.network(widget.menu!.image.toString()),
+                          Positioned(
+                            top: 0,
+                            right: 0,
+                            child: InkWell(
+                              onTap: () {
+                                setState(() {
+                                  showPhoto=true;
+                                });
+                              },
+                              child: const Icon(
+                                Icons.close,
+                              ),
                             ),
                           )
-                        : Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: const [
-                              Icon(
-                                Icons.upload_file,
-                                size: 36,
-                              ),
-                              SizedBox(
-                                height: 5.5,
-                              ),
-                              Text('UNGGAH FOTO'),
-                            ],
-                          ),
+                        ],
+                      ),
+                    )
                   ),
                 ),
               ),

@@ -37,6 +37,7 @@ class AddMenuPenjualBloc
     on<MenuCanBooked>(_checkedBookedMenu);
     on<UploadPhoto>(_uploadPhoto);
     on<SaveMenu>(_saveMenu);
+    on<UpdateMenu>(_updateMenu);
     on<DeleteImage>(_deleteImage);
     on<DeleteTag>(_deleteTag);
   }
@@ -347,6 +348,83 @@ class AddMenuPenjualBloc
     );
 
     await _menuRepository.addMenu(menu);
+
+    emit(state.copyWith(
+      status: FormzStatus.submissionSuccess,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      uploadProgress: state.uploadProgress,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
+  }
+
+  Future<void> _updateMenu(
+      UpdateMenu event,
+      Emitter<AddMenuPenjualState> emit,
+      ) async {
+    emit(state.copyWith(
+      status: FormzStatus.submissionInProgress,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      uploadProgress: state.uploadProgress,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
+    SharedPreferences idmercahnt = await SharedPreferences.getInstance();
+    String id = idmercahnt.getString("merchantId").toString();
+    final MenuModel menu;
+    if(event.updatePhoto) {
+      menu = MenuModel(
+        menuId: event.menuId,
+
+        /// TODO(@Burhan): id merchant still hardcode
+        merchantId: id,
+        name: state.menuInput.value,
+        autoResetStock: state.checkStockAccepted,
+        categoryId: state.categoryInput.value,
+        desc: state.deskripsiInput.value,
+        image: state.uploadProgress!.downloadUrl!,
+        isPreOrder: state.checkMenuBookedAccepted,
+        isRecomended: state.checkMenuRecomendAccepted,
+        price: int.parse(state.hargaInput.value),
+        stock: 0,
+        tags: state.tagging,
+      );
+    } else {
+      menu = MenuModel(
+        menuId: event.menuId,
+
+        /// TODO(@Burhan): id merchant still hardcode
+        merchantId: id,
+        name: state.menuInput.value,
+        autoResetStock: state.checkStockAccepted,
+        categoryId: state.categoryInput.value,
+        desc: state.deskripsiInput.value,
+        image: event.photoUrl,
+        isPreOrder: state.checkMenuBookedAccepted,
+        isRecomended: state.checkMenuRecomendAccepted,
+        price: int.parse(state.hargaInput.value),
+        stock: 0,
+        tags: state.tagging,
+      );
+    }
+
+    await _menuRepository.editMenu(menu);
 
     emit(state.copyWith(
       status: FormzStatus.submissionSuccess,
