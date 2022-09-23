@@ -9,6 +9,7 @@ import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -434,7 +435,9 @@ class ListMenuWidget extends StatelessWidget {
                             ),
                             const SizedBox(width: 16.0),
                             InkWell(
-                              onTap: () {},
+                              onTap: () {
+                                Navigator.push(context, MaterialPageRoute(builder: (_)=>AddMenuPenjualPage(menu: item)));
+                              },
                               child: const Text(
                                 'Edit',
                                 style: TextStyle(

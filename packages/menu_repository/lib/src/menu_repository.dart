@@ -113,6 +113,14 @@ class MenuRepository {
     }
   }
 
+  Future<void> editMenu(MenuModel menu) async {
+    try {
+      await _firestore.collection('menu').doc(menu.menuId).update(menu.toJson());
+    } catch (e) {
+      throw Exception('Failed to edit menu');
+    }
+  }
+
   Future<void> editStockMenu(MenuModel menu, String idMerchant) async {
     try {
       await _firestore
