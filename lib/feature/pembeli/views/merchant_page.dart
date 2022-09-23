@@ -158,7 +158,7 @@ class _MerchantPageState extends State<MerchantPage>
                       return FutureBuilder<List<MerchantModel>>(
                           future: listmerchant(),
                           builder: (context, snapshot) {
-                           // print(snapshot.data?.length);
+                            // print(snapshot.data?.length);
                             return snapshot.data?.length == null
                                 ? const CircularProgressIndicator()
                                 : Expanded(
@@ -181,6 +181,59 @@ class _MerchantPageState extends State<MerchantPage>
                                                             state
                                                                 .items?[index]);
                                                       }));
+                                                } else if (snapshot.data?[index]
+                                                        .tutup_toko !=
+                                                    null) {
+                                                  (DateTime.now().hour >=
+                                                              DateTime.parse(snapshot
+                                                                      .data![
+                                                                          index]
+                                                                      .tutup_toko
+                                                                      .toString())
+                                                                  .hour) &&
+                                                          (DateTime.now()
+                                                                  .minute >=
+                                                              DateTime.parse(snapshot
+                                                                      .data![
+                                                                          index]
+                                                                      .tutup_toko
+                                                                      .toString())
+                                                                  .minute)
+                                                      ? print("toko Tutup")
+                                                      : Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder:
+                                                                  (_) =>
+                                                                      MakananPage(
+                                                                        title: snapshot.data?[index].name ??
+                                                                            'Shabrina’s Kitchen - Gambir',
+                                                                        idMerchant: snapshot
+                                                                            .data![index]
+                                                                            .merchantId
+                                                                            .toString(),
+                                                                        alamat: snapshot
+                                                                            .data![index]
+                                                                            .address
+                                                                            .toString(),
+                                                                        rating: snapshot
+                                                                            .data?[index]
+                                                                            .rating,
+                                                                        jumlahUlasan: snapshot
+                                                                            .data?[index]
+                                                                            .totalCountRating,
+                                                                        minPrice: snapshot
+                                                                            .data?[index]
+                                                                            .minPrice,
+                                                                        maxPrice: snapshot
+                                                                            .data?[index]
+                                                                            .maxPrice,
+                                                                      ))).then(
+                                                          (value) => {
+                                                                addMenuToCartBloc
+                                                                  ..add(
+                                                                      GetMenusInCart())
+                                                              });
                                                 } else {
                                                   Navigator.push(
                                                           context,

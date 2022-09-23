@@ -206,7 +206,7 @@ class _ListMenuState extends State<ListMenu> {
                           })),
                           SizedBox(height: SizeConfig.safeBlockVertical * 1),
                           Text(
-                            'AYAM',
+                            'LIST MENU',
                             style: normalText.copyWith(
                                 color: const Color(0xff8C8F93)),
                           ),

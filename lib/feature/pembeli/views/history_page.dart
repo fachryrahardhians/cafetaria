@@ -345,9 +345,9 @@ class _DoneListState extends State<DoneList> {
               return BlocBuilder<ListMerchantBloc, ListMerchantState>(
                   builder: (context, merchantState) {
                 final merchantStatus = merchantState.status;
-                if (merchantStatus == ListMerchantStatus.loading)
-                  return Center(child: const CircularProgressIndicator());
-                else if (merchantStatus == ListMerchantStatus.success) {
+                if (merchantStatus == ListMerchantStatus.loading) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (merchantStatus == ListMerchantStatus.success) {
                   return SizedBox(
                     height: 200,
                     child: ListView.separated(
@@ -357,8 +357,9 @@ class _DoneListState extends State<DoneList> {
                           final item = items[index];
                           MerchantModel? merchant;
                           merchantState.items!.forEach((element) {
-                            if (element.merchantId == item.merchantId)
+                            if (element.merchantId == item.merchantId) {
                               merchant = element;
+                            }
                           });
                           return _doneCard(item: item, merchant: merchant!);
                         },
@@ -369,7 +370,7 @@ class _DoneListState extends State<DoneList> {
                         itemCount: items.length),
                   );
                 } else
-                  return SizedBox();
+                  return const SizedBox();
               });
             } else {
               return Text('No Data');
