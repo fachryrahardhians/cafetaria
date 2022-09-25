@@ -6,14 +6,14 @@ import 'package:uuid/uuid.dart';
 /// merchant repository
 /// {@endtemplate}
 class MerchantRepository {
+  // ignore: public_member_api_docs
+  MerchantRepository({
+    required FirebaseFirestore firestore,
+  }) : _firestore = firestore;
   final FirebaseFirestore _firestore;
 
   /// {@macro merchant_repository}
   final uuid = const Uuid();
-
-  MerchantRepository({
-    required FirebaseFirestore firestore,
-  }) : _firestore = firestore;
 
   Future<MerchantModel> getMerchantDetail(
     String idUser,
@@ -30,6 +30,7 @@ class MerchantRepository {
       throw Exception('Failed to get merchant where id user');
     }
   }
+
   // get  menu per merchant
   Future<List<MerchantModel>> getMerchant() async {
     try {
@@ -44,7 +45,10 @@ class MerchantRepository {
 
   Future<List<MerchantModel>> getMerchantById(String merchantId) async {
     try {
-      final snapshot = await _firestore.collection('merchant').where('merchantId', isEqualTo: merchantId).get();
+      final snapshot = await _firestore
+          .collection('merchant')
+          .where('merchantId', isEqualTo: merchantId)
+          .get();
       final documents = snapshot.docs;
       return documents.toListMerchant();
     } catch (e) {

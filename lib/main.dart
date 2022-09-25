@@ -12,8 +12,7 @@ import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
-import 'package:menu_repository/menu_repository.dart';
-import 'package:merchant_repository/merchant_repository.dart';
+
 import 'package:order_repository/order_repository.dart';
 import 'package:rating_repository/rating_repository.dart';
 import 'package:storage/storage.dart';

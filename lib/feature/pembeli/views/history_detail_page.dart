@@ -96,7 +96,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           ListView.separated(
               shrinkWrap: true,
-              physics: NeverScrollableScrollPhysics(),
+              physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 return menu(item.menus![index].qty!, item.menus![index].name!,
                     item.menus![index].price!);

@@ -4,7 +4,7 @@ import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
-import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
+
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
@@ -14,7 +14,7 @@ import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:hive/hive.dart';
+
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';

@@ -371,7 +371,8 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      widget.user.resetTime == ""
+                      widget.user.resetTime == "" ||
+                              widget.user.resetTime == null
                           ? Container()
                           : Text(
                               convertDateTime(

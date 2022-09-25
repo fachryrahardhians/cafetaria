@@ -15,6 +15,7 @@ import 'package:menu_repository/menu_repository.dart';
 class MakananPage extends StatelessWidget {
   final String title;
   final String idMerchant;
+  final String? tutup_toko;
   final String alamat;
   final double? rating;
   final int? jumlahUlasan;
@@ -22,6 +23,7 @@ class MakananPage extends StatelessWidget {
   final int? maxPrice;
   const MakananPage(
       {Key? key,
+      required this.tutup_toko,
       required this.title,
       required this.idMerchant,
       required this.alamat,
@@ -34,6 +36,7 @@ class MakananPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListMenu(
+      tutup_toko: tutup_toko,
       title: title,
       idMerchant: idMerchant,
       alamat: alamat,
@@ -47,6 +50,7 @@ class MakananPage extends StatelessWidget {
 
 class ListMenu extends StatefulWidget {
   final String title;
+  final String? tutup_toko;
   final String idMerchant;
   final String alamat;
   final double? rating;
@@ -57,6 +61,7 @@ class ListMenu extends StatefulWidget {
   const ListMenu(
       {Key? key,
       required this.title,
+      required this.tutup_toko,
       required this.idMerchant,
       required this.alamat,
       required this.rating,
@@ -84,6 +89,7 @@ class _ListMenuState extends State<ListMenu> {
   int totalHarga = 0;
   List<Keranjang> listMenuInKeranjang = [];
   bool _preOrder = false;
+  String? tutupToko;
 
   @override
   void initState() {
@@ -100,6 +106,9 @@ class _ListMenuState extends State<ListMenu> {
 
   @override
   Widget build(BuildContext context) {
+    if (widget.tutup_toko != null) {
+      tutupToko = widget.tutup_toko;
+    }
     return MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -127,6 +136,27 @@ class _ListMenuState extends State<ListMenu> {
                           horizontal: 24, vertical: 16.0),
                       child: Column(
                         children: [
+                          if(tutupToko != null )
+                          tutupToko != null
+                              ? ((DateTime.now().hour >=
+                                          DateTime.parse(tutupToko.toString())
+                                              .hour) &&
+                                      (DateTime.now().minute >=
+                                          DateTime.parse(tutupToko.toString())
+                                              .minute))
+                                  ? const Padding(
+                                      padding: EdgeInsets.only(bottom: 10),
+                                      child: Text(
+                                        "Mohon maaf toko telah tutup",
+                                        style: TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w700,
+                                            color: Color.fromARGB(
+                                                255, 223, 19, 19)),
+                                      ),
+                                    )
+                                  : Container()
+                              : Container(),
                           Text(
                             title,
                             style: const TextStyle(
@@ -176,21 +206,48 @@ class _ListMenuState extends State<ListMenu> {
                                           quantity: -1, totalPrice: -1)));
                                   return GestureDetector(
                                       onTap: () async {
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    SelectToppingPage(
-                                                      itemInKeranjang: a,
-                                                      model:
-                                                          state.items![index],
-                                                    ))).then((val) {
-                                          _addMenuToCartBloc
-                                              .add(GetMenusInCart());
-                                          _listRecomendedMenuBloc.add(
-                                              GetListRecomendedMenu(
-                                                  idMerchant));
-                                        });
+                                        widget.tutup_toko != null
+                                            ? ((DateTime.now().hour >=
+                                                        DateTime.parse(tutupToko
+                                                                .toString())
+                                                            .hour) &&
+                                                    (DateTime.now().minute >=
+                                                        DateTime.parse(tutupToko
+                                                                .toString())
+                                                            .minute))
+                                                ? print('tutup toko')
+                                                : await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            SelectToppingPage(
+                                                              itemInKeranjang:
+                                                                  a,
+                                                              model:
+                                                                  state.items![
+                                                                      index],
+                                                            ))).then((val) {
+                                                    _addMenuToCartBloc
+                                                        .add(GetMenusInCart());
+                                                    _listRecomendedMenuBloc.add(
+                                                        GetListRecomendedMenu(
+                                                            idMerchant));
+                                                  })
+                                            : await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        SelectToppingPage(
+                                                          itemInKeranjang: a,
+                                                          model: state
+                                                              .items![index],
+                                                        ))).then((val) {
+                                                _addMenuToCartBloc
+                                                    .add(GetMenusInCart());
+                                                _listRecomendedMenuBloc.add(
+                                                    GetListRecomendedMenu(
+                                                        idMerchant));
+                                              });
                                       },
                                       child: makananGrid(
                                           state.items![index].image.toString(),
@@ -224,7 +281,6 @@ class _ListMenuState extends State<ListMenu> {
                                 itemCount: state.items!.length,
                                 itemBuilder: (context, index) {
                                   late Widget makananItem;
-
                                   var a = listMenuInKeranjang.firstWhere(
                                       (element) =>
                                           element.menuId ==
@@ -243,21 +299,48 @@ class _ListMenuState extends State<ListMenu> {
 
                                   return GestureDetector(
                                       onTap: () async {
-                                        await Navigator.push(
-                                            context,
-                                            MaterialPageRoute(
-                                                builder: (_) =>
-                                                    SelectToppingPage(
-                                                      itemInKeranjang: a,
-                                                      model:
-                                                          state.items![index],
-                                                    ))).then((val) {
-                                          _addMenuToCartBloc
-                                              .add(GetMenusInCart());
-                                          _listRecomendedMenuBloc.add(
-                                              GetListRecomendedMenu(
-                                                  idMerchant));
-                                        });
+                                        widget.tutup_toko != null
+                                            ? ((DateTime.now().hour >=
+                                                        DateTime.parse(tutupToko
+                                                                .toString())
+                                                            .hour) &&
+                                                    (DateTime.now().minute >=
+                                                        DateTime.parse(tutupToko
+                                                                .toString())
+                                                            .minute))
+                                                ? print('tutup toko')
+                                                : await Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) =>
+                                                            SelectToppingPage(
+                                                              itemInKeranjang:
+                                                                  a,
+                                                              model:
+                                                                  state.items![
+                                                                      index],
+                                                            ))).then((val) {
+                                                    _addMenuToCartBloc
+                                                        .add(GetMenusInCart());
+                                                    _listRecomendedMenuBloc.add(
+                                                        GetListRecomendedMenu(
+                                                            idMerchant));
+                                                  })
+                                            : await Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (_) =>
+                                                        SelectToppingPage(
+                                                          itemInKeranjang: a,
+                                                          model: state
+                                                              .items![index],
+                                                        ))).then((val) {
+                                                _addMenuToCartBloc
+                                                    .add(GetMenusInCart());
+                                                _listRecomendedMenuBloc.add(
+                                                    GetListRecomendedMenu(
+                                                        idMerchant));
+                                              });
                                       },
                                       child: makananItem);
                                 },
@@ -297,16 +380,43 @@ class _ListMenuState extends State<ListMenu> {
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.all(16)),
                             elevation: MaterialStateProperty.all(0),
-                            backgroundColor: MaterialStateProperty.all(
-                                const Color(0xffee3124)),
-                            foregroundColor: MaterialStateProperty.all(
-                                const Color(0xffee3124)),
-                            shape: MaterialStateProperty.all(
-                                RoundedRectangleBorder(
-                                    borderRadius: BorderRadius.circular(8),
-                                    side: BorderSide.none))),
+                            backgroundColor: widget.tutup_toko != null
+                                ? ((DateTime.now().hour >=
+                                            DateTime.parse(tutupToko.toString())
+                                                .hour) &&
+                                        (DateTime.now().minute >=
+                                            DateTime.parse(tutupToko.toString())
+                                                .minute))
+                                    ? MaterialStateProperty.all(
+                                        const Color.fromARGB(
+                                            255, 168, 164, 164))
+                                    : MaterialStateProperty.all(
+                                        const Color(0xffee3124))
+                                : MaterialStateProperty.all(
+                                    const Color(0xffee3124)),
+                            foregroundColor: widget.tutup_toko != null
+                                ? ((DateTime.now().hour >=
+                                            DateTime.parse(tutupToko.toString())
+                                                .hour) &&
+                                        (DateTime.now().minute >=
+                                            DateTime.parse(tutupToko.toString())
+                                                .minute))
+                                    ? MaterialStateProperty.all(
+                                        const Color.fromARGB(255, 168, 164, 164))
+                                    : MaterialStateProperty.all(const Color(0xffee3124))
+                                : MaterialStateProperty.all(const Color(0xffee3124)),
+                            shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none))),
                         onPressed: () {
-                          _menuPreorderBloc.add(CheckMenuPreorder());
+                          widget.tutup_toko != null
+                              ? ((DateTime.now().hour >=
+                                          DateTime.parse(tutupToko.toString())
+                                              .hour) &&
+                                      (DateTime.now().minute >=
+                                          DateTime.parse(tutupToko.toString())
+                                              .minute))
+                                  ? print("toko tutup")
+                                  : _menuPreorderBloc.add(CheckMenuPreorder())
+                              : _menuPreorderBloc.add(CheckMenuPreorder());
                         },
                         child:
                             BlocConsumer<AddMenuToCartBloc, AddMenuToCartState>(
