@@ -2,8 +2,8 @@ import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dar
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
-import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
+import 'package:cafetaria/feature/penjual/views/choose_menu_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -283,7 +283,7 @@ class ListMenu extends StatelessWidget {
               color: Color.fromRGBO(0, 0, 0, 0.04),
               offset: Offset(0, 4),
               blurRadius: 12,
-            )
+            ),
           ],
         ),
         child: Padding(
@@ -667,116 +667,150 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
 
   @override
   Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16.0),
-      width: double.infinity,
-      child: menuOptions.isEmpty
-          ? const SizedBox.shrink()
-          : SizedBox(
-              width: double.infinity,
-              height: 500,
-              child: ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: menuOptions.length,
-                itemBuilder: (context, index) {
-                  return _itemOpsiMenuWidget(menuOptions[index]);
-                },
-              ),
-            ),
-    );
-  }
-
-  Widget _itemOpsiMenuWidget(OpsiMenu menu) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.start,
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        Text(
-          menu.title,
-          style: const TextStyle(
-            fontWeight: FontWeight.bold,
-            fontSize: 16,
-          ),
-        ),
-        const SizedBox(height: 4.0),
-        Text(
-          '${menu.option.map((e) => e.name)}',
-          style: TextStyle(
-            color: Colors.black.withOpacity(0.5),
-          ),
-        ),
-        const SizedBox(height: 4.0),
-        const Text(
-          '0 menu tersambung',
-          style: TextStyle(
-            color: Colors.green,
-          ),
-        ),
-        const SizedBox(height: 6.0),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            InkWell(
-              onTap: () {},
-              child: const Text(
-                'Sambungkan',
-                style: TextStyle(
-                  color: Colors.red,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-            ),
-            Row(
-              children: [
-                InkWell(
-                  onTap: () {},
-                  child: const Text(
-                    'Hapus',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 16.0),
-                InkWell(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        builder: (context) => const AddOpsiMenuPage(),
-                        settings: RouteSettings(
-                          arguments: OpsiMenu(
-                            menu.isMandatory,
-                            menu.isMultipleTopping,
-                            menu.menuId,
-                            menu.option,
-                            menu.optionmenuId,
-                            menu.title,
-                          ),
-                        ),
+    return BlocBuilder<MenuMakananBloc, MenuMakananState>(
+      builder: (context, state) {
+        final status = state.status;
+        if (status == MenuMakananStatus.loading) {
+          return const Center(
+            child: CircularProgressIndicator(),
+          );
+        } else if (status == MenuMakananStatus.failure) {
+          return const Center(
+            child: Text('Terjadi kesalahan'),
+          );
+        } else if (status == MenuMakananStatus.success) {
+          final items = state.items!;
+          return items.isEmpty
+              ? Center(
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/icons/no-menu.png'),
+                      const Text(
+                        'Anda belum memiliki menu',
+                        style: TextStyle(color: Colors.grey),
                       ),
-                    ).then((value) {
-                      if (value != null) {
-                        // save to firebase
-                      }
-                    });
-                  },
-                  child: const Text(
-                    'Edit',
-                    style: TextStyle(
-                      color: Colors.red,
-                      fontWeight: FontWeight.bold,
-                    ),
+                    ],
                   ),
-                ),
-              ],
-            ),
-          ],
-        ),
-        const SizedBox(height: 10.0),
-      ],
+                )
+              : Container(
+                  padding: const EdgeInsets.all(16.0),
+                  width: double.infinity,
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    // physics: const NeverScrollableScrollPhysics(),
+                    itemBuilder: (context, index) {
+                      return Container(
+                        padding: const EdgeInsets.all(16.0),
+                        margin: const EdgeInsets.all(8.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
+                          boxShadow: const [
+                            BoxShadow(
+                              color: Color.fromRGBO(0, 0, 0, 0.04),
+                              offset: Offset(0, 4),
+                              blurRadius: 12,
+                            ),
+                          ],
+                        ),
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: [
+                                Container(
+                                  width: 60,
+                                  height: 60,
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(8.0),
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                                const SizedBox(width: 16.0),
+                                Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: const [
+                                    Text(
+                                      'Nasi Ayam Panggang',
+                                      style: TextStyle(
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 16,
+                                      ),
+                                    ),
+                                    Text('Rp25.000'),
+                                  ],
+                                )
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            const Text(
+                              'Opsi menu:',
+                              style: TextStyle(
+                                color: Colors.green,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14,
+                              ),
+                            ),
+                            const SizedBox(height: 4.0),
+                            // ListView.builder
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              children: const [
+                                Text(
+                                  ' • Sambal: ',
+                                  style: TextStyle(
+                                    color: Colors.green,
+                                  ),
+                                ),
+                                // ListView.builder
+                                Text(
+                                  'Level 1, Level 2',
+                                  style: TextStyle(
+                                    color: Colors.grey,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                InkWell(
+                                  onTap: () {},
+                                  child: const Text(
+                                    'Hapus',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 20.0),
+                                InkWell(
+                                  onTap: () {},
+                                  child: const Text(
+                                    'Edit',
+                                    style: TextStyle(
+                                      color: Colors.red,
+                                      fontWeight: FontWeight.bold,
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      );
+                    },
+                  ),
+                );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }
@@ -788,17 +822,23 @@ class BottomOpsiMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     return ElevatedButton(
       onPressed: () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (context) => const AddOpsiMenuPage(),
+        //     settings: const RouteSettings(
+        //       arguments: null,
+        //     ),
+        //   ),
+        // ).then((value) {});
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const AddOpsiMenuPage(),
-            settings: const RouteSettings(
-              arguments: null,
-            ),
+            builder: (context) => const ChooseMenuPage(),
           ),
-        ).then((value) {});
+        );
       },
-      child: Text("Tambah Opsi Menu".toUpperCase()),
+      child: Text("Pilih Menu".toUpperCase()),
       style: ElevatedButton.styleFrom(
         minimumSize: const Size.fromHeight(44),
         primary: const Color(0xffEA001E),
