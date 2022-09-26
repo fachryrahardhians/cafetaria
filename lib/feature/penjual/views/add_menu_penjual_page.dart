@@ -50,8 +50,10 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
   bool showPhoto = false;
   @override
   void initState() {
-    if(widget.menu!=null){
-      context.read<AddMenuPenjualBloc>().add(MenuChange(widget.menu!.name.toString()));
+    if (widget.menu != null) {
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(MenuChange(widget.menu!.name.toString()));
       context
           .read<AddMenuPenjualBloc>()
           .add(DescriptionChange(widget.menu!.desc.toString()));
@@ -62,12 +64,8 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
           .read<AddMenuPenjualBloc>()
           .add(HargaJualChange(widget.menu!.price.toString()));
       widget.menu!.tags!.forEach((element) {
-        context
-            .read<AddMenuPenjualBloc>()
-            .add(TageMenuChange(element));
-        context
-            .read<AddMenuPenjualBloc>()
-            .add(const AddTagMenu('dsf'));
+        context.read<AddMenuPenjualBloc>().add(TageMenuChange(element));
+        context.read<AddMenuPenjualBloc>().add(const AddTagMenu('dsf'));
       });
       context
           .read<AddMenuPenjualBloc>()
@@ -79,26 +77,30 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
     super.initState();
   }
 
-  bool checkButton(File? image, AddMenuPenjualState menuPenjualState){
-    if(showPhoto){
-      if(image!=null &&
+  bool checkButton(File? image, AddMenuPenjualState menuPenjualState) {
+    if (showPhoto) {
+      if (image != null &&
           menuPenjualState.menuInput.valid &&
           menuPenjualState.deskripsiInput.valid &&
           menuPenjualState.categoryInput.valid &&
           menuPenjualState.tagging.isNotEmpty)
         return true;
-      else return false;
-    } else if(menuPenjualState.menuInput.valid &&
+      else
+        return false;
+    } else if (menuPenjualState.menuInput.valid &&
         menuPenjualState.deskripsiInput.valid &&
         menuPenjualState.categoryInput.valid &&
         menuPenjualState.tagging.isNotEmpty)
       return true;
-    else return false;
+    else
+      return false;
   }
+
   @override
   Widget build(BuildContext context) {
     final _picker = ImagePicker();
-    final listTagging = context.select((AddMenuPenjualBloc bloc) => bloc.state.tagging);
+    final listTagging =
+        context.select((AddMenuPenjualBloc bloc) => bloc.state.tagging);
     final checkStock = context
         .select((AddMenuPenjualBloc bloc) => bloc.state.checkStockAccepted);
     final menuPenjualState =
@@ -152,11 +154,15 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
           padding: const EdgeInsets.all(24.0),
           child: CFButton.primary(
             child: const Text('SIMPAN'),
-            onPressed:  checkButton(image, menuPenjualState)
+            onPressed: checkButton(image, menuPenjualState)
                 ? () {
-                    if(widget.menu==null)
+                    if (widget.menu == null)
                       context.read<AddMenuPenjualBloc>().add(SaveMenu());
-                    else context.read<AddMenuPenjualBloc>().add(UpdateMenu(widget.menu!.image.toString(), updatePhoto: showPhoto, menuId: widget.menu!.menuId.toString()));
+                    else
+                      context.read<AddMenuPenjualBloc>().add(UpdateMenu(
+                          widget.menu!.image.toString(),
+                          updatePhoto: showPhoto,
+                          menuId: widget.menu!.menuId.toString()));
                     Navigator.of(context).pop();
                   }
                 : null,
@@ -181,7 +187,7 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                 decoration: const InputDecoration(
                   labelText: "Nama Menu",
                 ),
-                initialValue: widget.menu==null?'':widget.menu!.name,
+                initialValue: widget.menu == null ? '' : widget.menu!.name,
                 onChanged: (val) {
                   context.read<AddMenuPenjualBloc>().add(MenuChange(val));
                 },
@@ -207,7 +213,7 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                     borderSide: BorderSide(color: Colors.grey),
                   ),
                 ),
-                initialValue: widget.menu==null?'':widget.menu!.desc,
+                initialValue: widget.menu == null ? '' : widget.menu!.desc,
                 onChanged: (val) {
                   context
                       .read<AddMenuPenjualBloc>()
@@ -240,16 +246,16 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                                 child: Text(category.category),
                               ))
                           .toList(),
-                      value: widget.menu==null?context
-                          .watch<MenuMakananBloc>()
-                          .state
-                          .items![0]:context
-                          .watch<MenuMakananBloc>()
-                          .state
-                          .items![context
-                          .watch<MenuMakananBloc>()
-                          .state
-                          .items!.indexWhere((element) => element.categoryId==widget.menu!.categoryId)],
+                      value: widget.menu == null
+                          ? context.watch<MenuMakananBloc>().state.items![0]
+                          : context.watch<MenuMakananBloc>().state.items![
+                              context
+                                  .watch<MenuMakananBloc>()
+                                  .state
+                                  .items!
+                                  .indexWhere((element) =>
+                                      element.categoryId ==
+                                      widget.menu!.categoryId)],
                       onChanged: (val) {
                         context
                             .read<AddMenuPenjualBloc>()
@@ -305,7 +311,9 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                               decoration: const InputDecoration(
                                 labelText: "Harga Jual",
                               ),
-                              initialValue: widget.menu==null?'':widget.menu!.price.toString(),
+                              initialValue: widget.menu == null
+                                  ? ''
+                                  : widget.menu!.price.toString(),
                               onChanged: (val) {
                                 context
                                     .read<AddMenuPenjualBloc>()
@@ -382,44 +390,44 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
               Wrap(
                 children: [
                   ...listTagging.map((e) => Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: DecoratedBox(
-                      decoration: BoxDecoration(
-                        color: CFColors.redPrimary40,
-                        borderRadius: BorderRadius.circular(4),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(4.0),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Text(
-                              e,
-                              style: const TextStyle(
-                                color: Colors.white,
-                                fontSize: 11,
-                              ),
+                        padding: const EdgeInsets.all(8.0),
+                        child: DecoratedBox(
+                          decoration: BoxDecoration(
+                            color: CFColors.redPrimary40,
+                            borderRadius: BorderRadius.circular(4),
+                          ),
+                          child: Padding(
+                            padding: const EdgeInsets.all(4.0),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                Text(
+                                  e,
+                                  style: const TextStyle(
+                                    color: Colors.white,
+                                    fontSize: 11,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  width: 6,
+                                ),
+                                InkWell(
+                                  onTap: () {
+                                    context
+                                        .read<AddMenuPenjualBloc>()
+                                        .add(DeleteTag(e));
+                                  },
+                                  child: const Icon(
+                                    Icons.close,
+                                    color: Colors.white,
+                                    size: 11,
+                                  ),
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              width: 6,
-                            ),
-                            InkWell(
-                              onTap: () {
-                                context
-                                    .read<AddMenuPenjualBloc>()
-                                    .add(DeleteTag(e));
-                              },
-                              child: const Icon(
-                                Icons.close,
-                                color: Colors.white,
-                                size: 11,
-                              ),
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
-                    ),
-                  ))
+                      ))
                 ],
               ),
 
@@ -500,34 +508,33 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                 replacement: Align(
                   alignment: Alignment.topLeft,
                   child: Container(
-                    width: 140,
-                    height: 140,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(8),
-                      color: CFColors.grey30,
-                    ),
-                    child: Center(
-                      child: Stack(
-                        children: [
-                          Image.network(widget.menu!.image.toString()),
-                          Positioned(
-                            top: 0,
-                            right: 0,
-                            child: InkWell(
-                              onTap: () {
-                                setState(() {
-                                  showPhoto=true;
-                                });
-                              },
-                              child: const Icon(
-                                Icons.close,
-                              ),
-                            ),
-                          )
-                        ],
+                      width: 140,
+                      height: 140,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8),
+                        color: CFColors.grey30,
                       ),
-                    )
-                  ),
+                      child: Center(
+                        child: Stack(
+                          children: [
+                            Image.network(widget.menu!.image.toString()),
+                            Positioned(
+                              top: 0,
+                              right: 0,
+                              child: InkWell(
+                                onTap: () {
+                                  setState(() {
+                                    showPhoto = true;
+                                  });
+                                },
+                                child: const Icon(
+                                  Icons.close,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      )),
                 ),
               ),
               const SizedBox(

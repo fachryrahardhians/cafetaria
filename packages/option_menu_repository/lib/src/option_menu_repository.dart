@@ -14,17 +14,17 @@ class OptionMenuRepository {
   }) : _firestore = firestore;
 
   final FirebaseFirestore _firestore;
-  final _uuid = const Uuid();
+  //final _uuid = const Uuid();
 
   /// save option menu
   Future<void> saveOptionMenu(OptionMenuModel optionMenu) async {
     try {
       await _firestore
-          .collection('optionMenu')
-          .doc(_uuid.v4())
+          .collection('optionmenu')
+          .doc(optionMenu.optionmenuId)
           .set(optionMenu.toJson());
     } catch (e) {
-      throw Exception('Failed to save option menu');
+      throw Exception(e.toString());
     }
   }
 }

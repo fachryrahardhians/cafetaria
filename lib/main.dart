@@ -7,6 +7,7 @@ import 'package:category_repository/category_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:hive/hive.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 import 'package:path_provider/path_provider.dart' as pathProvider;
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
@@ -37,6 +38,8 @@ void main() async {
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
       final _merchantRepository = MerchantRepository(firestore: firebaseStore);
       final _sharedPref = AppSharedPref(sharedpreference);
+      final _optionMenuRepository =
+          OptionMenuRepository(firestore: firebaseStore);
       final _penjualOrderRepository =
           PenjualOrderRepository(firestore: firebaseStore);
       final _cloudStorage = CloudStorage();
@@ -52,6 +55,7 @@ void main() async {
       // Initialize Firebase
 
       return App(
+        optionMenuRepository: _optionMenuRepository,
         appSharedPref: _sharedPref,
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,

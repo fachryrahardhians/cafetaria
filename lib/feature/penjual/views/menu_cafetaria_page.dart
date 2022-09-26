@@ -34,13 +34,14 @@ class MenuCafetariaPage extends StatelessWidget {
           ),
         ),
       ],
-      child: const MenuCafetariaView(),
+      child: MenuCafetariaView(idMerchant: idMerchant.toString()),
     );
   }
 }
 
 class MenuCafetariaView extends StatefulWidget {
-  const MenuCafetariaView({Key? key}) : super(key: key);
+  final String? idMerchant;
+  const MenuCafetariaView({Key? key, this.idMerchant}) : super(key: key);
 
   @override
   State<MenuCafetariaView> createState() => _MenuCafetariaViewState();
@@ -103,11 +104,11 @@ class _MenuCafetariaViewState extends State<MenuCafetariaView> {
         bottomNavigationBar: Container(
           padding: const EdgeInsets.all(16.0),
           height: 74,
-          child: const TabBarView(
+          child: TabBarView(
             children: [
-              BottomDaftarMenuWidget(),
-              BottomOpsiMenuWidget(),
-              SizedBox.shrink(),
+              const BottomDaftarMenuWidget(),
+              BottomOpsiMenuWidget(id: widget.idMerchant),
+              const SizedBox.shrink(),
             ],
           ),
         ),
@@ -347,9 +348,17 @@ class ListMenuWidget extends StatelessWidget {
       );
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
-      final cat = context.watch<MenuMakananBloc>().state.items!.first;
-      String id = idMerchant == cat.merchantId ? cat.categoryId.toString() : "";
-      context.read<ListMenuBloc>().add(GetListMenu(idMerchant, id));
+      final cat = context.watch<MenuMakananBloc>().state;
+      String? id;
+      for (var element in cat.items!) {
+        if (idMerchant == element.merchantId) {
+          id = element.categoryId;
+          break;
+        } else {
+          continue;
+        }
+      }
+      context.read<ListMenuBloc>().add(GetListMenu(idMerchant, id.toString()));
       return BlocBuilder<ListMenuBloc, ListMenuState>(
         builder: (context, state) {
           final status = state.status;
@@ -401,9 +410,9 @@ class ListMenuWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4.0),
-                        const Text(
-                          '0 opsi menu tersambung',
-                          style: TextStyle(
+                        Text(
+                          '${item.options?.length} opsi menu tersambung',
+                          style: const TextStyle(
                             color: Colors.green,
                           ),
                         ),
@@ -423,7 +432,7 @@ class ListMenuWidget extends StatelessWidget {
                                 ).then((value) => context
                                     .read<ListMenuBloc>()
                                     .add(GetListMenu(
-                                        idMerchant, 'Ca7QNFUudrFbc63yRT8d')));
+                                        idMerchant, id.toString())));
                               },
                               child: const Text(
                                 'Atur Stok',
@@ -436,7 +445,11 @@ class ListMenuWidget extends StatelessWidget {
                             const SizedBox(width: 16.0),
                             InkWell(
                               onTap: () {
-                                Navigator.push(context, MaterialPageRoute(builder: (_)=>AddMenuPenjualPage(menu: item)));
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) =>
+                                            AddMenuPenjualPage(menu: item)));
                               },
                               child: const Text(
                                 'Edit',
@@ -628,32 +641,32 @@ class BottomDaftarMenuWidget extends StatelessWidget {
   }
 }
 
-// temp object for "opsi menu"
-class OpsiMenu {
-  final bool isMandatory;
-  final bool isMultipleTopping;
-  final String menuId;
-  final List<Option> option;
-  final String optionmenuId;
-  final String title;
+// // temp object for "opsi menu"
+// class OpsiMenu {
+//   final bool isMandatory;
+//   final bool isMultipleTopping;
+//   final String menuId;
+//   final List<Option> option;
+//   final String optionmenuId;
+//   final String title;
 
-  OpsiMenu(
-    this.isMandatory,
-    this.isMultipleTopping,
-    this.menuId,
-    this.option,
-    this.optionmenuId,
-    this.title,
-  );
-}
+//   OpsiMenu(
+//     this.isMandatory,
+//     this.isMultipleTopping,
+//     this.menuId,
+//     this.option,
+//     this.optionmenuId,
+//     this.title,
+//   );
+// }
 
-class Option {
-  final String name;
-  final int price;
+// class Option {
+//   final String name;
+//   final int price;
 
-  Option(this.name, this.price);
-}
-// =====
+//   Option(this.name, this.price);
+// }
+// // =====
 
 class OpsiMenuWidget extends StatefulWidget {
   const OpsiMenuWidget({Key? key}) : super(key: key);
@@ -663,160 +676,280 @@ class OpsiMenuWidget extends StatefulWidget {
 }
 
 class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
+  Future<String> getmerchant() async {
+    String? id = await context.read<AppSharedPref>().getMerchantId();
+    return id.toString();
+  }
+
+  final oCcy = NumberFormat("#,##0.00", "IDR");
   List<OpsiMenu> menuOptions = [];
 
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<MenuMakananBloc, MenuMakananState>(
-      builder: (context, state) {
-        final status = state.status;
-        if (status == MenuMakananStatus.loading) {
-          return const Center(
-            child: CircularProgressIndicator(),
-          );
-        } else if (status == MenuMakananStatus.failure) {
-          return const Center(
-            child: Text('Terjadi kesalahan'),
-          );
-        } else if (status == MenuMakananStatus.success) {
-          final items = state.items!;
-          return items.isEmpty
-              ? Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      Image.asset('assets/icons/no-menu.png'),
-                      const Text(
-                        'Anda belum memiliki menu',
-                        style: TextStyle(color: Colors.grey),
-                      ),
-                    ],
-                  ),
-                )
-              : Container(
-                  padding: const EdgeInsets.all(16.0),
-                  width: double.infinity,
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    // physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      return Container(
-                        padding: const EdgeInsets.all(16.0),
-                        margin: const EdgeInsets.all(8.0),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.04),
-                              offset: Offset(0, 4),
-                              blurRadius: 12,
-                            ),
-                          ],
-                        ),
-                        child: Column(
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  width: 60,
-                                  height: 60,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(8.0),
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                                const SizedBox(width: 16.0),
-                                Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: const [
-                                    Text(
-                                      'Nasi Ayam Panggang',
-                                      style: TextStyle(
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 16,
-                                      ),
-                                    ),
-                                    Text('Rp25.000'),
-                                  ],
-                                )
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            const Text(
-                              'Opsi menu:',
-                              style: TextStyle(
-                                color: Colors.green,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14,
-                              ),
-                            ),
-                            const SizedBox(height: 4.0),
-                            // ListView.builder
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: const [
-                                Text(
-                                  ' • Sambal: ',
-                                  style: TextStyle(
-                                    color: Colors.green,
-                                  ),
-                                ),
-                                // ListView.builder
-                                Text(
-                                  'Level 1, Level 2',
-                                  style: TextStyle(
-                                    color: Colors.grey,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'Hapus',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                                const SizedBox(width: 20.0),
-                                InkWell(
-                                  onTap: () {},
-                                  child: const Text(
-                                    'Edit',
-                                    style: TextStyle(
-                                      color: Colors.red,
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      );
-                    },
-                  ),
+    return FutureBuilder<String>(
+        future: getmerchant(),
+        builder: (context, snapshot) {
+          return BlocBuilder<MenuMakananBloc, MenuMakananState>(
+            builder: (context, state) {
+              final status = state.status;
+              if (status == MenuMakananStatus.loading) {
+                return const Center(
+                  child: CircularProgressIndicator(),
                 );
-        }
-        return const SizedBox.shrink();
-      },
-    );
+              } else if (status == MenuMakananStatus.failure) {
+                return const Center(
+                  child: Text('Terjadi kesalahan'),
+                );
+              } else if (status == MenuMakananStatus.success) {
+                final cat = context.watch<MenuMakananBloc>().state;
+                String? id;
+                for (var element in cat.items!) {
+                  if (snapshot.data == element.merchantId) {
+                    id = element.categoryId;
+                    break;
+                  } else {
+                    continue;
+                  }
+                }
+                final items = state.items!;
+                context
+                    .read<ListMenuBloc>()
+                    .add(GetListMenu(snapshot.data.toString(), id.toString()));
+
+                return items.isEmpty
+                    ? Center(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Image.asset('assets/icons/no-menu.png'),
+                            const Text(
+                              'Anda belum memiliki menu',
+                              style: TextStyle(color: Colors.grey),
+                            ),
+                          ],
+                        ),
+                      )
+                    : BlocBuilder<ListMenuBloc, ListMenuState>(
+                        builder: (context, state) {
+                          final status = state.status;
+                          if (status == ListMenuStatus.loading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (status == ListMenuStatus.failure) {
+                            return const Center(
+                              child: Text('Terjadi kesalahan'),
+                            );
+                          } else if (status == ListMenuStatus.success) {
+                            final items = state.items!;
+                            return Container(
+                              padding: const EdgeInsets.all(16.0),
+                              width: double.infinity,
+                              child: ListView.builder(
+                                shrinkWrap: true,
+                                // physics: const NeverScrollableScrollPhysics(),
+                                itemCount: items.length,
+                                itemBuilder: (context, index) {
+                                  print(items[index].options!.isEmpty);
+                                  if (items[index].options!.isEmpty) {
+                                    return Container();
+                                  } else {
+                                    return Container(
+                                      padding: const EdgeInsets.all(16.0),
+                                      margin: const EdgeInsets.all(8.0),
+                                      decoration: BoxDecoration(
+                                        color: Colors.white,
+                                        borderRadius:
+                                            BorderRadius.circular(8.0),
+                                        boxShadow: const [
+                                          BoxShadow(
+                                            color:
+                                                Color.fromRGBO(0, 0, 0, 0.04),
+                                            offset: Offset(0, 4),
+                                            blurRadius: 12,
+                                          ),
+                                        ],
+                                      ),
+                                      child: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.start,
+                                        crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.start,
+                                            children: [
+                                              Container(
+                                                width: 60,
+                                                height: 60,
+                                                decoration: BoxDecoration(
+                                                    color: CFColors
+                                                        .grayscaleBlack50,
+                                                    borderRadius:
+                                                        BorderRadius.circular(
+                                                            7.0),
+                                                    image: DecorationImage(
+                                                        image: NetworkImage(items[
+                                                                        index]
+                                                                    .image ==
+                                                                null
+                                                            ? "https://i.pinimg.com/564x/94/17/82/941782f60e16a9d7f9b4cea4ae7025e0.jpg"
+                                                            : items[index]
+                                                                .image
+                                                                .toString()),
+                                                        fit: BoxFit.fill)),
+                                              ),
+                                              const SizedBox(width: 16.0),
+                                              Column(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment.start,
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  Text(
+                                                    items[index]
+                                                        .name
+                                                        .toString(),
+                                                    style: const TextStyle(
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      fontSize: 16,
+                                                    ),
+                                                  ),
+                                                  Text(
+                                                      "Rp ${oCcy.format(items[index].price)}"),
+                                                ],
+                                              )
+                                            ],
+                                          ),
+                                          const SizedBox(height: 8.0),
+                                          const Text(
+                                            'Opsi menu:',
+                                            style: TextStyle(
+                                              color: Colors.green,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 4.0),
+                                          // ListView.builder
+                                          SizedBox(
+                                            height: 70,
+                                            child: ListView.builder(
+                                              itemCount:
+                                                  items[index].options?.length,
+                                              itemBuilder: (context, i) {
+                                                return Padding(
+                                                  padding:
+                                                      const EdgeInsets.only(
+                                                          bottom: 5),
+                                                  child: Row(
+                                                    mainAxisAlignment:
+                                                        MainAxisAlignment.start,
+                                                    children: [
+                                                      Text(
+                                                        items[index]
+                                                            .options![i]
+                                                            .title
+                                                            .toString(),
+                                                        style: const TextStyle(
+                                                          color: Colors.green,
+                                                        ),
+                                                      ),
+                                                      // ListView.builder
+                                                      Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .only(left: 5),
+                                                        child: SizedBox(
+                                                          height: 16,
+                                                          width: MediaQuery.of(
+                                                                      context)
+                                                                  .size
+                                                                  .width /
+                                                              1.7,
+                                                          child:
+                                                              ListView.builder(
+                                                            scrollDirection:
+                                                                Axis.horizontal,
+                                                            itemCount:
+                                                                items[index]
+                                                                    .options?[i]
+                                                                    .option
+                                                                    ?.length,
+                                                            itemBuilder:
+                                                                (context,
+                                                                    length) {
+                                                              return Text(
+                                                                " ${items[index].options![i].option![length].name.toString()}, ",
+                                                                style:
+                                                                    const TextStyle(
+                                                                  color: Colors
+                                                                      .grey,
+                                                                ),
+                                                              );
+                                                            },
+                                                          ),
+                                                        ),
+                                                      )
+                                                    ],
+                                                  ),
+                                                );
+                                              },
+                                            ),
+                                          ),
+
+                                          const SizedBox(height: 8.0),
+                                          Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.end,
+                                            children: [
+                                              InkWell(
+                                                onTap: () {},
+                                                child: const Text(
+                                                  'Hapus',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(width: 20.0),
+                                              InkWell(
+                                                onTap: () {},
+                                                child: const Text(
+                                                  'Edit',
+                                                  style: TextStyle(
+                                                    color: Colors.red,
+                                                    fontWeight: FontWeight.bold,
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }
+                                },
+                              ),
+                            );
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      );
+              }
+              return const SizedBox.shrink();
+            },
+          );
+        });
   }
 }
 
 class BottomOpsiMenuWidget extends StatelessWidget {
-  const BottomOpsiMenuWidget({Key? key}) : super(key: key);
+  final String? id;
+  const BottomOpsiMenuWidget({Key? key, this.id}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -834,7 +967,7 @@ class BottomOpsiMenuWidget extends StatelessWidget {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => const ChooseMenuPage(),
+            builder: (context) => ChooseMenuPage(id: id),
           ),
         );
       },

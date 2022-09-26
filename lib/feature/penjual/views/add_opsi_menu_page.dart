@@ -1,7 +1,12 @@
+import 'package:cafetaria/feature/penjual/bloc/opsi_menu_bloc/opsi_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_masked_text2/flutter_masked_text2.dart';
+import 'package:formz/formz.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 class AddOpsiMenuPage extends StatelessWidget {
   const AddOpsiMenuPage({Key? key, required this.menuId}) : super(key: key);
@@ -9,20 +14,21 @@ class AddOpsiMenuPage extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // return MultiBlocProvider(
-    //   providers: [
-    //     BlocProvider(
-    //       create: (context) {},
-    //     ),
-    //   ],
-    //   child: child,
-    // );
-    return const AddOpsiMenuView();
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => OpsiMenuBloc(
+              optionMenuRepository: context.read<OptionMenuRepository>()),
+        ),
+      ],
+      child: AddOpsiMenuView(menuid: menuId),
+    );
   }
 }
 
 class AddOpsiMenuView extends StatefulWidget {
-  const AddOpsiMenuView({Key? key}) : super(key: key);
+  final String? menuid;
+  const AddOpsiMenuView({Key? key, this.menuid}) : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AddOpsiMenuViewState();
@@ -37,14 +43,14 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
 
   @override
   Widget build(BuildContext context) {
-    final opsi = ModalRoute.of(context)!.settings.arguments;
+    // final opsi = ModalRoute.of(context)!.settings.arguments;
 
-    if (opsi is OpsiMenu) {
-      _textController.text = opsi.title;
-      option = opsi.option;
-      isMandatory = opsi.isMandatory;
-      isMultipleTopping = opsi.isMultipleTopping;
-    }
+    // if (opsi is OpsiMenu) {
+    //   _textController.text = opsi.title;
+    //   option = opsi.option;
+    //   isMandatory = opsi.isMandatory;
+    //   isMultipleTopping = opsi.isMultipleTopping;
+    // }
 
     return Scaffold(
       appBar: AppBar(
@@ -96,6 +102,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                   ),
                   child: TextFormField(
                     controller: _textController,
+                    onChanged: (value) {
+                      context.read<OpsiMenuBloc>().add(OpsiMenuChange(value));
+                    },
                     decoration: const InputDecoration(
                       hintText: 'Masukkan nama opsi menu',
                       hintStyle: TextStyle(
@@ -112,13 +121,14 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                       context,
                       MaterialPageRoute(
                         builder: (context) => const TambahOpsiComponent(),
-                        settings: RouteSettings(
-                          arguments: Option('', 0),
+                        settings: const RouteSettings(
+                          arguments: Option(name: "", price: 0),
                         ),
                       ),
                     );
                     if (result != null) {
                       setState(() {
+                        context.read<OpsiMenuBloc>().add(OptionChange(result));
                         option.add(result);
                       });
                     }
@@ -190,6 +200,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                                   if (result != null) {
                                     setState(() {
                                       option[index] = result;
+                                      context
+                                          .read<OpsiMenuBloc>()
+                                          .add(OptionIsiChange(result, index));
                                     });
                                   }
                                 },
@@ -224,6 +237,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                           onChanged: (val) {
                             setState(() {
                               isMandatory = true;
+                              context
+                                  .read<OpsiMenuBloc>()
+                                  .add(WajibChecked(isMandatory));
                             });
                           },
                         ),
@@ -243,6 +259,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                           onChanged: (val) {
                             setState(() {
                               isMandatory = false;
+                              context
+                                  .read<OpsiMenuBloc>()
+                                  .add(BanyakPorsiChecked(isMultipleTopping));
                             });
                           },
                         ),
@@ -269,6 +288,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                           onChanged: (val) {
                             setState(() {
                               isMultipleTopping = false;
+                              context
+                                  .read<OpsiMenuBloc>()
+                                  .add(BanyakPorsiChecked(isMultipleTopping));
                             });
                           },
                         ),
@@ -288,6 +310,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                           onChanged: (val) {
                             setState(() {
                               isMultipleTopping = true;
+                              context
+                                  .read<OpsiMenuBloc>()
+                                  .add(BanyakPorsiChecked(isMultipleTopping));
                             });
                           },
                         ),
@@ -300,83 +325,112 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
           ),
         ),
       ),
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: ElevatedButton(
-          style: ElevatedButton.styleFrom(
-            primary: Colors.red,
-            minimumSize: const Size.fromHeight(44),
-          ),
-          onPressed: () {
-            final title = _textController.text;
-            if (title.isNotEmpty && option.isNotEmpty) {
-              // temp
-              final result = OpsiMenu(
-                isMandatory,
-                isMultipleTopping,
-                'menuId',
-                option,
-                'optionmenuId',
-                title,
-              );
-              showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) {
-                  return Dialog(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width - 40,
-                      height: 235,
-                      padding: const EdgeInsets.all(16.0),
-                      decoration: BoxDecoration(
-                        color: Colors.white,
-                        borderRadius: BorderRadius.circular(8.0),
-                      ),
-                      child: Column(
-                        children: [
-                          Image.asset('assets/icons/pop-up-success.png'),
-                          const SizedBox(height: 4.0),
-                          const Text(
-                            'Berhasil!',
-                            style: TextStyle(
-                              fontSize: 18,
-                              fontWeight: FontWeight.bold,
-                            ),
-                          ),
-                          const SizedBox(height: 4.0),
-                          const Text('Opsi Menu baru berhasil ditambah.'),
-                          const SizedBox(height: 16.0),
-                          SizedBox(
-                            height: 44,
-                            width: double.infinity,
-                            child: ElevatedButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pop(context, result);
-                              },
-                              child: const Text('OK'),
-                              style: ElevatedButton.styleFrom(
-                                primary: Colors.red,
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+      bottomNavigationBar: BlocConsumer<OpsiMenuBloc, OpsiMenuState>(
+        listener: (context, state) {
+          // TODO: implement listener
+          if (state.status == FormzStatus.submissionSuccess) {
+            showDialog(
+              context: context,
+              barrierDismissible: false,
+              builder: (context) {
+                return Dialog(
+                  child: Container(
+                    width: MediaQuery.of(context).size.width - 40,
+                    height: 235,
+                    padding: const EdgeInsets.all(16.0),
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(8.0),
                     ),
-                  );
-                },
-              );
-              // Navigator.pop(context, result);
-            }
-          },
-          child: const Text(
-            'SIMPAN',
-            style: TextStyle(
-              color: Colors.white,
-              fontWeight: FontWeight.w500,
+                    child: Column(
+                      children: [
+                        Image.asset('assets/icons/pop-up-success.png'),
+                        const SizedBox(height: 4.0),
+                        const Text(
+                          'Berhasil!',
+                          style: TextStyle(
+                            fontSize: 18,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                        const SizedBox(height: 4.0),
+                        const Text('Opsi Menu baru berhasil ditambah.'),
+                        const SizedBox(height: 16.0),
+                        SizedBox(
+                          height: 44,
+                          width: double.infinity,
+                          child: ElevatedButton(
+                            onPressed: () async {
+                              SharedPreferences idmercahnt =
+                                  await SharedPreferences.getInstance();
+                              String id =
+                                  idmercahnt.getString("merchantId").toString();
+                              Navigator.pushReplacement(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) =>
+                                      MenuCafetariaPage(idMerchant: id),
+                                ),
+                              );
+                              // Navigator.pop(context, result);
+                            },
+                            child: const Text('OK'),
+                            style: ElevatedButton.styleFrom(
+                              primary: Colors.red,
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                );
+              },
+            );
+          } else if (state.status == FormzStatus.submissionFailure) {
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                content: Text('Terjadi kesalahan'),
+              ),
+            );
+          }
+        },
+        builder: (context, state) {
+          return Padding(
+            padding: const EdgeInsets.all(16.0),
+            child: ElevatedButton(
+              style: ElevatedButton.styleFrom(
+                primary: Colors.red,
+                minimumSize: const Size.fromHeight(44),
+              ),
+              onPressed: () {
+                final title = _textController.text;
+                if (title.isNotEmpty && option.isNotEmpty) {
+                  context
+                      .read<OpsiMenuBloc>()
+                      .add(SaveOpsi(widget.menuid.toString()));
+                  // // temp
+                  // final result = OpsiMenu(
+                  //   isMandatory,
+                  //   isMultipleTopping,
+                  //   'menuId',
+                  //   option,
+                  //   'optionmenuId',
+                  //   title,
+                  // );
+
+                  // Navigator.pop(context, result);
+                }
+              },
+              child: const Text(
+                'SIMPAN',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontWeight: FontWeight.w500,
+                ),
+              ),
             ),
-          ),
-        ),
+          );
+        },
       ),
     );
   }
@@ -547,7 +601,7 @@ class _TambahOpsiComponentState extends State<TambahOpsiComponent> {
             final name = _titleController.text;
             final price = _priceController.numberValue.round();
             if (name.isNotEmpty && price > 0) {
-              final option = Option(name, price);
+              final option = Option(name: name, price: price);
               Navigator.pop(context, option);
             }
           },

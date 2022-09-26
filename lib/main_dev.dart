@@ -8,6 +8,7 @@ import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:rating_repository/rating_repository.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
@@ -26,6 +27,8 @@ void main() async {
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
       final _merchantRepository = MerchantRepository(firestore: firebaseStore);
+      final _optionMenuRepository =
+          OptionMenuRepository(firestore: firebaseStore);
       final _cloudStorage = CloudStorage();
       const _secureStorage = SecureStorage();
       final _ratingRepository = RatingRepository(firestore: firebaseStore);
@@ -40,9 +43,10 @@ void main() async {
       // Initialize Firebase
 
       return App(
+        optionMenuRepository: _optionMenuRepository,
         authenticationRepository: _authenticationRepository,
         menuRepository: _menuRepository,
-        appSharedPref:  _appSharePref,
+        appSharedPref: _appSharePref,
         categoryRepository: _categoryRepository,
         secureStorage: _secureStorage,
         cloudStorage: _cloudStorage,

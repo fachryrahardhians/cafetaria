@@ -25,15 +25,5 @@ Map<String, dynamic> _$OptionMenuModelToJson(OptionMenuModel instance) =>
       'menuId': instance.menuId,
       'optionmenuId': instance.optionmenuId,
       'title': instance.title,
-      'option': instance.option,
-    };
-
-Option _$OptionFromJson(Map<String, dynamic> json) => Option(
-      name: json['name'] as String,
-      price: json['price'] as int,
-    );
-
-Map<String, dynamic> _$OptionToJson(Option instance) => <String, dynamic>{
-      'name': instance.name,
-      'price': instance.price,
+      'option': instance.option.map((e) => e.toJson()).toList(),
     };

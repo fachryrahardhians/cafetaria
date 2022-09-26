@@ -15,6 +15,7 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
         super(const ListMenuState.initial()) {
     on<GetListMenu>(_getListMenu);
     on<GetListMenuTidakTersedia>(_getListMenuTidakTersedia);
+    on<GetAllListMenu>(_getAllListMenu);
   }
 
   Future<void> _getListMenu(
@@ -27,6 +28,23 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
       final items = await _menuRepository.getMenu(
         event.idMerchant,
         event.idCategory,
+      );
+
+      emit(ListMenuState.success(items));
+    } catch (error) {
+      emit(ListMenuState.failure(error.toString()));
+    }
+  }
+
+  Future<void> _getAllListMenu(
+    GetAllListMenu event,
+    Emitter<ListMenuState> emit,
+  ) async {
+    emit(const ListMenuState.loading());
+
+    try {
+      final items = await _menuRepository.getAllMenu(
+        event.idMerchant,
       );
 
       emit(ListMenuState.success(items));

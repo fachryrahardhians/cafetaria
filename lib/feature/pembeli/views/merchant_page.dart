@@ -184,9 +184,10 @@ class _MerchantPageState extends State<MerchantPage>
                                                       }));
                                                 } else {
                                                   Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
+                                                      context,
+                                                      MaterialPageRoute(
+                                                          builder:
+                                                              (_) =>
                                                                   MakananPage(
                                                                     title: snapshot
                                                                             .data?[index]
@@ -202,11 +203,20 @@ class _MerchantPageState extends State<MerchantPage>
                                                                             index]
                                                                         .address
                                                                         .toString(),
-                                                                    tutup_toko: snapshot
-                                                                        .data![
-                                                                            index]
-                                                                        .tutup_toko
-                                                                        .toString(),
+                                                                    tutup_toko: snapshot.data![index].tutup_toko ==
+                                                                            null
+                                                                        ? DateTime(
+                                                                            DateTime.now().year,
+                                                                            DateTime.now().month,
+                                                                            DateTime.now().day,
+                                                                            01,
+                                                                            01,
+                                                                          )
+                                                                            .toString()
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .tutup_toko
+                                                                            .toString(),
                                                                     rating: snapshot
                                                                         .data?[
                                                                             index]
@@ -223,8 +233,8 @@ class _MerchantPageState extends State<MerchantPage>
                                                                         .data?[
                                                                             index]
                                                                         .maxPrice,
-                                                                  )))
-                                                      .then((value) => {
+                                                                  ))).then(
+                                                      (value) => {
                                                             addMenuToCartBloc
                                                               ..add(
                                                                   GetMenusInCart())

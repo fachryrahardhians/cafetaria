@@ -20,11 +20,13 @@ class MenuModel extends Equatable {
   final String? resetTime;
   final String? resetType;
   final String? rulepreordermenuId;
+  final List<OpsiMenu>? options;
   final int? stock;
   final List<String>? tags;
 
   const MenuModel(
       {this.menuId,
+      this.options,
       this.merchantId,
       this.name,
       this.autoResetStock,
@@ -63,11 +65,13 @@ class MenuModel extends Equatable {
       String? resetType,
       String? rulepreordermenuId,
       int? stock,
+      List<OpsiMenu>? options,
       List<String>? tags}) {
     return MenuModel(
       menuId: menuId ?? this.menuId,
       merchantId: merchantId ?? this.merchantId,
       name: name ?? this.name,
+      options: options ?? this.options,
       autoResetStock: autoResetStock ?? this.autoResetStock,
       defaultStock: defaultStock ?? this.defaultStock,
       categoryId: categoryId ?? this.categoryId,
@@ -101,6 +105,68 @@ class MenuModel extends Equatable {
         resetType,
         rulepreordermenuId,
         stock,
+        options,
         tags
       ];
+}
+
+@JsonSerializable()
+class OpsiMenu extends Equatable {
+  final bool? isMandatory;
+  final bool? isMultipleTopping;
+  final String? menuId;
+  final List<Options>? option;
+  final String? optionmenuId;
+  final String? title;
+
+  const OpsiMenu({
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  });
+  factory OpsiMenu.fromJson(Map<String, dynamic> json) =>
+      _$OpsiMenuFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OpsiMenuToJson(this);
+  OpsiMenu copyWith(
+      {bool? isMandatory,
+      bool? isMultipleTopping,
+      String? menuId,
+      List<Options>? option,
+      String? optionmenuId,
+      String? title}) {
+    return OpsiMenu(
+        isMandatory: isMandatory ?? this.isMandatory,
+        isMultipleTopping: isMultipleTopping ?? this.isMultipleTopping,
+        menuId: menuId ?? this.menuId,
+        option: option ?? this.option,
+        optionmenuId: optionmenuId ?? this.optionmenuId,
+        title: title ?? this.title);
+  }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props =>
+      [isMandatory, isMultipleTopping, menuId, option, optionmenuId, title];
+}
+
+@JsonSerializable()
+class Options extends Equatable {
+  final String? name;
+  final int? price;
+
+  const Options({this.name, this.price});
+  Options copyWith({String? name, int? price}) {
+    return Options(name: name ?? this.name, price: price ?? this.price);
+  }
+
+  factory Options.fromJson(Map<String, dynamic> json) => _$OptionFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OptionToJson(this);
+  @override
+  // TODO: implement props
+  List<Object?> get props => [name, price];
 }
