@@ -356,11 +356,11 @@ class _DoneListState extends State<DoneList> {
                         itemBuilder: (context, index) {
                           final item = items[index];
                           MerchantModel? merchant;
-                          merchantState.items!.forEach((element) {
+                          for (var element in merchantState.items!) {
                             if (element.merchantId == item.merchantId) {
                               merchant = element;
                             }
-                          });
+                          }
                           return _doneCard(item: item, merchant: merchant!);
                         },
                         separatorBuilder: (context, index) {

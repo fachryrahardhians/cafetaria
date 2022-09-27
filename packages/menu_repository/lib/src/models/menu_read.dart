@@ -3,10 +3,10 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 import 'package:menu_repository/src/models/option.dart';
 
-part 'menu_model.g.dart';
+part 'menu_read.g.dart';
 
-@JsonSerializable()
-class MenuModel extends Equatable {
+@JsonSerializable(explicitToJson: true)
+class MenuRead extends Equatable {
   final String? menuId;
   final String? merchantId;
   final String? name;
@@ -21,13 +21,13 @@ class MenuModel extends Equatable {
   final String? resetTime;
   final String? resetType;
   final String? rulepreordermenuId;
-  // final List<OpsiMenu>? options;
+  final List<OpsiMenu>? options;
   final int? stock;
   final List<String>? tags;
 
-  const MenuModel(
+  const MenuRead(
       {this.menuId,
-      // this.options,
+      this.options,
       this.merchantId,
       this.name,
       this.autoResetStock,
@@ -44,13 +44,13 @@ class MenuModel extends Equatable {
       this.stock,
       this.tags});
 
-  factory MenuModel.fromJson(Map<String, dynamic> json) =>
-      _$MenuModelFromJson(json);
+  factory MenuRead.fromJson(Map<String, dynamic> json) =>
+      _$MenuReadFromJson(json);
 
-  Map<String, dynamic> toJson() => _$MenuModelToJson(this);
+  Map<String, dynamic> toJson() => _$MenuReadToJson(this);
 
-  /// Copy with a new [MenuModel].
-  MenuModel copyWith(
+  /// Copy with a new [MenuRead].
+  MenuRead copyWith(
       {String? menuId,
       String? merchantId,
       int? defaultStock,
@@ -66,13 +66,13 @@ class MenuModel extends Equatable {
       String? resetType,
       String? rulepreordermenuId,
       int? stock,
-      //List<OpsiMenu>? options,
+      List<OpsiMenu>? options,
       List<String>? tags}) {
-    return MenuModel(
+    return MenuRead(
       menuId: menuId ?? this.menuId,
       merchantId: merchantId ?? this.merchantId,
       name: name ?? this.name,
-      //options: options ?? this.options,
+      options: options ?? this.options,
       autoResetStock: autoResetStock ?? this.autoResetStock,
       defaultStock: defaultStock ?? this.defaultStock,
       categoryId: categoryId ?? this.categoryId,
@@ -106,7 +106,50 @@ class MenuModel extends Equatable {
         resetType,
         rulepreordermenuId,
         stock,
-        //  options,
+        options,
         tags
       ];
+}
+
+@JsonSerializable()
+class OpsiMenu extends Equatable {
+  final bool? isMandatory;
+  final bool? isMultipleTopping;
+  final String? menuId;
+  final List<Options>? option;
+  final String? optionmenuId;
+  final String? title;
+
+  const OpsiMenu({
+    this.isMandatory,
+    this.isMultipleTopping,
+    this.menuId,
+    this.option,
+    this.optionmenuId,
+    this.title,
+  });
+  factory OpsiMenu.fromJson(Map<String, dynamic> json) =>
+      _$OpsiMenuFromJson(json);
+
+  Map<String, dynamic> toJson() => _$OpsiMenuToJson(this);
+  OpsiMenu copyWith(
+      {bool? isMandatory,
+      bool? isMultipleTopping,
+      String? menuId,
+      List<Options>? option,
+      String? optionmenuId,
+      String? title}) {
+    return OpsiMenu(
+        isMandatory: isMandatory ?? this.isMandatory,
+        isMultipleTopping: isMultipleTopping ?? this.isMultipleTopping,
+        menuId: menuId ?? this.menuId,
+        option: option ?? this.option,
+        optionmenuId: optionmenuId ?? this.optionmenuId,
+        title: title ?? this.title);
+  }
+
+  @override
+  // TODO: implement props
+  List<Object?> get props =>
+      [isMandatory, isMultipleTopping, menuId, option, optionmenuId, title];
 }

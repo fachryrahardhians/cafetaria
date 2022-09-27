@@ -16,23 +16,6 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
     on<GetListMenu>(_getListMenu);
     on<GetListMenuTidakTersedia>(_getListMenuTidakTersedia);
     //on<GetAllListMenu>(_getAllListMenu);
-    on<GetMenuRead>(_getMenuRead);
-  }
-  Future<void> _getMenuRead(
-    GetMenuRead event,
-    Emitter<ListMenuState> emit,
-  ) async {
-    emit(const ListMenuState.loading());
-
-    try {
-      final items = await _menuRepository.getMenuRead(
-        event.idMerchant,
-      );
-
-      emit(ListMenuState.success(items));
-    } catch (error) {
-      emit(ListMenuState.failure(error.toString()));
-    }
   }
 
   Future<void> _getListMenu(

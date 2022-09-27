@@ -518,7 +518,9 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                       child: Center(
                         child: Stack(
                           children: [
-                            Image.network(widget.menu!.image.toString()),
+                            widget.menu == null
+                                ? Container()
+                                : Image.network(widget.menu!.image.toString()),
                             Positioned(
                               top: 0,
                               right: 0,

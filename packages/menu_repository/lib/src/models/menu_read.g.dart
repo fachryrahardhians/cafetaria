@@ -1,16 +1,16 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'menu_model.dart';
+part of 'menu_read.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
+MenuRead _$MenuReadFromJson(Map<String, dynamic> json) => MenuRead(
       menuId: json['menuId'] as String?,
-      // options: (json['options'] as List<dynamic>?)
-      //     ?.map((e) => OpsiMenu.fromJson(e as Map<String, dynamic>))
-      //     .toList(),
+      options: (json['options'] as List<dynamic>?)
+          ?.map((e) => OpsiMenu.fromJson(e as Map<String, dynamic>))
+          .toList(),
       merchantId: json['merchantId'] as String?,
       name: json['name'] as String?,
       autoResetStock: json['autoResetStock'] as bool?,
@@ -28,7 +28,7 @@ MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
 
-Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
+Map<String, dynamic> _$MenuReadToJson(MenuRead instance) => <String, dynamic>{
       'menuId': instance.menuId,
       'merchantId': instance.merchantId,
       'name': instance.name,
@@ -43,7 +43,27 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'resetTime': instance.resetTime,
       'resetType': instance.resetType,
       'rulepreordermenuId': instance.rulepreordermenuId,
-      //'options': instance.options?.map((e) => e.toJson()).toList(),
+      'options': instance.options?.map((e) => e.toJson()).toList(),
       'stock': instance.stock,
       'tags': instance.tags,
+    };
+
+OpsiMenu _$OpsiMenuFromJson(Map<String, dynamic> json) => OpsiMenu(
+      isMandatory: json['isMandatory'] as bool?,
+      isMultipleTopping: json['isMultipleTopping'] as bool?,
+      menuId: json['menuId'] as String?,
+      option: (json['option'] as List<dynamic>?)
+          ?.map((e) => Options.fromJson(e as Map<String, dynamic>))
+          .toList(),
+      optionmenuId: json['optionmenuId'] as String?,
+      title: json['title'] as String?,
+    );
+
+Map<String, dynamic> _$OpsiMenuToJson(OpsiMenu instance) => <String, dynamic>{
+      'isMandatory': instance.isMandatory,
+      'isMultipleTopping': instance.isMultipleTopping,
+      'menuId': instance.menuId,
+      'option': instance.option,
+      'optionmenuId': instance.optionmenuId,
+      'title': instance.title,
     };

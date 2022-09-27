@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
+import 'package:cafetaria/feature/penjual/bloc/menu_read_bloc/menu_read_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
@@ -14,7 +15,7 @@ class ChooseMenuPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return MultiBlocProvider(providers: [
       BlocProvider(
-        create: (context) => ListMenuBloc(
+        create: (context) => MenuReadBloc(
           menuRepository: context.read<MenuRepository>(),
         )..add(GetMenuRead(id.toString())),
       )
@@ -40,18 +41,18 @@ class _MenuPageState extends State<MenuPage> {
         backgroundColor: Colors.white,
       ),
       body: SafeArea(
-        child: BlocBuilder<ListMenuBloc, ListMenuState>(
+        child: BlocBuilder<MenuReadBloc, MenuReadState>(
           builder: (context, state) {
             final status = state.status;
-            if (status == ListMenuStatus.loading) {
+            if (status == MenuReadStatus.loading) {
               return const Center(
                 child: CircularProgressIndicator(),
               );
-            } else if (status == ListMenuStatus.failure) {
+            } else if (status == MenuReadStatus.failure) {
               return const Center(
                 child: Text('Terjadi kesalahan'),
               );
-            } else if (status == ListMenuStatus.success) {
+            } else if (status == MenuReadStatus.success) {
               final items = state.items!;
               return SingleChildScrollView(
                 child: Column(
@@ -230,7 +231,7 @@ class _MenuPageState extends State<MenuPage> {
                                                         MediaQuery.of(context)
                                                                 .size
                                                                 .width /
-                                                            1.7,
+                                                            2,
                                                     child: ListView.builder(
                                                       scrollDirection:
                                                           Axis.horizontal,

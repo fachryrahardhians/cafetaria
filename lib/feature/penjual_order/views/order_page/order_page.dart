@@ -211,7 +211,8 @@ class OrderTabContent extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Expanded(
+    return SizedBox(
+      height: MediaQuery.of(context).size.height,
       child: Padding(
         padding: const EdgeInsets.symmetric(vertical: 10),
         child: ListView.builder(

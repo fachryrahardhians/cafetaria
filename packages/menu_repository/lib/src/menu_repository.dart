@@ -29,7 +29,7 @@ class MenuRepository {
     }
   }
 
-  Future<List<MenuModel>> getMenuRead(
+  Future<List<MenuRead>> getMenuRead(
     String idMerchant,
   ) async {
     try {
@@ -39,7 +39,7 @@ class MenuRepository {
           .get();
 
       final documents = snapshot.docs;
-      return documents.toListMenu();
+      return documents.toListMenu2();
     } catch (e) {
       throw Exception('Failed to get menu');
     }
@@ -210,6 +210,23 @@ extension on List<QueryDocumentSnapshot> {
       if (data != null) {
         try {
           leaderboardEntries.add(MenuModel.fromJson(data));
+        } catch (error) {
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
+  }
+}
+
+extension on List<QueryDocumentSnapshot> {
+  List<MenuRead> toListMenu2() {
+    final leaderboardEntries = <MenuRead>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          leaderboardEntries.add(MenuRead.fromJson(data));
         } catch (error) {
           throw Exception();
         }

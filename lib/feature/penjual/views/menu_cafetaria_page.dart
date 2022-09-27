@@ -1,5 +1,6 @@
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
+import 'package:cafetaria/feature/penjual/bloc/menu_read_bloc/menu_read_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
@@ -14,8 +15,11 @@ import 'package:get/get.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 
 import 'package:sharedpref_repository/sharedpref_repository.dart';
+
+import '../bloc/list_opsi_menu_bloc/list_opsi_menu_bloc.dart';
 
 class MenuCafetariaPage extends StatelessWidget {
   const MenuCafetariaPage({Key? key, this.idMerchant}) : super(key: key);
@@ -34,6 +38,14 @@ class MenuCafetariaPage extends StatelessWidget {
             menuRepository: context.read<MenuRepository>(),
           ),
         ),
+        BlocProvider(
+          create: (context) => MenuReadBloc(
+            menuRepository: context.read<MenuRepository>(),
+          ),
+        ),
+        BlocProvider(
+            create: (context) => ListOpsiMenuBloc(
+                optionMenuRepository: context.read<OptionMenuRepository>())),
       ],
       child: MenuCafetariaView(idMerchant: idMerchant.toString()),
     );
@@ -416,9 +428,9 @@ class ListMenuWidget extends StatelessWidget {
                           ),
                         ),
                         const SizedBox(height: 4.0),
-                        Text(
-                          '${item.options?.length} opsi menu tersambung',
-                          style: const TextStyle(
+                        const Text(
+                          ' 0 opsi menu tersambung',
+                          style: TextStyle(
                             color: Colors.green,
                           ),
                         ),
@@ -707,19 +719,19 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                   child: Text('Terjadi kesalahan'),
                 );
               } else if (status == MenuMakananStatus.success) {
-                final cat = context.watch<MenuMakananBloc>().state;
-                String? id;
-                for (var element in cat.items!) {
-                  if (snapshot.data == element.merchantId) {
-                    id = element.categoryId;
-                    break;
-                  } else {
-                    continue;
-                  }
-                }
+                // final cat = context.watch<MenuMakananBloc>().state;
+                // String? id;
+                // for (var element in cat.items!) {
+                //   if (snapshot.data == element.merchantId) {
+                //     id = element.categoryId;
+                //     break;
+                //   } else {
+                //     continue;
+                //   }
+                // }
                 final items = state.items!;
                 context
-                    .read<ListMenuBloc>()
+                    .read<MenuReadBloc>()
                     .add(GetMenuRead(snapshot.data.toString()));
 
                 return items.isEmpty
@@ -735,18 +747,18 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                           ],
                         ),
                       )
-                    : BlocBuilder<ListMenuBloc, ListMenuState>(
+                    : BlocBuilder<MenuReadBloc, MenuReadState>(
                         builder: (context, state) {
                           final status = state.status;
-                          if (status == ListMenuStatus.loading) {
+                          if (status == MenuReadStatus.loading) {
                             return const Center(
                               child: CircularProgressIndicator(),
                             );
-                          } else if (status == ListMenuStatus.failure) {
+                          } else if (status == MenuReadStatus.failure) {
                             return const Center(
                               child: Text('Terjadi kesalahan'),
                             );
-                          } else if (status == ListMenuStatus.success) {
+                          } else if (status == MenuReadStatus.success) {
                             final items = state.items!;
                             return Container(
                               padding: const EdgeInsets.all(16.0),
@@ -912,7 +924,81 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                                 MainAxisAlignment.end,
                                             children: [
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  showDialog(
+                                                    context: context,
+                                                    builder: (context) =>
+                                                        Dialog(
+                                                      child: Padding(
+                                                        padding:
+                                                            const EdgeInsets
+                                                                .all(20),
+                                                        child: Column(
+                                                          mainAxisSize:
+                                                              MainAxisSize.min,
+                                                          children: [
+                                                            const Text(
+                                                              "Delete Opsi Menu",
+                                                              style: TextStyle(
+                                                                fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                fontSize: 14,
+                                                              ),
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            const Text(
+                                                              "Apakah Anda Yakin Ingin menghapus semua opsi menu di menu ini ?",
+                                                              textAlign:
+                                                                  TextAlign
+                                                                      .center,
+                                                            ),
+                                                            const SizedBox(
+                                                                height: 20),
+                                                            Row(
+                                                              mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                              children: [
+                                                                OutlinedButton(
+                                                                  onPressed:
+                                                                      () {
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child: const Text(
+                                                                      "CANCEL"),
+                                                                ),
+                                                                const SizedBox(
+                                                                    width: 15),
+                                                                ElevatedButton(
+                                                                  onPressed:
+                                                                      () async {
+                                                                    for (var element
+                                                                        in items) {
+                                                                      for (var item
+                                                                          in element
+                                                                              .options!) {
+                                                                        await context
+                                                                            .read<OptionMenuRepository>()
+                                                                            .deleteOptionMenu(item.optionmenuId.toString());
+                                                                      }
+                                                                    }
+                                                                    Navigator.pop(
+                                                                        context);
+                                                                  },
+                                                                  child: const Text(
+                                                                      "DELETE"),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  );
+                                                },
                                                 child: const Text(
                                                   'Hapus',
                                                   style: TextStyle(
@@ -939,7 +1025,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                                                         .toString()),
                                                           ))
                                                       .then((value) => context
-                                                          .read<ListMenuBloc>()
+                                                          .read<MenuReadBloc>()
                                                           .add(GetMenuRead(
                                                               snapshot.data
                                                                   .toString())));
