@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 
 class PembeliDashboardPage extends StatelessWidget {
   final int index;
-  const PembeliDashboardPage({Key? key, this.index=0}) : super(key: key);
+  const PembeliDashboardPage({Key? key, this.index = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -18,7 +18,7 @@ class PembeliDashboardPage extends StatelessWidget {
 
 class PembeliDashboard extends StatefulWidget {
   final int index;
-  const PembeliDashboard({Key? key, this.index=0}) : super(key: key);
+  const PembeliDashboard({Key? key, this.index = 0}) : super(key: key);
 
   @override
   State<PembeliDashboard> createState() => _PembeliDashboardState(index);
@@ -49,7 +49,6 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
             unselectedLabelColor: const Color(0xffB1B5BA),
             unselectedLabelStyle: textStyle,
             labelStyle: textStyle,
-
             tabs: const [
               Tab(
                 text: 'Home',

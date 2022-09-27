@@ -20,7 +20,6 @@ class MenuPreorderBloc extends Bloc<MenuPreorderEvent, MenuPreorderState> {
     on<CheckMenuPreorder>(_checkMenuPreorder);
   }
 
-
   void _checkMenuPreorder(
     CheckMenuPreorder event,
     Emitter<MenuPreorderState> emit,
@@ -30,8 +29,7 @@ class MenuPreorderBloc extends Bloc<MenuPreorderEvent, MenuPreorderState> {
       var data = await _menuRepository.getMenuInKeranjang();
       bool result = false;
       data.forEach((element) {
-        if(element.rulepreordermenuId!='')
-          result = true;
+        if (element.rulepreordermenuId != '') result = true;
       });
       emit.call(CheckResult(result));
     } catch (e) {

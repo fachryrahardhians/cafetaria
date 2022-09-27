@@ -22,7 +22,7 @@ class OpsiMenuBloc extends Bloc<OpsiMenuEvent, OpsiMenuState> {
     on<WajibChecked>(_wajibChecked);
     on<BanyakPorsiChecked>(_banyakPorsiChecked);
     on<OptionChange>(_optionChange);
-
+    on<UpdateOpsi>(_updateOpsi);
     on<SaveOpsi>(_saveOpsi);
     on<OptionIsiChange>(_optionIsiChange);
   }
@@ -105,6 +105,34 @@ class OpsiMenuBloc extends Bloc<OpsiMenuEvent, OpsiMenuState> {
         option: listOption);
 
     await _optionMenuRepository.saveOptionMenu(opsi);
+
+    emit(state.copyWith(
+        status: FormzStatus.submissionSuccess,
+        banyakOpsi: state.banyakOpsi,
+        opsiInput: state.opsiInput,
+        option: state.option,
+        wajibMemilih: state.wajibMemilih));
+  }
+
+  Future<FutureOr<void>> _updateOpsi(
+      UpdateOpsi event, Emitter<OpsiMenuState> emit) async {
+    emit(state.copyWith(
+        status: FormzStatus.submissionInProgress,
+        banyakOpsi: state.banyakOpsi,
+        opsiInput: state.opsiInput,
+        option: state.option,
+        wajibMemilih: state.wajibMemilih));
+    List<Option> listOption = state.option;
+
+    final opsi = OptionMenuModel(
+        menuId: event.menuId,
+        isMandatory: state.wajibMemilih,
+        isMultipleTopping: state.banyakOpsi,
+        optionmenuId: event.optionMenuId,
+        title: state.opsiInput.value,
+        option: listOption);
+
+    await _optionMenuRepository.editOptionMenu(opsi);
 
     emit(state.copyWith(
         status: FormzStatus.submissionSuccess,

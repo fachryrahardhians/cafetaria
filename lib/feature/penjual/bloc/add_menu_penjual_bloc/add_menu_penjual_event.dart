@@ -113,7 +113,8 @@ class UpdateMenu extends AddMenuPenjualEvent {
   final String photoUrl;
   final String menuId;
 
-  const UpdateMenu(this.photoUrl, {required this.updatePhoto, required this.menuId});
+  const UpdateMenu(this.photoUrl,
+      {required this.updatePhoto, required this.menuId});
 
   @override
   List<Object> get props => [updatePhoto, photoUrl, menuId];

@@ -15,7 +15,24 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
         super(const ListMenuState.initial()) {
     on<GetListMenu>(_getListMenu);
     on<GetListMenuTidakTersedia>(_getListMenuTidakTersedia);
-    on<GetAllListMenu>(_getAllListMenu);
+    //on<GetAllListMenu>(_getAllListMenu);
+    on<GetMenuRead>(_getMenuRead);
+  }
+  Future<void> _getMenuRead(
+    GetMenuRead event,
+    Emitter<ListMenuState> emit,
+  ) async {
+    emit(const ListMenuState.loading());
+
+    try {
+      final items = await _menuRepository.getMenuRead(
+        event.idMerchant,
+      );
+
+      emit(ListMenuState.success(items));
+    } catch (error) {
+      emit(ListMenuState.failure(error.toString()));
+    }
   }
 
   Future<void> _getListMenu(
@@ -36,22 +53,22 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
     }
   }
 
-  Future<void> _getAllListMenu(
-    GetAllListMenu event,
-    Emitter<ListMenuState> emit,
-  ) async {
-    emit(const ListMenuState.loading());
+  // Future<void> _getAllListMenu(
+  //   GetAllListMenu event,
+  //   Emitter<ListMenuState> emit,
+  // ) async {
+  //   emit(const ListMenuState.loading());
 
-    try {
-      final items = await _menuRepository.getAllMenu(
-        event.idMerchant,
-      );
+  //   try {
+  //     final items = await _menuRepository.getAllMenu(
+  //       event.idMerchant,
+  //     );
 
-      emit(ListMenuState.success(items));
-    } catch (error) {
-      emit(ListMenuState.failure(error.toString()));
-    }
-  }
+  //     emit(ListMenuState.success(items));
+  //   } catch (error) {
+  //     emit(ListMenuState.failure(error.toString()));
+  //   }
+  // }
 
   Future<void> _getListMenuTidakTersedia(
     GetListMenuTidakTersedia event,

@@ -147,8 +147,8 @@ class _SelectToppingState extends State<SelectTopping> {
                                   });
                                 },
                               ),
-                              SizedBox(width: 3),
-                              Text('Topping Sama')
+                              const SizedBox(width: 3),
+                              const Text('Topping Sama')
                             ],
                           ),
                         ),
@@ -165,8 +165,8 @@ class _SelectToppingState extends State<SelectTopping> {
                                   });
                                 },
                               ),
-                              SizedBox(width: 3),
-                              Text('Topping Beda')
+                              const SizedBox(width: 3),
+                              const Text('Topping Beda')
                             ],
                           ),
                         )

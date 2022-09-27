@@ -4,6 +4,7 @@ import 'package:cafetaria/feature/penjual/views/add_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/feature/penjual/views/choose_menu_page.dart';
+import 'package:cafetaria/feature/penjual/views/edit_opsi_menu.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -48,6 +49,11 @@ class MenuCafetariaView extends StatefulWidget {
 }
 
 class _MenuCafetariaViewState extends State<MenuCafetariaView> {
+  @override
+  void dispose() {
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final _scaffold = GlobalKey<ScaffoldState>();
@@ -714,7 +720,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                 final items = state.items!;
                 context
                     .read<ListMenuBloc>()
-                    .add(GetListMenu(snapshot.data.toString(), id.toString()));
+                    .add(GetMenuRead(snapshot.data.toString()));
 
                 return items.isEmpty
                     ? Center(
@@ -750,7 +756,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                 // physics: const NeverScrollableScrollPhysics(),
                                 itemCount: items.length,
                                 itemBuilder: (context, index) {
-                                  print(items[index].options!.isEmpty);
+                                  //print(items[index].options!.isEmpty);
                                   if (items[index].options!.isEmpty) {
                                     return Container();
                                   } else {
@@ -868,7 +874,7 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                                                       context)
                                                                   .size
                                                                   .width /
-                                                              1.7,
+                                                              4,
                                                           child:
                                                               ListView.builder(
                                                             scrollDirection:
@@ -917,7 +923,27 @@ class _OpsiMenuWidgetState extends State<OpsiMenuWidget> {
                                               ),
                                               const SizedBox(width: 20.0),
                                               InkWell(
-                                                onTap: () {},
+                                                onTap: () {
+                                                  Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                            builder: (context) =>
+                                                                EditOpsiMenu(
+                                                                    id: items[
+                                                                            index]
+                                                                        .menuId
+                                                                        .toString(),
+                                                                    title: items[
+                                                                            index]
+                                                                        .name
+                                                                        .toString()),
+                                                          ))
+                                                      .then((value) => context
+                                                          .read<ListMenuBloc>()
+                                                          .add(GetMenuRead(
+                                                              snapshot.data
+                                                                  .toString())));
+                                                },
                                                 child: const Text(
                                                   'Edit',
                                                   style: TextStyle(

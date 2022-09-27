@@ -24,4 +24,3 @@ class MenuPreorder extends MenuPreorderEvent {
 }
 
 class CheckMenuPreorder extends MenuPreorderEvent {}
-

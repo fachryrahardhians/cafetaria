@@ -16,7 +16,7 @@ class ChooseMenuPage extends StatelessWidget {
       BlocProvider(
         create: (context) => ListMenuBloc(
           menuRepository: context.read<MenuRepository>(),
-        )..add(GetAllListMenu(id.toString())),
+        )..add(GetMenuRead(id.toString())),
       )
     ], child: const MenuPage());
   }
@@ -115,6 +115,7 @@ class _MenuPageState extends State<MenuPage> {
                           itemBuilder: (context, index) {
                             return InkWell(
                               onTap: () {
+                                Navigator.pop(context);
                                 Navigator.push(
                                   context,
                                   MaterialPageRoute(

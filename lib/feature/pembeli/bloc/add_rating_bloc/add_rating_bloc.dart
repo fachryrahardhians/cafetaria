@@ -15,9 +15,11 @@ part 'add_rating_state.dart';
 class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
   final RatingRepository _ratingRepository;
   final AuthenticationRepository _authenticationRepository;
-  AddRatingBloc({
-    required RatingRepository ratingRepository, required AuthenticationRepository authenticationRepository
-  })  : _ratingRepository = ratingRepository, _authenticationRepository = authenticationRepository,
+  AddRatingBloc(
+      {required RatingRepository ratingRepository,
+      required AuthenticationRepository authenticationRepository})
+      : _ratingRepository = ratingRepository,
+        _authenticationRepository = authenticationRepository,
         super(const AddRatingState()) {
     ///
     on<SaveRating>(_saveRating);
@@ -36,11 +38,13 @@ class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
     ));
     User? user = await _authenticationRepository.getCurrentUser();
     try {
-      await _ratingRepository.addRating(event.orderId,RatingModel(
-          feedback: event.catatan,
-          rating: event.rating,
-          ratingId: _uuid.v4(),
-          merchantId: event.merchantId));
+      await _ratingRepository.addRating(
+          event.orderId,
+          RatingModel(
+              feedback: event.catatan,
+              rating: event.rating,
+              ratingId: _uuid.v4(),
+              merchantId: event.merchantId));
 
       emit(state.copyWith(
         formzStatus: FormzStatus.submissionSuccess,

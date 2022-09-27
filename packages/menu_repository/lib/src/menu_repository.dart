@@ -29,6 +29,22 @@ class MenuRepository {
     }
   }
 
+  Future<List<MenuModel>> getMenuRead(
+    String idMerchant,
+  ) async {
+    try {
+      final snapshot = await _firestore
+          .collection('menu-read')
+          .where('merchantId', isEqualTo: idMerchant)
+          .get();
+
+      final documents = snapshot.docs;
+      return documents.toListMenu();
+    } catch (e) {
+      throw Exception('Failed to get menu');
+    }
+  }
+
   Future<RulePreorderModel> getRuleById(String id) async {
     try {
       final snapshot =
@@ -115,7 +131,10 @@ class MenuRepository {
 
   Future<void> editMenu(MenuModel menu) async {
     try {
-      await _firestore.collection('menu').doc(menu.menuId).update(menu.toJson());
+      await _firestore
+          .collection('menu')
+          .doc(menu.menuId)
+          .update(menu.toJson());
     } catch (e) {
       throw Exception('Failed to edit menu');
     }

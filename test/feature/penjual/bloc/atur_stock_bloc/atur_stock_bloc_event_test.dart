@@ -30,7 +30,7 @@ void main() {
     });
   });
 
-    group("IsRestock change", () {
+  group("IsRestock change", () {
     test("supports value comparison", () {
       expect(const AturStokRestok(true), const AturStokRestok(true));
     });
@@ -40,17 +40,17 @@ void main() {
     });
   });
 
-      group("IsAvailable change", () {
+  group("IsAvailable change", () {
     test("supports value comparison", () {
       expect(const AturStokTersedia(false), const AturStokTersedia(false));
     });
     test("props are equals", () {
-      expect(
-          const AturStokTersedia(true).props, const AturStokTersedia(true).props);
+      expect(const AturStokTersedia(true).props,
+          const AturStokTersedia(true).props);
     });
   });
 
-    group("Jumlah Stok change", () {
+  group("Jumlah Stok change", () {
     test("supports value comparison", () {
       expect(const AturStokTime("12:20"), const AturStokTime("12:20"));
     });
@@ -59,13 +59,14 @@ void main() {
           const AturStokTime("12:20").props, const AturStokTime("12:20").props);
     });
   });
-    group("Jumlah Stok change", () {
+  group("Jumlah Stok change", () {
     test("supports value comparison", () {
-      expect(const AturStokRestokType("hari"), const AturStokRestokType("hari"));
+      expect(
+          const AturStokRestokType("hari"), const AturStokRestokType("hari"));
     });
     test("props are equals", () {
-      expect(
-          const AturStokRestokType("bulan").props, const AturStokRestokType("bulan").props);
+      expect(const AturStokRestokType("bulan").props,
+          const AturStokRestokType("bulan").props);
     });
   });
 }

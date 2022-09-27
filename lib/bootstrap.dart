@@ -55,6 +55,7 @@ Future<void> bootstrap(BootstrapBuilder builder) async {
   // )
   await runZonedGuarded(
     () async {
+      // ignore: deprecated_member_use
       await BlocOverrides.runZoned(
         () async => runApp(
           await builder(

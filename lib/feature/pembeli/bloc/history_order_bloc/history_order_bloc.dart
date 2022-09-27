@@ -11,10 +11,11 @@ class HistoryOrderBloc extends Bloc<HistoryOrderEvent, HistoryOrderState> {
   final OrderRepository _orderRepository;
   final AuthenticationRepository _authenticationRepository;
 
-  HistoryOrderBloc({
-    required OrderRepository orderRepository,
-    required AuthenticationRepository authenticationRepository
-  })  : _orderRepository = orderRepository, _authenticationRepository = authenticationRepository,
+  HistoryOrderBloc(
+      {required OrderRepository orderRepository,
+      required AuthenticationRepository authenticationRepository})
+      : _orderRepository = orderRepository,
+        _authenticationRepository = authenticationRepository,
         super(const HistoryOrderState.initial()) {
     on<GetHistoryOrder>(_getHistoryOrder);
   }
@@ -26,7 +27,8 @@ class HistoryOrderBloc extends Bloc<HistoryOrderEvent, HistoryOrderState> {
     emit(const HistoryOrderState.loading());
     User? user = await _authenticationRepository.getCurrentUser();
     try {
-      final items = await _orderRepository.getListOrderHistory(event.status, user!.uid.toString());
+      final items = await _orderRepository.getListOrderHistory(
+          event.status, user!.uid.toString());
 
       emit(HistoryOrderState.success(items));
     } catch (error) {

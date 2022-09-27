@@ -367,9 +367,9 @@ class AddMenuPenjualBloc
   }
 
   Future<void> _updateMenu(
-      UpdateMenu event,
-      Emitter<AddMenuPenjualState> emit,
-      ) async {
+    UpdateMenu event,
+    Emitter<AddMenuPenjualState> emit,
+  ) async {
     emit(state.copyWith(
       status: FormzStatus.submissionInProgress,
       menuInput: state.menuInput,
@@ -388,7 +388,7 @@ class AddMenuPenjualBloc
     SharedPreferences idmercahnt = await SharedPreferences.getInstance();
     String id = idmercahnt.getString("merchantId").toString();
     final MenuModel menu;
-    if(event.updatePhoto) {
+    if (event.updatePhoto) {
       menu = MenuModel(
         menuId: event.menuId,
 

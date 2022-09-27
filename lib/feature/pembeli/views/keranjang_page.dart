@@ -1,11 +1,13 @@
-import 'dart:ui';
+//import 'dart:ui';
+
+// ignore_for_file: no_logic_in_create_state
 
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
-import 'package:cafetaria/feature/pembeli/views/history_page.dart';
+//import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/utilities/size_config.dart';
@@ -324,7 +326,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 buttonText: 'KEMBALI KE HOME',
                 onPressAction: () => Navigator.pushAndRemoveUntil(
                     context,
-                    MaterialPageRoute(builder: (_) => PembeliDashboard()),
+                    MaterialPageRoute(builder: (_) => const PembeliDashboard()),
                     (route) => false),
               );
               showDialog(
@@ -738,7 +740,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
         children: [
           Text('${itemCount}x',
               style: textStyle.copyWith(
-                  color: Color(0xffB1B5BA),
+                  color: const Color(0xffB1B5BA),
                   fontWeight: FontWeight.w500,
                   fontSize: 13)),
           SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
@@ -747,7 +749,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
             children: [
               Text(itemName,
                   style: textStyle.copyWith(
-                      color: Color(0xffB1B5BA),
+                      color: const Color(0xffB1B5BA),
                       fontWeight: FontWeight.w500,
                       fontSize: 13)),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
@@ -767,7 +769,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
           Text(
             'Rp. $totalPrice',
             style: textStyle.copyWith(
-                color: Color(0xffB1B5BA),
+                color: const Color(0xffB1B5BA),
                 fontWeight: FontWeight.w500,
                 fontSize: 13),
           )
@@ -784,7 +786,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
       builder: (context, scrollController) {
         return Container(
           alignment: Alignment.bottomCenter,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
               borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
               color: Colors.white),
           child: Column(
@@ -797,7 +799,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   height: 4,
                   decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(100),
-                      color: Color(0xffE5E6E6)),
+                      color: const Color(0xffE5E6E6)),
                 ),
               ),
               _card('Ambil Sendiri', 'Kamu ambil sendiri pesananmu di toko',
@@ -821,7 +823,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
             color: Colors.transparent,
             child: Container(
               alignment: Alignment.bottomCenter,
-              padding: EdgeInsets.symmetric(horizontal: 14),
+              padding: const EdgeInsets.symmetric(horizontal: 14),
               decoration: const BoxDecoration(
                   borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
                   color: Colors.white),
@@ -835,11 +837,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                       height: 4,
                       decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(100),
-                          color: Color(0xffE5E6E6)),
+                          color: const Color(0xffE5E6E6)),
                     ),
                   ),
                   Padding(
-                      padding: EdgeInsets.only(top: 24, bottom: 16),
+                      padding: const EdgeInsets.only(top: 24, bottom: 16),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -861,7 +863,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           )
                         ],
                       )),
-                  Text(
+                  const Text(
                     "Biaya pemesanan ini akan digunakan untuk terus meningkatkan layanan kami dalam mengantarkan makanan favoritmu.",
                     style: TextStyle(
                         fontSize: 12,
@@ -913,15 +915,15 @@ class _KeranjangPageState extends State<KeranjangPage> {
                       children: [
                         Text(
                           title,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Color(0xff2E3032),
                               fontSize: 14,
                               fontWeight: FontWeight.w700),
                         ),
-                        SizedBox(height: 6),
+                        const SizedBox(height: 6),
                         Text(
                           desc,
-                          style: TextStyle(
+                          style: const TextStyle(
                               color: Color(0xffB1b5BA),
                               fontWeight: FontWeight.w400,
                               fontSize: 12),
@@ -930,7 +932,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     ),
                     Visibility(
                         visible: isVisible,
-                        child: Icon(
+                        child: const Icon(
                           Icons.check,
                           color: Color(0xffEE3124),
                         ))
@@ -949,7 +951,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset("assets/images/ill_sad.png"),
-          Text(
+          const Text(
             "Mohon maaf fitur belum tersedia untuk saat ini",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -958,7 +960,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 fontWeight: FontWeight.w700),
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 2),
-          Text(
+          const Text(
             "Kami mohon maaf untuk fitur pesanan diantar keapartemen untuk saat ini masih belum tersedia.",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -985,7 +987,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
             onPressed: () {
               Navigator.pop(context);
             },
-            child: Text("PILIH KEMBALI PENGAMBILAN",
+            child: const Text("PILIH KEMBALI PENGAMBILAN",
                 style: TextStyle(color: Colors.white, fontSize: 14)),
           ),
         ),
@@ -1000,7 +1002,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
         mainAxisSize: MainAxisSize.min,
         children: [
           Image.asset("assets/images/ic_grfx_warning.png"),
-          Text(
+          const Text(
             "Apakah anda yakin ingin melanjutkan?",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -1009,7 +1011,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 fontWeight: FontWeight.w700),
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 2),
-          Text(
+          const Text(
             "Menu yang tidak dapat di booking akan otomatis di batalkan",
             textAlign: TextAlign.center,
             style: TextStyle(
@@ -1040,11 +1042,11 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 onPressed: () {
                   Navigator.pop(context);
                 },
-                child: Text("Tidak",
+                child: const Text("Tidak",
                     style: TextStyle(color: Colors.white, fontSize: 14)),
               ),
             ),
-            Spacer(),
+            const Spacer(),
             SizedBox(
               width: SizeConfig.safeBlockHorizontal * 35,
               child: ElevatedButton(
@@ -1061,9 +1063,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
                         side: BorderSide.none))),
                 onPressed: () {
                   List<Keranjang> lists = List.empty(growable: true);
-                  menuInKeranjang.forEach((element) {
+                  for (var element in menuInKeranjang) {
                     if (element.rulepreordermenuId != '') lists.add(element);
-                  });
+                  }
                   context.read<AddOrderBloc>().add(
                         SaveOrder(
                             merchantId: widget.merchantId,
@@ -1076,7 +1078,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                 ' 08:00:00.000'),
                       );
                 },
-                child: Text("Ya",
+                child: const Text("Ya",
                     style: TextStyle(color: Colors.white, fontSize: 14)),
               ),
             ),

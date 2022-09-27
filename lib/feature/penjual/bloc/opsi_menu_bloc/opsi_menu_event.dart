@@ -50,3 +50,13 @@ class SaveOpsi extends OpsiMenuEvent {
   @override
   List<Object> get props => [menuId];
 }
+
+class UpdateOpsi extends OpsiMenuEvent {
+  final String optionMenuId;
+  final String menuId;
+
+  const UpdateOpsi(this.optionMenuId, this.menuId);
+
+  @override
+  List<Object> get props => [optionMenuId, menuId];
+}

@@ -139,7 +139,10 @@ class _RatingState extends State<Rating> {
               message:
                   'Harap menunggu notifikasi melalui app ketika makanan sudah siap untuk diantar atau dijemput.',
               buttonText: 'KEMBALI KE HOME',
-              onPressAction: ()=>Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (_)=>PembeliDashboard()), (route) => false),
+              onPressAction: () => Navigator.pushAndRemoveUntil(
+                  context,
+                  MaterialPageRoute(builder: (_) => PembeliDashboard()),
+                  (route) => false),
             );
             showDialog(
                 context: context,

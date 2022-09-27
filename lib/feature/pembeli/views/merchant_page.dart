@@ -205,14 +205,7 @@ class _MerchantPageState extends State<MerchantPage>
                                                                         .toString(),
                                                                     tutup_toko: snapshot.data![index].tutup_toko ==
                                                                             null
-                                                                        ? DateTime(
-                                                                            DateTime.now().year,
-                                                                            DateTime.now().month,
-                                                                            DateTime.now().day,
-                                                                            01,
-                                                                            01,
-                                                                          )
-                                                                            .toString()
+                                                                        ? "kosong"
                                                                         : snapshot
                                                                             .data![index]
                                                                             .tutup_toko

@@ -9,8 +9,10 @@ import 'package:option_menu_repository/option_menu_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class AddOpsiMenuPage extends StatelessWidget {
-  const AddOpsiMenuPage({Key? key, required this.menuId}) : super(key: key);
+  const AddOpsiMenuPage({Key? key, required this.menuId, this.optionMenuModel})
+      : super(key: key);
   final String menuId;
+  final OptionMenuModel? optionMenuModel;
 
   @override
   Widget build(BuildContext context) {
@@ -21,14 +23,16 @@ class AddOpsiMenuPage extends StatelessWidget {
               optionMenuRepository: context.read<OptionMenuRepository>()),
         ),
       ],
-      child: AddOpsiMenuView(menuid: menuId),
+      child: AddOpsiMenuView(menuid: menuId, optionMenuModel: optionMenuModel),
     );
   }
 }
 
 class AddOpsiMenuView extends StatefulWidget {
   final String? menuid;
-  const AddOpsiMenuView({Key? key, this.menuid}) : super(key: key);
+  final OptionMenuModel? optionMenuModel;
+  const AddOpsiMenuView({Key? key, this.menuid, this.optionMenuModel})
+      : super(key: key);
 
   @override
   State<StatefulWidget> createState() => _AddOpsiMenuViewState();
@@ -36,10 +40,34 @@ class AddOpsiMenuView extends StatefulWidget {
 
 class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
   final _textController = TextEditingController();
-
+  String? title;
   List<Option> option = [];
   bool isMandatory = true;
   bool isMultipleTopping = false;
+  @override
+  void initState() {
+    super.initState();
+    if (widget.optionMenuModel != null) {
+      context
+          .read<OpsiMenuBloc>()
+          .add(OpsiMenuChange(widget.optionMenuModel!.title.toString()));
+      context
+          .read<OpsiMenuBloc>()
+          .add(WajibChecked(widget.optionMenuModel!.isMandatory));
+      context
+          .read<OpsiMenuBloc>()
+          .add((BanyakPorsiChecked(widget.optionMenuModel!.isMultipleTopping)));
+      for (var element in widget.optionMenuModel!.option) {
+        context.read<OpsiMenuBloc>().add(OptionChange(element));
+      }
+      setState(() {
+        title = widget.optionMenuModel!.title;
+        option = widget.optionMenuModel!.option;
+        isMandatory = widget.optionMenuModel!.isMandatory;
+        isMultipleTopping = widget.optionMenuModel!.isMultipleTopping;
+      });
+    }
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -54,9 +82,11 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text(
-          'TAMBAH OPSI MENU',
-          style: TextStyle(
+        title: Text(
+          widget.optionMenuModel != null
+              ? 'EDIT OPSI MENU'
+              : 'TAMBAH OPSI MENU',
+          style: const TextStyle(
             color: Colors.black,
             fontWeight: FontWeight.bold,
           ),
@@ -101,8 +131,11 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                     ),
                   ),
                   child: TextFormField(
-                    controller: _textController,
+                    initialValue: widget.optionMenuModel == null ? "" : title,
                     onChanged: (value) {
+                      setState(() {
+                        title = value;
+                      });
                       context.read<OpsiMenuBloc>().add(OpsiMenuChange(value));
                     },
                     decoration: const InputDecoration(
@@ -336,7 +369,7 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                 return Dialog(
                   child: Container(
                     width: MediaQuery.of(context).size.width - 40,
-                    height: 235,
+                    height: 250,
                     padding: const EdgeInsets.all(16.0),
                     decoration: BoxDecoration(
                       color: Colors.white,
@@ -354,7 +387,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                           ),
                         ),
                         const SizedBox(height: 4.0),
-                        const Text('Opsi Menu baru berhasil ditambah.'),
+                        Text(widget.optionMenuModel != null
+                            ? 'Opsi Menu baru berhasil diubah.'
+                            : 'Opsi Menu baru berhasil ditambah.'),
                         const SizedBox(height: 16.0),
                         SizedBox(
                           height: 44,
@@ -365,13 +400,15 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                                   await SharedPreferences.getInstance();
                               String id =
                                   idmercahnt.getString("merchantId").toString();
-                              Navigator.pushReplacement(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) =>
-                                      MenuCafetariaPage(idMerchant: id),
-                                ),
-                              );
+                              Navigator.pop(context);
+                              Navigator.pop(context);
+                              // Navigator.pushReplacement(
+                              //   context,
+                              //   MaterialPageRoute(
+                              //     builder: (context) =>
+                              //         MenuCafetariaPage(idMerchant: id),
+                              //   ),
+                              // );
                               // Navigator.pop(context, result);
                             },
                             child: const Text('OK'),
@@ -403,11 +440,16 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                 minimumSize: const Size.fromHeight(44),
               ),
               onPressed: () {
-                final title = _textController.text;
-                if (title.isNotEmpty && option.isNotEmpty) {
-                  context
-                      .read<OpsiMenuBloc>()
-                      .add(SaveOpsi(widget.menuid.toString()));
+                //final title = _textController.text;
+                if ((title != null) && option.isNotEmpty) {
+                  widget.optionMenuModel == null
+                      ? context
+                          .read<OpsiMenuBloc>()
+                          .add(SaveOpsi(widget.menuid.toString()))
+                      : context.read<OpsiMenuBloc>().add(UpdateOpsi(
+                          widget.optionMenuModel!.optionmenuId,
+                          widget.menuid.toString()));
+
                   // // temp
                   // final result = OpsiMenu(
                   //   isMandatory,
@@ -421,9 +463,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                   // Navigator.pop(context, result);
                 }
               },
-              child: const Text(
-                'SIMPAN',
-                style: TextStyle(
+              child: Text(
+                widget.optionMenuModel == null ? 'SIMPAN' : "UPDATE",
+                style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,
                 ),

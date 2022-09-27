@@ -34,3 +34,12 @@ class GetListMenuTidakTersedia extends ListMenuEvent {
   @override
   List<Object> get props => [idCategory];
 }
+
+class GetMenuRead extends ListMenuEvent {
+  final String idMerchant;
+
+  const GetMenuRead(this.idMerchant);
+
+  @override
+  List<Object> get props => [idMerchant];
+}

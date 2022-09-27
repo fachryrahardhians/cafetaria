@@ -21,15 +21,15 @@ class MerchantByIdState extends Equatable {
 
   const MerchantByIdState.success(MerchantModel item)
       : this.__(
-    status: MerchantByIdStatus.success,
-    model: item,
-  );
+          status: MerchantByIdStatus.success,
+          model: item,
+        );
 
   const MerchantByIdState.failure(String errorMessage)
       : this.__(
-    status: MerchantByIdStatus.failure,
-    errorMessage: errorMessage,
-  );
+          status: MerchantByIdStatus.failure,
+          errorMessage: errorMessage,
+        );
 
   @override
   List<Object?> get props => [status, model, errorMessage];

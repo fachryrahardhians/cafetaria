@@ -63,10 +63,10 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
       context
           .read<AddMenuPenjualBloc>()
           .add(HargaJualChange(widget.menu!.price.toString()));
-      widget.menu!.tags!.forEach((element) {
+      for (var element in widget.menu!.tags!) {
         context.read<AddMenuPenjualBloc>().add(TageMenuChange(element));
         context.read<AddMenuPenjualBloc>().add(const AddTagMenu('dsf'));
-      });
+      }
       context
           .read<AddMenuPenjualBloc>()
           .add(CheckedRecommendedMenu(widget.menu!.isRecomended!));
@@ -156,13 +156,14 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
             child: const Text('SIMPAN'),
             onPressed: checkButton(image, menuPenjualState)
                 ? () {
-                    if (widget.menu == null)
+                    if (widget.menu == null) {
                       context.read<AddMenuPenjualBloc>().add(SaveMenu());
-                    else
+                    } else {
                       context.read<AddMenuPenjualBloc>().add(UpdateMenu(
                           widget.menu!.image.toString(),
                           updatePhoto: showPhoto,
                           menuId: widget.menu!.menuId.toString()));
+                    }
                     Navigator.of(context).pop();
                   }
                 : null,
