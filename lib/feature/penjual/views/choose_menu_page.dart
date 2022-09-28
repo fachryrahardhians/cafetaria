@@ -54,64 +54,65 @@ class _MenuPageState extends State<MenuPage> {
               );
             } else if (status == MenuReadStatus.success) {
               final items = state.items!;
-              return SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.start,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    SizedBox(
-                      height: 44,
-                      child: TextFormField(
-                        decoration: InputDecoration(
-                          prefix: const Icon(
-                            Icons.search,
-                            color: Colors.red,
+              return Column(
+                mainAxisAlignment: MainAxisAlignment.start,
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  SizedBox(
+                    height: 44,
+                    child: TextFormField(
+                      decoration: InputDecoration(
+                        prefix: const Icon(
+                          Icons.search,
+                          color: Colors.red,
+                        ),
+                        border: OutlineInputBorder(
+                          borderSide: const BorderSide(
+                            width: 1,
+                            color: Colors.grey,
                           ),
-                          border: OutlineInputBorder(
-                            borderSide: const BorderSide(
-                              width: 1,
-                              color: Colors.grey,
-                            ),
-                            borderRadius: BorderRadius.circular(20.0),
-                          ),
+                          borderRadius: BorderRadius.circular(20.0),
                         ),
                       ),
                     ),
-                    const SizedBox(height: 4.0),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Image.asset('assets/icons/info.png'),
-                        const SizedBox(width: 8.0),
-                        const Text(
-                          'Pilih menu yang ingin ditambah opsi menu',
-                          style: TextStyle(color: Colors.grey),
-                        ),
-                      ],
-                    ),
-                    const SizedBox(height: 8.0),
-                    // ListView.builder(
-                    //   shrinkWrap: true,
-                    //   physics: const NeverScrollableScrollPhysics(),
-                    //   itemCount: 5,
-                    //   itemBuilder: (context, index) {
-                    Container(
-                        height: MediaQuery.of(context).size.height,
-                        padding: const EdgeInsets.all(4.0),
-                        margin: const EdgeInsets.all(6.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(8.0),
-                          boxShadow: const [
-                            BoxShadow(
-                              color: Color.fromRGBO(0, 0, 0, 0.04),
-                              offset: Offset(0, 4),
-                              blurRadius: 12,
-                            ),
-                          ],
-                          color: Colors.white,
-                        ),
+                  ),
+                  const SizedBox(height: 4.0),
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Image.asset('assets/icons/info.png'),
+                      const SizedBox(width: 8.0),
+                      const Text(
+                        'Pilih menu yang ingin ditambah opsi menu',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ],
+                  ),
+                  const SizedBox(height: 8.0),
+                  // ListView.builder(
+                  //   shrinkWrap: true,
+                  //   physics: const NeverScrollableScrollPhysics(),
+                  //   itemCount: 5,
+                  //   itemBuilder: (context, index) {
+                  Container(
+                      height: MediaQuery.of(context).size.height / 1.25,
+                      padding: const EdgeInsets.all(4.0),
+                      margin: const EdgeInsets.all(6.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(8.0),
+                        boxShadow: const [
+                          BoxShadow(
+                            color: Color.fromRGBO(0, 0, 0, 0.04),
+                            offset: Offset(0, 4),
+                            blurRadius: 12,
+                          ),
+                        ],
+                        color: Colors.white,
+                      ),
+                      child: SizedBox(
+                      //  height: MediaQuery.of(context).size.height,
                         child: ListView.builder(
-                          physics: const NeverScrollableScrollPhysics(),
+                          // physics: const NeverScrollableScrollPhysics(),
                           itemCount: items.length,
                           itemBuilder: (context, index) {
                             return InkWell(
@@ -200,7 +201,7 @@ class _MenuPageState extends State<MenuPage> {
                                     const SizedBox(height: 4.0),
                                     // ListView.builder
                                     SizedBox(
-                                      height: 70,
+                                      height: 40,
                                       child: ListView.builder(
                                         itemCount: items[index].options?.length,
                                         itemBuilder: (context, i) {
@@ -263,12 +264,12 @@ class _MenuPageState extends State<MenuPage> {
                               ),
                             );
                           },
-                        )
-                        //   );
-                        // },
                         ),
-                  ],
-                ),
+                      )
+                      //   );
+                      // },
+                      ),
+                ],
               );
             }
             return const SizedBox.shrink();

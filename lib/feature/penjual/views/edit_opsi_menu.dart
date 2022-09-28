@@ -2,6 +2,7 @@ import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dar
 import 'package:cafetaria/feature/penjual/bloc/list_opsi_menu_bloc/list_opsi_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
@@ -298,13 +299,7 @@ class _EditPageState extends State<EditPage> {
                                 .then((value) {
                               Navigator.pop(context);
                               Navigator.pop(context);
-                              Navigator.pushReplacement(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => MenuCafetariaPage(
-                                      idMerchant: id.toString(),
-                                    ),
-                                  ));
+                              Navigator.pop(context);
                             });
                           },
                           child: Text(

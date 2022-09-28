@@ -402,6 +402,7 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                                   idmercahnt.getString("merchantId").toString();
                               Navigator.pop(context);
                               Navigator.pop(context);
+                              Navigator.pop(context);
                               // Navigator.pushReplacement(
                               //   context,
                               //   MaterialPageRoute(
