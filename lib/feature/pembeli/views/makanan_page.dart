@@ -16,6 +16,7 @@ class MakananPage extends StatelessWidget {
   final String title;
   final String idMerchant;
   final String? tutup_toko;
+  final String? buka_toko;
   final String alamat;
   final double? rating;
   final int? jumlahUlasan;
@@ -24,6 +25,7 @@ class MakananPage extends StatelessWidget {
   const MakananPage(
       {Key? key,
       required this.tutup_toko,
+      required this.buka_toko,
       required this.title,
       required this.idMerchant,
       required this.alamat,
@@ -36,6 +38,7 @@ class MakananPage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ListMenu(
+      buka_toko: buka_toko,
       tutup_toko: tutup_toko,
       title: title,
       idMerchant: idMerchant,
@@ -51,6 +54,7 @@ class MakananPage extends StatelessWidget {
 class ListMenu extends StatefulWidget {
   final String title;
   final String? tutup_toko;
+  final String? buka_toko;
   final String idMerchant;
   final String alamat;
   final double? rating;
@@ -62,6 +66,7 @@ class ListMenu extends StatefulWidget {
       {Key? key,
       required this.title,
       required this.tutup_toko,
+      required this.buka_toko,
       required this.idMerchant,
       required this.alamat,
       required this.rating,
@@ -90,6 +95,7 @@ class _ListMenuState extends State<ListMenu> {
   List<Keranjang> listMenuInKeranjang = [];
   bool _preOrder = false;
   String? tutupToko;
+  String? bukaToko;
 
   @override
   void initState() {
@@ -106,8 +112,10 @@ class _ListMenuState extends State<ListMenu> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.tutup_toko != null && widget.tutup_toko != "kosong") {
+    if ((widget.tutup_toko != null && widget.tutup_toko != "kosong") &&
+        (widget.buka_toko != null && widget.buka_toko != "kosong")) {
       tutupToko = widget.tutup_toko;
+      bukaToko = widget.buka_toko;
     }
     return MultiBlocProvider(
         providers: [
@@ -136,14 +144,24 @@ class _ListMenuState extends State<ListMenu> {
                           horizontal: 24, vertical: 16.0),
                       child: Column(
                         children: [
-                          if (tutupToko != "kosong")
+                          if (tutupToko != "kosong" && bukaToko != "kosong")
                             tutupToko != null
                                 ? ((DateTime.now().hour >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .hour) &&
-                                        (DateTime.now().minute >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .minute))
+                                                DateTime.parse(
+                                                        tutupToko.toString())
+                                                    .hour) &&
+                                            (DateTime.now().minute >=
+                                                DateTime.parse(
+                                                        tutupToko.toString())
+                                                    .minute)) ||
+                                        ((DateTime.now().hour <=
+                                                DateTime.parse(
+                                                        bukaToko.toString())
+                                                    .hour) ||
+                                            (DateTime.now().minute <=
+                                                DateTime.parse(
+                                                        bukaToko.toString())
+                                                    .minute))
                                     ? const Padding(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Text(
@@ -206,21 +224,28 @@ class _ListMenuState extends State<ListMenu> {
                                           quantity: -1, totalPrice: -1)));
                                   return GestureDetector(
                                       onTap: () async {
-                                        widget.tutup_toko != "kosong"
+                                        widget.tutup_toko != "kosong" &&
+                                                widget.buka_toko != "kosong"
                                             ? ((DateTime.now().hour >=
-                                                        DateTime.parse(tutupToko
-                                                                .toString())
-                                                            .hour) &&
-                                                    (DateTime.now().minute >=
-                                                        DateTime.parse(tutupToko
-                                                                .toString())
-                                                            .minute))
+                                                            DateTime.parse(tutupToko.toString())
+                                                                .hour) &&
+                                                        (DateTime.now().minute >=
+                                                            DateTime.parse(tutupToko
+                                                                    .toString())
+                                                                .minute)) ||
+                                                    ((DateTime.now().hour <=
+                                                            DateTime.parse(bukaToko
+                                                                    .toString())
+                                                                .hour) ||
+                                                        (DateTime.now().minute <=
+                                                            DateTime.parse(bukaToko
+                                                                    .toString())
+                                                                .minute))
                                                 ? print('tutup toko')
                                                 : await Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            SelectToppingPage(
+                                                        builder: (_) => SelectToppingPage(
                                                               itemInKeranjang:
                                                                   a,
                                                               model:
@@ -236,8 +261,7 @@ class _ListMenuState extends State<ListMenu> {
                                             : await Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        SelectToppingPage(
+                                                    builder: (_) => SelectToppingPage(
                                                           itemInKeranjang: a,
                                                           model: state
                                                               .items![index],
@@ -299,21 +323,28 @@ class _ListMenuState extends State<ListMenu> {
 
                                   return GestureDetector(
                                       onTap: () async {
-                                        widget.tutup_toko != "kosong"
+                                        (widget.tutup_toko != "kosong") &&
+                                                (widget.buka_toko != "kosong")
                                             ? ((DateTime.now().hour >=
-                                                        DateTime.parse(tutupToko
-                                                                .toString())
-                                                            .hour) &&
-                                                    (DateTime.now().minute >=
-                                                        DateTime.parse(tutupToko
-                                                                .toString())
-                                                            .minute))
+                                                            DateTime.parse(tutupToko.toString())
+                                                                .hour) &&
+                                                        (DateTime.now().minute >=
+                                                            DateTime.parse(tutupToko
+                                                                    .toString())
+                                                                .minute)) ||
+                                                    ((DateTime.now().hour <=
+                                                            DateTime.parse(bukaToko
+                                                                    .toString())
+                                                                .hour) ||
+                                                        (DateTime.now().minute <=
+                                                            DateTime.parse(bukaToko
+                                                                    .toString())
+                                                                .minute))
                                                 ? print('tutup toko')
                                                 : await Navigator.push(
                                                     context,
                                                     MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            SelectToppingPage(
+                                                        builder: (_) => SelectToppingPage(
                                                               itemInKeranjang:
                                                                   a,
                                                               model:
@@ -329,8 +360,7 @@ class _ListMenuState extends State<ListMenu> {
                                             : await Navigator.push(
                                                 context,
                                                 MaterialPageRoute(
-                                                    builder: (_) =>
-                                                        SelectToppingPage(
+                                                    builder: (_) => SelectToppingPage(
                                                           itemInKeranjang: a,
                                                           model: state
                                                               .items![index],
@@ -380,40 +410,49 @@ class _ListMenuState extends State<ListMenu> {
                             padding: MaterialStateProperty.all(
                                 const EdgeInsets.all(16)),
                             elevation: MaterialStateProperty.all(0),
-                            backgroundColor: widget.tutup_toko != "kosong"
+                            backgroundColor: widget.tutup_toko != "kosong" &&
+                                    widget.buka_toko != "kosong"
                                 ? ((DateTime.now().hour >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .hour) &&
-                                        (DateTime.now().minute >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .minute))
-                                    ? MaterialStateProperty.all(
-                                        const Color.fromARGB(
-                                            255, 168, 164, 164))
-                                    : MaterialStateProperty.all(
-                                        const Color(0xffee3124))
-                                : MaterialStateProperty.all(
-                                    const Color(0xffee3124)),
-                            foregroundColor: widget.tutup_toko != "kosong"
-                                ? ((DateTime.now().hour >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .hour) &&
-                                        (DateTime.now().minute >=
-                                            DateTime.parse(tutupToko.toString())
-                                                .minute))
+                                                DateTime.parse(tutupToko.toString())
+                                                    .hour) &&
+                                            (DateTime.now().minute >=
+                                                DateTime.parse(
+                                                        tutupToko.toString())
+                                                    .minute)) ||
+                                        ((DateTime.now().hour <=
+                                                DateTime.parse(bukaToko.toString())
+                                                    .hour) ||
+                                            (DateTime.now().minute <=
+                                                DateTime.parse(bukaToko.toString())
+                                                    .minute))
                                     ? MaterialStateProperty.all(
                                         const Color.fromARGB(255, 168, 164, 164))
+                                    : MaterialStateProperty.all(const Color(0xffee3124))
+                                : MaterialStateProperty.all(const Color(0xffee3124)),
+                            foregroundColor: widget.tutup_toko != "kosong"
+                                ? ((DateTime.now().hour >= DateTime.parse(tutupToko.toString()).hour) && (DateTime.now().minute >= DateTime.parse(tutupToko.toString()).minute)) || ((DateTime.now().hour <= DateTime.parse(bukaToko.toString()).hour) || (DateTime.now().minute <= DateTime.parse(bukaToko.toString()).minute))
+                                    ? MaterialStateProperty.all(const Color.fromARGB(255, 168, 164, 164))
                                     : MaterialStateProperty.all(const Color(0xffee3124))
                                 : MaterialStateProperty.all(const Color(0xffee3124)),
                             shape: MaterialStateProperty.all(RoundedRectangleBorder(borderRadius: BorderRadius.circular(8), side: BorderSide.none))),
                         onPressed: () {
                           widget.tutup_toko != "kosong"
                               ? ((DateTime.now().hour >=
-                                          DateTime.parse(tutupToko.toString())
-                                              .hour) &&
-                                      (DateTime.now().minute >=
-                                          DateTime.parse(tutupToko.toString())
-                                              .minute))
+                                              DateTime.parse(
+                                                      tutupToko.toString())
+                                                  .hour) &&
+                                          (DateTime.now().minute >=
+                                              DateTime.parse(
+                                                      tutupToko.toString())
+                                                  .minute)) ||
+                                      ((DateTime.now().hour <=
+                                              DateTime.parse(
+                                                      bukaToko.toString())
+                                                  .hour) ||
+                                          (DateTime.now().minute <=
+                                              DateTime.parse(
+                                                      bukaToko.toString())
+                                                  .minute))
                                   ? print("toko tutup")
                                   : _menuPreorderBloc.add(CheckMenuPreorder())
                               : _menuPreorderBloc.add(CheckMenuPreorder());

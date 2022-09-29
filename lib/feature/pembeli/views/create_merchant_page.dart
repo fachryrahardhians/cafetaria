@@ -297,242 +297,245 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
             ),
           ),
         ),
-        body: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
-            child: Column(
-              children: [
-                CustomTextfield2(
-                  label: "NAMA USAHA",
-                  hint: "Masukkan nama usaha",
-                  controller: _namaUsaha,
-                ),
-                DropdownTextfield1(
-                  label: "BIDANG USAHA",
-                  hint: "Pilih bidang usaha",
-                  value: _bidangUsaha,
-                  items: _listBidangUsaha,
-                  onChanged: (value) {
-                    setState(() {
-                      _bidangUsaha = value;
-                    });
-                  },
-                ),
-                CustomTextfield2(
-                  label: "KOTA ATAU KABUPATEN",
-                  hint: "Pilih kota",
-                  controller: _kota,
-                ),
-                CustomTextfield2(
-                  label: "KODE POS",
-                  hint: "Masukkan kode pos",
-                  controller: _kodePos,
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "TOKO BUKA",
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: MyColors.grey1,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _pickBuka();
-                        },
-                        child: Container(
-                          height: 60,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 0),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 18),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(0, 0),
-                                  spreadRadius: 0,
-                                  blurRadius: 1,
-                                ),
-                              ]),
-                          child: Row(
-                            children: [
-                              Text(
-                                _buka == null
-                                    ? "Atur jam buka"
-                                    : "${_buka!.hour < 10 ? "0${_buka!.hour}" : _buka!.hour}:${_buka!.minute < 10 ? "0${_buka!.minute}" : _buka!.minute}",
-                                style: TextStyle(
-                                  color: _buka == null
-                                      ? Colors.grey
-                                      : Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
+        body: SizedBox(
+          height: MediaQuery.of(context).size.height,
+          child: SingleChildScrollView(
+            child: Padding(
+              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 12),
+              child: Column(
+                children: [
+                  CustomTextfield2(
+                    label: "NAMA USAHA",
+                    hint: "Masukkan nama usaha",
+                    controller: _namaUsaha,
                   ),
-                ),
-                Container(
-                  margin:
-                      const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
-                  child: Column(
-                    mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      const Text(
-                        "TOKO TUTUP",
-                        style: TextStyle(
-                            fontSize: 13,
-                            color: MyColors.grey1,
-                            fontWeight: FontWeight.bold),
-                      ),
-                      GestureDetector(
-                        onTap: () {
-                          _pickTutup();
-                        },
-                        child: Container(
-                          height: 60,
-                          margin: const EdgeInsets.symmetric(
-                              vertical: 12, horizontal: 0),
-                          padding: const EdgeInsets.symmetric(
-                              vertical: 5, horizontal: 18),
-                          clipBehavior: Clip.antiAlias,
-                          decoration: const BoxDecoration(
-                              borderRadius:
-                                  BorderRadius.all(Radius.circular(8)),
-                              color: Colors.white,
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey,
-                                  offset: Offset(0, 0),
-                                  spreadRadius: 0,
-                                  blurRadius: 1,
-                                ),
-                              ]),
-                          child: Row(
-                            children: [
-                              Text(
-                                _tutup == null
-                                    ? "Atur jam tutup"
-                                    : "${_tutup!.hour < 10 ? "0${_tutup!.hour}" : _tutup!.hour}:${_tutup!.minute < 10 ? "0${_tutup!.minute}" : _tutup!.minute}",
-                                style: TextStyle(
-                                  color: _tutup == null
-                                      ? Colors.grey
-                                      : Colors.black,
-                                  fontSize: 16,
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-                const SizedBox(height: 10),
-                CustomBoxPicker(
-                    label: "LOKASI TOKO",
-                    hint: "PILIH LOKASI",
-                    icon: const Icon(
-                      Icons.pin_drop,
-                      color: MyColors.red1,
-                      size: 32,
-                    ),
-                    onTap: _handleMapsPicker,
-                    child: _latLngToko == null
-                        ? null
-                        : Stack(
-                            children: [
-                              GoogleMap(
-                                mapType: MapType.normal,
-                                mapToolbarEnabled: false,
-                                myLocationEnabled: false,
-                                zoomControlsEnabled: false,
-                                initialCameraPosition: CameraPosition(
-                                  target: _latLngInit,
-                                  zoom: 17,
-                                ),
-                                onMapCreated: (GoogleMapController controller) {
-                                  _mapController.complete(controller);
-                                },
-                                markers: Set.from(_marker),
-                              ),
-                              GestureDetector(
-                                  onTap: _handleMapsPicker,
-                                  child: Expanded(
-                                      child: Container(
-                                          color: Colors.black.withOpacity(0))))
-                            ],
-                          )),
-                const SizedBox(height: 20),
-                CustomTextfield2(
-                    label: "ALAMAT LENGKAP TOKO",
-                    controller: _alamatLengkap,
-                    maxLine: 4,
-                    hint:
-                        "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
-                CustomTextfield2(
-                  label: "LOKASI DETAIL",
-                  hint: "Misalkan: Depan Circle K",
-                  controller: _lokasiDetail,
-                ),
-                const SizedBox(height: 10),
-                CustomBoxPicker(
-                    label: "UNGGAH FOTO TOKO DARI LUAR",
-                    hint: "UNGGAH FOTO",
-                    icon: const Icon(
-                      Icons.upload,
-                      color: MyColors.red1,
-                      size: 32,
-                    ),
-                    onTap: () => _handleUpload("luar"),
-                    child: _fotoLuar == null
-                        ? null
-                        : Image.file(File(_fotoLuar!.path),
-                            fit: BoxFit.contain)),
-                const SizedBox(height: 32),
-                CustomBoxPicker(
-                    label: "UNGGAH FOTO TOKO DARI DALAM",
-                    hint: "UNGGAH FOTO",
-                    icon: const Icon(
-                      Icons.upload,
-                      color: MyColors.red1,
-                      size: 32,
-                    ),
-                    onTap: () => _handleUpload("dalam"),
-                    child: _fotoDalam == null
-                        ? null
-                        : Image.file(File(_fotoDalam!.path),
-                            fit: BoxFit.contain)),
-                const SizedBox(height: 40),
-                SizedBox(
-                  width: double.infinity,
-                  height: 50,
-                  child: ReusableButton1(
-                    label: "SIMPAN",
-                    onPressed: () {
-                      _onSubmit(context);
+                  DropdownTextfield1(
+                    label: "BIDANG USAHA",
+                    hint: "Pilih bidang usaha",
+                    value: _bidangUsaha,
+                    items: _listBidangUsaha,
+                    onChanged: (value) {
+                      setState(() {
+                        _bidangUsaha = value;
+                      });
                     },
-                    padding: const EdgeInsets.all(0),
-                    margin: const EdgeInsets.all(0),
-                    disabled: _checkDisableButton(),
-                    loading: _submitLoading,
                   ),
-                ),
-              ],
+                  CustomTextfield2(
+                    label: "KOTA ATAU KABUPATEN",
+                    hint: "Pilih kota",
+                    controller: _kota,
+                  ),
+                  CustomTextfield2(
+                    label: "KODE POS",
+                    hint: "Masukkan kode pos",
+                    controller: _kodePos,
+                  ),
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "TOKO BUKA",
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: MyColors.grey1,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _pickBuka();
+                          },
+                          child: Container(
+                            height: 60,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 18),
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(0, 0),
+                                    spreadRadius: 0,
+                                    blurRadius: 1,
+                                  ),
+                                ]),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _buka == null
+                                      ? "Atur jam buka"
+                                      : "${_buka!.hour < 10 ? "0${_buka!.hour}" : _buka!.hour}:${_buka!.minute < 10 ? "0${_buka!.minute}" : _buka!.minute}",
+                                  style: TextStyle(
+                                    color: _buka == null
+                                        ? Colors.grey
+                                        : Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  Container(
+                    margin:
+                        const EdgeInsets.symmetric(vertical: 6, horizontal: 0),
+                    child: Column(
+                      mainAxisSize: MainAxisSize.min,
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        const Text(
+                          "TOKO TUTUP",
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: MyColors.grey1,
+                              fontWeight: FontWeight.bold),
+                        ),
+                        GestureDetector(
+                          onTap: () {
+                            _pickTutup();
+                          },
+                          child: Container(
+                            height: 60,
+                            margin: const EdgeInsets.symmetric(
+                                vertical: 12, horizontal: 0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 18),
+                            clipBehavior: Clip.antiAlias,
+                            decoration: const BoxDecoration(
+                                borderRadius:
+                                    BorderRadius.all(Radius.circular(8)),
+                                color: Colors.white,
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.grey,
+                                    offset: Offset(0, 0),
+                                    spreadRadius: 0,
+                                    blurRadius: 1,
+                                  ),
+                                ]),
+                            child: Row(
+                              children: [
+                                Text(
+                                  _tutup == null
+                                      ? "Atur jam tutup"
+                                      : "${_tutup!.hour < 10 ? "0${_tutup!.hour}" : _tutup!.hour}:${_tutup!.minute < 10 ? "0${_tutup!.minute}" : _tutup!.minute}",
+                                  style: TextStyle(
+                                    color: _tutup == null
+                                        ? Colors.grey
+                                        : Colors.black,
+                                    fontSize: 16,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 10),
+                  CustomBoxPicker(
+                      label: "LOKASI TOKO",
+                      hint: "PILIH LOKASI",
+                      icon: const Icon(
+                        Icons.pin_drop,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
+                      onTap: _handleMapsPicker,
+                      child: _latLngToko == null
+                          ? null
+                          : Stack(
+                              children: [
+                                GoogleMap(
+                                  mapType: MapType.normal,
+                                  mapToolbarEnabled: false,
+                                  myLocationEnabled: false,
+                                  zoomControlsEnabled: false,
+                                  initialCameraPosition: CameraPosition(
+                                    target: _latLngInit,
+                                    zoom: 17,
+                                  ),
+                                  onMapCreated: (GoogleMapController controller) {
+                                    _mapController.complete(controller);
+                                  },
+                                  markers: Set.from(_marker),
+                                ),
+                                GestureDetector(
+                                    onTap: _handleMapsPicker,
+                                    child: Expanded(
+                                        child: Container(
+                                            color: Colors.black.withOpacity(0))))
+                              ],
+                            )),
+                  const SizedBox(height: 20),
+                  CustomTextfield2(
+                      label: "ALAMAT LENGKAP TOKO",
+                      controller: _alamatLengkap,
+                      maxLine: 4,
+                      hint:
+                          "Masukkan alamat lengkap toko dengan rt/rw, kel/des, dan kec"),
+                  CustomTextfield2(
+                    label: "LOKASI DETAIL",
+                    hint: "Misalkan: Depan Circle K",
+                    controller: _lokasiDetail,
+                  ),
+                  const SizedBox(height: 10),
+                  CustomBoxPicker(
+                      label: "UNGGAH FOTO TOKO DARI LUAR",
+                      hint: "UNGGAH FOTO",
+                      icon: const Icon(
+                        Icons.upload,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
+                      onTap: () => _handleUpload("luar"),
+                      child: _fotoLuar == null
+                          ? null
+                          : Image.file(File(_fotoLuar!.path),
+                              fit: BoxFit.contain)),
+                  const SizedBox(height: 32),
+                  CustomBoxPicker(
+                      label: "UNGGAH FOTO TOKO DARI DALAM",
+                      hint: "UNGGAH FOTO",
+                      icon: const Icon(
+                        Icons.upload,
+                        color: MyColors.red1,
+                        size: 32,
+                      ),
+                      onTap: () => _handleUpload("dalam"),
+                      child: _fotoDalam == null
+                          ? null
+                          : Image.file(File(_fotoDalam!.path),
+                              fit: BoxFit.contain)),
+                  const SizedBox(height: 40),
+                  SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: ReusableButton1(
+                      label: "SIMPAN",
+                      onPressed: () {
+                        _onSubmit(context);
+                      },
+                      padding: const EdgeInsets.all(0),
+                      margin: const EdgeInsets.all(0),
+                      disabled: _checkDisableButton(),
+                      loading: _submitLoading,
+                    ),
+                  ),
+                ],
+              ),
             ),
           ),
         ),

@@ -68,6 +68,8 @@ class _MerchantPageState extends State<MerchantPage>
                     context,
                     MaterialPageRoute(
                         builder: (_) => MakananPage(
+                              buka_toko:
+                                  selectedMerchant?.buka_toko ?? "kosong",
                               title: selectedMerchant?.name ??
                                   'Shabrina’s Kitchen - Gambir',
                               idMerchant:
@@ -75,7 +77,8 @@ class _MerchantPageState extends State<MerchantPage>
                               alamat: selectedMerchant!.address.toString(),
                               rating: selectedMerchant?.rating,
                               jumlahUlasan: selectedMerchant?.totalCountRating,
-                              tutup_toko: selectedMerchant?.tutup_toko,
+                              tutup_toko:
+                                  selectedMerchant?.tutup_toko ?? "kosong",
                               minPrice: selectedMerchant?.minPrice,
                               maxPrice: selectedMerchant?.maxPrice,
                             ))).then(
@@ -169,18 +172,18 @@ class _MerchantPageState extends State<MerchantPage>
                                           return InkWell(
                                               onTap: () {
                                                 selectedMerchant =
-                                                    state.items?[index];
+                                                    snapshot.data?[index];
                                                 if (merchantIdInKeranjang !=
                                                         null &&
-                                                    state.items?[index]
+                                                    snapshot.data?[index]
                                                             .merchantId !=
                                                         merchantIdInKeranjang) {
                                                   showDialog(
                                                       context: context,
                                                       builder: ((context) {
                                                         return dialogWarnCart(
-                                                            state
-                                                                .items?[index]);
+                                                            snapshot
+                                                                .data?[index]);
                                                       }));
                                                 } else {
                                                   Navigator.push(
@@ -203,6 +206,13 @@ class _MerchantPageState extends State<MerchantPage>
                                                                             index]
                                                                         .address
                                                                         .toString(),
+                                                                    buka_toko: snapshot.data![index].buka_toko ==
+                                                                            null
+                                                                        ? "kosong"
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .buka_toko
+                                                                            .toString(),
                                                                     tutup_toko: snapshot.data![index].tutup_toko ==
                                                                             null
                                                                         ? "kosong"
