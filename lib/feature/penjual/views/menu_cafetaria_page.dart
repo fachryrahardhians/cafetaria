@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_makanan_bloc/menu_makanan_bloc.dart';
 import 'package:cafetaria/feature/penjual/bloc/menu_read_bloc/menu_read_bloc.dart';
@@ -464,10 +466,14 @@ class ListMenuWidget extends StatelessWidget {
                             InkWell(
                               onTap: () {
                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) =>
-                                            AddMenuPenjualPage(menu: item)));
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (_) =>
+                                                AddMenuPenjualPage(menu: item)))
+                                    .then((value) => context
+                                        .read<ListMenuBloc>()
+                                        .add(GetListMenu(
+                                            idMerchant, id.toString())));
                               },
                               child: const Text(
                                 'Edit',

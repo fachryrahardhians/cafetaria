@@ -1,6 +1,6 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:order_repository/src/models/toppingItem.dart';
 
 part 'history_model.g.dart';
 
@@ -136,7 +136,7 @@ class OrderMenu extends Equatable {
   List<Object?> get props => [menuId, notes, price, qty, toppings, name];
 }
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class OrderTopping extends Equatable {
   const OrderTopping({this.items});
   factory OrderTopping.fromJson(Map<String, dynamic> json) =>
@@ -153,25 +153,4 @@ class OrderTopping extends Equatable {
 
   @override
   List<Object?> get props => [items];
-}
-
-@JsonSerializable()
-class ToppingItem extends Equatable {
-  const ToppingItem({this.name, this.price});
-  factory ToppingItem.fromJson(Map<String, dynamic> json) =>
-      _$ToppingItemFromJson(json);
-  final String? name;
-  final int? price;
-
-  Map<String, dynamic> toJson() => _$ToppingItemToJson(this);
-
-  ToppingItem copyWith({String? name, int? price}) {
-    return ToppingItem(
-      name: name ?? this.name,
-      price: price ?? this.price,
-    );
-  }
-
-  @override
-  List<Object?> get props => [name, price];
 }

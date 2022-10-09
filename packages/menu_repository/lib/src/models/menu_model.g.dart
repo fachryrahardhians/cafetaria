@@ -8,9 +8,6 @@ part of 'menu_model.dart';
 
 MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
       menuId: json['menuId'] as String?,
-      // options: (json['options'] as List<dynamic>?)
-      //     ?.map((e) => OpsiMenu.fromJson(e as Map<String, dynamic>))
-      //     .toList(),
       merchantId: json['merchantId'] as String?,
       name: json['name'] as String?,
       autoResetStock: json['autoResetStock'] as bool?,
@@ -43,7 +40,6 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'resetTime': instance.resetTime,
       'resetType': instance.resetType,
       'rulepreordermenuId': instance.rulepreordermenuId,
-      //'options': instance.options?.map((e) => e.toJson()).toList(),
       'stock': instance.stock,
       'tags': instance.tags,
     };

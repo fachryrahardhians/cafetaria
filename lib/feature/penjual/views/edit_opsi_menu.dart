@@ -1,15 +1,15 @@
-import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
+import 'dart:async';
+
 import 'package:cafetaria/feature/penjual/bloc/list_opsi_menu_bloc/list_opsi_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/add_opsi_menu_page.dart';
-import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
-import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
+
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
-import 'package:cafetaria_ui/cafetaria_ui.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
-import 'package:menu_repository/menu_repository.dart';
+
 import 'package:option_menu_repository/option_menu_repository.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
@@ -44,6 +44,7 @@ class EditPage extends StatefulWidget {
 
 class _EditPageState extends State<EditPage> {
   final oCcy = NumberFormat("#,##0.00", "IDR");
+  bool loading = false;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -249,30 +250,32 @@ class _EditPageState extends State<EditPage> {
           ),
           Row(
             children: [
-              Expanded(
-                  flex: 1,
-                  child: Container(
-                      height: 44,
-                      margin: const EdgeInsets.only(right: 8),
-                      child: ElevatedButton(
-                          style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
-                              side: const BorderSide(
-                                color: MyColors.red1,
-                              ),
-                              shape: RoundedRectangleBorder(
-                                  borderRadius: BorderRadius.circular(6),
-                                  side: BorderSide.none)),
-                          onPressed: () {
-                            Navigator.pop(context);
-                          },
-                          child: Text(
-                            "TIDAK",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.black.withOpacity(1)),
-                          )))),
+              loading
+                  ? const CircularProgressIndicator()
+                  : Expanded(
+                      flex: 1,
+                      child: Container(
+                          height: 44,
+                          margin: const EdgeInsets.only(right: 8),
+                          child: ElevatedButton(
+                              style: ElevatedButton.styleFrom(
+                                  primary: Colors.white,
+                                  side: const BorderSide(
+                                    color: MyColors.red1,
+                                  ),
+                                  shape: RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: BorderSide.none)),
+                              onPressed: () {
+                                Navigator.pop(context);
+                              },
+                              child: Text(
+                                "TIDAK",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.black.withOpacity(1)),
+                              )))),
               Expanded(
                   flex: 1,
                   child: Container(
@@ -297,9 +300,17 @@ class _EditPageState extends State<EditPage> {
                                 .read<OptionMenuRepository>()
                                 .deleteOptionMenu(optionMenuId)
                                 .then((value) {
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
+                              setState(() {
+                                loading = true;
+                              });
+                              Timer(
+                                const Duration(seconds: 2),
+                                () {
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                },
+                              );
                             });
                           },
                           child: Text(

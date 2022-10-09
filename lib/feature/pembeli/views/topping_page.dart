@@ -9,6 +9,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
+
+import '../../penjual/bloc/list_opsi_menu_bloc/list_opsi_menu_bloc.dart';
 
 enum type { sama, beda }
 
@@ -45,17 +48,23 @@ class _SelectToppingState extends State<SelectTopping> {
   _SelectToppingState(this.item);
   final TextEditingController _catatanController = TextEditingController();
   final TextEditingController _counterController = TextEditingController();
-
+  List<OptionMenuModel> optionmenu = [];
+  List<Option> optionPilih = [];
   late AddMenuToCartBloc addMenuToCartBloc;
   late MenuInCartBloc menuInCartBloc;
+  late ListOpsiMenuBloc listOpsiMenuBloc;
   int qty = 0;
   bool _isButtonPerbaruEnable = true;
+  bool value = false;
   @override
   void initState() {
     addMenuToCartBloc =
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     menuInCartBloc =
         MenuInCartBloc(menuRepository: context.read<MenuRepository>());
+    listOpsiMenuBloc = ListOpsiMenuBloc(
+        optionMenuRepository: context.read<OptionMenuRepository>())
+      ..add(GetListOpsiMenu(item.menuId.toString()));
     if (widget.itemInKeranjang.quantity == -1) {
       qty = 0;
     } else {
@@ -68,11 +77,15 @@ class _SelectToppingState extends State<SelectTopping> {
 
   @override
   Widget build(BuildContext context) {
+    int? total;
     if (widget.itemInKeranjang.quantity == qty ||
         (widget.itemInKeranjang.quantity == -1 && qty == 0)) {
       _isButtonPerbaruEnable = false;
     } else {
       _isButtonPerbaruEnable = true;
+    }
+    if (widget.itemInKeranjang.options != null) {
+      total = widget.itemInKeranjang.options!.length;
     }
     return MultiBlocProvider(
         providers: [
@@ -81,6 +94,9 @@ class _SelectToppingState extends State<SelectTopping> {
           ),
           BlocProvider(
             create: ((context) => menuInCartBloc),
+          ),
+          BlocProvider(
+            create: ((context) => listOpsiMenuBloc),
           )
         ],
         child: MultiBlocListener(
@@ -100,7 +116,20 @@ class _SelectToppingState extends State<SelectTopping> {
                 if (state is MenuInCartUpdated) {
                   Navigator.pop(context);
                 }
-              }))
+              })),
+              BlocListener<ListOpsiMenuBloc, ListOpsiMenuState>(
+                  listener: (context, state) {
+                final status = state.status;
+                if (status == ListOpsiMenuStatus.loading) {
+                  print("loading");
+                } else if (status == ListOpsiMenuStatus.failure) {
+                  print('Terjadi kesalahan');
+                } else if (status == ListOpsiMenuStatus.success) {
+                  setState(() {
+                    optionmenu = state.items!;
+                  });
+                }
+              })
             ],
             child: SafeArea(
               child: Scaffold(
@@ -127,56 +156,121 @@ class _SelectToppingState extends State<SelectTopping> {
                   children: [
                     _menuInfo(),
                     SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                    Text(
-                      'Topping',
-                      style: normalText.copyWith(fontSize: 14),
-                    ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                      children: [
-                        SizedBox(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
+                    optionmenu.isEmpty
+                        ? const SizedBox()
+                        : Text(
+                            'topping ${total}',
+                            style: normalText.copyWith(fontSize: 14),
+                          ),
+                    optionmenu.isEmpty
+                        ? const SizedBox()
+                        : Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
-                              Radio<type>(
-                                value: type.sama,
-                                groupValue: _toppingType!,
-                                onChanged: (type? value) {
-                                  setState(() {
-                                    _toppingType = value;
-                                  });
-                                },
+                              SizedBox(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Radio<type>(
+                                      value: type.sama,
+                                      groupValue: _toppingType!,
+                                      onChanged: (type? value) {
+                                        setState(() {
+                                          _toppingType = value;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(width: 3),
+                                    const Text('Topping Sama')
+                                  ],
+                                ),
                               ),
-                              const SizedBox(width: 3),
-                              const Text('Topping Sama')
+                              SizedBox(
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    Radio<type>(
+                                      value: type.beda,
+                                      groupValue: _toppingType!,
+                                      onChanged: (type? value) {
+                                        setState(() {
+                                          _toppingType = value;
+                                        });
+                                      },
+                                    ),
+                                    const SizedBox(width: 3),
+                                    const Text('Topping Beda')
+                                  ],
+                                ),
+                              )
                             ],
                           ),
-                        ),
-                        SizedBox(
-                          child: Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Radio<type>(
-                                value: type.beda,
-                                groupValue: _toppingType!,
-                                onChanged: (type? value) {
-                                  setState(() {
-                                    _toppingType = value;
-                                  });
+                    optionmenu.isEmpty
+                        ? const SizedBox(
+                            height: 150,
+                          )
+                        : ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              if (index == 0 ||
+                                  index == optionmenu.length + 1) {
+                                return const SizedBox.shrink();
+                              }
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: optionmenu[index - 1].option.length,
+                                itemBuilder: (context, i) {
+                                  return GestureDetector(
+                                    onTap: () {
+                                      optionPilih
+                                          .add(optionmenu[index - 1].option[i]);
+
+                                      print(optionPilih);
+                                    },
+                                    child: Row(
+                                      children: [
+                                        Checkbox(
+                                            shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                    BorderRadius.circular(4)),
+                                            value: value,
+                                            onChanged: (newValue) {
+                                              setState(() {
+                                                value = newValue!;
+                                              });
+                                              //print(value);
+                                            }),
+                                        SizedBox(
+                                            width:
+                                                SizeConfig.safeBlockHorizontal *
+                                                    2),
+                                        Text(
+                                          optionmenu[index - 1].option[i].name,
+                                          style:
+                                              normalText.copyWith(fontSize: 15),
+                                        ),
+                                        const Spacer(),
+                                        Text(
+                                          optionmenu[index - 1]
+                                              .option[i]
+                                              .price
+                                              .toString(),
+                                          style:
+                                              normalText.copyWith(fontSize: 15),
+                                        )
+                                      ],
+                                    ),
+                                  );
                                 },
-                              ),
-                              const SizedBox(width: 3),
-                              const Text('Topping Beda')
-                            ],
-                          ),
-                        )
-                      ],
-                    ),
-                    Text(
-                      'Topping',
-                      style: normalText.copyWith(fontSize: 14),
-                    ),
-                    listTopping(),
+                              );
+                            },
+                            separatorBuilder: (context, index) => SizedBox(
+                                  height: SizeConfig.safeBlockVertical * 2,
+                                  child: Text(optionmenu[index].title),
+                                ),
+                            itemCount: 1 + optionmenu.length),
                     Text(
                       'CATATAN UNTUK PENJUAL',
                       style: normalText.copyWith(
@@ -241,42 +335,54 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
-  Widget topping() {
-    return Row(
-      children: [
-        Checkbox(
-            shape:
-                RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-            value: false,
-            onChanged: (newValue) {
-              if (newValue!) {
-              } else {}
-            }),
-        SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
-        Text(
-          'topping name',
-          style: normalText.copyWith(fontSize: 15),
-        ),
-        const Spacer(),
-        Text(
-          '+ Rp. 0',
-          style: normalText.copyWith(fontSize: 15),
-        )
-      ],
-    );
-  }
+  // Widget topping(Option option) {
+  //   bool value = false;
+  //   return Row(
+  //     children: [
+  //       Checkbox(
+  //           shape:
+  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
+  //           value: value,
+  //           onChanged: (newValue) {
+  //             setState(() {
+  //               value = newValue!;
+  //             });
+  //             //print(value);
+  //           }),
+  //       SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+  //       Text(
+  //         option.name,
+  //         style: normalText.copyWith(fontSize: 15),
+  //       ),
+  //       const Spacer(),
+  //       Text(
+  //         option.price.toString(),
+  //         style: normalText.copyWith(fontSize: 15),
+  //       )
+  //     ],
+  //   );
+  // }
 
-  Widget listTopping() {
-    return ListView.separated(
-        shrinkWrap: true,
-        physics: const NeverScrollableScrollPhysics(),
-        itemBuilder: (context, index) {
-          return topping();
-        },
-        separatorBuilder: (context, index) =>
-            SizedBox(height: SizeConfig.safeBlockVertical * 1),
-        itemCount: 3);
-  }
+  // Widget listTopping() {
+  //   return ListView.separated(
+  //       shrinkWrap: true,
+  //       physics: const NeverScrollableScrollPhysics(),
+  //       itemBuilder: (context, index) {
+  //         return ListView.builder(
+  //           shrinkWrap: true,
+  //           physics: const NeverScrollableScrollPhysics(),
+  //           itemCount: optionmenu[index].option.length,
+  //           itemBuilder: (context, i) {
+  //             return topping(optionmenu[index].option[i]);
+  //           },
+  //         );
+  //       },
+  //       separatorBuilder: (context, index) => SizedBox(
+  //             height: SizeConfig.safeBlockVertical * 2,
+  //             child: Text(optionmenu[index].title),
+  //           ),
+  //       itemCount: optionmenu.length);
+  // }
 
   Widget catatan() {
     return Container(
@@ -424,15 +530,21 @@ class _SelectToppingState extends State<SelectTopping> {
                           .add(DeleteMenuInCart(widget.itemInKeranjang));
                     } else if (widget.itemInKeranjang.quantity == -1) {
                       addMenuToCartBloc.add(AddMenuToCart(
+                          option: optionPilih,
                           menuModel: item,
                           quantity: qty,
                           totalPrice: (item.price ?? 0) * qty,
                           notes: _catatanController.text));
                     } else {
                       Keranjang editedMenu = widget.itemInKeranjang;
+                      //deklarasi isi menu in keranjang yang akan di update
                       editedMenu.totalPrice =
                           widget.itemInKeranjang.price! * qty;
                       editedMenu.quantity = qty;
+                      editedMenu.options = optionPilih.map((e) {
+                        return ListOption(
+                            name: e.name, price: e.price.toString());
+                      }).toList();
                       menuInCartBloc.add(UpdateMenuInCart(editedMenu));
                     }
                   }

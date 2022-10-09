@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cafetaria/feature/penjual/bloc/opsi_menu_bloc/opsi_menu_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
@@ -44,6 +46,7 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
   List<Option> option = [];
   bool isMandatory = true;
   bool isMultipleTopping = false;
+  bool loading = false;
   @override
   void initState() {
     super.initState();
@@ -360,67 +363,76 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
       ),
       bottomNavigationBar: BlocConsumer<OpsiMenuBloc, OpsiMenuState>(
         listener: (context, state) {
-          // TODO: implement listener
           if (state.status == FormzStatus.submissionSuccess) {
-            showDialog(
-              context: context,
-              barrierDismissible: false,
-              builder: (context) {
-                return Dialog(
-                  child: Container(
-                    width: MediaQuery.of(context).size.width - 40,
-                    height: 250,
-                    padding: const EdgeInsets.all(16.0),
-                    decoration: BoxDecoration(
-                      color: Colors.white,
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Column(
-                      children: [
-                        Image.asset('assets/icons/pop-up-success.png'),
-                        const SizedBox(height: 4.0),
-                        const Text(
-                          'Berhasil!',
-                          style: TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
+            Timer(
+              const Duration(seconds: 3),
+              () {
+                setState(() {
+                  loading = false;
+                });
+                showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) {
+                    return Dialog(
+                      child: Container(
+                        width: MediaQuery.of(context).size.width - 40,
+                        height: 250,
+                        padding: const EdgeInsets.all(16.0),
+                        decoration: BoxDecoration(
+                          color: Colors.white,
+                          borderRadius: BorderRadius.circular(8.0),
                         ),
-                        const SizedBox(height: 4.0),
-                        Text(widget.optionMenuModel != null
-                            ? 'Opsi Menu baru berhasil diubah.'
-                            : 'Opsi Menu baru berhasil ditambah.'),
-                        const SizedBox(height: 16.0),
-                        SizedBox(
-                          height: 44,
-                          width: double.infinity,
-                          child: ElevatedButton(
-                            onPressed: () async {
-                              SharedPreferences idmercahnt =
-                                  await SharedPreferences.getInstance();
-                              String id =
-                                  idmercahnt.getString("merchantId").toString();
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              Navigator.pop(context);
-                              // Navigator.pushReplacement(
-                              //   context,
-                              //   MaterialPageRoute(
-                              //     builder: (context) =>
-                              //         MenuCafetariaPage(idMerchant: id),
-                              //   ),
-                              // );
-                              // Navigator.pop(context, result);
-                            },
-                            child: const Text('OK'),
-                            style: ElevatedButton.styleFrom(
-                              primary: Colors.red,
+                        child: Column(
+                          children: [
+                            Image.asset('assets/icons/pop-up-success.png'),
+                            const SizedBox(height: 4.0),
+                            const Text(
+                              'Berhasil!',
+                              style: TextStyle(
+                                fontSize: 18,
+                                fontWeight: FontWeight.bold,
+                              ),
                             ),
-                          ),
+                            const SizedBox(height: 4.0),
+                            Text(widget.optionMenuModel != null
+                                ? 'Opsi Menu baru berhasil diubah.'
+                                : 'Opsi Menu baru berhasil ditambah.'),
+                            const SizedBox(height: 16.0),
+                            SizedBox(
+                              height: 44,
+                              width: double.infinity,
+                              child: ElevatedButton(
+                                onPressed: () async {
+                                  SharedPreferences idmercahnt =
+                                      await SharedPreferences.getInstance();
+                                  String id = idmercahnt
+                                      .getString("merchantId")
+                                      .toString();
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+                                  Navigator.pop(context);
+
+                                  // Navigator.pushReplacement(
+                                  //   context,
+                                  //   MaterialPageRoute(
+                                  //     builder: (context) =>
+                                  //         MenuCafetariaPage(idMerchant: id),
+                                  //   ),
+                                  // );
+                                  // Navigator.pop(context, result);
+                                },
+                                child: const Text('OK'),
+                                style: ElevatedButton.styleFrom(
+                                  primary: Colors.red,
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
+                      ),
+                    );
+                  },
                 );
               },
             );
@@ -443,6 +455,9 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
               onPressed: () {
                 //final title = _textController.text;
                 if ((title != null) && option.isNotEmpty) {
+                  setState(() {
+                    loading = true;
+                  });
                   widget.optionMenuModel == null
                       ? context
                           .read<OpsiMenuBloc>()
@@ -465,7 +480,11 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                 }
               },
               child: Text(
-                widget.optionMenuModel == null ? 'SIMPAN' : "UPDATE",
+                loading
+                    ? "LOADING"
+                    : widget.optionMenuModel == null
+                        ? 'SIMPAN'
+                        : "UPDATE",
                 style: const TextStyle(
                   color: Colors.white,
                   fontWeight: FontWeight.w500,

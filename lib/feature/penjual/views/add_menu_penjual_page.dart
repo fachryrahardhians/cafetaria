@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:io';
 
 import 'package:cafetaria/feature/penjual/bloc/add_menu_penjual_bloc/add_menu_penjual_bloc.dart';
@@ -48,6 +49,7 @@ class AddMenuPenjualView extends StatefulWidget {
 
 class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
   bool showPhoto = false;
+  bool loading = false;
   @override
   void initState() {
     if (widget.menu != null) {
@@ -125,13 +127,23 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
     return BlocListener<AddMenuPenjualBloc, AddMenuPenjualState>(
       listener: (context, state) {
         if (state.status == FormzStatus.submissionSuccess) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Menu berhasil ditambahkan'),
-              ),
-            );
+          Timer(
+            const Duration(seconds: 3),
+            () {
+              setState(() {
+                loading = false;
+              });
+              Navigator.of(context).pop();
+              Navigator.of(context).pop();
+            },
+          );
+          // ScaffoldMessenger.of(context)
+          //   ..hideCurrentSnackBar()
+          //   ..showSnackBar(
+          //     const SnackBar(
+          //       content: Text('Menu berhasil ditambahkan'),
+          //     ),
+          //   );
         }
         if (state.uploadProgress?.status == UploadStatus.uploaded) {
           ScaffoldMessenger.of(context)
@@ -153,9 +165,12 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(24.0),
           child: CFButton.primary(
-            child: const Text('SIMPAN'),
+            child: loading ? const Text('LOADING') : const Text('SIMPAN'),
             onPressed: checkButton(image, menuPenjualState)
                 ? () {
+                    setState(() {
+                      loading = true;
+                    });
                     if (widget.menu == null) {
                       context.read<AddMenuPenjualBloc>().add(SaveMenu());
                     } else {
@@ -164,7 +179,6 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                           updatePhoto: showPhoto,
                           menuId: widget.menu!.menuId.toString()));
                     }
-                    Navigator.of(context).pop();
                   }
                 : null,
           ),

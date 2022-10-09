@@ -30,6 +30,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       resetTime: fields[10] as String?,
       resetType: fields[11] as String?,
       rulepreordermenuId: fields[12] as String?,
+      options: (fields[18] as List?)?.cast<ListOption>(),
       stock: fields[13] as int?,
       tags: (fields[14] as List?)?.cast<String>(),
       quantity: fields[15] as int,
@@ -41,7 +42,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   @override
   void write(BinaryWriter writer, Keranjang obj) {
     writer
-      ..writeByte(18)
+      ..writeByte(19)
       ..writeByte(0)
       ..write(obj.menuId)
       ..writeByte(1)
@@ -77,7 +78,9 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       ..writeByte(16)
       ..write(obj.totalPrice)
       ..writeByte(17)
-      ..write(obj.notes);
+      ..write(obj.notes)
+      ..writeByte(18)
+      ..write(obj.options);
   }
 
   @override
@@ -87,6 +90,43 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is KeranjangAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ListOptionAdapter extends TypeAdapter<ListOption> {
+  @override
+  final int typeId = 1;
+
+  @override
+  ListOption read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ListOption(
+      name: fields[0] as String?,
+      price: fields[1] as String?,
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ListOption obj) {
+    writer
+      ..writeByte(2)
+      ..writeByte(0)
+      ..write(obj.name)
+      ..writeByte(1)
+      ..write(obj.price);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ListOptionAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

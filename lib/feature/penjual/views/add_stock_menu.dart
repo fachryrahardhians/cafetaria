@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -45,6 +47,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
   TextEditingController? _stokBarang;
   TimeOfDay time = const TimeOfDay(hour: 10, minute: 30);
   String? timeRestok = "";
+  bool loading = false;
   final oCcy = NumberFormat("#,##0.00", "IDR");
   @override
   void initState() {
@@ -402,11 +405,11 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
       bottomNavigationBar: BlocConsumer<AturStockBlocBloc, AturStockBlocState>(
         listener: (context, state) {
           if (state.status == FormzStatus.submissionSuccess) {
-            ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(
-                content: Text('Stok Berhasil Di Update'),
-              ),
-            );
+            // ScaffoldMessenger.of(context).showSnackBar(
+            //   const SnackBar(
+            //     content: Text('Stok Berhasil Di Update'),
+            //   ),
+            // );
           } else if (state.status == FormzStatus.submissionFailure) {
             ScaffoldMessenger.of(context).showSnackBar(
               const SnackBar(
@@ -426,14 +429,27 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                   // state.tipeRestok.valid &&
                   // state.timeReset.valid
                   ? () {
-                      Navigator.pop(context);
+                      setState(() {
+                        loading = true;
+                      });
                       final stok = widget.user;
                       context.read<AturStockBlocBloc>().add(
                             AturStok(stok),
                           );
+                    
+                      Timer(
+                        const Duration(seconds: 3),
+                        () {
+                          setState(() {
+                            loading = false;
+                          });
+                          Navigator.of(context).pop();
+                          Navigator.of(context).pop();
+                        },
+                      );
                     }
                   : null,
-              child: const Text('SIMPAN'),
+              child: loading ? const Text('LOADING') : const Text('SIMPAN'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.red,
                 tapTargetSize: MaterialTapTargetSize.padded,

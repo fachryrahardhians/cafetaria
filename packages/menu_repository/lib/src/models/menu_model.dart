@@ -1,7 +1,6 @@
 import 'package:equatable/equatable.dart';
 
 import 'package:json_annotation/json_annotation.dart';
-import 'package:menu_repository/src/models/option.dart';
 
 part 'menu_model.g.dart';
 

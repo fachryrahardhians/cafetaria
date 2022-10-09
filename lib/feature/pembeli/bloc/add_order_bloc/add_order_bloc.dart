@@ -43,7 +43,13 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
             notes: e.notes,
             price: e.price,
             qty: e.quantity,
-            toppings: [OrderTopping(items: [])]);
+            toppings: [
+              OrderTopping(
+                  items: e.options?.map((e) {
+                return ToppingItem(
+                    name: e.name, price: int.parse(e.price.toString()));
+              }).toList())
+            ]);
       }).toList();
       User? user = await _authtenticationRepository.getCurrentUser();
       await _orderRepository.addOrder(HistoryModel(

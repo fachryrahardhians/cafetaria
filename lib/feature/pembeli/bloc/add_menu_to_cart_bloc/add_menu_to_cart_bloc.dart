@@ -7,6 +7,7 @@ import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 //import 'package:formz/formz.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:option_menu_repository/option_menu_repository.dart';
 //import 'package:order_repository/order_repository.dart';
 
 part 'add_menu_to_cart_event.dart';
@@ -30,7 +31,13 @@ class AddMenuToCartBloc extends Bloc<AddMenuToCartEvent, AddMenuToCartState> {
   ) async {
     try {
       await _menuRepository.addMenutoKeranjang(
-          event.menuModel, event.quantity, event.totalPrice, event.notes);
+          event.menuModel,
+          event.quantity,
+          event.totalPrice,
+          event.notes,
+          event.option?.map((e) {
+            return Options(name: e.name, price: e.price);
+          }).toList());
       emit.call(MenuAddedToTheCart());
     } catch (e) {
       print(e);

@@ -11,12 +11,14 @@ class AddMenuToCart extends AddMenuToCartEvent {
   final MenuModel menuModel;
   final int quantity;
   final int totalPrice;
+  final List<Option>? option;
   final String? notes;
 
   const AddMenuToCart(
       {required this.menuModel,
       required this.quantity,
       required this.totalPrice,
+      this.option,
       this.notes});
 
   @override

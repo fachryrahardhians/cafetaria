@@ -3,7 +3,7 @@ import 'package:hive/hive.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:uuid/uuid.dart';
 
-import 'models/models.dart';
+// import 'models/models.dart';
 
 class MenuRepository {
   final FirebaseFirestore _firestore;
@@ -79,8 +79,9 @@ class MenuRepository {
   ) async {
     try {
       final snapshot = await _firestore
-          .collection('menuPerMerchant-$idMerchant')
+          .collection('menu')
           .where('categoryId', isEqualTo: idCategory)
+          .where("merchantId", isEqualTo: idMerchant)
           .get();
 
       final documents = snapshot.docs;
@@ -151,8 +152,8 @@ class MenuRepository {
     }
   }
 
-  Future<void> addMenutoKeranjang(
-      MenuModel menu, int qty, int totalPrice, String? notes) async {
+  Future<void> addMenutoKeranjang(MenuModel menu, int qty, int totalPrice,
+      String? notes, List<Options>? option) async {
     try {
       keranjangBox.add(Keranjang(
           menuId: menu.menuId,
@@ -172,6 +173,9 @@ class MenuRepository {
           tags: menu.tags,
           quantity: qty,
           totalPrice: totalPrice,
+          options: option?.map((e) {
+            return ListOption(name: e.name, price: e.price.toString());
+          }).toList(),
           notes: notes));
     } catch (e) {
       print(e.toString());

@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -29,7 +31,6 @@ class ListMenuBloc extends Bloc<ListMenuEvent, ListMenuState> {
         event.idMerchant,
         event.idCategory,
       );
-
       emit(ListMenuState.success(items));
     } catch (error) {
       emit(ListMenuState.failure(error.toString()));
