@@ -2,6 +2,8 @@
 
 // ignore_for_file: no_logic_in_create_state
 
+//import 'dart:html';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
@@ -167,10 +169,16 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   'PESANANMU',
                   style: textStyle.copyWith(color: const Color(0xff8C8F93)),
                 ),
-                Text(
-                  'Tambah Pesanan',
-                  style: textStyle.copyWith(
-                      color: const Color(0xffee3124), fontSize: 11),
+                GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                    print("Klik");
+                  },
+                  child: Text(
+                    'Tambah Pesanan',
+                    style: textStyle.copyWith(
+                        color: const Color(0xffee3124), fontSize: 11),
+                  ),
                 )
               ],
             ),
@@ -179,6 +187,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 builder: (context, state) {
               if (state is MenuInCartRetrieved) {
                 menuInKeranjang = state.menuInCart;
+
                 subTotalPrice = state.totalPrice;
                 return ListView.separated(
                     physics: const NeverScrollableScrollPhysics(),
@@ -191,16 +200,31 @@ class _KeranjangPageState extends State<KeranjangPage> {
                               menuInKeranjang[index].name.toString(),
                               menuInKeranjang[index].totalPrice);
                         } else {
+                          var total = menuInKeranjang[index].totalPrice;
+                          if (menuInKeranjang[index].options != null) {
+                            for (var element
+                                in menuInKeranjang[index].options!) {
+                              total += int.parse(element.price.toString());
+                            }
+                          }
                           return item(
                               menuInKeranjang[index].quantity,
                               menuInKeranjang[index].name.toString(),
-                              menuInKeranjang[index].totalPrice);
+                              total,
+                              menuInKeranjang[index].options);
                         }
                       } else {
+                        var total = menuInKeranjang[index].totalPrice;
+                        if (menuInKeranjang[index].options != null) {
+                          for (var element in menuInKeranjang[index].options!) {
+                            total += int.parse(element.price.toString());
+                          }
+                        }
                         return item(
                             menuInKeranjang[index].quantity,
                             menuInKeranjang[index].name.toString(),
-                            menuInKeranjang[index].totalPrice);
+                            total,
+                            menuInKeranjang[index].options);
                       }
                     },
                     separatorBuilder: (context, index) => SizedBox(
@@ -694,7 +718,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
         ));
   }
 
-  Widget item(int itemCount, String itemName, int totalPrice) {
+  Widget item(int itemCount, String itemName, int totalPrice,
+      List<ListOption>? option) {
+    //int totalTopping;
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -710,6 +736,32 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   style: textStyle.copyWith(
                       fontWeight: FontWeight.w500, fontSize: 13)),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
+              option != null
+                  ? SizedBox(
+                      height: 50,
+                      width: MediaQuery.of(context).size.width / 1.5,
+                      child: ListView.builder(
+                          itemBuilder: (context, index) {
+                            return Row(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(option[index].name.toString(),
+                                    style: textStyle.copyWith(
+                                        fontWeight: FontWeight.w500,
+                                        color: Colors.grey,
+                                        fontSize: 13)),
+                                // Text('Rp ${option[index].price.toString()}',
+                                //     style: textStyle.copyWith(
+                                //         fontWeight: FontWeight.w500,
+                                //         color: Colors.grey,
+                                //         fontSize: 13)),
+                              ],
+                            );
+                          },
+                          itemCount: option.length),
+                    )
+                  : const SizedBox(),
               GestureDetector(
                 onTap: () async {},
                 child: Text(

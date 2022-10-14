@@ -52,9 +52,14 @@ class AddMenuToCartBloc extends Bloc<AddMenuToCartEvent, AddMenuToCartState> {
     try {
       var data = await _menuRepository.getMenuInKeranjang();
       var totalPrice = 0;
-      data.forEach((element) {
+      for (var element in data) {
         totalPrice += element.totalPrice;
-      });
+        if (element.options != null) {
+          for (var e in element.options!) {
+            totalPrice += int.parse(e.price.toString());
+          }
+        }
+      }
       emit.call(MenuInCartRetrieved(data, totalPrice));
     } catch (e) {
       emit.call(MenuInCartRetrieveFailed(e.toString()));

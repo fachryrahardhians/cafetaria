@@ -1,5 +1,6 @@
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
+import 'package:cafetaria/feature/pembeli/model/topping_pick.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -50,6 +51,7 @@ class _SelectToppingState extends State<SelectTopping> {
   final TextEditingController _counterController = TextEditingController();
   List<OptionMenuModel> optionmenu = [];
   List<Option> optionPilih = [];
+
   late AddMenuToCartBloc addMenuToCartBloc;
   late MenuInCartBloc menuInCartBloc;
   late ListOpsiMenuBloc listOpsiMenuBloc;
@@ -70,6 +72,12 @@ class _SelectToppingState extends State<SelectTopping> {
     } else {
       qty = widget.itemInKeranjang.quantity;
     }
+    if (widget.itemInKeranjang.options != null) {
+      optionPilih.addAll(widget.itemInKeranjang.options!.map((e) {
+        return Option(name: e.name!, price: int.parse(e.price!));
+      }).toList());
+      //print(widget.itemInKeranjang.options!.length);
+    }
 
     _counterController.text = qty.toString();
     super.initState();
@@ -86,6 +94,7 @@ class _SelectToppingState extends State<SelectTopping> {
     }
     if (widget.itemInKeranjang.options != null) {
       total = widget.itemInKeranjang.options!.length;
+      //print(widget.itemInKeranjang.options!.length);
     }
     return MultiBlocProvider(
         providers: [
@@ -159,7 +168,7 @@ class _SelectToppingState extends State<SelectTopping> {
                     optionmenu.isEmpty
                         ? const SizedBox()
                         : Text(
-                            'topping ${total}',
+                            'topping',
                             style: normalText.copyWith(fontSize: 14),
                           ),
                     optionmenu.isEmpty
@@ -205,43 +214,51 @@ class _SelectToppingState extends State<SelectTopping> {
                               )
                             ],
                           ),
-                    optionmenu.isEmpty
-                        ? const SizedBox(
-                            height: 150,
-                          )
-                        : ListView.separated(
-                            shrinkWrap: true,
-                            physics: const NeverScrollableScrollPhysics(),
-                            itemBuilder: (context, index) {
-                              if (index == 0 ||
-                                  index == optionmenu.length + 1) {
-                                return const SizedBox.shrink();
-                              }
-                              return ListView.builder(
-                                shrinkWrap: true,
-                                physics: const NeverScrollableScrollPhysics(),
-                                itemCount: optionmenu[index - 1].option.length,
-                                itemBuilder: (context, i) {
-                                  return GestureDetector(
-                                    onTap: () {
-                                      optionPilih
-                                          .add(optionmenu[index - 1].option[i]);
+                    if (optionmenu.isEmpty)
+                      const SizedBox(
+                        height: 150,
+                      )
+                    else
+                      ListView.separated(
+                          shrinkWrap: true,
+                          physics: const NeverScrollableScrollPhysics(),
+                          itemBuilder: (context, index) {
+                            if (index == 0 || index == optionmenu.length + 1) {
+                              return const SizedBox.shrink();
+                            }
+                            return ListView.builder(
+                              shrinkWrap: true,
+                              physics: const NeverScrollableScrollPhysics(),
+                              itemCount: optionmenu[index - 1].option.length,
+                              itemBuilder: (context, i) {
+                                List<ToopingPick> topping;
+                                topping = optionmenu[index - 1].option.map((e) {
+                                  return ToopingPick(
+                                      name: e.name, price: e.price);
+                                }).toList();
+                                if (optionPilih.isNotEmpty) {
+                                  for (var element in optionPilih) {
+                                    topping =
+                                        optionmenu[index - 1].option.map((e) {
+                                      return ToopingPick(
+                                          name: e.name,
+                                          price: e.price,
+                                          value: element.name == e.name
+                                              ? true
+                                              : false);
+                                    }).toList();
+                                  }
+                                }
 
-                                      print(optionPilih);
-                                    },
-                                    child: Row(
+                                return StatefulBuilder(builder:
+                                    (BuildContext context,
+                                        StateSetter setState) {
+                                  return CheckboxListTile(
+                                    value: topping[i].value,
+                                    controlAffinity:
+                                        ListTileControlAffinity.leading,
+                                    title: Row(
                                       children: [
-                                        Checkbox(
-                                            shape: RoundedRectangleBorder(
-                                                borderRadius:
-                                                    BorderRadius.circular(4)),
-                                            value: value,
-                                            onChanged: (newValue) {
-                                              setState(() {
-                                                value = newValue!;
-                                              });
-                                              //print(value);
-                                            }),
                                         SizedBox(
                                             width:
                                                 SizeConfig.safeBlockHorizontal *
@@ -262,15 +279,33 @@ class _SelectToppingState extends State<SelectTopping> {
                                         )
                                       ],
                                     ),
+                                    onChanged: (value) async {
+                                      setState(() {
+                                        topping[i].value = value!;
+                                      });
+                                      if (topping[i].value == true) {
+                                        optionPilih.add(Option(
+                                            name: topping[i].name,
+                                            price: topping[i].price));
+                                      } else {
+                                        optionPilih.removeWhere((element) =>
+                                            element ==
+                                            Option(
+                                                name: topping[i].name,
+                                                price: topping[i].price));
+                                      }
+                                      print(optionPilih);
+                                    },
                                   );
-                                },
-                              );
-                            },
-                            separatorBuilder: (context, index) => SizedBox(
-                                  height: SizeConfig.safeBlockVertical * 2,
-                                  child: Text(optionmenu[index].title),
-                                ),
-                            itemCount: 1 + optionmenu.length),
+                                });
+                              },
+                            );
+                          },
+                          separatorBuilder: (context, index) => SizedBox(
+                                height: SizeConfig.safeBlockVertical * 2,
+                                child: Text(optionmenu[index].title),
+                              ),
+                          itemCount: 1 + optionmenu.length),
                     Text(
                       'CATATAN UNTUK PENJUAL',
                       style: normalText.copyWith(
@@ -281,7 +316,91 @@ class _SelectToppingState extends State<SelectTopping> {
                     SizedBox(height: SizeConfig.safeBlockVertical * 1),
                     catatan(),
                     SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                    quantity(),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Container(
+                          width: SizeConfig.safeBlockHorizontal * 10,
+                          height: SizeConfig.safeBlockHorizontal * 10,
+                          decoration: BoxDecoration(
+                              color: const Color(0xffee3124),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Center(
+                            child: GestureDetector(
+                                onTap: () {
+                                  if (qty != 0) {
+                                    setState(() {
+                                      qty--;
+                                      _counterController.text = qty.toString();
+                                    });
+                                  }
+                                },
+                                child: const Icon(
+                                  Icons.remove_rounded,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ),
+                        SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
+                        Container(
+                          width: SizeConfig.safeBlockHorizontal * 20,
+                          decoration: BoxDecoration(boxShadow: [
+                            BoxShadow(
+                                offset: const Offset(0, 0),
+                                blurRadius: 1,
+                                color: Colors.black.withOpacity(.04)),
+                            BoxShadow(
+                                offset: const Offset(0, 0),
+                                blurRadius: 4,
+                                color: Colors.black.withOpacity(.08))
+                          ]),
+                          child: TextFormField(
+                            keyboardType: TextInputType.number,
+                            autofocus: false,
+                            controller: _counterController,
+                            maxLength: 3,
+                            textAlign: TextAlign.center,
+                            decoration: InputDecoration(
+                              counterText: '',
+                              contentPadding: const EdgeInsets.symmetric(
+                                  horizontal: 16, vertical: 12),
+                              filled: true,
+                              fillColor: Colors.white,
+                              focusedBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8)),
+                              enabledBorder: OutlineInputBorder(
+                                  borderSide: BorderSide.none,
+                                  borderRadius: BorderRadius.circular(8)),
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                qty = int.parse(value);
+                              });
+                            },
+                          ),
+                        ),
+                        SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
+                        Container(
+                          width: SizeConfig.safeBlockHorizontal * 10,
+                          height: SizeConfig.safeBlockHorizontal * 10,
+                          decoration: BoxDecoration(
+                              color: const Color(0xffee3124),
+                              borderRadius: BorderRadius.circular(8)),
+                          child: Center(
+                            child: GestureDetector(
+                                onTap: () => setState(() {
+                                      qty++;
+                                      _counterController.text = qty.toString();
+                                    }),
+                                child: const Icon(
+                                  Icons.add_rounded,
+                                  color: Colors.white,
+                                )),
+                          ),
+                        ),
+                      ],
+                    )
                   ],
                 ),
                 bottomNavigationBar: bottomNavBar(),
@@ -335,31 +454,36 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
-  // Widget topping(Option option) {
-  //   bool value = false;
-  //   return Row(
-  //     children: [
-  //       Checkbox(
-  //           shape:
-  //               RoundedRectangleBorder(borderRadius: BorderRadius.circular(4)),
-  //           value: value,
-  //           onChanged: (newValue) {
-  //             setState(() {
-  //               value = newValue!;
-  //             });
-  //             //print(value);
-  //           }),
-  //       SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
-  //       Text(
-  //         option.name,
-  //         style: normalText.copyWith(fontSize: 15),
-  //       ),
-  //       const Spacer(),
-  //       Text(
-  //         option.price.toString(),
-  //         style: normalText.copyWith(fontSize: 15),
-  //       )
-  //     ],
+  // Widget toppingItem(ToopingPick option) {
+  //   return CheckboxListTile(
+  //     value: option.value,
+  //     controlAffinity: ListTileControlAffinity.leading,
+  //     title: Row(
+  //       children: [
+  //         SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+  //         Text(
+  //           option.name,
+  //           style: normalText.copyWith(fontSize: 15),
+  //         ),
+  //         const Spacer(),
+  //         Text(
+  //           option.price.toString(),
+  //           style: normalText.copyWith(fontSize: 15),
+  //         )
+  //       ],
+  //     ),
+  //     onChanged: (value) {
+  //       setState(() {
+  //         option.value = value!;
+  //       });
+  //       if (option.value == true) {
+  //         optionPilih.add(Option(name: option.name, price: option.price));
+  //       } else {
+  //         optionPilih.removeWhere((element) =>
+  //             element == Option(name: option.name, price: option.price));
+  //       }
+  //       print(optionPilih);
+  //     },
   //   );
   // }
 

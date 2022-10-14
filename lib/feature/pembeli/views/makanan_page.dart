@@ -154,18 +154,18 @@ class _ListMenuState extends State<ListMenu> {
                                                 DateTime.parse(
                                                         tutupToko.toString())
                                                     .minute)) ||
-                                        ((DateTime.now().hour <=
+                                        ((DateTime.now().hour <
                                                 DateTime.parse(
                                                         bukaToko.toString())
                                                     .hour) ||
-                                            (DateTime.now().minute <=
+                                            (DateTime.now().minute <
                                                 DateTime.parse(
                                                         bukaToko.toString())
                                                     .minute))
                                     ? const Padding(
                                         padding: EdgeInsets.only(bottom: 10),
                                         child: Text(
-                                          "Mohon maaf toko telah tutup",
+                                          "Mohon maaf toko tutup",
                                           style: TextStyle(
                                               fontSize: 16,
                                               fontWeight: FontWeight.w700,
@@ -233,11 +233,11 @@ class _ListMenuState extends State<ListMenu> {
                                                             DateTime.parse(tutupToko
                                                                     .toString())
                                                                 .minute)) ||
-                                                    ((DateTime.now().hour <=
+                                                    ((DateTime.now().hour <
                                                             DateTime.parse(bukaToko
                                                                     .toString())
                                                                 .hour) ||
-                                                        (DateTime.now().minute <=
+                                                        (DateTime.now().minute <
                                                             DateTime.parse(bukaToko
                                                                     .toString())
                                                                 .minute))
@@ -332,11 +332,11 @@ class _ListMenuState extends State<ListMenu> {
                                                             DateTime.parse(tutupToko
                                                                     .toString())
                                                                 .minute)) ||
-                                                    ((DateTime.now().hour <=
+                                                    ((DateTime.now().hour < 
                                                             DateTime.parse(bukaToko
                                                                     .toString())
                                                                 .hour) ||
-                                                        (DateTime.now().minute <=
+                                                        (DateTime.now().minute <
                                                             DateTime.parse(bukaToko
                                                                     .toString())
                                                                 .minute))
@@ -419,10 +419,10 @@ class _ListMenuState extends State<ListMenu> {
                                                 DateTime.parse(
                                                         tutupToko.toString())
                                                     .minute)) ||
-                                        ((DateTime.now().hour <=
+                                        ((DateTime.now().hour <
                                                 DateTime.parse(bukaToko.toString())
                                                     .hour) ||
-                                            (DateTime.now().minute <=
+                                            (DateTime.now().minute <
                                                 DateTime.parse(bukaToko.toString())
                                                     .minute))
                                     ? MaterialStateProperty.all(
@@ -430,7 +430,7 @@ class _ListMenuState extends State<ListMenu> {
                                     : MaterialStateProperty.all(const Color(0xffee3124))
                                 : MaterialStateProperty.all(const Color(0xffee3124)),
                             foregroundColor: widget.tutup_toko != "kosong"
-                                ? ((DateTime.now().hour >= DateTime.parse(tutupToko.toString()).hour) && (DateTime.now().minute >= DateTime.parse(tutupToko.toString()).minute)) || ((DateTime.now().hour <= DateTime.parse(bukaToko.toString()).hour) || (DateTime.now().minute <= DateTime.parse(bukaToko.toString()).minute))
+                                ? ((DateTime.now().hour >= DateTime.parse(tutupToko.toString()).hour) && (DateTime.now().minute >= DateTime.parse(tutupToko.toString()).minute)) || ((DateTime.now().hour < DateTime.parse(bukaToko.toString()).hour) || (DateTime.now().minute < DateTime.parse(bukaToko.toString()).minute))
                                     ? MaterialStateProperty.all(const Color.fromARGB(255, 168, 164, 164))
                                     : MaterialStateProperty.all(const Color(0xffee3124))
                                 : MaterialStateProperty.all(const Color(0xffee3124)),
@@ -445,11 +445,11 @@ class _ListMenuState extends State<ListMenu> {
                                               DateTime.parse(
                                                       tutupToko.toString())
                                                   .minute)) ||
-                                      ((DateTime.now().hour <=
+                                      ((DateTime.now().hour <
                                               DateTime.parse(
                                                       bukaToko.toString())
                                                   .hour) ||
-                                          (DateTime.now().minute <=
+                                          (DateTime.now().minute <
                                               DateTime.parse(
                                                       bukaToko.toString())
                                                   .minute))

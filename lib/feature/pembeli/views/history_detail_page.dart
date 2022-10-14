@@ -98,8 +98,14 @@ class _HistoryDetailState extends State<HistoryDetail> {
               shrinkWrap: true,
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
-                return menu(item.menus![index].qty!, item.menus![index].name!,
-                    item.menus![index].price!);
+                if (item.menus == null) {
+                  return CircularProgressIndicator();
+                } else {
+                  return menu(
+                      int.parse(item.menus![index].qty.toString()),
+                      item.menus![index].name.toString(),
+                      item.menus![index].price!);
+                }
               },
               separatorBuilder: (context, index) =>
                   SizedBox(height: SizeConfig.safeBlockVertical * 1),

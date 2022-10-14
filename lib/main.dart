@@ -51,9 +51,7 @@ void main() async {
       _authenticationRepository.saveFcmToken(fcmToken ?? "");
 
       print(fcmToken);
-
       // Initialize Firebase
-
       return App(
         optionMenuRepository: _optionMenuRepository,
         appSharedPref: _sharedPref,
