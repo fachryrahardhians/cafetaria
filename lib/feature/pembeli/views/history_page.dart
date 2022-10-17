@@ -373,7 +373,7 @@ class _DoneListState extends State<DoneList> {
                   return const SizedBox();
               });
             } else {
-              return Text('No Data');
+              return const Text('No Data');
             }
           }
           return const SizedBox();

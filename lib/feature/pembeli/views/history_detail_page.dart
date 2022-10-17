@@ -82,10 +82,11 @@ class _HistoryDetailState extends State<HistoryDetail> {
                     '1.2 km',
                     '15 min',
                     '${item.rating} • ${item.totalCountRating} rating');
-              } else if (status == MerchantByIdStatus.loading)
-                return Center(child: const CircularProgressIndicator());
-              else
-                return SizedBox();
+              } else if (status == MerchantByIdStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else {
+                return const SizedBox();
+              }
             },
           ),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
@@ -99,12 +100,13 @@ class _HistoryDetailState extends State<HistoryDetail> {
               physics: const NeverScrollableScrollPhysics(),
               itemBuilder: (context, index) {
                 if (item.menus == null) {
-                  return CircularProgressIndicator();
+                  return const CircularProgressIndicator();
                 } else {
                   return menu(
                       int.parse(item.menus![index].qty.toString()),
                       item.menus![index].name.toString(),
-                      item.menus![index].price!);
+                      item.menus![index].price!,
+                      item.menus![index].toppings);
                 }
               },
               separatorBuilder: (context, index) =>
@@ -195,7 +197,8 @@ class _HistoryDetailState extends State<HistoryDetail> {
     );
   }
 
-  Widget menu(int itemCount, String itemName, int totalPrice) {
+  Widget menu(int itemCount, String itemName, int totalPrice,
+      List<OrderTopping>? toppings) {
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -210,6 +213,41 @@ class _HistoryDetailState extends State<HistoryDetail> {
               Text(itemName,
                   style: textStyle.copyWith(
                       fontWeight: FontWeight.w500, fontSize: 13)),
+              SizedBox(
+                height: 30,
+                width: MediaQuery.of(context).size.width / 2,
+                child: Column(
+                  children: List.generate(
+                    toppings!.length,
+                    (itopp) => Row(
+                      children: [
+                        Text(
+                          'Porsi ${itopp + 1}: ',
+                          style: normalText.copyWith(
+                            color: const Color(0xff8C8F93),
+                          ),
+                        ),
+                        Flexible(
+                          child: Text.rich(
+                            TextSpan(
+                              children: List<TextSpan>.generate(
+                                toppings[itopp].items!.length,
+                                (iitem) => TextSpan(
+                                  text:
+                                      "${toppings[itopp].items![iitem].name},",
+                                  style: normalText.copyWith(
+                                    color: const Color(0xff8C8F93),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+              ),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               GestureDetector(
                 onTap: () async {},
