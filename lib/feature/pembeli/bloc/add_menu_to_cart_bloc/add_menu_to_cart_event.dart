@@ -12,12 +12,14 @@ class AddMenuToCart extends AddMenuToCartEvent {
   final int quantity;
   final int totalPrice;
   final List<Option>? option;
+  final List<OrderTopping>? multiple;
   final String? notes;
 
   const AddMenuToCart(
       {required this.menuModel,
       required this.quantity,
       required this.totalPrice,
+      this.multiple,
       this.option,
       this.notes});
 

@@ -35,6 +35,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       tags: (fields[14] as List?)?.cast<String>(),
       quantity: fields[15] as int,
       totalPrice: fields[16] as int,
+      toppings: (fields[19] as List?)?.cast<ToppingOrder>(),
       notes: fields[17] as String?,
     );
   }
@@ -42,7 +43,7 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   @override
   void write(BinaryWriter writer, Keranjang obj) {
     writer
-      ..writeByte(19)
+      ..writeByte(20)
       ..writeByte(0)
       ..write(obj.menuId)
       ..writeByte(1)
@@ -80,7 +81,9 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
       ..writeByte(17)
       ..write(obj.notes)
       ..writeByte(18)
-      ..write(obj.options);
+      ..write(obj.options)
+      ..writeByte(19)
+      ..write(obj.toppings);
   }
 
   @override
@@ -90,6 +93,40 @@ class KeranjangAdapter extends TypeAdapter<Keranjang> {
   bool operator ==(Object other) =>
       identical(this, other) ||
       other is KeranjangAdapter &&
+          runtimeType == other.runtimeType &&
+          typeId == other.typeId;
+}
+
+class ToppingOrderAdapter extends TypeAdapter<ToppingOrder> {
+  @override
+  final int typeId = 2;
+
+  @override
+  ToppingOrder read(BinaryReader reader) {
+    final numOfFields = reader.readByte();
+    final fields = <int, dynamic>{
+      for (int i = 0; i < numOfFields; i++) reader.readByte(): reader.read(),
+    };
+    return ToppingOrder(
+      items: (fields[0] as List?)?.cast<ListOption>(),
+    );
+  }
+
+  @override
+  void write(BinaryWriter writer, ToppingOrder obj) {
+    writer
+      ..writeByte(1)
+      ..writeByte(0)
+      ..write(obj.items);
+  }
+
+  @override
+  int get hashCode => typeId.hashCode;
+
+  @override
+  bool operator ==(Object other) =>
+      identical(this, other) ||
+      other is ToppingOrderAdapter &&
           runtimeType == other.runtimeType &&
           typeId == other.typeId;
 }

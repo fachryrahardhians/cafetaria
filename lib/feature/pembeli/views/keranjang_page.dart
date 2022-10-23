@@ -22,6 +22,8 @@ import 'package:menu_repository/menu_repository.dart';
 import 'package:order_repository/order_repository.dart';
 import 'package:table_calendar/table_calendar.dart';
 
+import '../../../styles/text_styles.dart';
+
 class SummaryPage extends StatelessWidget {
   final String merchantId;
   final bool preOrder;
@@ -124,81 +126,101 @@ class _KeranjangPageState extends State<KeranjangPage> {
         ),
         centerTitle: true,
       ),
-      body: ListView(
-          padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
-          children: [
-            _customerInfo(),
-            SizedBox(height: SizeConfig.safeBlockVertical * 2),
-            _booking(),
-            SizedBox(height: SizeConfig.safeBlockVertical * 2),
-            _bookingOption(context),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Text(diantar ? 'Diantar' : 'Ambil Sendiri'),
-                      TextButton(
-                          onPressed: () => showDialog(
-                              context: context,
-                              builder: (builder) => _popUpPanel()),
-                          style: TextButton.styleFrom(
-                              minimumSize: Size.zero,
-                              padding: EdgeInsets.zero,
-                              tapTargetSize: MaterialTapTargetSize.shrinkWrap),
-                          child: Text(
-                            "Ganti",
-                            style: textStyle.copyWith(
-                                color: const Color(0xffee3124), fontSize: 11),
-                          ))
-                    ]),
-                Text(
-                  diantar
-                      ? 'Pesananmu akan diantar ke apartemen'
-                      : 'Kamu ambil sendiri pesananmu di toko',
-                  style: textStyle.copyWith(color: const Color(0xff8C8F93)),
-                )
-              ],
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 2),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'PESANANMU',
-                  style: textStyle.copyWith(color: const Color(0xff8C8F93)),
-                ),
-                GestureDetector(
-                  onTap: () {
-                    Navigator.of(context).pop();
-                    print("Klik");
-                  },
-                  child: Text(
-                    'Tambah Pesanan',
-                    style: textStyle.copyWith(
-                        color: const Color(0xffee3124), fontSize: 11),
+      body: SizedBox(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        child: ListView(
+            padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 8),
+            children: [
+              _customerInfo(),
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
+              _booking(),
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
+              _bookingOption(context),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(diantar ? 'Diantar' : 'Ambil Sendiri'),
+                        TextButton(
+                            onPressed: () => showDialog(
+                                context: context,
+                                builder: (builder) => _popUpPanel()),
+                            style: TextButton.styleFrom(
+                                minimumSize: Size.zero,
+                                padding: EdgeInsets.zero,
+                                tapTargetSize:
+                                    MaterialTapTargetSize.shrinkWrap),
+                            child: Text(
+                              "Ganti",
+                              style: textStyle.copyWith(
+                                  color: const Color(0xffee3124), fontSize: 11),
+                            ))
+                      ]),
+                  Text(
+                    diantar
+                        ? 'Pesananmu akan diantar ke apartemen'
+                        : 'Kamu ambil sendiri pesananmu di toko',
+                    style: textStyle.copyWith(color: const Color(0xff8C8F93)),
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 2),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'PESANANMU',
+                    style: textStyle.copyWith(color: const Color(0xff8C8F93)),
                   ),
-                )
-              ],
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 3),
-            BlocBuilder<MenuInCartBloc, MenuInCartState>(
-                builder: (context, state) {
-              if (state is MenuInCartRetrieved) {
-                menuInKeranjang = state.menuInCart;
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop();
+                      print("Klik");
+                    },
+                    child: Text(
+                      'Tambah Pesanan',
+                      style: textStyle.copyWith(
+                          color: const Color(0xffee3124), fontSize: 11),
+                    ),
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                  builder: (context, state) {
+                if (state is MenuInCartRetrieved) {
+                  menuInKeranjang = state.menuInCart;
 
-                subTotalPrice = state.totalPrice;
-                return ListView.separated(
-                    physics: const NeverScrollableScrollPhysics(),
-                    shrinkWrap: true,
-                    itemBuilder: (context, index) {
-                      if (_preorder) {
-                        if (menuInKeranjang[index].rulepreordermenuId == '') {
-                          return disabledItem(
-                              menuInKeranjang[index].quantity,
-                              menuInKeranjang[index].name.toString(),
-                              menuInKeranjang[index].totalPrice);
+                  subTotalPrice = state.totalPrice;
+                  return ListView.separated(
+                      physics: const NeverScrollableScrollPhysics(),
+                      shrinkWrap: true,
+                      itemBuilder: (context, index) {
+                        if (_preorder) {
+                          if (menuInKeranjang[index].rulepreordermenuId == '') {
+                            return disabledItem(
+                                menuInKeranjang[index].quantity,
+                                menuInKeranjang[index].name.toString(),
+                                menuInKeranjang[index].totalPrice);
+                          } else {
+                            var total = menuInKeranjang[index].totalPrice;
+
+                            if (menuInKeranjang[index].options != null) {
+                              for (var element
+                                  in menuInKeranjang[index].options!) {
+                                total += int.parse(element.price.toString());
+                              }
+                            }
+                            return item(
+                                menuInKeranjang[index].quantity,
+                                menuInKeranjang[index].name.toString(),
+                                total,
+                                menuInKeranjang[index].options,
+                                menuInKeranjang[index].toppings);
+                          }
                         } else {
                           var total = menuInKeranjang[index].totalPrice;
                           if (menuInKeranjang[index].options != null) {
@@ -211,134 +233,123 @@ class _KeranjangPageState extends State<KeranjangPage> {
                               menuInKeranjang[index].quantity,
                               menuInKeranjang[index].name.toString(),
                               total,
-                              menuInKeranjang[index].options);
+                              menuInKeranjang[index].options,
+                              menuInKeranjang[index].toppings);
                         }
-                      } else {
-                        var total = menuInKeranjang[index].totalPrice;
-                        if (menuInKeranjang[index].options != null) {
-                          for (var element in menuInKeranjang[index].options!) {
-                            total += int.parse(element.price.toString());
-                          }
-                        }
-                        return item(
-                            menuInKeranjang[index].quantity,
-                            menuInKeranjang[index].name.toString(),
-                            total,
-                            menuInKeranjang[index].options);
-                      }
-                    },
-                    separatorBuilder: (context, index) => SizedBox(
-                          height: SizeConfig.safeBlockVertical * 3,
-                        ),
-                    itemCount: menuInKeranjang.length);
-              } else if (state is MenuInCartRetrieveFailed) {
-                return Text(state.message);
-              } else {
-                return const CircularProgressIndicator();
-              }
-            }),
-            SizedBox(height: SizeConfig.safeBlockVertical * 3),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'Subtotal',
-                  style: textStyle,
-                ),
-                Text(
-                  'Rp $subTotalPrice',
-                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 1),
-            Row(
-              children: [
-                Text(
-                  'Biaya Pemesanan ',
-                  style: textStyle,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    showDialog(
-                        context: context,
-                        builder: (builder) => _popUpPanelBiayaPemesanan());
-                  },
-                  child: const Icon(
-                    Icons.info,
-                    color: Color(0xffee3124),
-                    size: 18,
+                      },
+                      separatorBuilder: (context, index) => SizedBox(
+                            height: SizeConfig.safeBlockVertical * 3,
+                          ),
+                      itemCount: menuInKeranjang.length);
+                } else if (state is MenuInCartRetrieveFailed) {
+                  return Text(state.message);
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              }),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'Subtotal',
+                    style: textStyle,
                   ),
-                ),
-                const Spacer(),
-                Text(
-                  'Rp $biayaPemesanan',
-                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                )
-              ],
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 3),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Text(
-                      alat ? 'Minta alat makan' : 'Tanpa alat makan',
-                      style: textStyle,
+                  Text(
+                    'Rp $subTotalPrice',
+                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 1),
+              Row(
+                children: [
+                  Text(
+                    'Biaya Pemesanan ',
+                    style: textStyle,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      showDialog(
+                          context: context,
+                          builder: (builder) => _popUpPanelBiayaPemesanan());
+                    },
+                    child: const Icon(
+                      Icons.info,
+                      color: Color(0xffee3124),
+                      size: 18,
                     ),
-                    SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                    SizedBox(
-                      width: SizeConfig.safeBlockHorizontal * 60,
-                      child: Text(
-                        'Oke, akan kami sampaikan ke resto. Terima kasih sudah mengurangi pengguna plastik.',
-                        style: textStyle.copyWith(
-                            fontSize: 11, color: const Color(0xffB1B5BA)),
+                  ),
+                  const Spacer(),
+                  Text(
+                    'Rp $biayaPemesanan',
+                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        alat ? 'Minta alat makan' : 'Tanpa alat makan',
+                        style: textStyle,
                       ),
-                    )
-                  ],
-                ),
-                FlutterSwitch(
-                  value: alat,
-                  onToggle: (val) {
-                    setState(() {
-                      alat = val;
-                    });
-                  },
-                  activeColor: const Color(0xffee3124),
-                  inactiveColor: const Color(0xffC8CCD2),
-                  valueFontSize: 12,
-                  width: 35,
-                  height: 20,
-                  toggleSize: 15,
-                )
-              ],
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 3),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  'TOTAL PEMBAYARAN',
-                  style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                ),
-                BlocBuilder<MenuInCartBloc, MenuInCartState>(
-                    builder: ((context, state) {
-                  if (state is MenuInCartRetrieved) {
-                    return Text(
-                      'Rp ${state.totalPrice + biayaPemesanan}',
-                      style: textStyle.copyWith(
-                          fontWeight: FontWeight.w500, fontSize: 15),
-                    );
-                  } else {
-                    return const SizedBox();
-                  }
-                }))
-              ],
-            )
-          ]),
+                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                      SizedBox(
+                        width: SizeConfig.safeBlockHorizontal * 60,
+                        child: Text(
+                          'Oke, akan kami sampaikan ke resto. Terima kasih sudah mengurangi pengguna plastik.',
+                          style: textStyle.copyWith(
+                              fontSize: 11, color: const Color(0xffB1B5BA)),
+                        ),
+                      )
+                    ],
+                  ),
+                  FlutterSwitch(
+                    value: alat,
+                    onToggle: (val) {
+                      setState(() {
+                        alat = val;
+                      });
+                    },
+                    activeColor: const Color(0xffee3124),
+                    inactiveColor: const Color(0xffC8CCD2),
+                    valueFontSize: 12,
+                    width: 35,
+                    height: 20,
+                    toggleSize: 15,
+                  )
+                ],
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    'TOTAL PEMBAYARAN',
+                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
+                  ),
+                  BlocBuilder<MenuInCartBloc, MenuInCartState>(
+                      builder: ((context, state) {
+                    if (state is MenuInCartRetrieved) {
+                      return Text(
+                        'Rp ${state.totalPrice + biayaPemesanan}',
+                        style: textStyle.copyWith(
+                            fontWeight: FontWeight.w500, fontSize: 15),
+                      );
+                    } else {
+                      return const SizedBox();
+                    }
+                  }))
+                ],
+              )
+            ]),
+      ),
       bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
         listener: (context, state) {
           if (state.formzStatus == FormzStatus.submissionSuccess) {
@@ -719,8 +730,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
   }
 
   Widget item(int itemCount, String itemName, int totalPrice,
-      List<ListOption>? option) {
+      List<ListOption>? option, List<ToppingOrder>? multiple) {
     //int totalTopping;
+    print(option!.length);
     return IntrinsicHeight(
       child: Row(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -736,32 +748,72 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   style: textStyle.copyWith(
                       fontWeight: FontWeight.w500, fontSize: 13)),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
-              option != null
-                  ? SizedBox(
-                      height: 50,
-                      width: MediaQuery.of(context).size.width / 1.5,
-                      child: ListView.builder(
-                          itemBuilder: (context, index) {
-                            return Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Text(option[index].name.toString(),
-                                    style: textStyle.copyWith(
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey,
-                                        fontSize: 13)),
-                                // Text('Rp ${option[index].price.toString()}',
-                                //     style: textStyle.copyWith(
-                                //         fontWeight: FontWeight.w500,
-                                //         color: Colors.grey,
-                                //         fontSize: 13)),
-                              ],
-                            );
-                          },
-                          itemCount: option.length),
-                    )
-                  : const SizedBox(),
+              if (multiple!.isNotEmpty)
+                SizedBox(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width / 1.5,
+                  child: Column(
+                    children: List.generate(
+                      multiple.length,
+                      (itopp) => Row(
+                        children: [
+                          Text(
+                            'Porsi ${itopp + 1}: ',
+                            style: normalText.copyWith(
+                              color: const Color(0xff8C8F93),
+                            ),
+                          ),
+                          Flexible(
+                            child: Text.rich(
+                              TextSpan(
+                                children: List<TextSpan>.generate(
+                                  multiple[itopp].items!.length,
+                                  (iitem) => TextSpan(
+                                    text:
+                                        "${multiple[itopp].items![iitem].name},",
+                                    style: normalText.copyWith(
+                                      color: const Color(0xff8C8F93),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                  ),
+                )
+              else
+                SizedBox(
+                  height: 50,
+                  width: MediaQuery.of(context).size.width/ 1.5,
+                  child: Row(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisAlignment: MainAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Porsi 1: ',
+                        style: normalText.copyWith(
+                          color: const Color(0xff8C8F93),
+                        ),
+                      ),
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 3,
+                        child: ListView.builder(
+                            scrollDirection: Axis.horizontal,
+                            itemBuilder: (context, index) {
+                              return Text("${option[index].name.toString()}, ",
+                                  style: textStyle.copyWith(
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey,
+                                      fontSize: 13));
+                            },
+                            itemCount: option.length),
+                      ),
+                    ],
+                  ),
+                ),
               GestureDetector(
                 onTap: () async {},
                 child: Text(

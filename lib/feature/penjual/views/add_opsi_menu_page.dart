@@ -215,7 +215,7 @@ class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
                                     MainAxisAlignment.spaceBetween,
                                 children: [
                                   Text(
-                                    option[index].name,
+                                    option[index].name.toString(),
                                     overflow: TextOverflow.ellipsis,
                                   ),
                                   Text('+ Rp${option[index].price}.00'),
@@ -543,7 +543,7 @@ class _TambahOpsiComponentState extends State<TambahOpsiComponent> {
     final option = ModalRoute.of(context)!.settings.arguments;
 
     if (option is Option) {
-      _titleController.text = option.name;
+      _titleController.text = option.name.toString();
       _priceController.text = '${option.price}';
     }
 

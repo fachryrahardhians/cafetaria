@@ -38,18 +38,33 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
 
     try {
       var listMenu = event.listKeranjang.map((e) {
-        return OrderMenu(
-            menuId: e.menuId,
-            notes: e.notes,
-            price: e.price,
-            qty: e.quantity,
-            toppings: [
-              OrderTopping(
-                  items: e.options?.map((e) {
-                return ToppingItem(
-                    name: e.name, price: int.parse(e.price.toString()));
-              }).toList())
-            ]);
+        if (e.toppings != null) {
+          return OrderMenu(
+              menuId: e.menuId,
+              notes: e.notes,
+              price: e.price,
+              qty: e.quantity,
+              toppings: e.toppings?.map((e) {
+                return OrderTopping(
+                    items: e.items?.map((a) {
+                  return ToppingItem(
+                      name: a.name, price: int.parse(a.price.toString()));
+                }).toList());
+              }).toList());
+        } else {
+          return OrderMenu(
+              menuId: e.menuId,
+              notes: e.notes,
+              price: e.price,
+              qty: e.quantity,
+              toppings: [
+                OrderTopping(
+                    items: e.options?.map((e) {
+                  return ToppingItem(
+                      name: e.name, price: int.parse(e.price.toString()));
+                }).toList())
+              ]);
+        }
       }).toList();
       User? user = await _authtenticationRepository.getCurrentUser();
       await _orderRepository.addOrder(HistoryModel(

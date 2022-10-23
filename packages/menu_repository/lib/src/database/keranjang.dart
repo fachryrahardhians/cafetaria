@@ -43,6 +43,8 @@ class Keranjang extends HiveObject {
   final String? notes;
   @HiveField(18)
   List<ListOption>? options;
+  @HiveField(19)
+  List<ToppingOrder>? toppings;
   Keranjang(
       {this.menuId,
       this.merchantId,
@@ -62,7 +64,18 @@ class Keranjang extends HiveObject {
       this.tags,
       required this.quantity,
       required this.totalPrice,
+      this.toppings,
       this.notes});
+}
+
+@HiveType(typeId: 2)
+class ToppingOrder extends HiveObject {
+  // @HiveField(0)
+  // List simNumber;
+  @HiveField(0)
+  final List<ListOption>? items;
+
+  ToppingOrder({this.items});
 }
 
 @HiveType(typeId: 1)

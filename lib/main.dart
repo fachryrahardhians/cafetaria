@@ -28,10 +28,10 @@ void main() async {
       //
       var appDocumentDirectory =
           await pathProvider.getApplicationDocumentsDirectory();
-
       Hive.init(appDocumentDirectory.path);
       Hive.registerAdapter<Keranjang>(KeranjangAdapter());
       Hive.registerAdapter<ListOption>(ListOptionAdapter());
+      Hive.registerAdapter<ToppingOrder>(ToppingOrderAdapter());
       await Hive.openBox<Keranjang>('keranjangBox');
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);

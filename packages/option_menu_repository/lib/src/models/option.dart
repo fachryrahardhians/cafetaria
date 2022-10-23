@@ -18,10 +18,10 @@ class Option extends Equatable {
   Map<String, dynamic> toJson() => _$OptionToJson(this);
 
   /// name
-  final String name;
+  final String? name;
 
   /// price
-  final int price;
+  final int? price;
 
   @override
   List<Object?> get props => [

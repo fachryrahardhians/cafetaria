@@ -152,8 +152,13 @@ class MenuRepository {
     }
   }
 
-  Future<void> addMenutoKeranjang(MenuModel menu, int qty, int totalPrice,
-      String? notes, List<Options>? option) async {
+  Future<void> addMenutoKeranjang(
+      MenuModel menu,
+      int qty,
+      int totalPrice,
+      String? notes,
+      List<Options>? option,
+      List<ToppingOrder>? multiple) async {
     try {
       keranjangBox.add(Keranjang(
           menuId: menu.menuId,
@@ -176,6 +181,7 @@ class MenuRepository {
           options: option?.map((e) {
             return ListOption(name: e.name, price: e.price.toString());
           }).toList(),
+          toppings: multiple,
           notes: notes));
     } catch (e) {
       print(e.toString());

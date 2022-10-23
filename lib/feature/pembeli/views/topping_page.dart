@@ -9,8 +9,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:menu_repository/menu_repository.dart';
-import 'package:merchant_repository/merchant_repository.dart';
+
 import 'package:option_menu_repository/option_menu_repository.dart';
+import 'package:order_repository/order_repository.dart';
 
 import '../../penjual/bloc/list_opsi_menu_bloc/list_opsi_menu_bloc.dart';
 
@@ -50,7 +51,9 @@ class _SelectToppingState extends State<SelectTopping> {
   final TextEditingController _catatanController = TextEditingController();
   final TextEditingController _counterController = TextEditingController();
   List<OptionMenuModel> optionmenu = [];
-  List<Option> optionPilih = [];
+  List<Option>? optionPilih = [];
+  List<OrderTopping>? optionPilihMultiple = [];
+  List<ToopingPick>? topping = [];
 
   late AddMenuToCartBloc addMenuToCartBloc;
   late MenuInCartBloc menuInCartBloc;
@@ -73,10 +76,18 @@ class _SelectToppingState extends State<SelectTopping> {
       qty = widget.itemInKeranjang.quantity;
     }
     if (widget.itemInKeranjang.options != null) {
-      optionPilih.addAll(widget.itemInKeranjang.options!.map((e) {
+      optionPilih?.addAll(widget.itemInKeranjang.options!.map((e) {
         return Option(name: e.name!, price: int.parse(e.price!));
       }).toList());
-      //print(widget.itemInKeranjang.options!.length);
+    }
+    if (widget.itemInKeranjang.toppings != null) {
+      optionPilihMultiple?.addAll(widget.itemInKeranjang.toppings!.map((e) {
+        return OrderTopping(
+            items: e.items!.map((a) {
+          return ToppingItem(
+              name: a.name, price: int.parse(a.price.toString()));
+        }).toList());
+      }).toList());
     }
 
     _counterController.text = qty.toString();
@@ -85,7 +96,6 @@ class _SelectToppingState extends State<SelectTopping> {
 
   @override
   Widget build(BuildContext context) {
-    int? total;
     if (widget.itemInKeranjang.quantity == qty ||
         (widget.itemInKeranjang.quantity == -1 && qty == 0)) {
       _isButtonPerbaruEnable = false;
@@ -93,7 +103,6 @@ class _SelectToppingState extends State<SelectTopping> {
       _isButtonPerbaruEnable = true;
     }
     if (widget.itemInKeranjang.options != null) {
-      total = widget.itemInKeranjang.options!.length;
       //print(widget.itemInKeranjang.options!.length);
     }
     return MultiBlocProvider(
@@ -214,98 +223,50 @@ class _SelectToppingState extends State<SelectTopping> {
                               )
                             ],
                           ),
-                    if (optionmenu.isEmpty)
-                      const SizedBox(
-                        height: 150,
-                      )
-                    else
-                      ListView.separated(
-                          shrinkWrap: true,
-                          physics: const NeverScrollableScrollPhysics(),
-                          itemBuilder: (context, index) {
-                            if (index == 0 || index == optionmenu.length + 1) {
-                              return const SizedBox.shrink();
-                            }
-                            return ListView.builder(
-                              shrinkWrap: true,
-                              physics: const NeverScrollableScrollPhysics(),
-                              itemCount: optionmenu[index - 1].option.length,
-                              itemBuilder: (context, i) {
-                                List<ToopingPick> topping;
-                                topping = optionmenu[index - 1].option.map((e) {
-                                  return ToopingPick(
-                                      name: e.name, price: e.price);
-                                }).toList();
-                                if (optionPilih.isNotEmpty) {
-                                  for (var element in optionPilih) {
-                                    topping =
-                                        optionmenu[index - 1].option.map((e) {
-                                      return ToopingPick(
-                                          name: e.name,
-                                          price: e.price,
-                                          value: element.name == e.name
-                                              ? true
-                                              : false);
-                                    }).toList();
-                                  }
-                                }
-
-                                return StatefulBuilder(builder:
-                                    (BuildContext context,
-                                        StateSetter setState) {
-                                  return CheckboxListTile(
-                                    value: topping[i].value,
-                                    controlAffinity:
-                                        ListTileControlAffinity.leading,
-                                    title: Row(
-                                      children: [
-                                        SizedBox(
-                                            width:
-                                                SizeConfig.safeBlockHorizontal *
-                                                    2),
-                                        Text(
-                                          optionmenu[index - 1].option[i].name,
-                                          style:
-                                              normalText.copyWith(fontSize: 15),
-                                        ),
-                                        const Spacer(),
-                                        Text(
-                                          optionmenu[index - 1]
-                                              .option[i]
-                                              .price
-                                              .toString(),
-                                          style:
-                                              normalText.copyWith(fontSize: 15),
-                                        )
-                                      ],
-                                    ),
-                                    onChanged: (value) async {
-                                      setState(() {
-                                        topping[i].value = value!;
+                    if (_toppingType == type.sama)
+                      if (optionmenu.isEmpty)
+                        const SizedBox(
+                          height: 150,
+                        )
+                      else
+                        ListView.separated(
+                            shrinkWrap: true,
+                            physics: const NeverScrollableScrollPhysics(),
+                            itemBuilder: (context, index) {
+                              if (index == 0 ||
+                                  index == optionmenu.length + 1) {
+                                return const SizedBox.shrink();
+                              }
+                              topping = optionmenu[index - 1].option.map((e) {
+                                return ToopingPick(
+                                    name: e.name.toString(), price: e.price!);
+                              }).toList();
+                              return ListView.builder(
+                                shrinkWrap: true,
+                                physics: const NeverScrollableScrollPhysics(),
+                                itemCount: optionmenu[index - 1].option.length,
+                                itemBuilder: (context, i) {
+                                  if (optionPilih!.isNotEmpty) {
+                                    topping?.forEach((e) {
+                                      optionPilih?.forEach((element) {
+                                        if (element.name == e.name) {
+                                          e.value = true;
+                                        }
                                       });
-                                      if (topping[i].value == true) {
-                                        optionPilih.add(Option(
-                                            name: topping[i].name,
-                                            price: topping[i].price));
-                                      } else {
-                                        optionPilih.removeWhere((element) =>
-                                            element ==
-                                            Option(
-                                                name: topping[i].name,
-                                                price: topping[i].price));
-                                      }
-                                      print(optionPilih);
-                                    },
-                                  );
-                                });
-                              },
-                            );
-                          },
-                          separatorBuilder: (context, index) => SizedBox(
-                                height: SizeConfig.safeBlockVertical * 2,
-                                child: Text(optionmenu[index].title),
-                              ),
-                          itemCount: 1 + optionmenu.length),
+                                    });
+                                  }
+                                  print(topping![i].value);
+                                  return listTopping(topping![i]);
+                                },
+                              );
+                            },
+                            separatorBuilder: (context, index) => SizedBox(
+                                  height: SizeConfig.safeBlockVertical * 2,
+                                  child: Text(optionmenu[index].title),
+                                ),
+                            itemCount: 1 + optionmenu.length)
+                    else
+                      multipletopping(),
                     Text(
                       'CATATAN UNTUK PENJUAL',
                       style: normalText.copyWith(
@@ -316,96 +277,162 @@ class _SelectToppingState extends State<SelectTopping> {
                     SizedBox(height: SizeConfig.safeBlockVertical * 1),
                     catatan(),
                     SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Container(
-                          width: SizeConfig.safeBlockHorizontal * 10,
-                          height: SizeConfig.safeBlockHorizontal * 10,
-                          decoration: BoxDecoration(
-                              color: const Color(0xffee3124),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                            child: GestureDetector(
-                                onTap: () {
-                                  if (qty != 0) {
-                                    setState(() {
-                                      qty--;
-                                      _counterController.text = qty.toString();
-                                    });
-                                  }
-                                },
-                                child: const Icon(
-                                  Icons.remove_rounded,
-                                  color: Colors.white,
-                                )),
-                          ),
-                        ),
-                        SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
-                        Container(
-                          width: SizeConfig.safeBlockHorizontal * 20,
-                          decoration: BoxDecoration(boxShadow: [
-                            BoxShadow(
-                                offset: const Offset(0, 0),
-                                blurRadius: 1,
-                                color: Colors.black.withOpacity(.04)),
-                            BoxShadow(
-                                offset: const Offset(0, 0),
-                                blurRadius: 4,
-                                color: Colors.black.withOpacity(.08))
-                          ]),
-                          child: TextFormField(
-                            keyboardType: TextInputType.number,
-                            autofocus: false,
-                            controller: _counterController,
-                            maxLength: 3,
-                            textAlign: TextAlign.center,
-                            decoration: InputDecoration(
-                              counterText: '',
-                              contentPadding: const EdgeInsets.symmetric(
-                                  horizontal: 16, vertical: 12),
-                              filled: true,
-                              fillColor: Colors.white,
-                              focusedBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(8)),
-                              enabledBorder: OutlineInputBorder(
-                                  borderSide: BorderSide.none,
-                                  borderRadius: BorderRadius.circular(8)),
-                            ),
-                            onChanged: (value) {
-                              setState(() {
-                                qty = int.parse(value);
-                              });
-                            },
-                          ),
-                        ),
-                        SizedBox(width: SizeConfig.safeBlockHorizontal * 5),
-                        Container(
-                          width: SizeConfig.safeBlockHorizontal * 10,
-                          height: SizeConfig.safeBlockHorizontal * 10,
-                          decoration: BoxDecoration(
-                              color: const Color(0xffee3124),
-                              borderRadius: BorderRadius.circular(8)),
-                          child: Center(
-                            child: GestureDetector(
-                                onTap: () => setState(() {
-                                      qty++;
-                                      _counterController.text = qty.toString();
-                                    }),
-                                child: const Icon(
-                                  Icons.add_rounded,
-                                  color: Colors.white,
-                                )),
-                          ),
-                        ),
-                      ],
-                    )
+                    quantity()
                   ],
                 ),
                 bottomNavigationBar: bottomNavBar(),
               ),
             )));
+  }
+
+  Widget multipletopping() {
+    return Wrap(
+      direction: Axis.vertical,
+      children: List.generate(qty, (tp) {
+        return SizedBox(
+          width: MediaQuery.of(context).size.width,
+          child: ExpansionTile(
+            tilePadding: const EdgeInsets.only(right: 40),
+            childrenPadding: const EdgeInsets.only(right: 40),
+            title: Text(
+              "Porsi ke ${tp + 1}",
+              style: normalText.copyWith(
+                  fontSize: 15,
+                  fontWeight: FontWeight.w500,
+                  color: const Color(0xff5C5E61).withOpacity(.8)),
+            ),
+            children: [
+              ListView.separated(
+                  shrinkWrap: true,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    if (index == 0 || index == optionmenu.length + 1) {
+                      return const SizedBox.shrink();
+                    }
+                    List<ToopingPick> topping;
+                    topping = optionmenu[index - 1].option.map((e) {
+                      return ToopingPick(
+                          name: e.name.toString(), price: e.price!);
+                    }).toList();
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      physics: const NeverScrollableScrollPhysics(),
+                      itemCount: optionmenu[index - 1].option.length,
+                      itemBuilder: (context, i) {
+                        // if (optionPilihMultiple!.isNotEmpty) {
+                        //   topping.forEach((e) {
+                        //     optionPilihMultiple?.forEach((element) {
+                        //       element.items?.forEach((element2) {
+                        //         if (element2.name == e.name) {
+                        //           e.value = true;
+                        //         }
+                        //       });
+                        //     });
+                        //   });
+                        // }
+                        return StatefulBuilder(builder:
+                            (BuildContext context, StateSetter setState) {
+                          return CheckboxListTile(
+                            value: topping[i].value,
+                            controlAffinity: ListTileControlAffinity.leading,
+                            title: Row(
+                              children: [
+                                SizedBox(
+                                    width: SizeConfig.safeBlockHorizontal * 2),
+                                Text(
+                                  optionmenu[index - 1]
+                                      .option[i]
+                                      .name
+                                      .toString(),
+                                  style: normalText.copyWith(fontSize: 15),
+                                ),
+                                const Spacer(),
+                                Text(
+                                  optionmenu[index - 1]
+                                      .option[i]
+                                      .price
+                                      .toString(),
+                                  style: normalText.copyWith(fontSize: 15),
+                                )
+                              ],
+                            ),
+                            onChanged: (value) {
+                              setState(() {
+                                topping[i].value = value!;
+                              });
+
+                              if (topping[i].value == true) {
+                                List<ToppingItem> data = [];
+                                data.add(ToppingItem(
+                                    name: topping[i].name,
+                                    price: topping[i].price));
+                                if (optionPilihMultiple!.isEmpty) {
+                                  optionPilihMultiple
+                                      ?.add(OrderTopping(items: data));
+                                } else {
+                                  optionPilihMultiple!.length <= tp
+                                      ? optionPilihMultiple
+                                          ?.add(OrderTopping(items: data))
+                                      : optionPilihMultiple![tp]
+                                          .items!
+                                          .addAll(data.map((e) {
+                                            return ToppingItem(
+                                                name: e.name, price: e.price);
+                                          }).toList());
+                                  // print(optionPilihMultiple![
+                                  //     tp]);
+                                }
+
+                                // if (porsi == tp) {
+                                //   print("sama");
+                                //   optionPilihMultiple.map(
+                                //       (e) => e.items
+                                //           ?.addAll(data));
+                                // } else {
+                                //   setState(() {
+                                //     porsi == tp;
+                                //   });
+                                //   print("beda");
+                                //   optionPilihMultiple.add(
+                                //       OrderTopping(
+                                //           items: data));
+
+                                // }
+
+                              } else {
+                                optionPilihMultiple![tp].items!.removeWhere(
+                                    (element) =>
+                                        element ==
+                                        ToppingItem(
+                                            name: topping[i].name,
+                                            price: topping[i].price));
+                                // optionPilih.removeWhere(
+                                //     (element) =>
+                                //         element ==
+                                //         Option(
+                                //             name: topping[i]
+                                //                 .name,
+                                //             price: topping[i]
+                                //                 .price));
+
+                              }
+                              print(optionPilihMultiple);
+                            },
+                          );
+                        });
+                      },
+                    );
+                  },
+                  separatorBuilder: (context, index) => SizedBox(
+                        height: SizeConfig.safeBlockVertical * 2,
+                        child: Text(optionmenu[index].title),
+                      ),
+                  itemCount: 1 + optionmenu.length)
+            ],
+          ),
+        );
+      }),
+    );
   }
 
   Widget _menuInfo() {
@@ -454,59 +481,43 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
-  // Widget toppingItem(ToopingPick option) {
-  //   return CheckboxListTile(
-  //     value: option.value,
-  //     controlAffinity: ListTileControlAffinity.leading,
-  //     title: Row(
-  //       children: [
-  //         SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
-  //         Text(
-  //           option.name,
-  //           style: normalText.copyWith(fontSize: 15),
-  //         ),
-  //         const Spacer(),
-  //         Text(
-  //           option.price.toString(),
-  //           style: normalText.copyWith(fontSize: 15),
-  //         )
-  //       ],
-  //     ),
-  //     onChanged: (value) {
-  //       setState(() {
-  //         option.value = value!;
-  //       });
-  //       if (option.value == true) {
-  //         optionPilih.add(Option(name: option.name, price: option.price));
-  //       } else {
-  //         optionPilih.removeWhere((element) =>
-  //             element == Option(name: option.name, price: option.price));
-  //       }
-  //       print(optionPilih);
-  //     },
-  //   );
-  // }
+  Widget listTopping(ToopingPick toopingPick) {
+    return Center(
+      child: CheckboxListTile(
+        value: toopingPick.value,
+        controlAffinity: ListTileControlAffinity.leading,
+        title: Row(
+          children: [
+            SizedBox(width: SizeConfig.safeBlockHorizontal * 2),
+            Text(
+              toopingPick.name.toString(),
+              style: normalText.copyWith(fontSize: 15),
+            ),
+            const Spacer(),
+            Text(
+              toopingPick.price.toString(),
+              style: normalText.copyWith(fontSize: 15),
+            )
+          ],
+        ),
+        onChanged: (value) {
+          setState(() {
+            toopingPick.value = value!;
+            if (toopingPick.value == true) {
+              optionPilih?.add(
+                  Option(name: toopingPick.name, price: toopingPick.price));
+            } else {
+              optionPilih?.removeWhere((element) =>
+                  element ==
+                  Option(name: toopingPick.name, price: toopingPick.price));
+            }
+          });
 
-  // Widget listTopping() {
-  //   return ListView.separated(
-  //       shrinkWrap: true,
-  //       physics: const NeverScrollableScrollPhysics(),
-  //       itemBuilder: (context, index) {
-  //         return ListView.builder(
-  //           shrinkWrap: true,
-  //           physics: const NeverScrollableScrollPhysics(),
-  //           itemCount: optionmenu[index].option.length,
-  //           itemBuilder: (context, i) {
-  //             return topping(optionmenu[index].option[i]);
-  //           },
-  //         );
-  //       },
-  //       separatorBuilder: (context, index) => SizedBox(
-  //             height: SizeConfig.safeBlockVertical * 2,
-  //             child: Text(optionmenu[index].title),
-  //           ),
-  //       itemCount: optionmenu.length);
-  // }
+          print(optionPilih);
+        },
+      ),
+    );
+  }
 
   Widget catatan() {
     return Container(
@@ -654,7 +665,8 @@ class _SelectToppingState extends State<SelectTopping> {
                           .add(DeleteMenuInCart(widget.itemInKeranjang));
                     } else if (widget.itemInKeranjang.quantity == -1) {
                       addMenuToCartBloc.add(AddMenuToCart(
-                          option: optionPilih,
+                          option: optionPilih ?? [],
+                          multiple: optionPilihMultiple ?? [],
                           menuModel: item,
                           quantity: qty,
                           totalPrice: (item.price ?? 0) * qty,
@@ -665,7 +677,14 @@ class _SelectToppingState extends State<SelectTopping> {
                       editedMenu.totalPrice =
                           widget.itemInKeranjang.price! * qty;
                       editedMenu.quantity = qty;
-                      editedMenu.options = optionPilih.map((e) {
+                      editedMenu.toppings = optionPilihMultiple?.map((e) {
+                        return ToppingOrder(
+                            items: e.items?.map((a) {
+                          return ListOption(
+                              name: a.name, price: a.price.toString());
+                        }).toList());
+                      }).toList();
+                      editedMenu.options = optionPilih?.map((e) {
                         return ListOption(
                             name: e.name, price: e.price.toString());
                       }).toList();
