@@ -642,51 +642,75 @@ class _SelectToppingState extends State<SelectTopping> {
                     side: BorderSide.none))),
             onPressed: _isButtonPerbaruEnable
                 ? () {
-                    if (qty == 0) {
-                      menuInCartBloc
-                          .add(DeleteMenuInCart(widget.itemInKeranjang));
-                    } else if (widget.itemInKeranjang.quantity == -1) {
-                      List<OrderTopping>? multiple = [
-                        OrderTopping(
-                            items: optionPilih?.map((e) {
-                          return ToppingItem(
-                              name: e.name,
-                              price: int.parse(e.price.toString()));
-                        }).toList())
-                      ];
-                      print(multiple);
-                      addMenuToCartBloc.add(AddMenuToCart(
-                          //option: optionPilih ?? [],
-                          multiple: optionPilihMultiple == [] ? multiple : optionPilihMultiple,
-                          menuModel: item,
-                          quantity: qty,
-                          totalPrice: (item.price ?? 0) * qty,
-                          notes: _catatanController.text));
+                    if ((_toppingType == type.beda) && (qty == 1)) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text(
+                              'quantity harus diatas 1 jika ingin tipe topping beda'),
+                        ),
+                      );
                     } else {
-                      Keranjang editedMenu = widget.itemInKeranjang;
-                      //deklarasi isi menu in keranjang yang akan di update
-                      editedMenu.totalPrice =
-                          widget.itemInKeranjang.price! * qty;
-                      editedMenu.quantity = qty;
-                      editedMenu.toppings = optionPilihMultiple?.map((e) {
-                            return ToppingOrder(
-                                items: e.items?.map((a) {
-                              return ListOption(
-                                  name: a.name, price: a.price.toString());
-                            }).toList());
-                          }).toList() ??
-                          optionPilihMultiple?.map((e) {
-                            return ToppingOrder(
-                                items: optionPilih?.map((a) {
-                              return ListOption(
-                                  name: a.name, price: a.price.toString());
-                            }).toList());
-                          }).toList();
-                      // editedMenu.options = optionPilih?.map((e) {
-                      //   return ListOption(
-                      //       name: e.name, price: e.price.toString());
-                      // }).toList();
-                      menuInCartBloc.add(UpdateMenuInCart(editedMenu));
+                      if (qty == 0) {
+                        menuInCartBloc
+                            .add(DeleteMenuInCart(widget.itemInKeranjang));
+                      } else if (widget.itemInKeranjang.quantity == -1) {
+                        List<OrderTopping>? multiple = [
+                          OrderTopping(
+                              items: optionPilih?.map((e) {
+                            return ToppingItem(
+                                name: e.name,
+                                price: int.parse(e.price.toString()));
+                          }).toList())
+                        ];
+                        print(multiple);
+                        addMenuToCartBloc.add(AddMenuToCart(
+                            option: optionPilih ?? [],
+                            multiple: optionPilihMultiple!.isNotEmpty
+                                ? optionPilihMultiple
+                                : multiple,
+                            menuModel: item,
+                            quantity: qty,
+                            totalPrice: (item.price ?? 0) * qty,
+                            notes: _catatanController.text));
+                      } else {
+                        Keranjang editedMenu = widget.itemInKeranjang;
+                        //deklarasi isi menu in keranjang yang akan di update
+                        if (optionPilihMultiple!.isEmpty ||
+                            widget.itemInKeranjang.toppings?.length == 1) {
+                          setState(() {
+                            optionPilihMultiple = [
+                              OrderTopping(
+                                  items: optionPilih?.map((e) {
+                                return ToppingItem(
+                                    name: e.name,
+                                    price: int.parse(e.price.toString()));
+                              }).toList())
+                            ];
+                          });
+                        }
+                        editedMenu.totalPrice =
+                            widget.itemInKeranjang.price! * qty;
+                        editedMenu.quantity = qty;
+                        editedMenu.toppings = optionPilihMultiple?.map((e) {
+                              return ToppingOrder(
+                                  items: e.items?.map((a) {
+                                return ListOption(
+                                    name: a.name, price: a.price.toString());
+                              }).toList());
+                            }).toList() ??
+                            optionPilihMultiple?.map((e) {
+                              return ToppingOrder(
+                                  items: optionPilih?.map((a) {
+                                return ListOption(
+                                    name: a.name, price: a.price.toString());
+                              }).toList());
+                            }).toList();
+                        editedMenu.options = optionPilih?.map((e) {
+                          return ListOption(
+                              name: e.name, price: e.price.toString());
+                        }).toList();
+                        menuInCartBloc.add(UpdateMenuInCart(editedMenu));
+                      }
                     }
                   }
                 : null,
