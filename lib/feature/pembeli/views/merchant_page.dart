@@ -4,7 +4,6 @@ import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
-import 'package:cafetaria/feature/pembeli/views/widget/promo_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/utilities/size_config.dart';

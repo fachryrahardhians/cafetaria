@@ -96,8 +96,7 @@ class _SelectToppingState extends State<SelectTopping> {
 
   @override
   Widget build(BuildContext context) {
-    if (widget.itemInKeranjang.quantity == qty ||
-        (widget.itemInKeranjang.quantity == -1 && qty == 0)) {
+    if ((widget.itemInKeranjang.quantity == -1) && qty == 0) {
       _isButtonPerbaruEnable = false;
     } else {
       _isButtonPerbaruEnable = true;
@@ -319,17 +318,28 @@ class _SelectToppingState extends State<SelectTopping> {
                       physics: const NeverScrollableScrollPhysics(),
                       itemCount: optionmenu[index - 1].option.length,
                       itemBuilder: (context, i) {
-                        // if (optionPilihMultiple!.isNotEmpty) {
-                        //   topping.forEach((e) {
-                        //     optionPilihMultiple?.forEach((element) {
-                        //       element.items?.forEach((element2) {
-                        //         if (element2.name == e.name) {
-                        //           e.value = true;
-                        //         }
-                        //       });
-                        //     });
-                        //   });
-                        // }
+                        if (optionPilihMultiple != null) {
+                          for (var e in topping) {
+                            if (optionPilihMultiple!.isEmpty) {
+                              print("kosong");
+                            }
+                            if (optionPilihMultiple!.length <= tp) {
+                              print("nambah data");
+                            } else {
+                              optionPilihMultiple?[tp]
+                                  .items
+                                  ?.forEach((element) {
+                                if (element.name == e.name) {
+                                  e.value = true;
+                                }
+                              });
+                            }
+                          }
+
+                          print("Data tidak kosong");
+                        } else {
+                          print("Data  kosong");
+                        }
                         return StatefulBuilder(builder:
                             (BuildContext context, StateSetter setState) {
                           return CheckboxListTile(
@@ -379,26 +389,7 @@ class _SelectToppingState extends State<SelectTopping> {
                                             return ToppingItem(
                                                 name: e.name, price: e.price);
                                           }).toList());
-                                  // print(optionPilihMultiple![
-                                  //     tp]);
                                 }
-
-                                // if (porsi == tp) {
-                                //   print("sama");
-                                //   optionPilihMultiple.map(
-                                //       (e) => e.items
-                                //           ?.addAll(data));
-                                // } else {
-                                //   setState(() {
-                                //     porsi == tp;
-                                //   });
-                                //   print("beda");
-                                //   optionPilihMultiple.add(
-                                //       OrderTopping(
-                                //           items: data));
-
-                                // }
-
                               } else {
                                 optionPilihMultiple![tp].items!.removeWhere(
                                     (element) =>
@@ -406,15 +397,6 @@ class _SelectToppingState extends State<SelectTopping> {
                                         ToppingItem(
                                             name: topping[i].name,
                                             price: topping[i].price));
-                                // optionPilih.removeWhere(
-                                //     (element) =>
-                                //         element ==
-                                //         Option(
-                                //             name: topping[i]
-                                //                 .name,
-                                //             price: topping[i]
-                                //                 .price));
-
                               }
                               print(optionPilihMultiple);
                             },
@@ -664,9 +646,18 @@ class _SelectToppingState extends State<SelectTopping> {
                       menuInCartBloc
                           .add(DeleteMenuInCart(widget.itemInKeranjang));
                     } else if (widget.itemInKeranjang.quantity == -1) {
+                      List<OrderTopping>? multiple = [
+                        OrderTopping(
+                            items: optionPilih?.map((e) {
+                          return ToppingItem(
+                              name: e.name,
+                              price: int.parse(e.price.toString()));
+                        }).toList())
+                      ];
+                      print(multiple);
                       addMenuToCartBloc.add(AddMenuToCart(
-                          option: optionPilih ?? [],
-                          multiple: optionPilihMultiple ?? [],
+                          //option: optionPilih ?? [],
+                          multiple: optionPilihMultiple == [] ? multiple : optionPilihMultiple,
                           menuModel: item,
                           quantity: qty,
                           totalPrice: (item.price ?? 0) * qty,
@@ -678,16 +669,23 @@ class _SelectToppingState extends State<SelectTopping> {
                           widget.itemInKeranjang.price! * qty;
                       editedMenu.quantity = qty;
                       editedMenu.toppings = optionPilihMultiple?.map((e) {
-                        return ToppingOrder(
-                            items: e.items?.map((a) {
-                          return ListOption(
-                              name: a.name, price: a.price.toString());
-                        }).toList());
-                      }).toList();
-                      editedMenu.options = optionPilih?.map((e) {
-                        return ListOption(
-                            name: e.name, price: e.price.toString());
-                      }).toList();
+                            return ToppingOrder(
+                                items: e.items?.map((a) {
+                              return ListOption(
+                                  name: a.name, price: a.price.toString());
+                            }).toList());
+                          }).toList() ??
+                          optionPilihMultiple?.map((e) {
+                            return ToppingOrder(
+                                items: optionPilih?.map((a) {
+                              return ListOption(
+                                  name: a.name, price: a.price.toString());
+                            }).toList());
+                          }).toList();
+                      // editedMenu.options = optionPilih?.map((e) {
+                      //   return ListOption(
+                      //       name: e.name, price: e.price.toString());
+                      // }).toList();
                       menuInCartBloc.add(UpdateMenuInCart(editedMenu));
                     }
                   }

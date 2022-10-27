@@ -69,12 +69,13 @@ class AddMenuToCartBloc extends Bloc<AddMenuToCartEvent, AddMenuToCartState> {
           for (var e in element.options!) {
             totalPrice += int.parse(e.price.toString());
           }
-        } else if (element.toppings != null) {
-          for (var a in element.toppings!) {
-            for (var i in a.items!) {
-              totalPrice += int.parse(i.price.toString());
-            }
-          }
+        }
+        if (element.toppings != null) {
+          element.toppings?.forEach((element) {
+            element.items?.forEach((element2) {
+              totalPrice += int.parse(element2.price.toString());
+            });
+          });
         }
       }
       emit.call(MenuInCartRetrieved(data, totalPrice));

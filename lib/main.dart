@@ -49,7 +49,6 @@ void main() async {
 
       final fcmToken = await FirebaseMessaging.instance.getToken();
       _authenticationRepository.saveFcmToken(fcmToken ?? "");
-
       print(fcmToken);
       // Initialize Firebase
       return App(

@@ -32,6 +32,13 @@ class MenuInCartBloc extends Bloc<MenuInCartEvent, MenuInCartState> {
             totalPrice += int.parse(e.price.toString());
           }
         }
+        if (element.toppings != null) {
+          element.toppings?.forEach((element) {
+            element.items?.forEach((element2) {
+              totalPrice += int.parse(element2.price.toString());
+            });
+          });
+        }
       }
       emit.call(MenuInCartRetrieved(data, totalPrice));
     } catch (e) {

@@ -750,7 +750,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
               if (multiple!.isNotEmpty)
                 SizedBox(
-                  height: 50,
                   width: MediaQuery.of(context).size.width / 1.5,
                   child: Column(
                     children: List.generate(
@@ -784,46 +783,46 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     ),
                   ),
                 )
-              else
-                SizedBox(
-                  height: 50,
-                  width: MediaQuery.of(context).size.width/ 1.5,
-                  child: Row(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    mainAxisAlignment: MainAxisAlignment.start,
-                    children: [
-                      Text(
-                        'Porsi 1: ',
-                        style: normalText.copyWith(
-                          color: const Color(0xff8C8F93),
-                        ),
-                      ),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 3,
-                        child: ListView.builder(
-                            scrollDirection: Axis.horizontal,
-                            itemBuilder: (context, index) {
-                              return Text("${option[index].name.toString()}, ",
-                                  style: textStyle.copyWith(
-                                      fontWeight: FontWeight.w500,
-                                      color: Colors.grey,
-                                      fontSize: 13));
-                            },
-                            itemCount: option.length),
-                      ),
-                    ],
-                  ),
-                ),
-              GestureDetector(
-                onTap: () async {},
-                child: Text(
-                  'Edit',
-                  style: textStyle.copyWith(
-                      fontWeight: FontWeight.w500,
-                      color: const Color(0xffee3124),
-                      fontSize: 11),
-                ),
-              )
+              // else
+              //   SizedBox(
+              //     height: 50,
+              //     width: MediaQuery.of(context).size.width / 1.5,
+              //     child: Row(
+              //       crossAxisAlignment: CrossAxisAlignment.start,
+              //       mainAxisAlignment: MainAxisAlignment.start,
+              //       children: [
+              //         Text(
+              //           'Porsi 1: ',
+              //           style: normalText.copyWith(
+              //             color: const Color(0xff8C8F93),
+              //           ),
+              //         ),
+              //         SizedBox(
+              //           width: MediaQuery.of(context).size.width / 3,
+              //           child: ListView.builder(
+              //               scrollDirection: Axis.horizontal,
+              //               itemBuilder: (context, index) {
+              //                 return Text("${option[index].name.toString()}, ",
+              //                     style: textStyle.copyWith(
+              //                         fontWeight: FontWeight.w500,
+              //                         color: Colors.grey,
+              //                         fontSize: 13));
+              //               },
+              //               itemCount: option.length),
+              //         ),
+              //       ],
+              //     ),
+              //   ),
+              // GestureDetector(
+              //   onTap: () async {},
+              //   child: Text(
+              //     'Edit',
+              //     style: textStyle.copyWith(
+              //         fontWeight: FontWeight.w500,
+              //         color: const Color(0xffee3124),
+              //         fontSize: 11),
+              //   ),
+              // )
             ],
           ),
           const Spacer(),
