@@ -2,8 +2,8 @@ import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
 
-Widget outlet(String image, bool promo, String title, String distance,
-    String time, String rating) {
+Widget outlet(String image, String? url, bool promo, String title,
+    String distance, String time, String rating) {
   return IntrinsicHeight(
     child: Row(
       children: [
@@ -12,8 +12,9 @@ Widget outlet(String image, bool promo, String title, String distance,
           height: SizeConfig.safeBlockHorizontal * 20,
           clipBehavior: Clip.hardEdge,
           decoration: BoxDecoration(
-              image:
-                  DecorationImage(image: AssetImage(image), fit: BoxFit.fill),
+              image: url == null
+                  ? DecorationImage(image: AssetImage(image), fit: BoxFit.fill)
+                  : DecorationImage(image: NetworkImage(url), fit: BoxFit.fill),
               borderRadius: BorderRadius.circular(8),
               boxShadow: [
                 BoxShadow(

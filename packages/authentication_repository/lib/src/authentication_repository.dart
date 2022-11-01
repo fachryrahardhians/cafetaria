@@ -15,6 +15,7 @@ class AuthenticationRepository {
   AuthenticationRepository(this._firebaseAuth);
 
   final FirebaseAuth _firebaseAuth;
+
   final String fcm = "fcmTokenOy";
   Future<bool> saveFcmToken(String token) async {
     SharedPreferences sf = await SharedPreferences.getInstance();

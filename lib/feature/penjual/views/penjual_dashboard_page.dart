@@ -90,53 +90,80 @@ onStart() async {
     final idMerchant = await SharedPreferences.getInstance();
     List<MenuModel> data =
         await getAllMenu(idMerchant.getString("merchantId").toString());
+
     //fungsi perulangan untuk mengecek tipe auto restok
     for (var i = 0; i < data.length; i++) {
       //mengecek jika data resetTime sama dengan null akan break fungsi
       if (data[i].resetTime.toString() == "" || data[i].resetTime == null) {
-        //print("Data time kosong");
-        break;
-      } else if ((data[i].resetType == 'jam') &&
-          (DateTime.now().hour >=
-              DateTime.parse(data[i].resetTime.toString()).hour)) {
-        final docuser =
-            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
-        docuser.update({
-          'stock': data[i].defaultStock!,
-          'resetTime': DateTime(
-                  DateTime.now().year,
-                  DateTime.now().month,
-                  DateTime.now().day,
-                  DateTime.parse(data[i].resetTime!).hour + 1,
-                  DateTime.now().minute)
-              .toString()
-        });
-      } else if ((data[i].resetType == 'hari') &&
-          ((DateTime.now().day >=
+        print("Data time kosong");
+        //return;
+        // break;
+      } else {
+        if (data[i].resetType == 'jam') {
+          if ((DateTime.now().day >=
                   DateTime.parse(data[i].resetTime.toString()).day) &&
               (DateTime.now().hour >=
-                  DateTime.parse(data[i].resetTime.toString()).hour))) {
-        final docuser =
-            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
-        docuser.update({
-          'stock': data[i].defaultStock!,
-          'resetTime': DateTime.parse(data[i].resetTime!)
-              .add(const Duration(days: 1))
-              .toString()
-        });
-      } else if ((data[i].resetType == 'minggu') &&
-          ((DateTime.now().day >=
+                  DateTime.parse(data[i].resetTime.toString()).hour)) {
+            print("fungsi jam");
+            final docuser = FirebaseFirestore.instance
+                .collection('menu')
+                .doc(data[i].menuId);
+            docuser.update({
+              'stock': data[i].defaultStock!,
+              'resetTime': DateTime.parse(data[i].resetTime!)
+                  .add(const Duration(hours: 1))
+                  .toString()
+            });
+          } else {
+            print("Data jam belum sesuai");
+            //return;
+          }
+        } else if ((data[i].resetType == 'hari')) {
+          if ((DateTime.now().year >=
+                  DateTime.parse(data[i].resetTime.toString()).year) &&
+              (DateTime.now().month >=
+                  DateTime.parse(data[i].resetTime.toString()).month) &&
+              (DateTime.now().day >=
                   DateTime.parse(data[i].resetTime.toString()).day) &&
               (DateTime.now().hour >=
-                  DateTime.parse(data[i].resetTime.toString()).hour))) {
-        final docuser =
-            FirebaseFirestore.instance.collection('menu').doc(data[i].menuId);
-        docuser.update({
-          'stock': data[i].defaultStock!,
-          'resetTime': DateTime.parse(data[i].resetTime!)
-              .add(const Duration(days: 7))
-              .toString()
-        });
+                  DateTime.parse(data[i].resetTime.toString()).hour)) {
+            print("fungsi hari");
+            final docuser = FirebaseFirestore.instance
+                .collection('menu')
+                .doc(data[i].menuId);
+            docuser.update({
+              'stock': data[i].defaultStock!,
+              'resetTime': DateTime.parse(data[i].resetTime!)
+                  .add(const Duration(days: 1))
+                  .toString()
+            });
+          } else {
+            print("Data hari belum sesuai");
+          }
+        } else if ((data[i].resetType == 'minggu')) {
+          if ((DateTime.now().year >=
+                  DateTime.parse(data[i].resetTime.toString()).year) &&
+              (DateTime.now().month >=
+                  DateTime.parse(data[i].resetTime.toString()).month) &&
+              (DateTime.now().day >=
+                  DateTime.parse(data[i].resetTime.toString()).day) &&
+              (DateTime.now().hour >=
+                  DateTime.parse(data[i].resetTime.toString()).hour)) {
+            print("fungsi minggu");
+            final docuser = FirebaseFirestore.instance
+                .collection('menu')
+                .doc(data[i].menuId);
+            docuser.update({
+              'stock': data[i].defaultStock!,
+              'resetTime': DateTime.parse(data[i].resetTime!)
+                  .add(const Duration(days: 7))
+                  .toString()
+            });
+          } else {
+            print("Data minggu belum sesuai");
+            return;
+          }
+        }
       }
     }
   });
@@ -154,6 +181,7 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
   void initState() {
     super.initState();
     //menginisialisasi fungsi background service disaat app dibuka
+
     WidgetsFlutterBinding.ensureInitialized();
     FlutterBackgroundService.initialize(onStart);
     //context.read<AppSharedPref>().setMerchantId("");

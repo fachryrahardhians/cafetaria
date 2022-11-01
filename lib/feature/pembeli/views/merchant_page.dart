@@ -253,6 +253,7 @@ class _MerchantPageState extends State<MerchantPage>
                                                         .images
                                                         .illCafetariaBanner2
                                                         .path,
+                                                    snapshot.data?[index].image,
                                                     false,
                                                     snapshot.data?[index]
                                                             .name ??

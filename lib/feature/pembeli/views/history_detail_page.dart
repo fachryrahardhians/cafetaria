@@ -77,6 +77,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 final item = state.model!;
                 return outlet(
                     'assets/images/ill_cafetaria_banner1.png',
+                    item.image,
                     true,
                     item.name.toString(),
                     '1.2 km',

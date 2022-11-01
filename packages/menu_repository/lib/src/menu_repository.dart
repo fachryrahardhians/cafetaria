@@ -29,6 +29,17 @@ class MenuRepository {
     }
   }
 
+  Future<void> updateFcmToken(String id, String token) async {
+    try {
+      await _firestore
+          .collection('user')
+          .doc(id)
+          .update({'deviceToken': token});
+    } catch (e) {
+      throw Exception('Failed to Update Stock Menu');
+    }
+  }
+
   Future<List<MenuRead>> getMenuRead(
     String idMerchant,
   ) async {

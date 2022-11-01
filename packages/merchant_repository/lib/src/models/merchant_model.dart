@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs, non_constant_identifier_names
+
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
@@ -5,22 +7,6 @@ part 'merchant_model.g.dart';
 
 @JsonSerializable()
 class MerchantModel extends Equatable {
-  final int? maxPrice;
-  final String? merchantId;
-  final int? minPrice;
-  final String? name;
-  final double? rating;
-  final String? test;
-  final int? totalCountRating;
-  final int? totalOrderToday;
-  final int? totalSalesToday;
-  final int? totalSalesYesterday;
-  final String? userId;
-  final String? address;
-  final String? address_detail;
-  final double? address_latitude;
-  final double? address_longitude;
-
   const MerchantModel(
       {this.maxPrice,
       this.merchantId,
@@ -35,11 +21,28 @@ class MerchantModel extends Equatable {
       this.userId,
       this.address,
       this.address_detail,
+      this.image,
       this.address_latitude,
       this.address_longitude});
 
   factory MerchantModel.fromJson(Map<String, dynamic> json) =>
       _$MerchantModelFromJson(json);
+  final int? maxPrice;
+  final String? merchantId;
+  final int? minPrice;
+  final String? name;
+  final double? rating;
+  final String? test;
+  final String? image;
+  final int? totalCountRating;
+  final int? totalOrderToday;
+  final int? totalSalesToday;
+  final int? totalSalesYesterday;
+  final String? userId;
+  final String? address;
+  final String? address_detail;
+  final double? address_latitude;
+  final double? address_longitude;
 
   Map<String, dynamic> toJson() => _$MerchantModelToJson(this);
 
@@ -55,6 +58,7 @@ class MerchantModel extends Equatable {
       int? totalOrderToday,
       int? totalSalesToday,
       int? totalSalesYesterday,
+      String? image,
       String? userId,
       String? address,
       String? address_detail,
@@ -64,7 +68,8 @@ class MerchantModel extends Equatable {
       maxPrice: maxPrice ?? this.maxPrice,
       merchantId: merchantId ?? this.merchantId,
       minPrice: minPrice ?? this.minPrice,
-      name: nama ?? this.name,
+      image: this.image ?? image,
+      name: nama ?? name,
       rating: rating ?? this.rating,
       test: test ?? this.test,
       totalCountRating: totalCountRating ?? this.totalCountRating,
