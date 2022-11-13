@@ -1,7 +1,10 @@
 // ignore_for_file: avoid_print
 
+import 'dart:convert';
+
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/hasil_search_merchant.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
@@ -11,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class MerchantPage extends StatefulWidget {
   const MerchantPage({Key? key}) : super(key: key);
@@ -98,7 +102,45 @@ class _MerchantPageState extends State<MerchantPage>
                           color: Color(0xff333435)),
                     ),
                   ),
-                  SizedBox(height: SizeConfig.safeBlockVertical * 4),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                  Padding(
+                    padding:
+                        const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+                    child: SizedBox(
+                      width: double.infinity,
+                      height: 40,
+                      child: TextField(
+                        style: TextStyle(fontSize: 13),
+                        onSubmitted: (value) {
+                          if (value.isNotEmpty) {
+                            Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) =>
+                                          HasilMerchant(cari: value.toString()),
+                                    ))
+                                .then((value) =>
+                                    {addMenuToCartBloc..add(GetMenusInCart())});
+                          } else {
+                            return;
+                          }
+                        },
+                        decoration: InputDecoration(
+                          prefixIcon: const Icon(
+                            Icons.search,
+                            color: MyColors.red1,
+                            size: 20,
+                          ),
+                          hintText: "Kamu lagi mau makan apa?",
+                          hintStyle: const TextStyle(fontSize: 13),
+                          border: OutlineInputBorder(
+                            borderRadius: BorderRadius.circular(100),
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
                   // Row(
                   //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   //   children: [

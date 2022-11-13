@@ -1,4 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
+import 'package:merchant_repository/src/models/merchant_search.dart';
 import 'package:merchant_repository/src/models/models.dart';
 import 'package:uuid/uuid.dart';
 
@@ -43,6 +45,40 @@ class MerchantRepository {
     }
   }
 
+  Future<List<MechantSearch>> searchMerchant(String message) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('searchMerchant');
+    final resp = await callable.call(<String, dynamic>{
+      'keyword': message,
+    });
+    final List data = resp.data;
+    final leaderboardEntries = <MechantSearch>[];
+
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(MechantSearch.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
+    }
+    return leaderboardEntries;
+
+    //var json = jsonDecode(resp.data);
+    //List<MerchantModel> merchant = resp.data[0]['_source'];
+    // final merchant = <MerchantModel>[];
+    // for (var i = 0; i < resp.data.length; i++) {
+    //   // final data1 = json.decode(data[i]['_source'].toString()).cast<String, dynamic>();
+    //   // merchant.add(MerchantModel.fromJson(data1));
+    //     print(resp.data[i]);
+    // }
+    // print(merchant);
+  }
+
   Future<List<MerchantModel>> getMerchantById(String merchantId) async {
     try {
       final snapshot = await _firestore
@@ -54,6 +90,25 @@ class MerchantRepository {
     } catch (e) {
       throw Exception('Failed to get merchant');
     }
+  }
+}
+
+extension on List<Object?> {
+  List<MechantSearch> toListMerchantSearch() {
+    final leaderboardEntries = <MechantSearch>[];
+    for (final document in this) {
+      final data = document as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries.add(MechantSearch.fromJson(data));
+        } catch (error) {
+          print(error.toString());
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
   }
 }
 
