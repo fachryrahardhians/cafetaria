@@ -105,7 +105,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                 width: double.infinity,
                 height: 40,
                 child: TextField(
-                  style: TextStyle(fontSize: 13),
+                  style: const TextStyle(fontSize: 13),
                   onSubmitted: (value) {
                     if (value.isNotEmpty) {
                       Navigator.push(
@@ -185,10 +185,12 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                         merchantId: snapshot.data?[index].id,
                                         name:
                                             snapshot.data?[index].source?.name,
-                                        maxPrice: 50000,
+                                        maxPrice: snapshot
+                                            .data?[index].source?.maxPrice,
                                         totalCountRating:
                                             snapshot.data?[index].score,
-                                        minPrice: 4000,
+                                        minPrice: snapshot
+                                            .data?[index].source?.minPrice,
                                         rating: snapshot
                                             .data?[index].source?.rating
                                             ?.toDouble());
@@ -217,17 +219,33 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                                         .source!
                                                         .address
                                                         .toString(),
-                                                    buka_toko: "kosong",
-                                                    tutup_toko: "kosong",
+                                                    buka_toko: snapshot
+                                                            .data?[index]
+                                                            .source
+                                                            ?.buka_toko ??
+                                                        "kosong",
+                                                    tutup_toko: snapshot
+                                                            .data?[index]
+                                                            .source
+                                                            ?.tutup_toko ??
+                                                        "kosong",
                                                     rating: snapshot
                                                         .data?[index]
                                                         .source
                                                         ?.rating!
                                                         .toDouble(),
                                                     jumlahUlasan: snapshot
-                                                        .data?[index].score,
-                                                    minPrice: 4000,
-                                                    maxPrice: 50000,
+                                                        .data?[index]
+                                                        .source
+                                                        ?.totalCountRating,
+                                                    minPrice: snapshot
+                                                        .data?[index]
+                                                        .source
+                                                        ?.minPrice,
+                                                    maxPrice: snapshot
+                                                        .data?[index]
+                                                        .source
+                                                        ?.maxPrice,
                                                   ))).then((value) => {
                                             addMenuToCartBloc
                                               ..add(GetMenusInCart())
@@ -239,13 +257,13 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                         top: SizeConfig.safeBlockVertical * 3),
                                     child: outlet(
                                         Assets.images.illCafetariaBanner2.path,
-                                        null,
+                                        snapshot.data?[index].source?.image,
                                         false,
                                         snapshot.data?[index].source?.name ??
                                             'Shabrina’s Kitchen - Gambir',
                                         'Lantai 1',
                                         'Cafetaria',
-                                        '${snapshot.data?[index].source?.rating!.toDouble()} • ${snapshot.data?[index].score} rating'),
+                                        '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
                                   ));
                             },
                           ));
@@ -310,47 +328,56 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                           )))),
               Expanded(
                   flex: 1,
-                  child: Container(
-                      height: 44,
-                      margin: const EdgeInsets.only(left: 8),
-                      child: ElevatedButton(
-                          style: ButtonStyle(
-                              elevation: MaterialStateProperty.all(0),
-                              backgroundColor: MaterialStateProperty.all(
-                                  const Color(0xffee3124)),
-                              shape: MaterialStateProperty.all(
-                                  RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(6),
-                                      side: BorderSide.none))),
-                          onPressed: () {
-                            addMenuToCartBloc.add(RemoveAllMenuInCart());
-                            Navigator.pop(context);
-                            Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                    builder: (_) => MakananPage(
-                                          title: model!.source!.name ??
-                                              'Shabrina’s Kitchen - Gambir',
-                                          idMerchant: model.id.toString(),
-                                          alamat:
-                                              model.source!.address.toString(),
-                                          buka_toko: "kosong",
-                                          tutup_toko: "kosong",
-                                          rating:
-                                              model.source?.rating!.toDouble(),
-                                          jumlahUlasan: model.score,
-                                          minPrice: 4000,
-                                          maxPrice: 50000,
-                                        ))).then((value) =>
-                                {addMenuToCartBloc..add(GetMenusInCart())});
-                          },
-                          child: Text(
-                            "YA GANTI",
-                            style: TextStyle(
-                                fontSize: 14,
-                                fontWeight: FontWeight.w700,
-                                color: Colors.white.withOpacity(1)),
-                          ))))
+                  child: StatefulBuilder(
+                    builder: (context, setState) {
+                      return Container(
+                          height: 44,
+                          margin: const EdgeInsets.only(left: 8),
+                          child: ElevatedButton(
+                              style: ButtonStyle(
+                                  elevation: MaterialStateProperty.all(0),
+                                  backgroundColor: MaterialStateProperty.all(
+                                      const Color(0xffee3124)),
+                                  shape: MaterialStateProperty.all(
+                                      RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          side: BorderSide.none))),
+                              onPressed: () async {
+                                Navigator.pop(context);
+                                addMenuToCartBloc.add(RemoveAllMenuInCart());
+                                Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (_) => MakananPage(
+                                              buka_toko:
+                                                  model?.source?.buka_toko ??
+                                                      "kosong",
+                                              title: model?.source?.buka_toko ??
+                                                  'Shabrina’s Kitchen - Gambir',
+                                              idMerchant: model!.id.toString(),
+                                              alamat: model.source!.address
+                                                  .toString(),
+                                              rating: model.source!.rating,
+                                              jumlahUlasan: model
+                                                  .source!.totalCountRating,
+                                              tutup_toko:
+                                                  model.source!.tutup_toko ??
+                                                      "kosong",
+                                              minPrice: model.source!.minPrice,
+                                              maxPrice: model.source!.maxPrice,
+                                            ))).then((value) =>
+                                    {addMenuToCartBloc..add(GetMenusInCart())});
+                              },
+                              child: Text(
+                                "YA GANTI",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w700,
+                                    color: Colors.white.withOpacity(1)),
+                              )));
+                    },
+                  ))
             ],
           )
         ],
