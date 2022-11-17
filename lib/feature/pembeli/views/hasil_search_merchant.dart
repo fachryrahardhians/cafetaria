@@ -328,56 +328,50 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                           )))),
               Expanded(
                   flex: 1,
-                  child: StatefulBuilder(
-                    builder: (context, setState) {
-                      return Container(
-                          height: 44,
-                          margin: const EdgeInsets.only(left: 8),
-                          child: ElevatedButton(
-                              style: ButtonStyle(
-                                  elevation: MaterialStateProperty.all(0),
-                                  backgroundColor: MaterialStateProperty.all(
-                                      const Color(0xffee3124)),
-                                  shape: MaterialStateProperty.all(
-                                      RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          side: BorderSide.none))),
-                              onPressed: () async {
-                                Navigator.pop(context);
-                                addMenuToCartBloc.add(RemoveAllMenuInCart());
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                        builder: (_) => MakananPage(
-                                              buka_toko:
-                                                  model?.source?.buka_toko ??
-                                                      "kosong",
-                                              title: model?.source?.buka_toko ??
-                                                  'Shabrina’s Kitchen - Gambir',
-                                              idMerchant: model!.id.toString(),
-                                              alamat: model.source!.address
-                                                  .toString(),
-                                              rating: model.source!.rating,
-                                              jumlahUlasan: model
-                                                  .source!.totalCountRating,
-                                              tutup_toko:
-                                                  model.source!.tutup_toko ??
-                                                      "kosong",
-                                              minPrice: model.source!.minPrice,
-                                              maxPrice: model.source!.maxPrice,
-                                            ))).then((value) =>
-                                    {addMenuToCartBloc..add(GetMenusInCart())});
-                              },
-                              child: Text(
-                                "YA GANTI",
-                                style: TextStyle(
-                                    fontSize: 14,
-                                    fontWeight: FontWeight.w700,
-                                    color: Colors.white.withOpacity(1)),
-                              )));
-                    },
-                  ))
+                  child: Container(
+                      height: 44,
+                      margin: const EdgeInsets.only(left: 8),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(0),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xffee3124)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: BorderSide.none))),
+                          onPressed: () async {
+                            Navigator.pop(context);
+                            addMenuToCartBloc.add(RemoveAllMenuInCart());
+                            Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                    builder: (_) => MakananPage(
+                                          buka_toko: model?.source?.buka_toko ??
+                                              "kosong",
+                                          title: model?.source?.buka_toko ??
+                                              'Shabrina’s Kitchen - Gambir',
+                                          idMerchant: model!.id.toString(),
+                                          alamat:
+                                              model.source!.address.toString(),
+                                          rating: model.source!.rating,
+                                          jumlahUlasan:
+                                              model.source!.totalCountRating,
+                                          tutup_toko:
+                                              model.source!.tutup_toko ??
+                                                  "kosong",
+                                          minPrice: model.source!.minPrice,
+                                          maxPrice: model.source!.maxPrice,
+                                        ))).then((value) =>
+                                {addMenuToCartBloc..add(GetMenusInCart())});
+                          },
+                          child: Text(
+                            "YA GANTI",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white.withOpacity(1)),
+                          ))))
             ],
           )
         ],

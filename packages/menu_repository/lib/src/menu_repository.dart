@@ -36,7 +36,7 @@ class MenuRepository {
           .doc(id)
           .update({'deviceToken': token});
     } catch (e) {
-      throw Exception('Failed to Update Stock Menu');
+      throw Exception('Failed to Update FCM');
     }
   }
 

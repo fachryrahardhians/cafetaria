@@ -23,6 +23,18 @@ class CategoryRepository {
     }
   }
 
+  //get pilih kawasan
+  Future<List<PilihKawasanModel>> getPilihKawasan() async {
+    try {
+      final snapshot = await _firestore.collection('admin-kawasan').get();
+
+      final documents = snapshot.docs;
+      return documents.toLeaderboard2();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
+
   // add category menu
   Future<void> addCategory(
     String idMerchant,
@@ -37,6 +49,23 @@ class CategoryRepository {
 
     // add to firestore
     await _firestore.collection('category').doc(id).set(data);
+  }
+}
+
+extension on List<QueryDocumentSnapshot> {
+  List<PilihKawasanModel> toLeaderboard2() {
+    final categoryEntries = <PilihKawasanModel>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          categoryEntries.add(PilihKawasanModel.fromJson(data));
+        } catch (error) {
+          throw Exception();
+        }
+      }
+    }
+    return categoryEntries;
   }
 }
 

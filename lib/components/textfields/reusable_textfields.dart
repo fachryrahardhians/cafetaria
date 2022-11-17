@@ -85,10 +85,12 @@ class CustomTextfield2 extends StatelessWidget {
     this.label,
     this.maxLine,
     this.suffix,
+    this.enable,
     this.controller,
   }) : super(key: key);
 
   String? hint;
+  bool? enable;
 
   ///Hint digunakan untuk tulisan sebagai hint di dalam Textfield
   String? label;
@@ -136,6 +138,7 @@ class CustomTextfield2 extends StatelessWidget {
                   ),
                 ]),
             child: TextFormField(
+              enabled: enable,
               controller: controller,
               maxLines: maxLine ?? 1,
               decoration: InputDecoration(
