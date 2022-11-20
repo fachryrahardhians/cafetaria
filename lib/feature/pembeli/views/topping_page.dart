@@ -367,38 +367,46 @@ class _SelectToppingState extends State<SelectTopping> {
                               ],
                             ),
                             onChanged: (value) {
-                              setState(() {
-                                topping[i].value = value!;
-                              });
-
-                              if (topping[i].value == true) {
-                                List<ToppingItem> data = [];
-                                data.add(ToppingItem(
-                                    name: topping[i].name,
-                                    price: topping[i].price));
-                                if (optionPilihMultiple!.isEmpty) {
-                                  optionPilihMultiple
-                                      ?.add(OrderTopping(items: data));
-                                } else {
-                                  optionPilihMultiple!.length <= tp
-                                      ? optionPilihMultiple
-                                          ?.add(OrderTopping(items: data))
-                                      : optionPilihMultiple![tp]
-                                          .items!
-                                          .addAll(data.map((e) {
-                                            return ToppingItem(
-                                                name: e.name, price: e.price);
-                                          }).toList());
-                                }
+                              if (tp > optionPilihMultiple!.length) {
+                                ScaffoldMessenger.of(context).showSnackBar(
+                                  const SnackBar(
+                                    content: Text(
+                                        'mohon isi data dari porsi sebelumnya'),
+                                  ),
+                                );
                               } else {
-                                optionPilihMultiple![tp].items!.removeWhere(
-                                    (element) =>
-                                        element ==
-                                        ToppingItem(
-                                            name: topping[i].name,
-                                            price: topping[i].price));
+                                setState(() {
+                                  topping[i].value = value!;
+                                });
+                                if (topping[i].value == true) {
+                                  List<ToppingItem> data = [];
+                                  data.add(ToppingItem(
+                                      name: topping[i].name,
+                                      price: topping[i].price));
+                                  if (optionPilihMultiple!.isEmpty) {
+                                    optionPilihMultiple
+                                        ?.add(OrderTopping(items: data));
+                                  } else {
+                                    optionPilihMultiple!.length <= tp
+                                        ? optionPilihMultiple
+                                            ?.add(OrderTopping(items: data))
+                                        : optionPilihMultiple![tp]
+                                            .items!
+                                            .addAll(data.map((e) {
+                                              return ToppingItem(
+                                                  name: e.name, price: e.price);
+                                            }).toList());
+                                  }
+                                } else {
+                                  optionPilihMultiple![tp].items!.removeWhere(
+                                      (element) =>
+                                          element ==
+                                          ToppingItem(
+                                              name: topping[i].name,
+                                              price: topping[i].price));
+                                }
+                                print(optionPilihMultiple);
                               }
-                              print(optionPilihMultiple);
                             },
                           );
                         });
