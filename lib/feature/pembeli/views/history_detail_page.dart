@@ -114,55 +114,55 @@ class _HistoryDetailState extends State<HistoryDetail> {
                   SizedBox(height: SizeConfig.safeBlockVertical * 1),
               itemCount: item.menus!.length),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'Subtotal',
-                style: textStyle,
-              ),
-              Text(
-                'Rp ' + subTotal.toStringAsFixed(0),
-                style: textStyle.copyWith(fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
-          SizedBox(height: SizeConfig.safeBlockVertical * 1),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Text(
-                'PPN 10%',
-                style: textStyle,
-              ),
-              Text(
-                'Rp ' + ppn.toStringAsFixed(0),
-                style: textStyle.copyWith(fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
-          SizedBox(height: SizeConfig.safeBlockVertical * 1),
-          Row(
-            children: [
-              Text(
-                'Biaya Pemesanan ',
-                style: textStyle,
-              ),
-              GestureDetector(
-                onTap: () {},
-                child: const Icon(
-                  Icons.info,
-                  color: Color(0xffee3124),
-                  size: 18,
-                ),
-              ),
-              const Spacer(),
-              Text(
-                'Rp 2000',
-                style: textStyle.copyWith(fontWeight: FontWeight.w500),
-              )
-            ],
-          ),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       'Subtotal',
+          //       style: textStyle,
+          //     ),
+          //     Text(
+          //       'Rp ' + subTotal.toStringAsFixed(0),
+          //       style: textStyle.copyWith(fontWeight: FontWeight.w500),
+          //     )
+          //   ],
+          // ),
+          // SizedBox(height: SizeConfig.safeBlockVertical * 1),
+          // Row(
+          //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+          //   children: [
+          //     Text(
+          //       'PPN 10%',
+          //       style: textStyle,
+          //     ),
+          //     Text(
+          //       'Rp ' + ppn.toStringAsFixed(0),
+          //       style: textStyle.copyWith(fontWeight: FontWeight.w500),
+          //     )
+          //   ],
+          // ),
+          // SizedBox(height: SizeConfig.safeBlockVertical * 1),
+          // Row(
+          //   children: [
+          //     Text(
+          //       'Biaya Pemesanan ',
+          //       style: textStyle,
+          //     ),
+          //     GestureDetector(
+          //       onTap: () {},
+          //       child: const Icon(
+          //         Icons.info,
+          //         color: Color(0xffee3124),
+          //         size: 18,
+          //       ),
+          //     ),
+          //     const Spacer(),
+          //     Text(
+          //       'Rp 2000',
+          //       style: textStyle.copyWith(fontWeight: FontWeight.w500),
+          //     )
+          //   ],
+          // ),
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,

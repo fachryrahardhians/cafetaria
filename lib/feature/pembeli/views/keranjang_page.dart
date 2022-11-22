@@ -81,7 +81,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
   List<Keranjang> menuInKeranjang = [];
 
   int subTotalPrice = 0;
-  int biayaPemesanan = 2000;
+  //int biayaPemesanan = 2000;
   // _selectDate(BuildContext context) async {
   //   final DateTime? picked = await showDatePicker(
   //       context: context,
@@ -262,31 +262,31 @@ class _KeranjangPageState extends State<KeranjangPage> {
                 ],
               ),
               SizedBox(height: SizeConfig.safeBlockVertical * 1),
-              Row(
-                children: [
-                  Text(
-                    'Biaya Pemesanan ',
-                    style: textStyle,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      showDialog(
-                          context: context,
-                          builder: (builder) => _popUpPanelBiayaPemesanan());
-                    },
-                    child: const Icon(
-                      Icons.info,
-                      color: Color(0xffee3124),
-                      size: 18,
-                    ),
-                  ),
-                  const Spacer(),
-                  Text(
-                    'Rp $biayaPemesanan',
-                    style: textStyle.copyWith(fontWeight: FontWeight.w500),
-                  )
-                ],
-              ),
+              // Row(
+              //   children: [
+              //     Text(
+              //       'Biaya Pemesanan ',
+              //       style: textStyle,
+              //     ),
+              //     GestureDetector(
+              //       onTap: () {
+              //         showDialog(
+              //             context: context,
+              //             builder: (builder) => _popUpPanelBiayaPemesanan());
+              //       },
+              //       child: const Icon(
+              //         Icons.info,
+              //         color: Color(0xffee3124),
+              //         size: 18,
+              //       ),
+              //     ),
+              //     const Spacer(),
+              //     Text(
+              //       'Rp $biayaPemesanan',
+              //       style: textStyle.copyWith(fontWeight: FontWeight.w500),
+              //     )
+              //   ],
+              // ),
               SizedBox(height: SizeConfig.safeBlockVertical * 3),
               Row(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -338,7 +338,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                       builder: ((context, state) {
                     if (state is MenuInCartRetrieved) {
                       return Text(
-                        'Rp ${state.totalPrice + biayaPemesanan}',
+                        'Rp ${state.totalPrice}',
                         style: textStyle.copyWith(
                             fontWeight: FontWeight.w500, fontSize: 15),
                       );
@@ -404,8 +404,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                   listKeranjang: menuInKeranjang,
                                   preOrder: _preorder,
                                   alat: alat,
-                                  grandTotalPrice:
-                                      subTotalPrice + biayaPemesanan,
+                                  grandTotalPrice: subTotalPrice,
                                   timestamp: DateTime.now().toString(),
                                   pickupDate:
                                       _selectedDay.toString().split(' ')[0] +
@@ -427,7 +426,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           listKeranjang: menuInKeranjang,
                           preOrder: _preorder,
                           alat: alat,
-                          grandTotalPrice: subTotalPrice + biayaPemesanan,
+                          grandTotalPrice: subTotalPrice,
                           timestamp: DateTime.now().toString(),
                           pickupDate: _selectedDay.toString().split(' ')[0] +
                               ' 08:00:00.000'),
@@ -876,70 +875,70 @@ class _KeranjangPageState extends State<KeranjangPage> {
     );
   }
 
-  Widget _popUpPanelBiayaPemesanan() {
-    return DraggableScrollableSheet(
-      initialChildSize: 0.25,
-      minChildSize: 0.25,
-      maxChildSize: 0.25,
-      builder: (context, scrollController) {
-        return Material(
-            color: Colors.transparent,
-            child: Container(
-              alignment: Alignment.bottomCenter,
-              padding: const EdgeInsets.symmetric(horizontal: 14),
-              decoration: const BoxDecoration(
-                  borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
-                  color: Colors.white),
-              child: Column(
-                children: [
-                  Container(
-                    height: 30,
-                    alignment: Alignment.center,
-                    child: Container(
-                      width: 100,
-                      height: 4,
-                      decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(100),
-                          color: const Color(0xffE5E6E6)),
-                    ),
-                  ),
-                  Padding(
-                      padding: const EdgeInsets.only(top: 24, bottom: 16),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          const Text(
-                            "Biaya Pemesanan",
-                            style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff2E3032),
-                            ),
-                          ),
-                          Text(
-                            'Rp $biayaPemesanan',
-                            style: const TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w400,
-                              color: Color(0xff2E3032),
-                            ),
-                          )
-                        ],
-                      )),
-                  const Text(
-                    "Biaya pemesanan ini akan digunakan untuk terus meningkatkan layanan kami dalam mengantarkan makanan favoritmu.",
-                    style: TextStyle(
-                        fontSize: 12,
-                        color: Color(0xff2E3032),
-                        fontWeight: FontWeight.w400,
-                        fontStyle: null),
-                  )
-                ],
-              ),
-            ));
-      },
-    );
-  }
+  // Widget _popUpPanelBiayaPemesanan() {
+  //   return DraggableScrollableSheet(
+  //     initialChildSize: 0.25,
+  //     minChildSize: 0.25,
+  //     maxChildSize: 0.25,
+  //     builder: (context, scrollController) {
+  //       return Material(
+  //           color: Colors.transparent,
+  //           child: Container(
+  //             alignment: Alignment.bottomCenter,
+  //             padding: const EdgeInsets.symmetric(horizontal: 14),
+  //             decoration: const BoxDecoration(
+  //                 borderRadius: BorderRadius.vertical(top: Radius.circular(8)),
+  //                 color: Colors.white),
+  //             child: Column(
+  //               children: [
+  //                 Container(
+  //                   height: 30,
+  //                   alignment: Alignment.center,
+  //                   child: Container(
+  //                     width: 100,
+  //                     height: 4,
+  //                     decoration: BoxDecoration(
+  //                         borderRadius: BorderRadius.circular(100),
+  //                         color: const Color(0xffE5E6E6)),
+  //                   ),
+  //                 ),
+  //                 Padding(
+  //                     padding: const EdgeInsets.only(top: 24, bottom: 16),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
+  //                       children: [
+  //                         const Text(
+  //                           "Biaya Pemesanan",
+  //                           style: TextStyle(
+  //                             fontSize: 16,
+  //                             fontWeight: FontWeight.w700,
+  //                             color: Color(0xff2E3032),
+  //                           ),
+  //                         ),
+  //                         Text(
+  //                           'Rp $biayaPemesanan',
+  //                           style: const TextStyle(
+  //                             fontSize: 16,
+  //                             fontWeight: FontWeight.w400,
+  //                             color: Color(0xff2E3032),
+  //                           ),
+  //                         )
+  //                       ],
+  //                     )),
+  //                 const Text(
+  //                   "Biaya pemesanan ini akan digunakan untuk terus meningkatkan layanan kami dalam mengantarkan makanan favoritmu.",
+  //                   style: TextStyle(
+  //                       fontSize: 12,
+  //                       color: Color(0xff2E3032),
+  //                       fontWeight: FontWeight.w400,
+  //                       fontStyle: null),
+  //                 )
+  //               ],
+  //             ),
+  //           ));
+  //     },
+  //   );
+  // }
 
   Widget _card(String title, String desc, String image, bool isVisible) {
     return Card(
@@ -1135,7 +1134,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                             listKeranjang: lists,
                             preOrder: _preorder,
                             alat: alat,
-                            grandTotalPrice: subTotalPrice + biayaPemesanan,
+                            grandTotalPrice: subTotalPrice ,
                             timestamp: DateTime.now().toString(),
                             pickupDate: _selectedDay.toString().split(' ')[0] +
                                 ' 08:00:00.000'),
