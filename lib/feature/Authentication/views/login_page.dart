@@ -54,9 +54,73 @@ class _LoginViewState extends State<LoginView> {
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 36),
                   child: Text(
-                    "Selamat Datang Kembali di Komplekku!",
+                    "Selamat Datang Kembali di Lapaku!",
                     style: extraBigText.copyWith(fontWeight: FontWeight.bold),
                   ),
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: 370,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 75, vertical: 14),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 0),
+                            spreadRadius: 0,
+                            blurRadius: 1,
+                          ),
+                        ]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset('assets/icons/subadmin.png'),
+                        Text(
+                          "Masuk Sebagai Admin Apps",
+                          style: bigText.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
+                ),
+                InkWell(
+                  onTap: () {},
+                  child: Container(
+                    width: 370,
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 50, vertical: 14),
+                    decoration: const BoxDecoration(
+                        borderRadius: BorderRadius.all(Radius.circular(8)),
+                        color: Colors.white,
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.grey,
+                            offset: Offset(0, 0),
+                            spreadRadius: 0,
+                            blurRadius: 1,
+                          ),
+                        ]),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Image.asset('assets/icons/admin.png'),
+                        Text(
+                          "Masuk Sebagai Admin & Sub-Admin",
+                          style: bigText.copyWith(fontWeight: FontWeight.bold),
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 20,
                 ),
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   listener: (ctx, state) {
@@ -90,6 +154,7 @@ class _LoginViewState extends State<LoginView> {
                           .add(GetGoogleAuthentication());
                     },
                     child: Container(
+                      width: 370,
                       padding: const EdgeInsets.symmetric(
                           horizontal: 90, vertical: 14),
                       decoration: const BoxDecoration(
@@ -103,41 +168,48 @@ class _LoginViewState extends State<LoginView> {
                               blurRadius: 1,
                             ),
                           ]),
-                      child: Text(
-                        "Masuk Dengan Google",
-                        style: bigText.copyWith(fontWeight: FontWeight.bold),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Image.asset('assets/icons/anggota.png'),
+                          Text(
+                            "Masuk Sebagai Anggota",
+                            style:
+                                bigText.copyWith(fontWeight: FontWeight.bold),
+                          ),
+                        ],
                       ),
                     ),
                   ),
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(vertical: 18),
-                  child: Text(
-                    "ATAU",
-                    style: extraBigText.copyWith(
-                        fontWeight: FontWeight.bold, color: MyColors.grey2),
-                  ),
-                ),
-                const CustomTextfield1(
-                  label: "Email",
-                ),
-                const CustomTextfield1(
-                  label: "Password",
-                ),
-                const SizedBox(
-                  height: 50,
-                ),
-                ReusableButton1(
-                  label: "MASUK",
-                  onPressed: () {
-                    // Navigator.push(
-                    //     context,
-                    //     MaterialPageRoute(
-                    //         builder: (_) => PenjualDashboardPage(
-                    //               id: id2,
-                    //             )));
-                  },
-                ),
+                // Padding(
+                //   padding: const EdgeInsets.symmetric(vertical: 18),
+                //   child: Text(
+                //     "ATAU",
+                //     style: extraBigText.copyWith(
+                //         fontWeight: FontWeight.bold, color: MyColors.grey2),
+                //   ),
+                // ),
+                // const CustomTextfield1(
+                //   label: "Email",
+                // ),
+                // const CustomTextfield1(
+                //   label: "Password",
+                // ),
+                // const SizedBox(
+                //   height: 50,
+                // ),
+                // ReusableButton1(
+                //   label: "MASUK",
+                //   onPressed: () {
+                //     // Navigator.push(
+                //     //     context,
+                //     //     MaterialPageRoute(
+                //     //         builder: (_) => PenjualDashboardPage(
+                //     //               id: id2,
+                //     //             )));
+                //   },
+                // ),
               ],
             ),
           ),

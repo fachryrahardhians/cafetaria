@@ -1,18 +1,16 @@
-import 'dart:async';
-
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
-import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
-import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
+
+import 'package:cafetaria/feature/Authentication/widget/daftar_kawasan_model.dart';
+
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/styles/colors.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:fluttertoast/fluttertoast.dart';
-import 'package:geocoding/geocoding.dart';
+
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
@@ -23,108 +21,7 @@ class DaftarKawasan extends StatefulWidget {
   State<DaftarKawasan> createState() => _DaftarKawasanState();
 }
 
-class _DaftarKawasanState extends State<DaftarKawasan> {
-  final TextEditingController _nama = TextEditingController();
-  final TextEditingController _email = TextEditingController();
-  final TextEditingController _nohp = TextEditingController();
-  final TextEditingController _namakawasan = TextEditingController();
-  LatLng? _latLngKawasan;
-  LatLng _latLngInit = const LatLng(-6.200000, 106.816666);
-  List<Marker> _marker = [];
-  final Completer<GoogleMapController> _mapController = Completer();
-  bool _submitLoading = false;
-  Future _handleMapsPicker() async {
-    LatLng? latLng = await Navigator.push(
-      context,
-      MaterialPageRoute(
-          builder: (_) => MapsPickerPage(
-                latLng: _latLngInit,
-                marker: _marker,
-              )),
-    );
-
-    if (latLng != null) {
-      if (_latLngKawasan != null) {
-        final GoogleMapController controller = await _mapController.future;
-        controller.moveCamera(CameraUpdate.newCameraPosition(
-            CameraPosition(target: latLng, zoom: 17)));
-      }
-
-      setState(() {
-        _marker = [Marker(markerId: const MarkerId("main"), position: latLng)];
-        _latLngInit = latLng;
-        _latLngKawasan = latLng;
-      });
-
-      // List<Placemark> placemarks = await placemarkFromCoordinates(
-      //     latLng.latitude, latLng.longitude,
-      //     localeIdentifier: "id");
-      // Placemark placemark = placemarks[0];
-
-      // _alamatLengkap.text =
-      //     '${placemark.thoroughfare != null ? placemark.street : ""}, ${placemark.subLocality}, ${placemark.locality}, ${placemark.subAdministrativeArea}, ${placemark.administrativeArea}';
-    }
-  }
-
-  bool _checkDisableButton() {
-    if (_nama.text.isEmpty) {
-      return true;
-    }
-    if (_namakawasan.text.isEmpty) {
-      return true;
-    }
-    if (_nohp.text.isEmpty) {
-      return true;
-    }
-    if (_email.text.isEmpty) {
-      return true;
-    }
-
-    if (_latLngKawasan == null) {
-      return true;
-    }
-
-    return false;
-  }
-
-  // Future _onSubmit(context) async {
-  //   //final userId = user.uid;
-
-  //   final GeoPoint data =
-  //       GeoPoint(_latLngKawasan!.latitude, _latLngKawasan!.longitude);
-  //   setState(() {
-  //     _submitLoading = true;
-  //   });
-
-  //   try {
-  //     final data = {
-  //       //'userId': userId,
-  //       'merchantId': userId,
-  //       'name': _namaUsaha.text,
-  //       'category': _bidangUsaha,
-  //       'city': _kota.text,
-  //       'createdAt': Timestamp.now()
-  //     };
-
-  //     await FirebaseFirestore.instance
-  //         .collection('admin-kawasan')
-  //         .doc(userId)
-  //         .set(data);
-  //     Navigator.pushReplacement(
-  //       context,
-  //       MaterialPageRoute(builder: (context) => PilihKawasan()),
-  //     );
-  //     Fluttertoast.showToast(
-  //         msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
-  //   } catch (error) {
-  //     Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
-  //   } finally {
-  //     setState(() {
-  //       _submitLoading = false;
-  //     });
-  //   }
-  // }
-
+class _DaftarKawasanState extends DaftarKawasanModel {
   @override
   Widget build(BuildContext context) {
     AuthenticationRepository auth = context.read<AuthenticationRepository>();
@@ -140,7 +37,7 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
             },
           ),
           title: Text(
-            "Daftar SUB ADMIN",
+            "DAFTAR KAWASAN",
             style: GoogleFonts.ubuntu(
               fontWeight: FontWeight.bold,
               fontSize: 20,
@@ -160,8 +57,8 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
               return const SizedBox();
             }
             User user = snap.data!;
-            _nama.text = user.displayName!;
-            _email.text = user.email!;
+            nama.text = user.displayName!;
+            email.text = user.email!;
             return SizedBox(
               height: MediaQuery.of(context).size.height,
               child: SingleChildScrollView(
@@ -174,25 +71,25 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
                         label: "Nama Lengkap",
                         //enable: false,
                         hint: "Masukkan nama Lengkap",
-                        controller: _nama,
+                        controller: nama,
                       ),
                       CustomTextfield2(
                         label: "EMAIL",
                         enable: false,
                         hint: "Masukkan Alamat Email",
-                        controller: _email,
+                        controller: email,
                       ),
                       CustomTextfield2(
                         label: "NOMOR HANDPHONE",
                         //enable: false,
                         hint: "Masukkan nomor telepon anda",
-                        controller: _nohp,
+                        controller: nohp,
                       ),
                       CustomTextfield2(
                         label: "NAMA KAWASAN",
                         //enable: false,
                         hint: "Masukkan Nama Kawasan",
-                        controller: _namakawasan,
+                        controller: namakawasan,
                       ),
                       CustomBoxPicker(
                           label: "LOKASI TOKO",
@@ -202,8 +99,8 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
                             color: MyColors.red1,
                             size: 32,
                           ),
-                          onTap: _handleMapsPicker,
-                          child: _latLngKawasan == null
+                          onTap: handleMapsPicker,
+                          child: latLngKawasan == null
                               ? null
                               : Stack(
                                   children: [
@@ -213,17 +110,17 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
                                       myLocationEnabled: false,
                                       zoomControlsEnabled: false,
                                       initialCameraPosition: CameraPosition(
-                                        target: _latLngInit,
+                                        target: latLngInit,
                                         zoom: 17,
                                       ),
                                       onMapCreated:
                                           (GoogleMapController controller) {
-                                        _mapController.complete(controller);
+                                        mapController.complete(controller);
                                       },
-                                      markers: Set.from(_marker),
+                                      markers: Set.from(marker),
                                     ),
                                     GestureDetector(
-                                        onTap: _handleMapsPicker,
+                                        onTap: handleMapsPicker,
                                         child: Expanded(
                                             child: Container(
                                                 color: Colors.black
@@ -241,8 +138,8 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
                           },
                           padding: const EdgeInsets.all(0),
                           margin: const EdgeInsets.all(0),
-                          disabled: _checkDisableButton(),
-                          loading: _submitLoading,
+                          disabled: checkDisableButton(),
+                          loading: submitLoading,
                         ),
                       ),
                     ],

@@ -371,7 +371,7 @@ class _SelectToppingState extends State<SelectTopping> {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
                                     content: Text(
-                                        'mohon isi data dari porsi sebelumnya'),
+                                        'mohon isi dari porsi ke 1'),
                                   ),
                                 );
                               } else {
