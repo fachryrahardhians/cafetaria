@@ -26,7 +26,7 @@ class CategoryRepository {
   //get pilih kawasan
   Future<List<PilihKawasanModel>> getPilihKawasan() async {
     try {
-      final snapshot = await _firestore.collection('admin-kawasan').get();
+      final snapshot = await _firestore.collection('kawasan').get();
 
       final documents = snapshot.docs;
       return documents.toLeaderboard2();

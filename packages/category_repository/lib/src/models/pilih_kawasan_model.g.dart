@@ -11,7 +11,9 @@ PilihKawasanModel _$PilihKawasanModelFromJson(Map<String, dynamic> json) =>
       address: json['address'] as String?,
       adminId: json['adminId'] as String,
       kawasanId: json['kawasanId'] as String,
-      namaKawasan: json['namaKawasan'] as String?,
+      kawasan_latitude: (json['kawasan_latitude'] as num?)?.toDouble(),
+      kawasan_longitude: (json['kawasan_longitude'] as num?)?.toDouble(),
+      name: json['name'] as String?,
     );
 
 Map<String, dynamic> _$PilihKawasanModelToJson(PilihKawasanModel instance) =>
@@ -19,5 +21,7 @@ Map<String, dynamic> _$PilihKawasanModelToJson(PilihKawasanModel instance) =>
       'address': instance.address,
       'adminId': instance.adminId,
       'kawasanId': instance.kawasanId,
-      'namaKawasan': instance.namaKawasan,
+      'kawasan_latitude': instance.kawasan_latitude,
+      'kawasan_longitude': instance.kawasan_longitude,
+      'name': instance.name,
     };

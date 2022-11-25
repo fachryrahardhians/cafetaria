@@ -12,9 +12,9 @@ class PilihKawasanModel {
   // final DateTime createdAt;
   //final GeoPoint? geolocation;
   final String kawasanId;
-  // final double? latitude;
-  // final double? longitude;
-  final String? namaKawasan;
+  final double? kawasan_latitude;
+  final double? kawasan_longitude;
+  final String? name;
   // final DateTime updatedAt;
   const PilihKawasanModel({
     this.address,
@@ -22,9 +22,9 @@ class PilihKawasanModel {
     required this.kawasanId,
     // required this.createdAt,
     //this.geolocation,
-    // this.latitude,
-    // this.longitude,
-    this.namaKawasan,
+    this.kawasan_latitude,
+    this.kawasan_longitude,
+    this.name,
     //required this.updatedAt
   });
   factory PilihKawasanModel.fromJson(Map<String, dynamic> json) =>
@@ -34,24 +34,24 @@ class PilihKawasanModel {
   @override
   List<Object?> get props => [
         address, adminId, //createdAt, //geolocation,
-        kawasanId, 
-        // latitude, longitude, 
-        namaKawasan //updatedAt
+        kawasanId,
+        kawasan_latitude, kawasan_longitude,
+        name //updatedAt
       ];
 
   PilihKawasanModel copyWith(
       {String? address,
       String? adminId,
       String? kawasanId,
-      // double? latitude,
-      // double? longitude,
-      String? namaKawasan}) {
+      double? kawasan_latitude,
+      double? kawasan_longitude,
+      String? name}) {
     return PilihKawasanModel(
         address: address ?? this.address,
         adminId: adminId ?? this.adminId,
         kawasanId: kawasanId ?? this.kawasanId,
-        // latitude: latitude ?? this.latitude,
-        // longitude: longitude ?? this.longitude,
-        namaKawasan: namaKawasan ?? this.namaKawasan);
+        kawasan_latitude: kawasan_latitude ?? this.kawasan_latitude,
+        kawasan_longitude: kawasan_longitude ?? this.kawasan_longitude,
+        name: name ?? this.name);
   }
 }
