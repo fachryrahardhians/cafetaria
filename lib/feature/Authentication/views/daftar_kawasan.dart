@@ -109,6 +109,7 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
         'kawasanId': idKawasan,
         'kawasan_latitude': _latLngKawasan!.latitude,
         'kawasan_longitude': _latLngKawasan!.longitude,
+        'status' : "unverified",
       };
 
       await FirebaseFirestore.instance
