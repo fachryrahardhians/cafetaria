@@ -34,9 +34,9 @@ dependencies:
   category_repository:
     path: packages/category_repository
   cloud_firestore: ^3.4.6
+  cloud_functions: ^3.3.0
   cloud_storage:
     path: packages/cloud_storage
-  cloud_functions: ^3.3.0
   cupertino_icons: ^1.0.2
   equatable: ^2.0.3
   firebase_auth: ^3.3.19
@@ -52,6 +52,7 @@ dependencies:
   flutter_localizations:
     sdk: flutter
   flutter_masked_text2: ^0.9.1
+  flutter_quill: ^6.1.0
   flutter_svg: ^1.1.3
   flutter_switch: ^0.3.2
   fluttertoast: ^8.0.9

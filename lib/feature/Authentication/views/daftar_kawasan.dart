@@ -1,17 +1,16 @@
 import 'dart:async';
 
-import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/Authentication/views/kawasan_sukses.dart';
-import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
+
 import 'package:cafetaria/feature/pembeli/views/maps_picker_page.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -109,7 +108,7 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
         'kawasanId': idKawasan,
         'kawasan_latitude': _latLngKawasan!.latitude,
         'kawasan_longitude': _latLngKawasan!.longitude,
-        'status' : "unverified",
+        'status': "unverified",
       };
 
       await FirebaseFirestore.instance

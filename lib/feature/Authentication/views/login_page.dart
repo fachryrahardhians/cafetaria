@@ -1,14 +1,14 @@
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/components/buttons/reusables_buttons.dart';
-import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
+import 'package:cafetaria/feature/admin/views/dashboard_admin.dart';
 //import 'package:cafetaria/feature/Authentication/views/link_email.dart';
-import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
+
 //import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
-import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
+
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -59,7 +59,17 @@ class _LoginViewState extends State<LoginView> {
                   ),
                 ),
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        // builder: (context) => const HomePage(),
+                        // builder: (context) => const LinkEmailPage(),
+                        builder: (context) => const AdminDashboard(),
+                        // builder: (context) => const PembeliDashboardPage(),
+                      ),
+                    );
+                  },
                   child: Container(
                     width: 370,
                     padding: const EdgeInsets.symmetric(

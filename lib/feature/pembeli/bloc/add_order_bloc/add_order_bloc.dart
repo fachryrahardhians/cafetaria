@@ -71,7 +71,6 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
         formzStatus: FormzStatus.submissionSuccess,
       ));
     } catch (e) {
-      print(e);
       emit(state.copyWith(
         formzStatus: FormzStatus.submissionFailure,
       ));

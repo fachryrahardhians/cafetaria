@@ -7,13 +7,13 @@ class HomeItemInfo extends StatelessWidget {
     required this.image,
     required this.title,
     required this.author,
-    required this.route,
+    this.route,
   }) : super(key: key);
 
   final String image;
   final String title;
   final String author;
-  final VoidCallback route;
+  final VoidCallback? route;
 
   @override
   Widget build(BuildContext context) {

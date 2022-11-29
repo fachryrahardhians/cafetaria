@@ -41,7 +41,7 @@ class AddOpsiMenuView extends StatefulWidget {
 }
 
 class _AddOpsiMenuViewState extends State<AddOpsiMenuView> {
-  final _textController = TextEditingController();
+  final textController = TextEditingController();
   String? title;
   List<Option> option = [];
   bool isMandatory = true;

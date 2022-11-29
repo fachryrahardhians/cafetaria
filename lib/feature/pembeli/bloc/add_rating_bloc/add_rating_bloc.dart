@@ -4,7 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:bloc/bloc.dart';
 import 'package:cafetaria/feature/pembeli/model/rating_input.dart';
 import 'package:equatable/equatable.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+
 import 'package:formz/formz.dart';
 import 'package:rating_repository/rating_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -14,6 +14,7 @@ part 'add_rating_state.dart';
 
 class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
   final RatingRepository _ratingRepository;
+  // ignore: unused_field
   final AuthenticationRepository _authenticationRepository;
   AddRatingBloc(
       {required RatingRepository ratingRepository,
@@ -36,7 +37,7 @@ class AddRatingBloc extends Bloc<AddRatingEvent, AddRatingState> {
     emit(state.copyWith(
       formzStatus: FormzStatus.submissionInProgress,
     ));
-    User? user = await _authenticationRepository.getCurrentUser();
+    //  User? user = await _authenticationRepository.getCurrentUser();
     try {
       await _ratingRepository.addRating(
           event.orderId,

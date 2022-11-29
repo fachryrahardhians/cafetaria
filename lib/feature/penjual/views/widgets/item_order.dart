@@ -60,10 +60,10 @@ class HomeItemOrder extends StatelessWidget {
                           height: 30,
                           color: MyColors.red1,
                           padding: const EdgeInsets.all(2),
-                          child: const Center(
+                          child: Center(
                             child: Text(
-                              "4",
-                              style: TextStyle(
+                              total.toString(),
+                              style: const TextStyle(
                                 color: MyColors.white,
                               ),
                             ),
