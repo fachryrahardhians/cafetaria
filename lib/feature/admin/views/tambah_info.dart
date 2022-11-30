@@ -157,7 +157,7 @@ class _TambahInfoWidgetState extends TambahInfoModel {
             ),
             const SizedBox(height: 20),
             quill.QuillToolbar.basic(
-                multiRowsDisplay: false,
+                multiRowsDisplay: true,
                 controller: quillController,
                 iconTheme: const quill.QuillIconTheme(
                     iconSelectedFillColor: Colors.red,
@@ -183,6 +183,26 @@ class _TambahInfoWidgetState extends TambahInfoModel {
               ),
             ),
             const SizedBox(height: 20),
+            // Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   height: MediaQuery.of(context).size.height / 2.5,
+            //   decoration: const BoxDecoration(
+            //       borderRadius: BorderRadius.all(Radius.circular(5)),
+            //       color: MyColors.whiteGrey1,
+            //       boxShadow: [
+            //         BoxShadow(
+            //           color: Colors.grey,
+            //           offset: Offset(0, 0),
+            //           spreadRadius: 0,
+            //           blurRadius: 1,
+            //         ),
+            //       ]),
+            //   child: Padding(
+            //     padding: const EdgeInsets.all(8.0),
+            //     child: quill.QuillEditor.basic(
+            //         controller: quillController2, readOnly: true),
+            //   ),
+            // ),
             CustomBoxPicker(
                 label: "UNGGAH BANNER",
                 hint: "UNGGAH FOTO",
@@ -201,7 +221,9 @@ class _TambahInfoWidgetState extends TambahInfoModel {
               height: 50,
               child: ReusableButton1(
                 label: "KIRIM",
-                onPressed: () {},
+                onPressed: () {
+                  saveJson();
+                },
                 padding: const EdgeInsets.all(0),
                 margin: const EdgeInsets.all(0),
                 //  disabled: _checkDisableButton(),

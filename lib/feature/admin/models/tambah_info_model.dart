@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:cafetaria/feature/admin/views/tambah_info.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
@@ -7,6 +9,7 @@ import 'package:image_picker/image_picker.dart';
 
 abstract class TambahInfoModel extends State<TambahInfoWidget> {
   quill.QuillController quillController = quill.QuillController.basic();
+  quill.QuillController quillController2 = quill.QuillController.basic();
   TextEditingController judul = TextEditingController();
   DateTime terbit = DateTime.now();
   DateTime kadarluasa = DateTime.now();
@@ -21,6 +24,18 @@ abstract class TambahInfoModel extends State<TambahInfoWidget> {
       const DropdownMenuItem(child: Text("Penjual"), value: "penjual"),
     ];
     return menuItems;
+  }
+
+  void saveJson() {
+    var json = jsonEncode(quillController.document.toDelta().toJson());
+    var retrive = jsonDecode(json);
+    //String data = htmlEscape.convert(json);
+    setState(() {
+      quillController2 = quill.QuillController(
+          document: quill.Document.fromJson(retrive),
+          selection: const TextSelection.collapsed(offset: 0));
+    });
+    print(json.toString());
   }
 
   void pickTerbit() async {
@@ -75,47 +90,5 @@ abstract class TambahInfoModel extends State<TambahInfoWidget> {
     }
   }
 
-  String convertDateTime(DateTime dateTime) {
-    String month;
-
-    switch (dateTime.month) {
-      case 1:
-        month = 'Januari';
-        break;
-      case 2:
-        month = 'Febuari';
-        break;
-      case 3:
-        month = 'Maret';
-        break;
-      case 4:
-        month = 'April';
-        break;
-      case 5:
-        month = 'Mei';
-        break;
-      case 6:
-        month = 'Juni';
-        break;
-      case 7:
-        month = 'Juli';
-        break;
-      case 8:
-        month = 'Agustus';
-        break;
-      case 9:
-        month = 'September';
-        break;
-      case 10:
-        month = 'Oktober';
-        break;
-      case 11:
-        month = 'November';
-        break;
-      default:
-        month = 'Desember';
-    }
-
-    return '${dateTime.day} $month ${dateTime.year}';
-  }
+ 
 }

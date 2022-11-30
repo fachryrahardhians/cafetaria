@@ -1,15 +1,9 @@
-//import 'dart:ui';
-
-// ignore_for_file: no_logic_in_create_state
-
-//import 'dart:html';
-
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_order_bloc/add_order_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
-//import 'package:cafetaria/feature/pembeli/views/history_page.dart';
+
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/utilities/size_config.dart';
@@ -64,6 +58,7 @@ class KeranjangPage extends StatefulWidget {
 }
 
 class _KeranjangPageState extends State<KeranjangPage> {
+  final TextEditingController _catatanController = TextEditingController();
   bool preOrder;
   _KeranjangPageState(this.preOrder);
   TextStyle textStyle = const TextStyle(
@@ -347,7 +342,9 @@ class _KeranjangPageState extends State<KeranjangPage> {
                     }
                   }))
                 ],
-              )
+              ),
+              SizedBox(height: SizeConfig.safeBlockVertical * 3),
+              catatan()
             ]),
       ),
       bottomNavigationBar: BlocConsumer<AddOrderBloc, AddOrderState>(
@@ -726,6 +723,41 @@ class _KeranjangPageState extends State<KeranjangPage> {
             )
           ],
         ));
+  }
+
+  Widget catatan() {
+    return Container(
+      decoration: BoxDecoration(boxShadow: [
+        BoxShadow(
+            offset: const Offset(0, 0),
+            blurRadius: 1,
+            color: Colors.black.withOpacity(.04)),
+        BoxShadow(
+            offset: const Offset(0, 0),
+            blurRadius: 4,
+            color: Colors.black.withOpacity(.08))
+      ]),
+      child: TextFormField(
+        controller: _catatanController,
+        autofocus: false,
+        decoration: InputDecoration(
+          contentPadding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
+          filled: true,
+          fillColor: Colors.white,
+          focusedBorder: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8)),
+          enabledBorder: OutlineInputBorder(
+              borderSide: BorderSide.none,
+              borderRadius: BorderRadius.circular(8)),
+          hintText: "Masukkan catatan untuk penjual",
+          hintStyle: const TextStyle(fontSize: 13, color: Color(0xffCACCCF)),
+        ),
+        autovalidateMode: AutovalidateMode.onUserInteraction,
+        minLines: 4,
+        maxLines: 5,
+      ),
+    );
   }
 
   Widget item(int itemCount, String itemName, int totalPrice,
@@ -1134,7 +1166,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                             listKeranjang: lists,
                             preOrder: _preorder,
                             alat: alat,
-                            grandTotalPrice: subTotalPrice ,
+                            grandTotalPrice: subTotalPrice,
                             timestamp: DateTime.now().toString(),
                             pickupDate: _selectedDay.toString().split(' ')[0] +
                                 ' 08:00:00.000'),

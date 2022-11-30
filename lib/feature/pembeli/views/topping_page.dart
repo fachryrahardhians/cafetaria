@@ -266,15 +266,15 @@ class _SelectToppingState extends State<SelectTopping> {
                             itemCount: 1 + optionmenu.length)
                     else
                       multipletopping(),
-                    Text(
-                      'CATATAN UNTUK PENJUAL',
-                      style: normalText.copyWith(
-                          fontSize: 12,
-                          fontWeight: FontWeight.w500,
-                          color: const Color(0xff5C5E61).withOpacity(.8)),
-                    ),
-                    SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                    catatan(),
+                    // Text(
+                    //   'CATATAN UNTUK PENJUAL',
+                    //   style: normalText.copyWith(
+                    //       fontSize: 12,
+                    //       fontWeight: FontWeight.w500,
+                    //       color: const Color(0xff5C5E61).withOpacity(.8)),
+                    // ),
+                    // SizedBox(height: SizeConfig.safeBlockVertical * 1),
+                    // catatan(),
                     SizedBox(height: SizeConfig.safeBlockVertical * 2),
                     quantity()
                   ],

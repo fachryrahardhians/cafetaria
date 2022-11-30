@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
 import 'package:cafetaria/feature/admin/views/tambah_info.dart';
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
@@ -97,7 +98,10 @@ class MainMenu extends StatelessWidget {
           Row(
             children: [
               HomeItemOrder(
-                route: () async {},
+                route: () async {
+                   Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const PendingSubAdmin()));
+                },
                 image: "assets/icons/pending.png",
                 title: "Pending",
                 total: 2,
