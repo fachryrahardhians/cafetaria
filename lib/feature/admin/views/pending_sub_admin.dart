@@ -1,12 +1,26 @@
+import 'dart:async';
+
+import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+import 'package:cafetaria/feature/admin/bloc/list_kawasan_bloc/list_kawasan_bloc.dart';
+import 'package:cafetaria/feature/admin/bloc/update_status_bloc/update_status_bloc.dart';
+import 'package:cafetaria/feature/admin/utils.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 
 class PendingSubAdmin extends StatelessWidget {
   const PendingSubAdmin({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const PendingSubAdminWidget();
+    return MultiBlocProvider(providers: [
+      BlocProvider(
+          create: (context) =>
+              ListKawasanBloc(adminRepository: context.read<AdminRepository>())
+                ..add(const GetListKawasan()))
+    ], child: const PendingSubAdminWidget());
   }
 }
 
@@ -18,6 +32,13 @@ class PendingSubAdminWidget extends StatefulWidget {
 }
 
 class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
+  final column = ['nama', "Email", "Kawasan", "Status"];
+  List<DataColumn> columns(List<String> data) {
+    return data.map((e) {
+      return DataColumn(label: Text(e));
+    }).toList();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -69,42 +90,238 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                 ),
               ),
             ),
-            SingleChildScrollView(
-              scrollDirection: Axis.horizontal,
-              child: DataTable(columns: const <DataColumn>[
-                DataColumn(label: Text("nama")),
-                DataColumn(label: Text("Email")),
-                DataColumn(label: Text("Kawasan")),
-                DataColumn(label: Text("Action"))
-              ], rows: <DataRow>[
-                DataRow(cells: <DataCell>[
-                  const DataCell(Text("M. Tegar")),
-                  const DataCell(Text("mtegarph@gmail.com")),
-                  const DataCell(Text("Pamulang")),
-                  DataCell(
-                    const Text("Pending"),
-                    onTap: () {
-                      print("DATA 1");
-                    },
-                  ),
-                ]),
-                const DataRow(cells: <DataCell>[
-                  DataCell(Text("Adam Muhammad")),
-                  DataCell(Text("adam@gmail.com")),
-                  DataCell(Text("Bandung")),
-                  DataCell(Text("Pending")),
-                ]),
-                const DataRow(cells: <DataCell>[
-                  DataCell(Text("Rifqy Fadhli")),
-                  DataCell(Text("rifqy@gmail.com")),
-                  DataCell(Text("Bintaro")),
-                  DataCell(Text("Pending")),
-                ])
-              ]),
-            )
+            BlocBuilder<ListKawasanBloc, ListKawasanState>(
+              builder: (context, state) {
+                final status = state.status;
+                if (status == ListKawasanStatus.loading) {
+                  return const Center(
+                    child: CircularProgressIndicator(),
+                  );
+                } else if (status == ListKawasanStatus.failure) {
+                  return const Center(
+                    child: Text('Terjadi kesalahan'),
+                  );
+                } else if (status == ListKawasanStatus.success) {
+                  final items = state.items!;
+                  List<DataRow> getRows(List<KawasanRead> data) =>
+                      data.map((e) {
+                        final cell = [
+                          e.admin.fullname,
+                          e.admin.email,
+                          e.name,
+                          e.status
+                        ];
+                        return DataRow(
+                            cells: Utils.modelBuilder(cell, (index, model) {
+                          return DataCell(
+                            Text('$model'),
+                            onTap: () {
+                              showDialog(
+                                  context: context,
+                                  builder: ((context) {
+                                    return infoCart(e);
+                                  }));
+                            },
+                          );
+                        }));
+                      }).toList();
+
+                  return SingleChildScrollView(
+                    scrollDirection: Axis.horizontal,
+                    child: DataTable(
+                        columns: columns(column), rows: getRows(items)),
+                  );
+                }
+                return const SizedBox.shrink();
+              },
+            ),
           ],
         ),
       ),
     );
+  }
+
+  Dialog infoCart(KawasanRead? model) {
+    bool loading = false;
+    final TextEditingController _nama = TextEditingController();
+    final TextEditingController _email = TextEditingController();
+    final TextEditingController _kawasan = TextEditingController();
+    _nama.text = model!.admin.fullname;
+    _email.text = model.admin.email;
+    _kawasan.text = model.name.toString();
+    return Dialog(
+        child: BlocProvider(
+      create: (context) =>
+          UpdateStatusBloc(adminRepository: context.read<AdminRepository>()),
+      child: Padding(
+        padding:
+            const EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 16),
+        child: Column(
+          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.start,
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            const Text(
+              "Verifikasi Sub-Admin",
+              style: TextStyle(
+                fontSize: 24,
+                fontWeight: FontWeight.bold,
+              ),
+            ),
+            const SizedBox(
+              height: 20,
+            ),
+            CustomTextfield2(
+              label: "Nama Lengkap",
+              enable: false,
+              hint: "Masukkan nama Lengkap",
+              controller: _nama,
+            ),
+            CustomTextfield2(
+              label: "EMAIL",
+              enable: false,
+              hint: "Masukkan nama Lengkap",
+              controller: _email,
+            ),
+            CustomTextfield2(
+              label: "KAWASAN",
+              enable: false,
+              hint: "Masukkan nama Lengkap",
+              controller: _kawasan,
+            ),
+            BlocConsumer<UpdateStatusBloc, UpdateStatusState>(
+              listener: (context, state) {
+                if (state.status == FormzStatus.submissionSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Status Berhasil Di Update'),
+                    ),
+                  );
+                  setState(() {
+                    loading = true;
+                  });
+                  Timer(
+                    const Duration(seconds: 4),
+                    () {
+                      setState(() {
+                        loading = false;
+                      });
+                      Navigator.of(context).pop();
+                      Navigator.of(context).pop();
+                    },
+                  );
+                } else if (state.status == FormzStatus.submissionFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Terjadi kesalahan'),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return Column(
+                  children: [
+                    Container(
+                        height: MediaQuery.of(context).size.height / 15,
+                        width: MediaQuery.of(context).size.width,
+                        margin: const EdgeInsets.only(bottom: 20),
+                        child: ElevatedButton(
+                            style: ButtonStyle(
+                                elevation: MaterialStateProperty.all(0),
+                                backgroundColor: MaterialStateProperty.all(
+                                    const Color(0xffee3124)),
+                                shape: MaterialStateProperty.all(
+                                    RoundedRectangleBorder(
+                                        borderRadius: BorderRadius.circular(6),
+                                        side: BorderSide.none))),
+                            onPressed: () async {
+                              loading == true
+                                  ? print("Loading ")
+                                  : context.read<UpdateStatusBloc>().add(
+                                      UpdateStatus(
+                                          model.kawasanId, "verified"));
+                            },
+                            child: Text(
+                              loading == true ? "LOADING" : "SETUJU",
+                              style: TextStyle(
+                                  fontSize: 14,
+                                  fontWeight: FontWeight.w700,
+                                  color: Colors.white.withOpacity(1)),
+                            ))),
+                    Row(
+                      children: [
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                                height: 44,
+                                margin: const EdgeInsets.only(right: 8),
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.black,
+                                        side: const BorderSide(
+                                          color: Colors.black,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            side: BorderSide.none)),
+                                    onPressed: () {
+                                      loading == true
+                                          ? print("Loading ")
+                                          : context
+                                              .read<UpdateStatusBloc>()
+                                              .add(UpdateStatus(
+                                                  model.kawasanId, "block"));
+                                    },
+                                    child: Text(
+                                      "BLOCK",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white.withOpacity(1)),
+                                    )))),
+                        Expanded(
+                            flex: 1,
+                            child: Container(
+                                height: 44,
+                                margin: const EdgeInsets.only(left: 8),
+                                child: ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: Colors.white,
+                                        side: const BorderSide(
+                                          color: Colors.red,
+                                        ),
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            side: BorderSide.none)),
+                                    onPressed: () {
+                                      loading == true
+                                          ? print("Loading ")
+                                          : context
+                                              .read<UpdateStatusBloc>()
+                                              .add(UpdateStatus(
+                                                  model.kawasanId, "denied"));
+                                    },
+                                    child: Text(
+                                      "TOLAK",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.red.withOpacity(1)),
+                                    ))))
+                      ],
+                    )
+                  ],
+                );
+              },
+            ),
+          ],
+        ),
+      ),
+    ));
   }
 }

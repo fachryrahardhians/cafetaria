@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/bootstrap.dart';
@@ -71,6 +72,7 @@ void main() async {
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
       final _merchantRepository = MerchantRepository(firestore: firebaseStore);
+      final _adminrRepository = AdminRepository(firestore: firebaseStore);
       final _sharedPref = AppSharedPref(sharedpreference);
       final _optionMenuRepository =
           OptionMenuRepository(firestore: firebaseStore);
@@ -127,6 +129,7 @@ void main() async {
         orderRepository: _orderRepository,
         merchantRepository: _merchantRepository,
         penjualOrderRepository: _penjualOrderRepository,
+        adminRepository: _adminrRepository,
       );
     },
   );

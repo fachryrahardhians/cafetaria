@@ -2,7 +2,6 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/Authentication/views/daftar_kawasan.dart';
-
 import 'package:cafetaria/feature/Authentication/views/login_page.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -10,7 +9,6 @@ import 'package:category_repository/category_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-
 class PilihKwsn extends StatelessWidget {
   const PilihKwsn({Key? key}) : super(key: key);
 

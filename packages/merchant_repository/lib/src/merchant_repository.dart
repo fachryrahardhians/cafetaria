@@ -93,24 +93,24 @@ class MerchantRepository {
   }
 }
 
-extension on List<Object?> {
-  List<MechantSearch> toListMerchantSearch() {
-    final leaderboardEntries = <MechantSearch>[];
-    for (final document in this) {
-      final data = document as Map<String, dynamic>?;
-      if (data != null) {
-        try {
-          print(data);
-          leaderboardEntries.add(MechantSearch.fromJson(data));
-        } catch (error) {
-          print(error.toString());
-          throw Exception();
-        }
-      }
-    }
-    return leaderboardEntries;
-  }
-}
+// extension on List<Object?> {
+//   List<MechantSearch> toListMerchantSearch() {
+//     final leaderboardEntries = <MechantSearch>[];
+//     for (final document in this) {
+//       final data = document as Map<String, dynamic>?;
+//       if (data != null) {
+//         try {
+//           print(data);
+//           leaderboardEntries.add(MechantSearch.fromJson(data));
+//         } catch (error) {
+//           print(error.toString());
+//           throw Exception();
+//         }
+//       }
+//     }
+//     return leaderboardEntries;
+//   }
+// }
 
 extension on List<QueryDocumentSnapshot> {
   List<MerchantModel> toListMerchant() {

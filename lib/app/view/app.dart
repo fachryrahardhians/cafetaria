@@ -1,3 +1,4 @@
+import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
@@ -33,6 +34,7 @@ class App extends StatefulWidget {
       required SecureStorage secureStorage,
       required AppSharedPref appSharedPref,
       required PenjualOrderRepository penjualOrderRepository,
+      required AdminRepository adminRepository,
       required RatingRepository ratingRepository,
       required OrderRepository orderRepository,
       required AndroidNotificationChannel channel,
@@ -55,6 +57,7 @@ class App extends StatefulWidget {
         _ratingRepository = ratingRepository,
         _orderRepository = orderRepository,
         _merchantRepository = merchantRepository,
+        _adminRepository = adminRepository,
         _channel = channel,
         _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin,
         _penjualOrderRepository = penjualOrderRepository,
@@ -68,6 +71,7 @@ class App extends StatefulWidget {
   final CloudStorage _cloudStorage;
   final SecureStorage _secureStorage;
   final AndroidNotificationChannel _channel;
+  final AdminRepository _adminRepository;
   final FlutterLocalNotificationsPlugin _flutterLocalNotificationsPlugin;
   final RatingRepository _ratingRepository;
   final OrderRepository _orderRepository;
@@ -143,6 +147,7 @@ class _AppState extends State<App> {
         RepositoryProvider.value(value: widget._penjualOrderRepository),
         RepositoryProvider.value(value: widget._appSharedPref),
         RepositoryProvider.value(value: widget._optionMenuRepository),
+        RepositoryProvider.value(value: widget._adminRepository),
       ],
       child: BlocProvider(
         create: (context) => AppBloc(

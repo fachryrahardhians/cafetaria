@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/bootstrap.dart';
@@ -75,6 +76,7 @@ void main() async {
       const _secureStorage = SecureStorage();
       final _ratingRepository = RatingRepository(firestore: firebaseStore);
       final _orderRepository = OrderRepository(firestore: firebaseStore);
+      final _adminrRepository = AdminRepository(firestore: firebaseStore);
       final FirebaseMessaging _firebaseMessaging = FirebaseMessaging.instance;
       final fcmToken = await _firebaseMessaging.getToken();
       _authenticationRepository.saveFcmToken(fcmToken ?? "");
@@ -122,6 +124,7 @@ void main() async {
         orderRepository: _orderRepository,
         merchantRepository: _merchantRepository,
         penjualOrderRepository: _penjualOrderRepository,
+        adminRepository: _adminrRepository,
       );
     },
   );
