@@ -90,19 +90,13 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                 ),
               ),
             ),
-            BlocBuilder<ListKawasanBloc, ListKawasanState>(
-              builder: (context, state) {
-                final status = state.status;
-                if (status == ListKawasanStatus.loading) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (status == ListKawasanStatus.failure) {
-                  return const Center(
-                    child: Text('Terjadi kesalahan'),
-                  );
-                } else if (status == ListKawasanStatus.success) {
-                  final items = state.items!;
+            StreamBuilder<List<KawasanRead>>(
+              stream: context.read<AdminRepository>().getStreamListKawasan(),
+              builder: (context, snapshot) {
+                if (snapshot.hasError) {
+                  return Text("Ada masalah ${snapshot.error}");
+                } else if (snapshot.hasData) {
+                  final items = snapshot.data;
                   List<DataRow> getRows(List<KawasanRead> data) =>
                       data.map((e) {
                         final cell = [
@@ -129,12 +123,60 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                   return SingleChildScrollView(
                     scrollDirection: Axis.horizontal,
                     child: DataTable(
-                        columns: columns(column), rows: getRows(items)),
+                        columns: columns(column), rows: getRows(items!)),
+                  );
+                } else {
+                  return const Center(
+                    child: CircularProgressIndicator(),
                   );
                 }
-                return const SizedBox.shrink();
               },
             ),
+            // BlocBuilder<ListKawasanBloc, ListKawasanState>(
+            //   builder: (context, state) {
+            //     final status = state.status;
+            //     if (status == ListKawasanStatus.loading) {
+            //       return const Center(
+            //         child: CircularProgressIndicator(),
+            //       );
+            //     } else if (status == ListKawasanStatus.failure) {
+            //       return const Center(
+            //         child: Text('Terjadi kesalahan'),
+            //       );
+            //     } else if (status == ListKawasanStatus.success) {
+            //       final items = state.items!;
+            //       List<DataRow> getRows(List<KawasanRead> data) =>
+            //           data.map((e) {
+            //             final cell = [
+            //               e.admin.fullname,
+            //               e.admin.email,
+            //               e.name,
+            //               e.status
+            //             ];
+            //             return DataRow(
+            //                 cells: Utils.modelBuilder(cell, (index, model) {
+            //               return DataCell(
+            //                 Text('$model'),
+            //                 onTap: () {
+            //                   showDialog(
+            //                       context: context,
+            //                       builder: ((context) {
+            //                         return infoCart(e);
+            //                       }));
+            //                 },
+            //               );
+            //             }));
+            //           }).toList();
+
+            //       return SingleChildScrollView(
+            //         scrollDirection: Axis.horizontal,
+            //         child: DataTable(
+            //             columns: columns(column), rows: getRows(items)),
+            //       );
+            //     }
+            //     return const SizedBox.shrink();
+            //   },
+            // ),
           ],
         ),
       ),
@@ -209,7 +251,6 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                       setState(() {
                         loading = false;
                       });
-                      Navigator.of(context).pop();
                       Navigator.of(context).pop();
                     },
                   );

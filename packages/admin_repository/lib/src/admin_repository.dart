@@ -13,7 +13,18 @@ class AdminRepository {
       final documents = snapshot.docs;
       return documents.toListKawasan();
     } catch (e) {
-      throw Exception('Failed to get merchant');
+      throw Exception('Failed to get kawasan');
+    }
+  }
+
+ 
+  Stream<List<KawasanRead>> getStreamListKawasan() async* {
+    try {
+      final snapshot = await _firestore.collection('kawasan-read').get();
+      final documents = snapshot.docs;
+      yield documents.toListKawasan();
+    } catch (e) {
+      throw Exception('Failed to get kawasan');
     }
   }
 
