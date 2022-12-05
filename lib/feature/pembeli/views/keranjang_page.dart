@@ -401,6 +401,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                   listKeranjang: menuInKeranjang,
                                   preOrder: _preorder,
                                   alat: alat,
+                                  catatan: _catatanController.text,
                                   grandTotalPrice: subTotalPrice,
                                   timestamp: DateTime.now().toString(),
                                   pickupDate:
@@ -422,6 +423,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           merchantId: widget.merchantId,
                           listKeranjang: menuInKeranjang,
                           preOrder: _preorder,
+                          catatan: _catatanController.text,
                           alat: alat,
                           grandTotalPrice: subTotalPrice,
                           timestamp: DateTime.now().toString(),

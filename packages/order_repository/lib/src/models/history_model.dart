@@ -22,6 +22,7 @@ class HistoryModel extends Equatable {
   final String? userId;
   final String? ratingId;
   final int? total;
+  final String? keterangan;
   final String? timestamp;
   final String? statusOrder;
   final List<OrderMenu>? menus;
@@ -32,6 +33,7 @@ class HistoryModel extends Equatable {
       this.isCutlery,
       this.isPreorder,
       this.pickupDate,
+      this.keterangan,
       this.typePickup,
       this.userId,
       this.ratingId,
@@ -51,6 +53,7 @@ class HistoryModel extends Equatable {
     String? typePickup,
     String? userId,
     String? merchantId,
+    String? keterangan,
     String? ratingId,
     int? total,
     String? timestamp,
@@ -66,6 +69,7 @@ class HistoryModel extends Equatable {
         statusOrder: statusOrder ?? this.statusOrder,
         menus: menus ?? this.menus,
         deviceToken: deviceToken ?? this.deviceToken,
+        keterangan: keterangan ?? this.keterangan,
         isCutlery: isCutlery ?? this.isCutlery,
         isPreorder: isPreorder ?? this.isPreorder,
         pickupDate: pickupDate ?? this.pickupDate,
@@ -87,6 +91,7 @@ class HistoryModel extends Equatable {
         pickupDate,
         typePickup,
         userId,
+        keterangan,
         ratingId,
       ];
 }

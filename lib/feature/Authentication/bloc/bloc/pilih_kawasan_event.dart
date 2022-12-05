@@ -21,3 +21,11 @@ class KawasanChange extends PilihKawasanEvent {
   @override
   List<Object> get props => [kawasan];
 }
+
+class UpdateKawasan extends PilihKawasanEvent {
+  final String idUser;
+  const UpdateKawasan(this.idUser);
+
+  @override
+  List<Object> get props => [idUser];
+}

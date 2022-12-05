@@ -2,6 +2,7 @@ import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
+import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 
 import 'package:cafetaria_ui/cafetaria_ui.dart';
@@ -171,7 +172,7 @@ class AppView extends StatelessWidget {
       theme: CFTheme.themeData,
       title: 'Cafetaria',
       home: statusApp == AppStatus.authenticated
-          ? const PembeliDashboardPage()
+          ? const PilihKwsn()
           : const LoginPage(),
     );
   }

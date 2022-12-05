@@ -15,18 +15,20 @@ class SaveOrder extends AddOrderEvent {
   final int grandTotalPrice;
   final String merchantId;
   final List<Keranjang> listKeranjang;
+  final String? catatan;
 
   const SaveOrder(
       {required this.preOrder,
       required this.alat,
       required this.grandTotalPrice,
+      this.catatan,
       required this.timestamp,
       required this.pickupDate,
       required this.merchantId,
       required this.listKeranjang});
 
   @override
-  List<Object> get props => [preOrder, alat, timestamp, pickupDate];
+  List<Object> get props => [preOrder, alat, timestamp, pickupDate, catatan!];
 }
 
 class OrderChange extends AddOrderEvent {

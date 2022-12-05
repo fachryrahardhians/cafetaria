@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:bloc/bloc.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:equatable/equatable.dart';
+import 'package:formz/formz.dart';
 
 part 'pilih_kawasan_event.dart';
 part 'pilih_kawasan_state.dart';
@@ -15,6 +16,7 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
         super(const PilihKawasanState.initial()) {
     on<GetPilihKawasan>(_getPilihKawasan);
     on<KawasanChange>(_kawasanChange);
+    on<UpdateKawasan>(_updateKawasan);
   }
 
   Future<void> _getPilihKawasan(
@@ -39,5 +41,32 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
         idkawasan: event.kawasan,
         items: state.items,
         status: state.status));
+  }
+
+  FutureOr<void> _updateKawasan(
+    UpdateKawasan event,
+    Emitter<PilihKawasanState> emit,
+  ) async {
+    try {
+      emit(state.copyWith(
+          inputStatus: FormzStatus.submissionInProgress,
+          idkawasan: state.idkawasan
+          // tersedia: state.tersedia
+          ));
+
+     await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
+
+      emit(
+        state.copyWith(
+          inputStatus: FormzStatus.submissionSuccess,
+          idkawasan: state.idkawasan,
+          errorMessage: "Kawasana berhasil Di Update",
+        ),
+      );
+    } catch (e) {
+      emit(state.copyWith(
+          inputStatus: FormzStatus.submissionFailure,
+          errorMessage: e.toString()));
+    }
   }
 }

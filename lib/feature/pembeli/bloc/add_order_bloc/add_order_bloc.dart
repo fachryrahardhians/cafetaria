@@ -65,6 +65,7 @@ class AddOrderBloc extends Bloc<AddOrderEvent, AddOrderState> {
           total: event.grandTotalPrice,
           userId: user?.uid,
           merchantId: event.merchantId,
+          keterangan: event.catatan,
           menus: listMenu));
 
       emit(state.copyWith(

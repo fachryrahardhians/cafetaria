@@ -9,6 +9,8 @@ import 'package:category_repository/category_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
+
 class PilihKwsn extends StatelessWidget {
   const PilihKwsn({Key? key}) : super(key: key);
 
@@ -31,6 +33,7 @@ class PilihKawasan extends StatefulWidget {
 }
 
 class _PilihKawasanState extends State<PilihKawasan> {
+  String status = 'verified';
   @override
   Widget build(BuildContext context) {
     AuthenticationRepository auth = context.read<AuthenticationRepository>();
@@ -86,7 +89,7 @@ class _PilihKawasanState extends State<PilihKawasan> {
                                 value: state.items![0],
                                 onChanged: (val) {
                                   context.read<PilihKawasanBloc>().add(
-                                      KawasanChange(val!.adminId.toString()));
+                                      KawasanChange(val!.kawasanId.toString()));
                                 },
                               );
                             }
@@ -94,18 +97,43 @@ class _PilihKawasanState extends State<PilihKawasan> {
                           },
                         ),
                       ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 100, bottom: 20),
-                        child: ReusableButton1(
-                          label: "Konfirmasi",
-                          onPressed: () {
-                            Navigator.push(
+                      BlocConsumer<PilihKawasanBloc, PilihKawasanState>(
+                        builder: (context, state) {
+                          return Padding(
+                            padding:
+                                const EdgeInsets.only(top: 100, bottom: 20),
+                            child: ReusableButton1(
+                              label: "Konfirmasi",
+                              onPressed: () {
+                                context
+                                    .read<PilihKawasanBloc>()
+                                    .add(UpdateKawasan(snapshot.data!.uid));
+                              },
+                            ),
+                          );
+                        },
+                        listener: (context, state) {
+                          if (state.inputStatus ==
+                              FormzStatus.submissionSuccess) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Status Berhasil Di Update'),
+                              ),
+                            );
+                            Navigator.pushReplacement(
                                 context,
                                 MaterialPageRoute(
                                     builder: (_) =>
                                         const PembeliDashboardPage()));
-                          },
-                        ),
+                          } else if (state.inputStatus ==
+                              FormzStatus.submissionFailure) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                              const SnackBar(
+                                content: Text('Terjadi kesalahan'),
+                              ),
+                            );
+                          }
+                        },
                       ),
                       InkWell(
                         child: Text(

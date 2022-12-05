@@ -23,6 +23,18 @@ class CategoryRepository {
     }
   }
 
+  //add idkawasan collection user
+  Future<void> updateKawasan(String id, String idkawasan) async {
+    try {
+      await _firestore
+          .collection('user')
+          .doc(id)
+          .update({'kawasanId': idkawasan});
+    } catch (e) {
+      throw Exception('Failed to Update idkawasan');
+    }
+  }
+
   //get pilih kawasan
   Future<List<PilihKawasanModel>> getPilihKawasan() async {
     try {

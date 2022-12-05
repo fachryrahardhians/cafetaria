@@ -13,6 +13,7 @@ class PilihKawasanModel {
   final String kawasanId;
   final double? kawasan_latitude;
   final double? kawasan_longitude;
+  final String? status;
   final String? name;
   // final DateTime updatedAt;
   const PilihKawasanModel({
@@ -21,6 +22,7 @@ class PilihKawasanModel {
     required this.kawasanId,
     // required this.createdAt,
     //this.geolocation,
+    this.status,
     this.kawasan_latitude,
     this.kawasan_longitude,
     this.name,
@@ -35,6 +37,7 @@ class PilihKawasanModel {
         address, adminId, //createdAt, //geolocation,
         kawasanId,
         kawasan_latitude, kawasan_longitude,
+        status,
         name //updatedAt
       ];
 
@@ -42,6 +45,7 @@ class PilihKawasanModel {
       {String? address,
       String? adminId,
       String? kawasanId,
+      String? status,
       double? kawasan_latitude,
       double? kawasan_longitude,
       String? name}) {
@@ -49,6 +53,7 @@ class PilihKawasanModel {
         address: address ?? this.address,
         adminId: adminId ?? this.adminId,
         kawasanId: kawasanId ?? this.kawasanId,
+        status: status ?? this.status,
         kawasan_latitude: kawasan_latitude ?? this.kawasan_latitude,
         kawasan_longitude: kawasan_longitude ?? this.kawasan_longitude,
         name: name ?? this.name);
