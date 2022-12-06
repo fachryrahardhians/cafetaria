@@ -2,11 +2,12 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
-import 'package:cafetaria/styles/box_shadows.dart';
+
 import 'package:cafetaria/styles/text_styles.dart';
-import 'package:cafetaria/utilities/size_config.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:menu_repository/menu_repository.dart';
 
 class PembeliDashboardPage extends StatelessWidget {
@@ -31,11 +32,53 @@ class PembeliDashboard extends StatefulWidget {
 class _PembeliDashboardState extends State<PembeliDashboard> {
   int index;
   String? id;
+  String? lat;
+  String? long;
 
   _PembeliDashboardState(this.index);
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Location Service Disabled");
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location Service denied");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          "Location Service permanently denied cannot request permission");
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  //listen for location update
+  void _liveLocation() async {
+    LocationSettings locationSettings = const LocationSettings(
+        accuracy: LocationAccuracy.high, distanceFilter: 100);
+    Geolocator.getPositionStream(locationSettings: locationSettings)
+        .listen((Position position) {
+      lat = position.latitude.toString();
+      long = position.longitude.toString();
+      print("Latitude : $lat");
+      print("Longitude : $long");
+    });
+  }
+
   @override
   void initState() {
-    // TODO: implement initState
+    _getCurrentLocation().then((value) {
+      setState(() {
+        lat = value.latitude.toString();
+        long = value.longitude.toString();
+      });
+      print("Latitude : $lat");
+      print("Longitude : $long");
+      _liveLocation();
+    });
     context.read<AuthenticationRepository>().getCurrentUser().then((value) {
       setState(() {
         id = value?.uid;
