@@ -1,3 +1,5 @@
+// ignore_for_file: avoid_print
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';

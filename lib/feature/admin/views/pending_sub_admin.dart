@@ -111,6 +111,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                             Text('$model'),
                             onTap: () {
                               showDialog(
+                                  barrierDismissible: false,
                                   context: context,
                                   builder: ((context) {
                                     return infoCart(e);
@@ -246,7 +247,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                     loading = true;
                   });
                   Timer(
-                    const Duration(seconds: 4),
+                    const Duration(seconds: 3),
                     () {
                       setState(() {
                         loading = false;
