@@ -3,7 +3,7 @@ description: Komplekku Cafetaria
 
 # The following line prevents the package from being accidentally published to
 # pub.dev using `flutter pub publish`. This is preferred for private packages.
-publish_to: 'none' # Remove this line if you wish to publish to pub.dev
+publish_to: "none" # Remove this line if you wish to publish to pub.dev
 
 # The following defines the version and build number for your application.
 # A version number is three numbers separated by dots, like 1.2.43
@@ -43,7 +43,7 @@ dependencies:
   equatable: ^2.0.3
   firebase_auth: ^3.3.19
   firebase_core: ^1.17.1
-  firebase_messaging: ^11.4.1
+  firebase_messaging: ^13.1.0
   firebase_storage: ^10.2.17
   flutter:
     sdk: flutter
@@ -86,13 +86,14 @@ dependencies:
     path: packages/sharedpref_repository
   storage:
     path: packages/storage
-  table_calendar: 3.0.6
+  table_calendar: ^3.0.8
   uuid: ^3.0.6
-
+dependency_overrides:
+  firebase_core_platform_interface: 4.5.1
 dev_dependencies:
   bloc_test: ^9.0.2
   build_verify: ^3.0.0
-  flutter_lints: ^1.0.0
+  flutter_lints: ^2.0.1
   flutter_test:
     sdk: flutter
   mocktail: ^0.3.0

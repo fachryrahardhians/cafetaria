@@ -32,19 +32,6 @@ class ReusableButton1 extends StatelessWidget {
     return Container(
       margin: margin ?? const EdgeInsets.symmetric(vertical: 8, horizontal: 16),
       child: OutlinedButton(
-        child: loading
-            ? const SizedBox(
-                height: 24,
-                width: 24,
-                child: CircularProgressIndicator(
-                  color: Colors.white,
-                ),
-              )
-            : Text(
-                label,
-                style: normalText.copyWith(
-                    fontWeight: FontWeight.bold, color: Colors.white),
-              ),
         onPressed: () {
           (disabled || loading) ? null : onPressed();
         },
@@ -59,6 +46,19 @@ class ReusableButton1 extends StatelessWidget {
             shape: RoundedRectangleBorder(
                 borderRadius:
                     BorderRadius.all(Radius.circular(borderRadius ?? 8)))),
+        child: loading
+            ? const SizedBox(
+                height: 24,
+                width: 24,
+                child: CircularProgressIndicator(
+                  color: Colors.white,
+                ),
+              )
+            : Text(
+                label,
+                style: normalText.copyWith(
+                    fontWeight: FontWeight.bold, color: Colors.white),
+              ),
       ),
     );
   }

@@ -35,7 +35,6 @@ abstract class TambahInfoModel extends State<TambahInfoWidget> {
           document: quill.Document.fromJson(retrive),
           selection: const TextSelection.collapsed(offset: 0));
     });
-    print(json.toString());
   }
 
   void pickTerbit() async {
@@ -89,6 +88,4 @@ abstract class TambahInfoModel extends State<TambahInfoWidget> {
       });
     }
   }
-
- 
 }

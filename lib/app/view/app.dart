@@ -2,7 +2,7 @@ import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
-import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
+
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 
 import 'package:cafetaria_ui/cafetaria_ui.dart';
@@ -100,7 +100,7 @@ class _AppState extends State<App> {
               widget._channel.id,
               widget._channel.name,
               channelDescription: widget._channel.description,
-              // TODO add a proper drawable resource to android, for now using
+            
               //      one that already exists in example app.
               icon: 'launch_background',
             ),
@@ -121,7 +121,7 @@ class _AppState extends State<App> {
               widget._channel.id,
               widget._channel.name,
               channelDescription: widget._channel.description,
-              // TODO add a proper drawable resource to android, for now using
+         
               //      one that already exists in example app.
               icon: 'launch_background',
             ),
@@ -129,7 +129,7 @@ class _AppState extends State<App> {
         );
       }
     });
-    // TODO: implement initState
+  
     super.initState();
   }
 

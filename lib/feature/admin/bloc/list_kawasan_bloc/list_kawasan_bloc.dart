@@ -1,4 +1,5 @@
 import 'package:admin_repository/admin_repository.dart';
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:equatable/equatable.dart';
 
