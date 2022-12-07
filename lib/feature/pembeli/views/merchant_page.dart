@@ -20,9 +20,7 @@ import 'package:merchant_repository/merchant_repository.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class MerchantPage extends StatefulWidget {
-  final String? lat;
-  final String? long;
-  const MerchantPage({Key? key, this.lat, this.long}) : super(key: key);
+  const MerchantPage({Key? key}) : super(key: key);
 
   @override
   _MerchantPageState createState() => _MerchantPageState();
@@ -51,168 +49,13 @@ class _MerchantPageState extends State<MerchantPage>
     super.initState();
   }
 
-  void showAlert(BuildContext context) {
-    showDialog(context: context, builder: (context) => dialogChangeKawasan());
-  }
-
-  calculateDistance(List<PilihKawasanModel> model) {
-    List<double> totalDistance = [];
-    PilihKawasanModel? data;
-    var i = 0;
-    double? kawasan;
-    while (i < model.length) {
-      final double distance = Geolocator.distanceBetween(
-          double.parse(widget.lat.toString()),
-          double.parse(widget.long.toString()),
-          double.parse(model[i].kawasan_latitude.toString()),
-          double.parse(model[i].kawasan_longitude.toString()));
-      totalDistance.add(distance);
-      i++;
-    }
-    // for (i; i < model.length; i++) {
-    //   final double distance = Geolocator.distanceBetween(
-    //       double.parse(lat.toString()),
-    //       double.parse(long.toString()),
-    //       double.parse(model[i].kawasan_latitude.toString()),
-    //       double.parse(model[i].kawasan_longitude.toString()));
-    //   //print(distance);\
-    //   kawasan = distance;
-
-    //   if (distance < kawasan) {
-    //     kawasan = distance;
-    //   }
-    // }
-    for (var i = 0; i < totalDistance.length; i++) {
-      var a = 1;
-      if (totalDistance[a] < totalDistance[i]) {
-        kawasan = totalDistance[a];
-        data = model[a];
-        a++;
-      } else {
-        kawasan = totalDistance[i];
-        data = model[i];
-      }
-      print(kawasan);
-      return data;
-    }
-  }
-
-  Dialog dialogChangeKawasan() {
-    return Dialog(
-        child: BlocProvider(
-      create: (context) => PilihKawasanBloc(
-          categoryRepository: context.read<CategoryRepository>())
-        ..add(const GetPilihKawasan()),
-      child: BlocBuilder<PilihKawasanBloc, PilihKawasanState>(
-        builder: (context, state) {
-          final status = state.status;
-          if (status == PilihKawasanStatus.loading) {
-            return const Center(
-              child: CircularProgressIndicator(),
-            );
-          } else if (status == PilihKawasanStatus.failure) {
-            return const Center(
-              child: Text('Terjadi kesalahan'),
-            );
-          } else if (status == PilihKawasanStatus.success) {
-            final items = state.items!;
-            PilihKawasanModel model = calculateDistance(items);
-            return Padding(
-              padding: const EdgeInsets.only(
-                  left: 16, right: 16, top: 15, bottom: 16),
-              child: Column(
-                mainAxisSize: MainAxisSize.min,
-                children: [
-                  Assets.images.icMap.image(),
-                  Text(
-                    "Kamu Memasuki Kawasan Lapaku ${model.name}",
-                    textAlign: TextAlign.center,
-                    style: const TextStyle(
-                        color: Color(0xff222222),
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(top: 8, bottom: 16),
-                    child: Text(
-                      "Apakah kamu ingin mengubah kawasan ke ${model.name}?",
-                      textAlign: TextAlign.center,
-                      style: const TextStyle(
-                          color: Color(0xff808285),
-                          fontSize: 12,
-                          fontWeight: FontWeight.w400),
-                    ),
-                  ),
-                  Row(
-                    children: [
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                              height: 44,
-                              margin: const EdgeInsets.only(right: 8),
-                              child: ElevatedButton(
-                                  style: ElevatedButton.styleFrom(
-                                      primary: Colors.white,
-                                      side: const BorderSide(
-                                        color: MyColors.red1,
-                                      ),
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(6),
-                                          side: BorderSide.none)),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "TIDAK",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.black.withOpacity(1)),
-                                  )))),
-                      Expanded(
-                          flex: 1,
-                          child: Container(
-                              height: 44,
-                              margin: const EdgeInsets.only(left: 8),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all(0),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              const Color(0xffee3124)),
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                              side: BorderSide.none))),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "YA GANTI",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white.withOpacity(1)),
-                                  ))))
-                    ],
-                  )
-                ],
-              ),
-            );
-          }
-          return const SizedBox.shrink();
-        },
-      ),
-    ));
-  }
-
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
     //var size = MediaQuery.of(context).size;
-    Future.delayed(Duration.zero, () => showAlert(context));
+    // show == true
+    //     ? Future.delayed(Duration.zero, () => showAlert(context))
+    //     : print("Kosong");
     return MultiBlocProvider(
         providers: [
           BlocProvider(
