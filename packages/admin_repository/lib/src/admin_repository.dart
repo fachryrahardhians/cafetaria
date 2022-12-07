@@ -17,7 +17,6 @@ class AdminRepository {
     }
   }
 
- 
   Stream<List<KawasanRead>> getStreamListKawasan() async* {
     try {
       final snapshot = await _firestore.collection('kawasan-read').get();
@@ -25,6 +24,17 @@ class AdminRepository {
       yield documents.toListKawasan();
     } catch (e) {
       throw Exception('Failed to get kawasan');
+    }
+  }
+
+  Future<void> updateLongLat(String id, String long, String lat) async {
+    try {
+      await _firestore
+          .collection('user')
+          .doc(id)
+          .update({'currentLatitude': double.parse(lat), 'currentLongitude': double.parse(long)});
+    } catch (e) {
+      throw Exception('Failed to Update LongLat');
     }
   }
 

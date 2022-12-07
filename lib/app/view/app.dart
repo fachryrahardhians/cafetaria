@@ -172,7 +172,7 @@ class AppView extends StatelessWidget {
       theme: CFTheme.themeData,
       title: 'Cafetaria',
       home: statusApp == AppStatus.authenticated
-          ? const PilihKwsn()
+          ? const PembeliDashboardPage()
           : const LoginPage(),
     );
   }
