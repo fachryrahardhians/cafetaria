@@ -2,6 +2,7 @@
 
 import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
+import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
@@ -12,6 +13,7 @@ import 'package:category_repository/category_repository.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:formz/formz.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:menu_repository/menu_repository.dart';
 
@@ -66,7 +68,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
   //listen for location update
   void _liveLocation() async {
     LocationSettings locationSettings = const LocationSettings(
-        accuracy: LocationAccuracy.high, distanceFilter: 100);
+        accuracy: LocationAccuracy.high, distanceFilter: 1000);
     Geolocator.getPositionStream(locationSettings: locationSettings)
         .listen((Position position) {
       lat = position.latitude.toString();
@@ -97,6 +99,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
           double.parse(model[i].kawasan_latitude.toString()),
           double.parse(model[i].kawasan_longitude.toString()));
       totalDistance.add(distance);
+      print(distance);
       i++;
     }
 
@@ -135,6 +138,9 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
           } else if (status == PilihKawasanStatus.success) {
             final items = state.items!;
             PilihKawasanModel model = calculateDistance(items);
+            context
+                .read<PilihKawasanBloc>()
+                .add(KawasanChange(model.kawasanId.toString()));
             return Padding(
               padding: const EdgeInsets.only(
                   left: 16, right: 16, top: 15, bottom: 16),
@@ -191,29 +197,52 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
                       Expanded(
                           flex: 1,
                           child: Container(
-                              height: 44,
-                              margin: const EdgeInsets.only(left: 8),
-                              child: ElevatedButton(
-                                  style: ButtonStyle(
-                                      elevation: MaterialStateProperty.all(0),
-                                      backgroundColor:
-                                          MaterialStateProperty.all(
-                                              const Color(0xffee3124)),
-                                      shape: MaterialStateProperty.all(
-                                          RoundedRectangleBorder(
-                                              borderRadius:
-                                                  BorderRadius.circular(6),
-                                              side: BorderSide.none))),
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text(
-                                    "YA GANTI",
-                                    style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w700,
-                                        color: Colors.white.withOpacity(1)),
-                                  ))))
+                            height: 44,
+                            margin: const EdgeInsets.only(left: 8),
+                            child: BlocConsumer<PilihKawasanBloc,
+                                PilihKawasanState>(
+                              builder: (context, state) {
+                                return ElevatedButton(
+                                    style: ElevatedButton.styleFrom(
+                                        primary: MyColors.red1,
+                                        shape: RoundedRectangleBorder(
+                                            borderRadius:
+                                                BorderRadius.circular(6),
+                                            side: BorderSide.none)),
+                                    onPressed: () {
+                                      context
+                                          .read<PilihKawasanBloc>()
+                                          .add(UpdateKawasan(id.toString()));
+                                    },
+                                    child: Text(
+                                      "Ya Ganti",
+                                      style: TextStyle(
+                                          fontSize: 14,
+                                          fontWeight: FontWeight.w700,
+                                          color: Colors.white.withOpacity(1)),
+                                    ));
+                              },
+                              listener: (context, state) {
+                                if (state.inputStatus ==
+                                    FormzStatus.submissionSuccess) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content:
+                                          Text('Status Berhasil Di Update'),
+                                    ),
+                                  );
+                                  Navigator.of(context).pop();
+                                } else if (state.inputStatus ==
+                                    FormzStatus.submissionFailure) {
+                                  ScaffoldMessenger.of(context).showSnackBar(
+                                    const SnackBar(
+                                      content: Text('Terjadi kesalahan'),
+                                    ),
+                                  );
+                                }
+                              },
+                            ),
+                          ))
                     ],
                   )
                 ],
@@ -252,9 +281,11 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
 
   @override
   Widget build(BuildContext context) {
-    context
-        .read<AdminRepository>()
-        .updateLongLat(id.toString(), long.toString(), lat.toString());
+    if (lat != null && long != null) {
+      context
+          .read<AdminRepository>()
+          .updateLongLat(id.toString(), long.toString(), lat.toString());
+    }
     return DefaultTabController(
       length: 4,
       initialIndex: index,
