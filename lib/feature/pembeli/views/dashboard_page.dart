@@ -16,6 +16,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:menu_repository/menu_repository.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../../gen/assets.gen.dart';
 import '../../../styles/colors.dart';
@@ -67,6 +68,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
 
   //listen for location update
   void _liveLocation() async {
+    SharedPreferences latlang = await SharedPreferences.getInstance();
     LocationSettings locationSettings = const LocationSettings(
         accuracy: LocationAccuracy.high, distanceFilter: 1000);
     Geolocator.getPositionStream(locationSettings: locationSettings)
@@ -79,7 +81,11 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         context.read<AdminRepository>().updateLongLat(
             value!.uid.toString(), long.toString(), lat.toString());
       });
-      showAlert(context);
+
+      if (position.latitude != latlang.getDouble('lat')) {
+        latlang.setDouble('lat', position.latitude);
+        showAlert(context);
+      }
     });
   }
 
@@ -112,6 +118,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
       } else {
         kawasan = totalDistance[i];
         data = model[i];
+        a++;
       }
       print(kawasan);
       return data;
@@ -257,10 +264,14 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
 
   @override
   void initState() {
-    _getCurrentLocation().then((value) {
+    _getCurrentLocation().then((value) async {
+      SharedPreferences latlang = await SharedPreferences.getInstance();
       setState(() {
         lat = value.latitude.toString();
         long = value.longitude.toString();
+        if (latlang.getDouble('lat') == null) {
+          latlang.setDouble('lat', value.latitude);
+        }
       });
       _liveLocation();
     });
