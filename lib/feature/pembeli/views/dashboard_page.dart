@@ -81,10 +81,15 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         context.read<AdminRepository>().updateLongLat(
             value!.uid.toString(), long.toString(), lat.toString());
       });
-
-      if (position.latitude != latlang.getDouble('lat')) {
-        latlang.setDouble('lat', position.latitude);
+      if ((position.latitude < latlang.getDouble('lat')! + -0.1) ||
+              (position.latitude > latlang.getDouble('lat')! + 0.1)
+          // && latlang.getDouble('lat')! < latlang.getDouble('lat')! + -0.1000000
+          ) {
         showAlert(context);
+        latlang.setDouble('lat', position.latitude);
+        print("lat 2 : ${latlang.getDouble('lat')}");
+      } else {
+        print("data sama");
       }
     });
   }
@@ -105,7 +110,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
           double.parse(model[i].kawasan_latitude.toString()),
           double.parse(model[i].kawasan_longitude.toString()));
       totalDistance.add(distance);
-      print(distance);
+      //print(distance);
       i++;
     }
 
@@ -271,6 +276,8 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         long = value.longitude.toString();
         if (latlang.getDouble('lat') == null) {
           latlang.setDouble('lat', value.latitude);
+        } else {
+          print("data lat : ${latlang.getDouble('lat')! + 0.1}");
         }
       });
       _liveLocation();

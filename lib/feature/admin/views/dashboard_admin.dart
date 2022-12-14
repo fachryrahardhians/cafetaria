@@ -25,6 +25,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
   Widget build(BuildContext context) {
     return DefaultTabController(
       length: 4,
+      initialIndex: widget.index,
       child: SafeArea(
         child: Scaffold(
           body: const TabBarView(
@@ -72,7 +73,6 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
           ),
         ),
       ),
-      initialIndex: widget.index,
     );
   }
 }

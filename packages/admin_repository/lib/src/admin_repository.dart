@@ -29,10 +29,10 @@ class AdminRepository {
 
   Future<void> updateLongLat(String id, String long, String lat) async {
     try {
-      await _firestore
-          .collection('user')
-          .doc(id)
-          .update({'currentLatitude': double.parse(lat), 'currentLongitude': double.parse(long)});
+      await _firestore.collection('user').doc(id).update({
+        'currentLatitude': double.parse(lat),
+        'currentLongitude': double.parse(long)
+      });
     } catch (e) {
       throw Exception('Failed to Update LongLat');
     }
@@ -43,6 +43,22 @@ class AdminRepository {
       await _firestore.collection('kawasan').doc(id).update({'status': status});
     } catch (e) {
       throw Exception('Failed to Update status');
+    }
+  }
+
+  Future<void> updateKawasan(String id, String kawasan) async {
+    try {
+      await _firestore.collection('kawasan').doc(id).update({'name': kawasan});
+    } catch (e) {
+      throw Exception('Failed to Update Kawasan');
+    }
+  }
+
+  Future<void> deleteKawasan(String id) async {
+    try {
+      await _firestore.collection('kawasan').doc(id).delete();
+    } catch (e) {
+      throw Exception('Failed to Update Kawasan');
     }
   }
 }

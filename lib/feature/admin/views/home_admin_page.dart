@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
 import 'package:cafetaria/feature/admin/views/tambah_info.dart';
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
@@ -107,7 +108,10 @@ class MainMenu extends StatelessWidget {
                 total: 2,
               ),
               HomeItemOrder(
-                route: () {},
+                route: () {
+                   Navigator.push(context,
+                      MaterialPageRoute(builder: (_) => const EditKawasan()));
+                },
                 image: "assets/icons/admin_atur.png",
                 title: "Atur Admin",
               ),
