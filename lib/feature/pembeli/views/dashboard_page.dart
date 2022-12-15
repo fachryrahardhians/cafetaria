@@ -110,24 +110,31 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
           double.parse(model[i].kawasan_latitude.toString()),
           double.parse(model[i].kawasan_longitude.toString()));
       totalDistance.add(distance);
-      //print(distance);
+      print(distance);
       i++;
     }
 
-    for (var i = 0; i < totalDistance.length; i++) {
-      var a = 1;
-      if (totalDistance[a] < totalDistance[i]) {
-        kawasan = totalDistance[a];
-        data = model[a];
-        a++;
-      } else {
-        kawasan = totalDistance[i];
-        data = model[i];
-        a++;
+    for (var i = 0; i < totalDistance.length - 1; i++) {
+      for (var j = i + 1; j < totalDistance.length; j++) {
+        if (totalDistance[j] < totalDistance[i]) {
+          kawasan = totalDistance[j];
+          data = model[j];
+        }
       }
-      print(kawasan);
-      return data;
+
+      // if (totalDistance[a] < totalDistance[i]) {
+      //   kawasan = totalDistance[a];
+      //   data = model[a];
+
+      // } else {
+      //   kawasan = totalDistance[i];
+      //   data = model[i];
+
+      // }
+
     }
+    print("Kawasan terdekat : $kawasan");
+    return data;
   }
 
   Dialog dialogChangeKawasan() {

@@ -3,7 +3,6 @@ import 'dart:async';
 import 'package:admin_repository/admin_repository.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/admin/bloc/edit_kawasan_bloc/edit_kawasan_bloc.dart';
-import 'package:cafetaria/feature/admin/bloc/update_status_bloc/update_status_bloc.dart';
 import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -41,7 +40,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
               height: 20,
             ),
             const Text(
-              "Verifikasi Sub-Admin",
+              "Edit Sub-Admin",
               style: TextStyle(
                 fontSize: 24,
                 fontWeight: FontWeight.bold,
