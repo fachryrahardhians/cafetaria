@@ -1,9 +1,9 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
+
 
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
-import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
+
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
@@ -13,7 +13,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
-import 'package:cloud_functions/cloud_functions.dart';
+
 
 class HasilMerchant extends StatelessWidget {
   final String cari;
@@ -39,6 +39,7 @@ class HasilSearchMerchant extends StatefulWidget {
   const HasilSearchMerchant({Key? key, this.search = ""}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _HasilSearchMerchantState createState() => _HasilSearchMerchantState();
 }
 
@@ -67,7 +68,6 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
   @override
   Widget build(BuildContext context) {
     SizeConfig().init(context);
-    var size = MediaQuery.of(context).size;
 
     return Scaffold(
       appBar: AppBar(
@@ -309,7 +309,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                       margin: const EdgeInsets.only(right: 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
+                              backgroundColor: Colors.white,
                               side: const BorderSide(
                                 color: MyColors.red1,
                               ),

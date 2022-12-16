@@ -54,6 +54,7 @@ class KeranjangPage extends StatefulWidget {
       : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<KeranjangPage> createState() => _KeranjangPageState(preOrder);
 }
 
@@ -173,7 +174,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
                   GestureDetector(
                     onTap: () {
                       Navigator.of(context).pop();
-                      print("Klik");
                     },
                     child: Text(
                       'Tambah Pesanan',
@@ -385,9 +385,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
         builder: (context, state) {
           if (_preorder) {
             return CFButton.primary(
-              child: (state.formzStatus == FormzStatus.submissionInProgress)
-                  ? const CircularProgressIndicator()
-                  : const Text('SIMPAN'),
               onPressed: state.orderInput.valid
                   ? () {
                       if (_preorder) {
@@ -405,12 +402,14 @@ class _KeranjangPageState extends State<KeranjangPage> {
                                   grandTotalPrice: subTotalPrice,
                                   timestamp: DateTime.now().toString(),
                                   pickupDate:
-                                      _selectedDay.toString().split(' ')[0] +
-                                          ' 08:00:00.000'),
+                                      '${_selectedDay.toString().split(' ')[0]} 08:00:00.000'),
                             );
                       }
                     }
                   : null,
+              child: (state.formzStatus == FormzStatus.submissionInProgress)
+                  ? const CircularProgressIndicator()
+                  : const Text('SIMPAN'),
             );
           } else {
             return CFButton.primary(
@@ -427,8 +426,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
                           alat: alat,
                           grandTotalPrice: subTotalPrice,
                           timestamp: DateTime.now().toString(),
-                          pickupDate: _selectedDay.toString().split(' ')[0] +
-                              ' 08:00:00.000'),
+                          pickupDate: '${_selectedDay.toString().split(' ')[0]} 08:00:00.000'),
                     );
               },
             );

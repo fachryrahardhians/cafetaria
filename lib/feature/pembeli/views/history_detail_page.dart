@@ -1,6 +1,6 @@
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/bloc/merchant_byId_bloc/merchant_byId_bloc.dart';
-import 'package:cafetaria/feature/pembeli/bloc/merchant_byId_bloc/merchant_byId_bloc.dart';
+
 import 'package:cafetaria/feature/pembeli/views/rating_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -35,6 +35,7 @@ class HistoryDetail extends StatefulWidget {
   const HistoryDetail({Key? key, required this.item}) : super(key: key);
 
   @override
+  // ignore: no_logic_in_create_state
   State<HistoryDetail> createState() => _HistoryDetailState(item);
 }
 
@@ -172,7 +173,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                 style: textStyle.copyWith(fontWeight: FontWeight.w500),
               ),
               Text(
-                'Rp ' + item.total.toString(),
+                'Rp ${item.total}',
                 style: textStyle.copyWith(
                     fontWeight: FontWeight.w500, fontSize: 15),
               )

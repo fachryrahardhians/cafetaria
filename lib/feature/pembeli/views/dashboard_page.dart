@@ -2,7 +2,7 @@
 
 import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
-import 'package:cafetaria/components/buttons/reusables_buttons.dart';
+
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
@@ -195,7 +195,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
                               margin: const EdgeInsets.only(right: 8),
                               child: ElevatedButton(
                                   style: ElevatedButton.styleFrom(
-                                      primary: Colors.white,
+                                      backgroundColor: Colors.white,
                                       side: const BorderSide(
                                         color: MyColors.red1,
                                       ),
@@ -223,7 +223,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
                               builder: (context, state) {
                                 return ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: MyColors.red1,
+                                        backgroundColor: MyColors.red1,
                                         shape: RoundedRectangleBorder(
                                             borderRadius:
                                                 BorderRadius.circular(6),

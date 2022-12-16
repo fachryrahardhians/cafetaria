@@ -65,7 +65,7 @@ class _HistoryState extends State<History> {
             ],
           ),
         ),
-        body: TabBarView(
+        body: const TabBarView(
           children: [ProcessList(), DoneList()],
         ),
       ),
@@ -103,21 +103,21 @@ class ProcessList extends StatelessWidget {
               orderRepository: context.read<OrderRepository>(),
               authenticationRepository:
                   context.read<AuthenticationRepository>())
-            ..add(GetHistoryOrder('process')),
+            ..add(const GetHistoryOrder('process')),
         ),
         BlocProvider<ListMerchantBloc>(
             create: (context) => ListMerchantBloc(
                 merchantRepository: context.read<MerchantRepository>())
-              ..add(GetListMerchant()))
+              ..add(const GetListMerchant()))
       ],
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
           builder: (context, state) {
         final status = state.status;
         if (status == HistoryOrderStatus.loading) {
-          return Center(child: const CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (status == HistoryOrderStatus.failure) {
           return Center(
-            child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+            child: Text('Terjadi kesalahan error: ${state.errorMessage!}'),
           );
         } else if (status == HistoryOrderStatus.success) {
           if (state.items != null) {
@@ -126,13 +126,13 @@ class ProcessList extends StatelessWidget {
                 builder: (context, merchantState) {
               final merchantStatus = merchantState.status;
               if (merchantStatus == ListMerchantStatus.loading) {
-                return Center(child: CircularProgressIndicator());
+                return const Center(child: CircularProgressIndicator());
               } else if (merchantStatus == ListMerchantStatus.success) {
                 return SizedBox(
                   height: 200,
                   child: ListView.separated(
                       padding:
-                          EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                          const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
                       itemBuilder: (context, index) {
                         final item = items[index];
                         DateTime date = DateTime.parse(item.timestamp!);
@@ -143,10 +143,11 @@ class ProcessList extends StatelessWidget {
                             .trim()
                             .split(' ');
                         MerchantModel? merchant;
-                        merchantState.items!.forEach((element) {
-                          if (element.merchantId == item.merchantId)
+                        for (var element in merchantState.items!) {
+                          if (element.merchantId == item.merchantId) {
                             merchant = element;
-                        });
+                          }
+                        }
                         return listCard(dateFormated[0], dateFormated[2],
                             dateFormated[1], context,
                             item: item, minutes: minutes, merchant: merchant!);
@@ -157,13 +158,14 @@ class ProcessList extends StatelessWidget {
                       },
                       itemCount: items.length),
                 );
-              } else if (merchantStatus == ListMerchantStatus.failure)
+              } else if (merchantStatus == ListMerchantStatus.failure) {
                 return Text(merchantState.errorMessage!);
-              else
-                return SizedBox();
+              } else {
+                return const SizedBox();
+              }
             });
           } else {
-            return Text('No Data');
+            return const Text('No Data');
           }
         }
         return const SizedBox();
@@ -323,21 +325,21 @@ class _DoneListState extends State<DoneList> {
               orderRepository: context.read<OrderRepository>(),
               authenticationRepository:
                   context.read<AuthenticationRepository>())
-            ..add(GetHistoryOrder('finish')),
+            ..add(const GetHistoryOrder('finish')),
         ),
         BlocProvider<ListMerchantBloc>(
             create: (context) => ListMerchantBloc(
                 merchantRepository: context.read<MerchantRepository>())
-              ..add(GetListMerchant()))
+              ..add(const GetListMerchant()))
       ],
       child: BlocBuilder<HistoryOrderBloc, HistoryOrderState>(
         builder: (childContext, state) {
           final status = state.status;
           if (status == HistoryOrderStatus.loading) {
-            return Center(child: const CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (status == HistoryOrderStatus.failure) {
             return Center(
-              child: Text('Terjadi kesalahan error: ' + state.errorMessage!),
+              child: Text('Terjadi kesalahan error: ${state.errorMessage!}'),
             );
           } else if (status == HistoryOrderStatus.success) {
             if (state.items != null) {
@@ -369,8 +371,9 @@ class _DoneListState extends State<DoneList> {
                         },
                         itemCount: items.length),
                   );
-                } else
+                } else {
                   return const SizedBox();
+                }
               });
             } else {
               return const Text('No Data');
@@ -419,7 +422,7 @@ class _DoneListState extends State<DoneList> {
             SizedBox(height: SizeConfig.safeBlockVertical * 1),
             Text(
               item.timestamp.toString(),
-              style: textStyle.copyWith(color: Color(0xffB1B5BA)),
+              style: textStyle.copyWith(color: const Color(0xffB1B5BA)),
             )
           ],
         ),
