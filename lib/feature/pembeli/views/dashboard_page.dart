@@ -115,7 +115,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
     }
 
     for (var i = 0; i < totalDistance.length - 1; i++) {
-      for (var j = i + 1; j < totalDistance.length; j++) {
+      for (var j = 0; j < totalDistance.length; j++) {
         if (totalDistance[j] < totalDistance[i]) {
           kawasan = totalDistance[j];
           data = model[j];
