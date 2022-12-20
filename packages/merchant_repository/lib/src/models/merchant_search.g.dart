@@ -9,7 +9,7 @@ part of 'merchant_search.dart';
 MechantSearch _$MechantSearchFromJson(Map<String, dynamic> json) =>
     MechantSearch(
       type: json['_type'] as String?,
-      score: json['_score'] as int?,
+     // score: json['_score'] as double?,
       id: json['_id'] as String?,
       index: json['_index'] as String?,
       source: json['_source'] == null
@@ -21,7 +21,7 @@ MechantSearch _$MechantSearchFromJson(Map<String, dynamic> json) =>
 Map<String, dynamic> _$MechantSearchToJson(MechantSearch instance) =>
     <String, dynamic>{
       '_type': instance.type,
-      '_score': instance.score,
+      //'_score': instance.score,
       '_id': instance.id,
       '_source': instance.source?.toJson(),
       '_index': instance.index,

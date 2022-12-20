@@ -1,7 +1,5 @@
 // ignore_for_file: avoid_print
 
-
-
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
@@ -14,10 +12,11 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 
-
 class HasilMerchant extends StatelessWidget {
   final String cari;
-  const HasilMerchant({Key? key, this.cari = ""}) : super(key: key);
+  final String id;
+  const HasilMerchant({Key? key, this.cari = "", this.id = ""})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -30,13 +29,16 @@ class HasilMerchant extends StatelessWidget {
         ],
         child: HasilSearchMerchant(
           search: cari,
+          id: id,
         ));
   }
 }
 
 class HasilSearchMerchant extends StatefulWidget {
   final String search;
-  const HasilSearchMerchant({Key? key, this.search = ""}) : super(key: key);
+  final String id;
+  const HasilSearchMerchant({Key? key, this.search = "", this.id = ""})
+      : super(key: key);
 
   @override
   // ignore: library_private_types_in_public_api
@@ -54,11 +56,13 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
 
   String? merchantIdInKeranjang;
   MerchantModel? selectedMerchant;
-
+  String? idUser;
   @override
   void initState() {
     // TODO: implement initState
-
+    setState(() {
+      idUser = widget.id;
+    });
     addMenuToCartBloc =
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     WidgetsBinding.instance.addObserver(this);
@@ -111,8 +115,8 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                       Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) =>
-                                    HasilMerchant(cari: value.toString()),
+                                builder: (context) => HasilMerchant(
+                                    cari: value.toString(), id: idUser!),
                               ))
                           .then((value) =>
                               {addMenuToCartBloc..add(GetMenusInCart())});
@@ -169,7 +173,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                 child: FutureBuilder<List<MechantSearch>>(
                   future: context
                       .read<MerchantRepository>()
-                      .searchMerchant(widget.search),
+                      .searchMerchant(widget.search, idUser!),
                   builder: (context, snapshot) {
                     return snapshot.data?.length == null
                         ? const CircularProgressIndicator()
@@ -188,7 +192,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                         maxPrice: snapshot
                                             .data?[index].source?.maxPrice,
                                         totalCountRating:
-                                            snapshot.data?[index].score,
+                                            snapshot.data?[index].source!.totalCountRating,
                                         minPrice: snapshot
                                             .data?[index].source?.minPrice,
                                         rating: snapshot
@@ -354,7 +358,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                           idMerchant: model!.id.toString(),
                                           alamat:
                                               model.source!.address.toString(),
-                                          rating: model.source!.rating,
+                                          rating: model.source!.rating!.toDouble(),
                                           jumlahUlasan:
                                               model.source!.totalCountRating,
                                           tutup_toko:

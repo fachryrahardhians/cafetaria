@@ -20,7 +20,8 @@ import 'package:merchant_repository/merchant_repository.dart';
 import 'package:cloud_functions/cloud_functions.dart';
 
 class MerchantPage extends StatefulWidget {
-  const MerchantPage({Key? key}) : super(key: key);
+  final String id;
+  const MerchantPage({Key? key, required this.id}) : super(key: key);
 
   @override
   _MerchantPageState createState() => _MerchantPageState();
@@ -41,6 +42,7 @@ class _MerchantPageState extends State<MerchantPage>
   @override
   void initState() {
     // TODO: implement initState
+
     listMerchantBloc = ListMerchantBloc(
         merchantRepository: context.read<MerchantRepository>());
     addMenuToCartBloc =
@@ -115,14 +117,15 @@ class _MerchantPageState extends State<MerchantPage>
                       width: double.infinity,
                       height: 40,
                       child: TextField(
-                        style: TextStyle(fontSize: 13),
+                        style: const TextStyle(fontSize: 13),
                         onSubmitted: (value) {
                           if (value.isNotEmpty) {
                             Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) =>
-                                          HasilMerchant(cari: value.toString()),
+                                      builder: (context) => HasilMerchant(
+                                          cari: value.toString(),
+                                          id: widget.id),
                                     ))
                                 .then((value) =>
                                     {addMenuToCartBloc..add(GetMenusInCart())});

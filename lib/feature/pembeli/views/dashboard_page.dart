@@ -10,6 +10,7 @@ import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
 
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:category_repository/category_repository.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -306,61 +307,70 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
 
   @override
   Widget build(BuildContext context) {
+    AuthenticationRepository auth = context.read<AuthenticationRepository>();
     if (lat != null && long != null) {
       context
           .read<AdminRepository>()
           .updateLongLat(id.toString(), long.toString(), lat.toString());
     }
-    return DefaultTabController(
-      length: 4,
-      initialIndex: index,
-      child: SafeArea(
-        child: Scaffold(
-          body: const TabBarView(
-            children: [
-              MerchantPage(),
-              SizedBox(),
-              HistoryPage(),
-              PembeliProfilePage(),
-            ],
-          ),
-          bottomNavigationBar: TabBar(
-            indicator: const BoxDecoration(),
-            labelColor: const Color(0xffee3124),
-            unselectedLabelColor: const Color(0xffB1B5BA),
-            unselectedLabelStyle: textStyle,
-            labelStyle: textStyle,
-            tabs: const [
-              Tab(
-                text: 'Home',
-                iconMargin: EdgeInsets.only(bottom: 4),
-                icon: Icon(Icons.home_filled),
-              ),
-              Tab(
-                text: 'Pesan',
-                iconMargin: EdgeInsets.only(bottom: 4),
-                icon: Icon(
-                  Icons.mail_rounded,
+    return FutureBuilder<User?>(
+        future: auth.getCurrentUser(),
+        builder: (context, snapshot) {
+          if (snapshot.data == null) {
+            return CircularProgressIndicator();
+          } else {
+            return DefaultTabController(
+              length: 4,
+              initialIndex: index,
+              child: SafeArea(
+                child: Scaffold(
+                  body: TabBarView(
+                    children: [
+                      MerchantPage(id: snapshot.data!.uid),
+                      const SizedBox(),
+                      const HistoryPage(),
+                      const PembeliProfilePage(),
+                    ],
+                  ),
+                  bottomNavigationBar: TabBar(
+                    indicator: const BoxDecoration(),
+                    labelColor: const Color(0xffee3124),
+                    unselectedLabelColor: const Color(0xffB1B5BA),
+                    unselectedLabelStyle: textStyle,
+                    labelStyle: textStyle,
+                    tabs: const [
+                      Tab(
+                        text: 'Home',
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                        icon: Icon(Icons.home_filled),
+                      ),
+                      Tab(
+                        text: 'Pesan',
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                        icon: Icon(
+                          Icons.mail_rounded,
+                        ),
+                      ),
+                      Tab(
+                        text: 'History',
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                        icon: Icon(
+                          Icons.history,
+                        ),
+                      ),
+                      Tab(
+                        text: 'Profile',
+                        iconMargin: EdgeInsets.only(bottom: 4),
+                        icon: Icon(
+                          Icons.person_rounded,
+                        ),
+                      )
+                    ],
+                  ),
                 ),
               ),
-              Tab(
-                text: 'History',
-                iconMargin: EdgeInsets.only(bottom: 4),
-                icon: Icon(
-                  Icons.history,
-                ),
-              ),
-              Tab(
-                text: 'Profile',
-                iconMargin: EdgeInsets.only(bottom: 4),
-                icon: Icon(
-                  Icons.person_rounded,
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
+            );
+          }
+        });
   }
 }
