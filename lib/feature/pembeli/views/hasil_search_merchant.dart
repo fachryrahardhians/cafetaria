@@ -73,207 +73,222 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
   Widget build(BuildContext context) {
     SizeConfig().init(context);
 
-    return Scaffold(
-      appBar: AppBar(
-        iconTheme: const IconThemeData(color: Color(0xffee3124)),
-        backgroundColor: Colors.white,
-        elevation: 0,
-        title: const Text(
-          "Hasil Search",
-          style: TextStyle(
-              fontSize: 16,
-              fontWeight: FontWeight.w700,
-              color: Color(0xff333435)),
+    return WillPopScope(
+      onWillPop: () {
+        Navigator.pop(context);
+        return Future.value(true);
+      },
+      child: Scaffold(
+        appBar: AppBar(
+          iconTheme: const IconThemeData(color: Color(0xffee3124)),
+          backgroundColor: Colors.white,
+          elevation: 0,
+          title: const Text(
+            "Hasil Search",
+            style: TextStyle(
+                fontSize: 16,
+                fontWeight: FontWeight.w700,
+                color: Color(0xff333435)),
+          ),
+          leading: GestureDetector(
+              onTap: () => Navigator.pop(context),
+              child: const Icon(Icons.arrow_back)),
+          centerTitle: true,
         ),
-        leading: GestureDetector(
-            onTap: () => Navigator.pop(context),
-            child: const Icon(Icons.arrow_back)),
-        centerTitle: true,
-      ),
-      body: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 24),
-          child: Column(children: [
-            // const Center(
-            //   child: Text(
-            //     'Hasil Search',
-            //     style: TextStyle(
-            //         fontSize: 16,
-            //         fontWeight: FontWeight.w700,
-            //         color: Color(0xff333435)),
-            //   ),
-            // ),
+        body: Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 24),
+            child: Column(children: [
+              // const Center(
+              //   child: Text(
+              //     'Hasil Search',
+              //     style: TextStyle(
+              //         fontSize: 16,
+              //         fontWeight: FontWeight.w700,
+              //         color: Color(0xff333435)),
+              //   ),
+              // ),
 
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-              child: SizedBox(
-                width: double.infinity,
-                height: 40,
-                child: TextField(
-                  style: const TextStyle(fontSize: 13),
-                  onSubmitted: (value) {
-                    if (value.isNotEmpty) {
-                      Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => HasilMerchant(
-                                    cari: value.toString(), id: idUser!),
-                              ))
-                          .then((value) =>
-                              {addMenuToCartBloc..add(GetMenusInCart())});
-                    } else {
-                      return;
-                    }
-                  },
-                  decoration: InputDecoration(
-                    prefixIcon: const Icon(
-                      Icons.search,
-                      color: MyColors.red1,
-                      size: 20,
-                    ),
-                    hintText: "Kamu lagi mau makan apa?",
-                    hintStyle: const TextStyle(fontSize: 13),
-                    border: OutlineInputBorder(
-                      borderRadius: BorderRadius.circular(100),
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
+                child: SizedBox(
+                  width: double.infinity,
+                  height: 40,
+                  child: TextField(
+                    style: const TextStyle(fontSize: 13),
+                    onSubmitted: (value) {
+                      if (value.isNotEmpty) {
+                        Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => HasilMerchant(
+                                      cari: value.toString(), id: idUser!),
+                                ))
+                            .then((value) =>
+                                {addMenuToCartBloc..add(GetMenusInCart())});
+                      } else {
+                        return;
+                      }
+                    },
+                    decoration: InputDecoration(
+                      prefixIcon: const Icon(
+                        Icons.search,
+                        color: MyColors.red1,
+                        size: 20,
+                      ),
+                      hintText: "Kamu lagi mau makan apa?",
+                      hintStyle: const TextStyle(fontSize: 13),
+                      border: OutlineInputBorder(
+                        borderRadius: BorderRadius.circular(100),
+                      ),
                     ),
                   ),
                 ),
               ),
-            ),
-            SizedBox(height: SizeConfig.safeBlockVertical * 1),
-            BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
-                listener: ((context, state) {
-                  if (state is MenuInCartRetrieved) {
-                    if (state.menuInCart.isNotEmpty) {
-                      merchantIdInKeranjang = state.menuInCart[0].merchantId;
+              SizedBox(height: SizeConfig.safeBlockVertical * 1),
+              BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
+                  listener: ((context, state) {
+                    if (state is MenuInCartRetrieved) {
+                      if (state.menuInCart.isNotEmpty) {
+                        merchantIdInKeranjang = state.menuInCart[0].merchantId;
+                      }
+                    } else if (state is AllMenuRemoved) {
+                      merchantIdInKeranjang = null;
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (_) => MakananPage(
+                                    buka_toko:
+                                        selectedMerchant?.buka_toko ?? "kosong",
+                                    title: selectedMerchant?.name ??
+                                        'Shabrina’s Kitchen - Gambir',
+                                    idMerchant:
+                                        selectedMerchant!.merchantId.toString(),
+                                    iduser: widget.id,
+                                    alamat:
+                                        selectedMerchant!.address.toString(),
+                                    rating: selectedMerchant?.rating,
+                                    jumlahUlasan:
+                                        selectedMerchant?.totalCountRating,
+                                    tutup_toko: selectedMerchant?.tutup_toko ??
+                                        "kosong",
+                                    minPrice: selectedMerchant?.minPrice,
+                                    maxPrice: selectedMerchant?.maxPrice,
+                                  ))).then((value) =>
+                          {addMenuToCartBloc..add(GetMenusInCart())});
                     }
-                  } else if (state is AllMenuRemoved) {
-                    merchantIdInKeranjang = null;
-                    Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                            builder: (_) => MakananPage(
-                                  buka_toko:
-                                      selectedMerchant?.buka_toko ?? "kosong",
-                                  title: selectedMerchant?.name ??
-                                      'Shabrina’s Kitchen - Gambir',
-                                  idMerchant:
-                                      selectedMerchant!.merchantId.toString(),
-                                  alamat: selectedMerchant!.address.toString(),
-                                  rating: selectedMerchant?.rating,
-                                  jumlahUlasan:
-                                      selectedMerchant?.totalCountRating,
-                                  tutup_toko:
-                                      selectedMerchant?.tutup_toko ?? "kosong",
-                                  minPrice: selectedMerchant?.minPrice,
-                                  maxPrice: selectedMerchant?.maxPrice,
-                                ))).then(
-                        (value) => {addMenuToCartBloc..add(GetMenusInCart())});
-                  }
-                }),
-                child: FutureBuilder<List<MechantSearch>>(
-                  future: context
-                      .read<MerchantRepository>()
-                      .searchMerchant(widget.search, idUser!),
-                  builder: (context, snapshot) {
-                    return snapshot.data?.length == null
-                        ? const CircularProgressIndicator()
-                        : Expanded(
-                            child: ListView.builder(
-                            itemCount: snapshot.data?.length,
-                            itemBuilder: (context, index) {
-                              return InkWell(
-                                  onTap: () {
-                                    selectedMerchant = MerchantModel(
-                                        address: snapshot
-                                            .data?[index].source!.address,
-                                        merchantId: snapshot.data?[index].id,
-                                        name:
-                                            snapshot.data?[index].source?.name,
-                                        maxPrice: snapshot
-                                            .data?[index].source?.maxPrice,
-                                        totalCountRating:
-                                            snapshot.data?[index].source!.totalCountRating,
-                                        minPrice: snapshot
-                                            .data?[index].source?.minPrice,
-                                        rating: snapshot
-                                            .data?[index].source?.rating
-                                            ?.toDouble());
-                                    if (merchantIdInKeranjang != null &&
-                                        snapshot.data?[index].id !=
-                                            merchantIdInKeranjang) {
-                                      showDialog(
-                                          context: context,
-                                          builder: ((context) {
-                                            return dialogWarnCart(
-                                                snapshot.data?[index]);
-                                          }));
-                                    } else {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (_) => MakananPage(
-                                                    title: snapshot.data?[index]
-                                                            .source?.name ??
-                                                        'Shabrina’s Kitchen - Gambir',
-                                                    idMerchant: snapshot
-                                                        .data![index].id
-                                                        .toString(),
-                                                    alamat: snapshot
-                                                        .data![index]
-                                                        .source!
-                                                        .address
-                                                        .toString(),
-                                                    buka_toko: snapshot
-                                                            .data?[index]
-                                                            .source
-                                                            ?.buka_toko ??
-                                                        "kosong",
-                                                    tutup_toko: snapshot
-                                                            .data?[index]
-                                                            .source
-                                                            ?.tutup_toko ??
-                                                        "kosong",
-                                                    rating: snapshot
-                                                        .data?[index]
-                                                        .source
-                                                        ?.rating!
-                                                        .toDouble(),
-                                                    jumlahUlasan: snapshot
-                                                        .data?[index]
-                                                        .source
-                                                        ?.totalCountRating,
-                                                    minPrice: snapshot
-                                                        .data?[index]
-                                                        .source
-                                                        ?.minPrice,
-                                                    maxPrice: snapshot
-                                                        .data?[index]
-                                                        .source
-                                                        ?.maxPrice,
-                                                  ))).then((value) => {
-                                            addMenuToCartBloc
-                                              ..add(GetMenusInCart())
-                                          });
-                                    }
-                                  },
-                                  child: Padding(
-                                    padding: EdgeInsets.only(
-                                        top: SizeConfig.safeBlockVertical * 3),
-                                    child: outlet(
-                                        Assets.images.illCafetariaBanner2.path,
-                                        snapshot.data?[index].source?.image,
-                                        false,
-                                        snapshot.data?[index].source?.name ??
-                                            'Shabrina’s Kitchen - Gambir',
-                                        'Lantai 1',
-                                        'Cafetaria',
-                                        '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
-                                  ));
-                            },
-                          ));
-                  },
-                ))
-          ])),
+                  }),
+                  child: FutureBuilder<List<MechantSearch>>(
+                    future: context
+                        .read<MerchantRepository>()
+                        .searchMerchant(widget.search, idUser!),
+                    builder: (context, snapshot) {
+                      return snapshot.data?.length == null
+                          ? const CircularProgressIndicator()
+                          : Expanded(
+                              child: ListView.builder(
+                              itemCount: snapshot.data?.length,
+                              itemBuilder: (context, index) {
+                                return InkWell(
+                                    onTap: () {
+                                      selectedMerchant = MerchantModel(
+                                          address: snapshot
+                                              .data?[index].source!.address,
+                                          merchantId: snapshot.data?[index].id,
+                                          name: snapshot
+                                              .data?[index].source?.name,
+                                          maxPrice: snapshot
+                                              .data?[index].source?.maxPrice,
+                                          totalCountRating: snapshot
+                                              .data?[index]
+                                              .source!
+                                              .totalCountRating,
+                                          minPrice: snapshot
+                                              .data?[index].source?.minPrice,
+                                          rating: snapshot
+                                              .data?[index].source?.rating
+                                              ?.toDouble());
+                                      if (merchantIdInKeranjang != null &&
+                                          snapshot.data?[index].id !=
+                                              merchantIdInKeranjang) {
+                                        showDialog(
+                                            context: context,
+                                            builder: ((context) {
+                                              return dialogWarnCart(
+                                                  snapshot.data?[index]);
+                                            }));
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => MakananPage(
+                                                      title: snapshot
+                                                              .data?[index]
+                                                              .source
+                                                              ?.name ??
+                                                          'Shabrina’s Kitchen - Gambir',
+                                                      iduser: widget.id,
+                                                      idMerchant: snapshot
+                                                          .data![index].id
+                                                          .toString(),
+                                                      alamat: snapshot
+                                                          .data![index]
+                                                          .source!
+                                                          .address
+                                                          .toString(),
+                                                      buka_toko: snapshot
+                                                              .data?[index]
+                                                              .source
+                                                              ?.buka_toko ??
+                                                          "kosong",
+                                                      tutup_toko: snapshot
+                                                              .data?[index]
+                                                              .source
+                                                              ?.tutup_toko ??
+                                                          "kosong",
+                                                      rating: snapshot
+                                                          .data?[index]
+                                                          .source
+                                                          ?.rating!
+                                                          .toDouble(),
+                                                      jumlahUlasan: snapshot
+                                                          .data?[index]
+                                                          .source
+                                                          ?.totalCountRating,
+                                                      minPrice: snapshot
+                                                          .data?[index]
+                                                          .source
+                                                          ?.minPrice,
+                                                      maxPrice: snapshot
+                                                          .data?[index]
+                                                          .source
+                                                          ?.maxPrice,
+                                                    ))).then((value) => {
+                                              addMenuToCartBloc
+                                                ..add(GetMenusInCart())
+                                            });
+                                      }
+                                    },
+                                    child: Padding(
+                                      padding: EdgeInsets.only(
+                                          top:
+                                              SizeConfig.safeBlockVertical * 3),
+                                      child: outlet(
+                                          Assets
+                                              .images.illCafetariaBanner2.path,
+                                          snapshot.data?[index].source?.image,
+                                          false,
+                                          snapshot.data?[index].source?.name ??
+                                              'Shabrina’s Kitchen - Gambir',
+                                          'Lantai 1',
+                                          'Cafetaria',
+                                          '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
+                                    ));
+                              },
+                            ));
+                    },
+                  ))
+            ])),
+      ),
     );
   }
 
@@ -355,10 +370,12 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                               "kosong",
                                           title: model?.source?.buka_toko ??
                                               'Shabrina’s Kitchen - Gambir',
+                                          iduser: widget.id,
                                           idMerchant: model!.id.toString(),
                                           alamat:
                                               model.source!.address.toString(),
-                                          rating: model.source!.rating!.toDouble(),
+                                          rating:
+                                              model.source!.rating!.toDouble(),
                                           jumlahUlasan:
                                               model.source!.totalCountRating,
                                           tutup_toko:

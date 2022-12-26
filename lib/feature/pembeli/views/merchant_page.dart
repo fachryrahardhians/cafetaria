@@ -82,6 +82,7 @@ class _MerchantPageState extends State<MerchantPage>
                                   selectedMerchant?.buka_toko ?? "kosong",
                               title: selectedMerchant?.name ??
                                   'Shabrina’s Kitchen - Gambir',
+                              iduser: widget.id,
                               idMerchant:
                                   selectedMerchant!.merchantId.toString(),
                               alamat: selectedMerchant!.address.toString(),
@@ -241,6 +242,9 @@ class _MerchantPageState extends State<MerchantPage>
                                                           builder:
                                                               (_) =>
                                                                   MakananPage(
+                                                                    iduser:
+                                                                        widget
+                                                                            .id,
                                                                     title: snapshot
                                                                             .data?[index]
                                                                             .name ??

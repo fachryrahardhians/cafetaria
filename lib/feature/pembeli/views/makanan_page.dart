@@ -1,7 +1,9 @@
+import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/check_menu_preorder_bloc/check_menu_preorder_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_menu_bloc/list_menu_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_recomended_menu_bloc/list_recomended_menu_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/Chat_page.dart';
 import 'package:cafetaria/feature/pembeli/views/keranjang_page.dart';
 import 'package:cafetaria/feature/pembeli/views/topping_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
@@ -15,6 +17,7 @@ import 'package:menu_repository/menu_repository.dart';
 class MakananPage extends StatelessWidget {
   final String title;
   final String idMerchant;
+  final String iduser;
   final String? tutup_toko;
   final String? buka_toko;
   final String alamat;
@@ -27,6 +30,7 @@ class MakananPage extends StatelessWidget {
       required this.tutup_toko,
       required this.buka_toko,
       required this.title,
+      required this.iduser,
       required this.idMerchant,
       required this.alamat,
       required this.rating,
@@ -39,6 +43,7 @@ class MakananPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return ListMenu(
       buka_toko: buka_toko,
+      iduser: iduser,
       tutup_toko: tutup_toko,
       title: title,
       idMerchant: idMerchant,
@@ -61,12 +66,13 @@ class ListMenu extends StatefulWidget {
   final int? jumlahUlasan;
   final int? minPrice;
   final int? maxPrice;
-
+   final String iduser;
   const ListMenu(
       {Key? key,
       required this.title,
       required this.tutup_toko,
       required this.buka_toko,
+       required this.iduser,
       required this.idMerchant,
       required this.alamat,
       required this.rating,
@@ -185,6 +191,38 @@ class _ListMenuState extends State<ListMenu> {
                           SizedBox(height: SizeConfig.safeBlockVertical * 2),
                           _merchantInfo(widget.rating, widget.jumlahUlasan,
                               widget.minPrice, widget.maxPrice),
+                          SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                          Container(
+                              height: 45,
+                              width: double.infinity,
+                              margin: const EdgeInsets.only(right: 8),
+                              child: ElevatedButton(
+                                  style: ElevatedButton.styleFrom(
+                                      primary: Colors.white,
+                                      side: const BorderSide(
+                                        color: MyColors.red1,
+                                      ),
+                                      shape: RoundedRectangleBorder(
+                                          borderRadius:
+                                              BorderRadius.circular(6),
+                                          side: BorderSide.none)),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                            builder: (context) => ChatPage(
+                                              idMerchant: widget.idMerchant,
+                                              iduser: widget.iduser,
+                                              title: widget.title,
+                                            )));
+                                  },
+                                  child: Text(
+                                    "CHAT",
+                                    style: TextStyle(
+                                        fontSize: 14,
+                                        fontWeight: FontWeight.w700,
+                                        color: Colors.black.withOpacity(1)),
+                                  ))),
                           SizedBox(height: SizeConfig.safeBlockVertical * 3),
                           _customerInfo(),
                           SizedBox(height: SizeConfig.safeBlockVertical * 3),
@@ -332,7 +370,7 @@ class _ListMenuState extends State<ListMenu> {
                                                             DateTime.parse(tutupToko
                                                                     .toString())
                                                                 .minute)) ||
-                                                    ((DateTime.now().hour < 
+                                                    ((DateTime.now().hour <
                                                             DateTime.parse(bukaToko
                                                                     .toString())
                                                                 .hour) ||

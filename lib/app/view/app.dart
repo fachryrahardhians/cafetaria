@@ -4,10 +4,9 @@ import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
 
-
-
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
+import 'package:chat_repository/chat_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
 import 'package:flutter/foundation.dart';
@@ -41,6 +40,7 @@ class App extends StatefulWidget {
       required OrderRepository orderRepository,
       required AndroidNotificationChannel channel,
       required FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin,
+      required ChatRepository chatRepository,
       required MerchantRepository merchantRepository})
 
       //     : _authenticationRepository = authenticationRepository,
@@ -59,6 +59,7 @@ class App extends StatefulWidget {
         _ratingRepository = ratingRepository,
         _orderRepository = orderRepository,
         _merchantRepository = merchantRepository,
+        _chatRepository = chatRepository,
         _adminRepository = adminRepository,
         _channel = channel,
         _flutterLocalNotificationsPlugin = flutterLocalNotificationsPlugin,
@@ -66,6 +67,7 @@ class App extends StatefulWidget {
         super(key: key);
 
   final AuthenticationRepository _authenticationRepository;
+  final ChatRepository _chatRepository;
   final MenuRepository _menuRepository;
   final AppSharedPref _appSharedPref;
   final CategoryRepository _categoryRepository;
@@ -101,7 +103,7 @@ class _AppState extends State<App> {
               widget._channel.id,
               widget._channel.name,
               channelDescription: widget._channel.description,
-            
+
               //      one that already exists in example app.
               icon: 'launch_background',
             ),
@@ -122,7 +124,7 @@ class _AppState extends State<App> {
               widget._channel.id,
               widget._channel.name,
               channelDescription: widget._channel.description,
-         
+
               //      one that already exists in example app.
               icon: 'launch_background',
             ),
@@ -130,7 +132,7 @@ class _AppState extends State<App> {
         );
       }
     });
-  
+
     super.initState();
   }
 
@@ -150,6 +152,7 @@ class _AppState extends State<App> {
         RepositoryProvider.value(value: widget._appSharedPref),
         RepositoryProvider.value(value: widget._optionMenuRepository),
         RepositoryProvider.value(value: widget._adminRepository),
+        RepositoryProvider.value(value: widget._chatRepository),
       ],
       child: BlocProvider(
         create: (context) => AppBloc(

@@ -29,6 +29,8 @@ environment:
 dependencies:
   admin_repository:
     path: packages/admin_repository
+  chat_repository:
+    path: packages/chat_repository
   authentication_repository:
     path: packages/authentication_repository
   cafetaria_ui:

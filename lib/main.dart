@@ -5,6 +5,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/bootstrap.dart';
 import 'package:category_repository/category_repository.dart';
+import 'package:chat_repository/chat_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -29,7 +30,7 @@ late FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin;
 Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
   // If you're going to use other Firebase services in the background, such as Firestore,
   // make sure you call `initializeApp` before using other Firebase services.
-  
+
   print("Handling a background message: ${message.messageId}");
 }
 
@@ -68,6 +69,7 @@ void main() async {
       Hive.registerAdapter<ListOption>(ListOptionAdapter());
       Hive.registerAdapter<ToppingOrder>(ToppingOrderAdapter());
       await Hive.openBox<Keranjang>('keranjangBox');
+      final _chatRepository = ChatRepository(firestore: firebaseStore);
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
@@ -130,6 +132,7 @@ void main() async {
         merchantRepository: _merchantRepository,
         penjualOrderRepository: _penjualOrderRepository,
         adminRepository: _adminrRepository,
+        chatRepository: _chatRepository,
       );
     },
   );

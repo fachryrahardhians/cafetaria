@@ -6,7 +6,7 @@ import 'package:json_annotation/json_annotation.dart';
 part 'kawasan_read.g.dart';
 
 @JsonSerializable(explicitToJson: true)
-class KawasanRead {
+class KawasanRead extends Equatable {
   final String? address;
   final String adminId;
   // final DateTime createdAt;

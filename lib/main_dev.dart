@@ -5,6 +5,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/app.dart';
 import 'package:cafetaria/bootstrap.dart';
 import 'package:category_repository/category_repository.dart';
+import 'package:chat_repository/chat_repository.dart';
 import 'package:cloud_storage/cloud_storage.dart';
 
 import 'package:firebase_messaging/firebase_messaging.dart';
@@ -62,7 +63,7 @@ void main() async {
       sharedpreference,
     ) async {
       //
-
+      final _chatRepository = ChatRepository(firestore: firebaseStore);
       final _authenticationRepository = AuthenticationRepository(firebaseAuth);
       final _menuRepository = MenuRepository(firestore: firebaseStore);
       final _categoryRepository = CategoryRepository(firestore: firebaseStore);
@@ -125,6 +126,7 @@ void main() async {
         merchantRepository: _merchantRepository,
         penjualOrderRepository: _penjualOrderRepository,
         adminRepository: _adminrRepository,
+        chatRepository: _chatRepository,
       );
     },
   );

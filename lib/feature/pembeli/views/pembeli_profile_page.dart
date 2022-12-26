@@ -118,12 +118,12 @@ class _PembeliProfileState extends State<PembeliProfileView> {
         return Scaffold(
           backgroundColor: MyColors.whiteGrey2,
           body: SafeArea(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
-              child: SingleChildScrollView(
-                child: SizedBox(
-                  width: double.infinity,
+            child: SingleChildScrollView(
+              child: SizedBox(
+                   width: double.infinity,
                   height: MediaQuery.of(context).size.height,
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
