@@ -4,6 +4,7 @@ import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
+import 'package:cafetaria/feature/pembeli/views/chat_list.dart';
 import 'package:cafetaria/feature/pembeli/views/history_page.dart';
 import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
 import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
@@ -327,7 +328,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
                   body: TabBarView(
                     children: [
                       MerchantPage(id: snapshot.data!.uid),
-                      const SizedBox(),
+                      ChatList(idUser: snapshot.data!.uid),
                       const HistoryPage(),
                       const PembeliProfilePage(),
                     ],

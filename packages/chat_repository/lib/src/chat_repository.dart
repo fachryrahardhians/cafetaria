@@ -36,7 +36,7 @@ class ChatRepository {
       final documents = data.docs;
       return documents.toListChat();
     } catch (e) {
-      throw Exception('Failed to get chat Rooms user');
+      throw Exception(e.toString());
     }
   }
 

@@ -23,9 +23,15 @@ class _ChatMessageState extends State<ChatMessage> {
           .read<ChatRepository>()
           .addMessageUser(widget.idMerchant, message, value!.uid)
           .then((data) {
-        context
-            .read<ChatRepository>()
-            .getChatRoomsUserDetail(value.uid, widget.idMerchant);
+        // context
+        //     .read<ChatRepository>()
+        //     .getChatRoomsUserDetail(value.uid, widget.idMerchant);
+      }).catchError((e) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text(e),
+          ),
+        );
       });
     });
     _controller.clear();

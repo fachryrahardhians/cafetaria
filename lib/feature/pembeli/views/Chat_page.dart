@@ -23,30 +23,6 @@ class ChatPage extends StatefulWidget {
 }
 
 class _ChatPageState extends State<ChatPage> {
-  void sendMessage() async {
-    AuthenticationRepository auth = context.read<AuthenticationRepository>();
-    FocusScope.of(context).unfocus();
-    await auth.getCurrentUser().then((value) {
-      context
-          .read<ChatRepository>()
-          .addMessageUser(widget.idMerchant, message, value!.uid)
-          .then((data) {
-        context
-            .read<ChatRepository>()
-            .getChatRoomsUserDetail(value.uid, widget.idMerchant);
-      }).catchError((e) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(e),
-          ),
-        );
-      });
-    });
-    _controller.clear();
-  }
-
-  final _controller = TextEditingController();
-  String message = '';
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -113,7 +89,7 @@ class _ChatPageState extends State<ChatPage> {
   Widget buildText(String text) => Center(
         child: Text(
           text,
-          style: const TextStyle(fontSize: 24),
+          style: const TextStyle(fontSize: 20),
         ),
       );
 }
