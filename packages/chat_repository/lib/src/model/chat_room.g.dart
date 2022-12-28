@@ -14,8 +14,8 @@ ChatRoom _$ChatRoomFromJson(Map<String, dynamic> json) => ChatRoom(
     );
 
 Map<String, dynamic> _$ChatRoomToJson(ChatRoom instance) => <String, dynamic>{
-      'createdAt': instance.createdAt.toIso8601String(),
       'source': instance.source,
+      'createdAt': instance.createdAt.toIso8601String(),
       'messageId': instance.messageId,
       'message': instance.message,
     };

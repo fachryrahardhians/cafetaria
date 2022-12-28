@@ -8,7 +8,7 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
-import 'package:cafetaria/feature/pembeli/widget/widget.dart';
+
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
@@ -70,7 +70,7 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                 context,
                 MaterialPageRoute(
                   builder: (_) => snapshot.data!.exists
-                      ? PenjualDashboardPage(
+                      ? DahsboardPage(
                           id: user.uid,
                         )
                       : PembeliCreateMerchantPage(user),
@@ -120,10 +120,11 @@ class _PembeliProfileState extends State<PembeliProfileView> {
           body: SafeArea(
             child: SingleChildScrollView(
               child: SizedBox(
-                   width: double.infinity,
-                  height: MediaQuery.of(context).size.height,
+                width: double.infinity,
+                height: MediaQuery.of(context).size.height,
                 child: Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 24),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -252,11 +253,11 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                                           fontWeight: FontWeight.normal)),
                                 ),
                                 onPressed: () {
-                                 Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) =>const  PilihKwsn(),
-                                    ));
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => const PilihKwsn(),
+                                      ));
                                 }),
                           ),
                           const SizedBox(height: 20),

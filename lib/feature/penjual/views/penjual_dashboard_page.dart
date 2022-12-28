@@ -3,11 +3,13 @@ import 'dart:async';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
+import 'package:cafetaria/feature/penjual/views/chat_list_merchant.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
 
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import 'package:firebase_core/firebase_core.dart';
@@ -22,6 +24,83 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 import '../../../firebase_options.dart';
+
+class DahsboardPage extends StatelessWidget {
+  int index;
+  String id;
+  DahsboardPage({Key? key, this.index = 0, required this.id}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return MerchantDashboard(id: id);
+  }
+}
+
+class MerchantDashboard extends StatefulWidget {
+  MerchantDashboard({Key? key, this.index = 0, required this.id})
+      : super(key: key);
+  int index;
+  String id;
+  @override
+  State<MerchantDashboard> createState() => _MerchantDashboardState();
+}
+
+class _MerchantDashboardState extends State<MerchantDashboard> {
+  @override
+  Widget build(BuildContext context) {
+    return DefaultTabController(
+      length: 4,
+      initialIndex: widget.index,
+      child: SafeArea(
+        child: Scaffold(
+          body: TabBarView(
+            children: [
+              PenjualDashboardPage(id: widget.id),
+              ChatListMerchantWidget(id: widget.id),
+              const SizedBox(),
+              const SizedBox(),
+            ],
+          ),
+          bottomNavigationBar: TabBar(
+            indicator: const BoxDecoration(),
+            labelColor: const Color(0xffee3124),
+            unselectedLabelColor: const Color(0xffB1B5BA),
+            unselectedLabelStyle: textStyle,
+            labelStyle: textStyle,
+            tabs: const [
+              Tab(
+                text: 'Home',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(Icons.home_filled),
+              ),
+              Tab(
+                text: 'Pesan',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.mail_rounded,
+                ),
+              ),
+              Tab(
+                text: 'History',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.history,
+                ),
+              ),
+              Tab(
+                text: 'Profile',
+                iconMargin: EdgeInsets.only(bottom: 4),
+                icon: Icon(
+                  Icons.person_rounded,
+                ),
+              )
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}
 
 class PenjualDashboardPage extends StatelessWidget {
   const PenjualDashboardPage({Key? key, this.id = ""}) : super(key: key);
@@ -184,7 +263,6 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
 
     WidgetsFlutterBinding.ensureInitialized();
     FlutterBackgroundService.initialize(onStart);
-    //context.read<AppSharedPref>().setMerchantId("");
   }
 
   @override
@@ -228,6 +306,13 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                       // Container Total Penjualan
                       Container(
                         padding: const EdgeInsets.all(20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          image: const DecorationImage(
+                            fit: BoxFit.cover,
+                            image: AssetImage("assets/images/background.png"),
+                          ),
+                        ),
                         child: Row(
                           crossAxisAlignment: CrossAxisAlignment.center,
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -281,13 +366,6 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                               ],
                             ),
                           ],
-                        ),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          image: const DecorationImage(
-                            fit: BoxFit.cover,
-                            image: AssetImage("assets/images/background.png"),
-                          ),
                         ),
                       ),
                       const SizedBox(height: 20),
@@ -351,51 +429,51 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
           ],
         ),
       ),
-      bottomNavigationBar: BottomNavigationBar(
-        elevation: 10,
-        selectedItemColor: MyColors.blackText,
-        unselectedItemColor: MyColors.grey3,
-        showSelectedLabels: true,
-        showUnselectedLabels: true,
-        items: [
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset("assets/icons/bottom-home-active.png"),
-            ),
-            label: "Beranda",
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset("assets/icons/bottom-pesan.png"),
-            ),
-            label: "Pesan",
-          ),
-          BottomNavigationBarItem(
-            icon: Padding(
-              padding: const EdgeInsets.symmetric(vertical: 10),
-              child: Image.asset("assets/icons/bottom-history.png"),
-            ),
-            label: "Riwayat",
-          ),
-          BottomNavigationBarItem(
-            icon: GestureDetector(
-              onTap: () {
-                Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(
-                        builder: (_) => const PembeliDashboardPage()));
-              },
-              child: Padding(
-                padding: const EdgeInsets.symmetric(vertical: 10),
-                child: Image.asset("assets/icons/bottom-profile.png"),
-              ),
-            ),
-            label: "Profile",
-          ),
-        ],
-      ),
+      // bottomNavigationBar: BottomNavigationBar(
+      //   elevation: 10,
+      //   selectedItemColor: MyColors.blackText,
+      //   unselectedItemColor: MyColors.grey3,
+      //   showSelectedLabels: true,
+      //   showUnselectedLabels: true,
+      //   items: [
+      //     BottomNavigationBarItem(
+      //       icon: Padding(
+      //         padding: const EdgeInsets.symmetric(vertical: 10),
+      //         child: Image.asset("assets/icons/bottom-home-active.png"),
+      //       ),
+      //       label: "Beranda",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Padding(
+      //         padding: const EdgeInsets.symmetric(vertical: 10),
+      //         child: Image.asset("assets/icons/bottom-pesan.png"),
+      //       ),
+      //       label: "Pesan",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: Padding(
+      //         padding: const EdgeInsets.symmetric(vertical: 10),
+      //         child: Image.asset("assets/icons/bottom-history.png"),
+      //       ),
+      //       label: "Riwayat",
+      //     ),
+      //     BottomNavigationBarItem(
+      //       icon: GestureDetector(
+      //         onTap: () {
+      //           Navigator.pushReplacement(
+      //               context,
+      //               MaterialPageRoute(
+      //                   builder: (_) => const PembeliDashboardPage()));
+      //         },
+      //         child: Padding(
+      //           padding: const EdgeInsets.symmetric(vertical: 10),
+      //           child: Image.asset("assets/icons/bottom-profile.png"),
+      //         ),
+      //       ),
+      //       label: "Profile",
+      //     ),
+      //   ],
+      // ),
     );
   }
 }

@@ -205,7 +205,9 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(
-          builder: (context) => PenjualDashboardPage(id: user.uid),
+          builder: (context) => DahsboardPage(
+            id: user.uid,
+          ),
         ),
       );
       Fluttertoast.showToast(
@@ -467,7 +469,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                                     target: _latLngInit,
                                     zoom: 17,
                                   ),
-                                  onMapCreated: (GoogleMapController controller) {
+                                  onMapCreated:
+                                      (GoogleMapController controller) {
                                     _mapController.complete(controller);
                                   },
                                   markers: Set.from(_marker),
@@ -476,7 +479,8 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                                     onTap: _handleMapsPicker,
                                     child: Expanded(
                                         child: Container(
-                                            color: Colors.black.withOpacity(0))))
+                                            color:
+                                                Colors.black.withOpacity(0))))
                               ],
                             )),
                   const SizedBox(height: 20),

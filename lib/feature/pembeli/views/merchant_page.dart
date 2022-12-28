@@ -1,8 +1,5 @@
 // ignore_for_file: avoid_print
 
-import 'dart:convert';
-
-import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/hasil_search_merchant.dart';
@@ -11,19 +8,19 @@ import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/utilities/size_config.dart';
-import 'package:category_repository/category_repository.dart';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
-import 'package:cloud_functions/cloud_functions.dart';
 
 class MerchantPage extends StatefulWidget {
   final String id;
   const MerchantPage({Key? key, required this.id}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _MerchantPageState createState() => _MerchantPageState();
 }
 
