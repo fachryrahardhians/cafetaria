@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 import 'package:hive/hive.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:uuid/uuid.dart';
@@ -198,6 +199,54 @@ class MenuRepository {
       print(e.toString());
       throw Exception(e.toString());
     }
+  }
+
+  Future<List<MenuModel>> searchMenuByCategory(
+      String categoryId, String merchantid) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('searchMenuMerchantCategory');
+    final resp = await callable.call(
+        <String, dynamic>{'categoryId': categoryId, 'merchantId': merchantid});
+    final List data = resp.data;
+    final leaderboardEntries = <MenuModel>[];
+
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(MenuModel.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
+    }
+    return leaderboardEntries;
+  }
+
+  Future<List<MenuModel>> searchMenuByKeyword(
+      String keyword, String merchantid) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('searchMenuMerchant');
+    final resp = await callable
+        .call(<String, dynamic>{'keyword': keyword, 'merchantId': merchantid});
+    final List data = resp.data;
+    final leaderboardEntries = <MenuModel>[];
+
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(MenuModel.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
+    }
+    return leaderboardEntries;
   }
 
   Future<void> updateMenuKeranjang(Keranjang keranjang) async {

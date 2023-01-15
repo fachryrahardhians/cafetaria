@@ -23,6 +23,21 @@ class CategoryRepository {
     }
   }
 
+// get category menu
+  Future<List<CategoryModel>> getCategoryMenuMerchant(String idMerchant) async {
+    try {
+      final snapshot = await _firestore
+          .collection('category')
+          .where('merchantId', isEqualTo: idMerchant)
+          .get();
+
+      final documents = snapshot.docs;
+      return documents.toLeaderboard();
+    } catch (e) {
+      throw Exception('Failed to get category menu');
+    }
+  }
+
   //add idkawasan collection user
   Future<void> updateKawasan(String id, String idkawasan) async {
     try {
