@@ -120,6 +120,7 @@ class _ListMenuState extends State<ListMenu> {
         ListRecomendedMenuBloc(menuRepository: context.read<MenuRepository>());
     _menuPreorderBloc =
         MenuPreorderBloc(menuRepository: context.read<MenuRepository>());
+
     super.initState();
   }
 
@@ -792,31 +793,6 @@ class _ListMenuState extends State<ListMenu> {
     );
   }
 
-  // Widget _listMenu() {
-  //   return ListView.separated(
-  //     shrinkWrap: true,
-  //     physics: const ScrollPhysics(),
-  //     itemCount: 3,
-  //     itemBuilder: (context, index) {
-  //       return GestureDetector(
-  //         onTap: () async {
-  //           await Navigator.push(
-  //               context,
-  //               MaterialPageRoute(
-  //                   builder: (_) => SelectToppingPage(
-  //                         photo: Assets.images.illFood.path,
-  //                       )));
-  //         },
-  //         child: makananList(Assets.images.illFood.path, 'itemName', 0, false,
-  //             0, 'itemId$index'),
-  //       );
-  //     },
-  //     separatorBuilder: (context, index) {
-  //       return SizedBox(height: SizeConfig.safeBlockVertical * 1);
-  //     },
-  //   );
-  // }
-
   Widget _customerInfo() {
     return Container(
         padding: const EdgeInsets.all(16),
@@ -984,9 +960,16 @@ class _ListMenuState extends State<ListMenu> {
 class DataProvider with ChangeNotifier {
   List<MenuModel>? menuModel;
   List<MenuModel>? get data => menuModel;
+  bool? field = false;
+  bool? get dataField => field;
 
   void updateData(List<MenuModel>? newData) {
     menuModel = newData;
+    notifyListeners();
+  }
+
+  void updateDataField(bool? newData) {
+    field = newData;
     notifyListeners();
   }
 }
@@ -1007,149 +990,150 @@ class CustomSliverAppbarDelegate extends SliverPersistentHeaderDelegate {
   Widget build(
       BuildContext context, double shrinkOffset, bool overlapsContent) {
     // TODO: implement build
-    return Column(
-      children: [
-        buildAppbar(shrinkOffset),
-        buildAppBar2(shrinkOffset),
-      ],
-    );
+    return StatefulBuilder(
+        builder: (BuildContext context, StateSetter setState) {
+      return Column(
+        children: [
+          buildAppbar(shrinkOffset),
+          Opacity(
+            opacity: appear(shrinkOffset),
+            child: Container(
+              color: Colors.white,
+              height: 40,
+              child: Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 20),
+                child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.center,
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    BlocProvider(
+                      create: (context) => CategoryBloc(
+                        categoryRepository: context.read<CategoryRepository>(),
+                      )..add(GetMenuMakanan(idMerchant)),
+                      child: BlocBuilder<CategoryBloc, CategoryState>(
+                        builder: (context, state) {
+                          final status = state.status;
+                          if (status == CategoryStatus.loading) {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          } else if (status == CategoryStatus.failure) {
+                            return const Center(
+                              child: Text('Terjadi kesalahan'),
+                            );
+                          } else if (status == CategoryStatus.success) {
+                            // final items = state.items!;
+                            if (dataProvider.dataField == true) {
+                              return SizedBox(
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: TextField(
+                                  style: const TextStyle(fontSize: 13),
+                                  onSubmitted: (value) {
+                                    if (value.isNotEmpty) {
+                                      context
+                                          .read<MenuRepository>()
+                                          .searchMenuByKeyword(
+                                              value.toString(), idMerchant)
+                                          .then((value) {
+                                        print(value.first);
+                                        dataProvider.updateData(value);
+                                      });
+                                    } else {
+                                      return;
+                                    }
+                                  },
+                                  decoration: InputDecoration(
+                                    prefixIcon: const Icon(
+                                      Icons.search,
+                                      color: MyColors.red1,
+                                      size: 20,
+                                    ),
+                                    hintText: "Kamu lagi mau makan apa?",
+                                    hintStyle: const TextStyle(fontSize: 13),
+                                    border: OutlineInputBorder(
+                                      borderRadius: BorderRadius.circular(100),
+                                    ),
+                                  ),
+                                ),
+                              );
+                            } else {
+                              return SizedBox(
+                                //height: 55,
+                                width: MediaQuery.of(context).size.width / 2,
+                                child: DropdownButtonFormField<CategoryModel>(
+                                  icon: const Icon(
+                                    Icons.keyboard_arrow_down_rounded,
+                                    color: Colors.red,
+                                  ),
+                                  decoration: const InputDecoration.collapsed(
+                                    hintText: 'Pilih kategori',
+                                  ),
+                                  borderRadius: BorderRadius.circular(20),
+                                  items: state.items!
+                                      .map((category) => DropdownMenuItem(
+                                            value: category,
+                                            child: Text(
+                                                category.category.toString()),
+                                          ))
+                                      .toList(),
+                                  value: state.items![0],
+                                  onChanged: (val) {
+                                    // context.read<PilihKawasanBloc>().add(
+                                    //     KawasanChange(val!.kawasanId.toString()));
+                                    context
+                                        .read<MenuRepository>()
+                                        .searchMenuByCategory(
+                                            val!.categoryId.toString(),
+                                            idMerchant)
+                                        .then((value) {
+                                      print(value.first);
+                                      dataProvider.updateData(value);
+                                    });
+                                  },
+                                ),
+                              );
+                            }
+                          }
+                          return const SizedBox.shrink();
+                        },
+                      ),
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        dataProvider.updateDataField(!dataProvider.dataField!);
+                        print(dataProvider.dataField);
+                      },
+                      child: Container(
+                        width: 70,
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10),
+                            border:
+                                Border.all(color: Colors.black, width: 0.5)),
+                        child: Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 8, vertical: 5),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: const [
+                              Icon(Icons.search, size: 20),
+                              Text("Cari")
+                            ],
+                          ),
+                        ),
+                      ),
+                    )
+                  ],
+                ),
+              ),
+            ),
+          )
+        ],
+      );
+    });
   }
 
   double appear(double shrinkOffset) => shrinkOffset / expandedHeight;
   double disappear(double shrinkOffset) => 1 - shrinkOffset / expandedHeight;
-  Widget buildAppBar2(double shrinkOffset) {
-    bool field = false;
-    TextEditingController keyword = TextEditingController();
-    return Opacity(
-      opacity: appear(shrinkOffset),
-      child: Container(
-        color: Colors.white,
-        height: 40,
-        child: Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: Row(
-            crossAxisAlignment: CrossAxisAlignment.center,
-            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-            children: [
-              BlocProvider(
-                create: (context) => CategoryBloc(
-                  categoryRepository: context.read<CategoryRepository>(),
-                )..add(GetMenuMakanan(idMerchant)),
-                child: BlocBuilder<CategoryBloc, CategoryState>(
-                  builder: (context, state) {
-                    final status = state.status;
-                    if (status == CategoryStatus.loading) {
-                      return const Center(
-                        child: CircularProgressIndicator(),
-                      );
-                    } else if (status == CategoryStatus.failure) {
-                      return const Center(
-                        child: Text('Terjadi kesalahan'),
-                      );
-                    } else if (status == CategoryStatus.success) {
-                      // final items = state.items!;
-                      if (field == true) {
-                        return SizedBox(
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: TextField(
-                            style: const TextStyle(fontSize: 13),
-                            onSubmitted: (value) {
-                              if (value.isNotEmpty) {
-                                context
-                                    .read<MenuRepository>()
-                                    .searchMenuByKeyword(
-                                        keyword.text, idMerchant)
-                                    .then((value) {
-                                  print(value.first);
-                                  dataProvider.updateData(value);
-                                });
-                              } else {
-                                return;
-                              }
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                Icons.search,
-                                color: MyColors.red1,
-                                size: 20,
-                              ),
-                              hintText: "Kamu lagi mau makan apa?",
-                              hintStyle: const TextStyle(fontSize: 13),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(100),
-                              ),
-                            ),
-                          ),
-                        );
-                      } else {
-                        return SizedBox(
-                          //height: 55,
-                          width: MediaQuery.of(context).size.width / 2,
-                          child: DropdownButtonFormField<CategoryModel>(
-                            icon: const Icon(
-                              Icons.keyboard_arrow_down_rounded,
-                              color: Colors.red,
-                            ),
-                            decoration: const InputDecoration.collapsed(
-                              hintText: 'Pilih kategori',
-                            ),
-                            borderRadius: BorderRadius.circular(20),
-                            items: state.items!
-                                .map((category) => DropdownMenuItem(
-                                      value: category,
-                                      child: Text(category.category.toString()),
-                                    ))
-                                .toList(),
-                            value: state.items![0],
-                            onChanged: (val) {
-                              // context.read<PilihKawasanBloc>().add(
-                              //     KawasanChange(val!.kawasanId.toString()));
-                              context
-                                  .read<MenuRepository>()
-                                  .searchMenuByCategory(
-                                      val!.categoryId.toString(), idMerchant)
-                                  .then((value) {
-                                print(value.first);
-                                dataProvider.updateData(value);
-                              });
-                            },
-                          ),
-                        );
-                      }
-                    }
-                    return const SizedBox.shrink();
-                  },
-                ),
-              ),
-              GestureDetector(
-                onTap: () {
-                  field = !field;
-                  print(field);
-                },
-                child: Container(
-                  width: 70,
-                  decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      border: Border.all(color: Colors.black, width: 0.5)),
-                  child: Padding(
-                    padding:
-                        const EdgeInsets.symmetric(horizontal: 8, vertical: 5),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: const [
-                        Icon(Icons.search, size: 20),
-                        Text("Cari")
-                      ],
-                    ),
-                  ),
-                ),
-              )
-            ],
-          ),
-        ),
-      ),
-    );
-  }
 
   Widget buildAppbar(double shrinkOffset) => AppBar(
         centerTitle: true,
