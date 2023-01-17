@@ -137,13 +137,6 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
               Navigator.of(context).pop();
             },
           );
-          // ScaffoldMessenger.of(context)
-          //   ..hideCurrentSnackBar()
-          //   ..showSnackBar(
-          //     const SnackBar(
-          //       content: Text('Menu berhasil ditambahkan'),
-          //     ),
-          //   );
         }
         if (state.uploadProgress?.status == UploadStatus.uploaded) {
           ScaffoldMessenger.of(context)
@@ -462,6 +455,7 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
               ),
               Visibility(
                 visible: showPhoto,
+                // ignore: sort_child_properties_last
                 child: InkWell(
                   onTap: () async {
                     final XFile? image =

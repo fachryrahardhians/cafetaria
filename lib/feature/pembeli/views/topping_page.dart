@@ -509,40 +509,7 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
-  Widget catatan() {
-    return Container(
-      decoration: BoxDecoration(boxShadow: [
-        BoxShadow(
-            offset: const Offset(0, 0),
-            blurRadius: 1,
-            color: Colors.black.withOpacity(.04)),
-        BoxShadow(
-            offset: const Offset(0, 0),
-            blurRadius: 4,
-            color: Colors.black.withOpacity(.08))
-      ]),
-      child: TextFormField(
-        controller: _catatanController,
-        autofocus: false,
-        decoration: InputDecoration(
-          contentPadding: const EdgeInsets.only(top: 12, bottom: 12, left: 16),
-          filled: true,
-          fillColor: Colors.white,
-          focusedBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(8)),
-          enabledBorder: OutlineInputBorder(
-              borderSide: BorderSide.none,
-              borderRadius: BorderRadius.circular(8)),
-          hintText: "Masukkan catatan untuk penjual",
-          hintStyle: const TextStyle(fontSize: 13, color: Color(0xffCACCCF)),
-        ),
-        autovalidateMode: AutovalidateMode.onUserInteraction,
-        minLines: 4,
-        maxLines: 5,
-      ),
-    );
-  }
+ 
 
   Widget quantity() {
     return Row(

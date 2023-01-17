@@ -40,7 +40,9 @@ class CustomDatePicker extends StatelessWidget {
               child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    Text(convertDateTime(tanggal!)),
+                    tanggal == null
+                        ? const SizedBox()
+                        : Text(convertDateTime(tanggal)),
                     const Icon(
                       Icons.calendar_month,
                       color: Colors.red,
@@ -51,10 +53,10 @@ class CustomDatePicker extends StatelessWidget {
     );
   }
 
-  String convertDateTime(DateTime dateTime) {
+  String convertDateTime(DateTime? dateTime) {
     String month;
 
-    switch (dateTime.month) {
+    switch (dateTime?.month) {
       case 1:
         month = 'Januari';
         break;
@@ -92,6 +94,6 @@ class CustomDatePicker extends StatelessWidget {
         month = 'Desember';
     }
 
-    return '${dateTime.day} $month ${dateTime.year}';
+    return '${dateTime?.day} $month ${dateTime?.year}';
   }
 }

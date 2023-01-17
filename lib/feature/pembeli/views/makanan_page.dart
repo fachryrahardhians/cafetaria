@@ -1101,7 +1101,6 @@ class CustomSliverAppbarDelegate extends SliverPersistentHeaderDelegate {
                     GestureDetector(
                       onTap: () {
                         dataProvider.updateDataField(!dataProvider.dataField!);
-                        print(dataProvider.dataField);
                       },
                       child: Container(
                         width: 70,

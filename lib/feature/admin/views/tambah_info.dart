@@ -1,4 +1,8 @@
 import 'dart:io';
+import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/feature/admin/bloc/add_info_bloc/add_info_bloc.dart';
+import 'package:delta_to_html/delta_to_html.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
@@ -7,13 +11,18 @@ import 'package:cafetaria/feature/admin/widget/custom_date_picker.dart';
 import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:flutter/material.dart';
+import 'package:formz/formz.dart';
 
 class TambahInfo extends StatelessWidget {
   const TambahInfo({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const TambahInfoWidget();
+    return BlocProvider(
+      create: (context) =>
+          AddInfoBloc(adminRepository: context.read<AdminRepository>()),
+      child: TambahInfoWidget(),
+    );
   }
 }
 
@@ -183,26 +192,6 @@ class _TambahInfoWidgetState extends TambahInfoModel {
               ),
             ),
             const SizedBox(height: 20),
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   height: MediaQuery.of(context).size.height / 2.5,
-            //   decoration: const BoxDecoration(
-            //       borderRadius: BorderRadius.all(Radius.circular(5)),
-            //       color: MyColors.whiteGrey1,
-            //       boxShadow: [
-            //         BoxShadow(
-            //           color: Colors.grey,
-            //           offset: Offset(0, 0),
-            //           spreadRadius: 0,
-            //           blurRadius: 1,
-            //         ),
-            //       ]),
-            //   child: Padding(
-            //     padding: const EdgeInsets.all(8.0),
-            //     child: quill.QuillEditor.basic(
-            //         controller: quillController2, readOnly: true),
-            //   ),
-            // ),
             CustomBoxPicker(
                 label: "UNGGAH BANNER",
                 hint: "UNGGAH FOTO",
@@ -216,19 +205,61 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                     ? null
                     : Image.file(File(gambar!.path), fit: BoxFit.contain)),
             const SizedBox(height: 50),
-            SizedBox(
-              width: double.infinity,
-              height: 50,
-              child: ReusableButton1(
-                label: "KIRIM",
-                onPressed: () {
-                  saveJson();
-                },
-                padding: const EdgeInsets.all(0),
-                margin: const EdgeInsets.all(0),
-                //  disabled: _checkDisableButton(),
-                //loading: _submitLoading,
-              ),
+            BlocConsumer<AddInfoBloc, AddInfoState>(
+              listener: (context, state) {
+                if (state.status == FormzStatus.submissionSuccess) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Info Berhasil Di Publish'),
+                    ),
+                  );
+                  setState(() {
+                    submitLoading = false;
+                  });
+                  Navigator.of(context).pop();
+                } else if (state.status == FormzStatus.submissionFailure) {
+                  ScaffoldMessenger.of(context).showSnackBar(
+                    const SnackBar(
+                      content: Text('Terjadi kesalahan'),
+                    ),
+                  );
+                }
+              },
+              builder: (context, state) {
+                return SizedBox(
+                  width: double.infinity,
+                  height: 50,
+                  child: ReusableButton1(
+                    label: "KIRIM",
+                    onPressed: () async {
+                      setState(() {
+                        submitLoading = true;
+                      });
+                      var snapshot = await storage
+                          .ref()
+                          .child('images/info/${gambar!.name}.jpg')
+                          .putFile(File(gambar!.path))
+                          .onError((error, stackTrace) => throw error!);
+                      var thumbnail = await snapshot.ref.getDownloadURL();
+
+                      context.read<AddInfoBloc>().add(AddInfo(
+                          judul: judul.text,
+                          body: DeltaToHTML.encodeJson(
+                                  quillController.document.toDelta().toJson())
+                              .toString(),
+                          imageUri: thumbnail,
+                          kadarluasa: kadarluasa.toString(),
+                          terbit: terbit.toString(),
+                          statusInfo: status == true ? "active" : "deactive",
+                          tipe: selectedDropdown));
+                    },
+                    padding: const EdgeInsets.all(0),
+                    margin: const EdgeInsets.all(0),
+                    disabled: checkDisableButton(),
+                    loading: submitLoading,
+                  ),
+                );
+              },
             ),
           ],
         ),

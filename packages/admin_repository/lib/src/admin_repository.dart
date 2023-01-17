@@ -7,6 +7,15 @@ class AdminRepository {
   }) : _firestore = firestore;
   final FirebaseFirestore _firestore;
   // get  menu per merchant
+
+
+  Future<void> addInfo(InfoModel info) async {
+    try {
+      await _firestore.collection('info').doc(info.infoId).set(info.toJson());
+    } catch (e) {
+      throw Exception('Failed to add info');
+    }
+  }
   Future<List<KawasanRead>> getListKawasan() async {
     try {
       final snapshot = await _firestore.collection('kawasan-read').get();
@@ -20,13 +29,6 @@ class AdminRepository {
   Stream<List<KawasanRead>> getStreamListKawasan() async* {
     yield* _firestore.collection('kawasan-read').snapshots().map((event) =>
         event.docs.map((e) => KawasanRead.fromJson(e.data())).toList());
-    // try {
-    //   final snapshot = await _firestore.collection('kawasan-read').get();
-    //   final documents = snapshot.docs;
-    //   yield documents.toListKawasan();
-    // } catch (e) {
-    //   throw Exception('Failed to get kawasan');
-    // }
   }
 
   Future<void> updateLongLat(String id, String long, String lat) async {
