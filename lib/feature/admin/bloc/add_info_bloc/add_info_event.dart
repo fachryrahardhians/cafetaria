@@ -30,3 +30,38 @@ class AddInfo extends AddInfoEvent {
   @override
   List<Object> get props => [];
 }
+
+class Updateinfo extends AddInfoEvent {
+  final String judul;
+  final String terbit;
+  final String kadarluasa;
+  final String tipe;
+  final String statusInfo;
+  final String body;
+  final String imageUri;
+  final String kawasanId;
+  final String infoId;
+
+  const Updateinfo(
+      {this.body = "",
+      this.imageUri = "",
+      this.judul = "",
+      this.kadarluasa = "",
+      this.statusInfo = "",
+      this.terbit = "",
+      this.tipe = "",
+      this.kawasanId = "",
+      this.infoId = ""});
+
+  @override
+  List<Object> get props => [];
+}
+
+class DeleteInfo extends AddInfoEvent {
+  final InfoModel infoModel;
+
+  const DeleteInfo(this.infoModel);
+
+  @override
+  List<Object> get props => [];
+}

@@ -1,4 +1,4 @@
-import 'dart:convert';
+
 
 import 'package:cafetaria/feature/admin/views/tambah_info.dart';
 import 'package:cafetaria/styles/colors.dart';
@@ -61,6 +61,9 @@ abstract class TambahInfoModel extends State<TambahInfoWidget> {
 
     if (kadarluasa == null) {
       return true;
+    }
+    if (widget.infoModel != null) {
+      return false;
     }
     if (gambar == null) {
       return true;

@@ -18,12 +18,12 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
 
   Dialog infoCart(KawasanRead? model) {
     bool loading = false;
-    final TextEditingController _nama = TextEditingController();
-    final TextEditingController _email = TextEditingController();
-    final TextEditingController _kawasan = TextEditingController();
-    _nama.text = model!.admin.fullname;
-    _email.text = model.admin.email;
-    _kawasan.text = model.name.toString();
+    final TextEditingController nama = TextEditingController();
+    final TextEditingController email = TextEditingController();
+    final TextEditingController kawasan = TextEditingController();
+    nama.text = model!.admin.fullname;
+    email.text = model.admin.email;
+    kawasan.text = model.name.toString();
     return Dialog(
         child: BlocProvider(
       create: (context) =>
@@ -53,19 +53,19 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
               label: "Nama Lengkap",
               enable: false,
               hint: "Masukkan nama Lengkap",
-              controller: _nama,
+              controller: nama,
             ),
             CustomTextfield2(
               label: "EMAIL",
               enable: false,
               hint: "Masukkan nama Lengkap",
-              controller: _email,
+              controller: email,
             ),
             CustomTextfield2(
               label: "KAWASAN",
               enable: true,
               hint: "Masukkan nama Lengkap",
-              controller: _kawasan,
+              controller: kawasan,
             ),
             BlocConsumer<EditKawasanBloc, EditKawasanState>(
               listener: (context, state) {
@@ -119,7 +119,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                                 side: BorderSide.none))),
                                     onPressed: () {
                                       loading == true
-                                          ? print("Loading ")
+                                          ? loading
                                           : Navigator.of(context).pop();
                                     },
                                     child: Text(
@@ -136,7 +136,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                 margin: const EdgeInsets.only(left: 8),
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.white,
+                                        backgroundColor: Colors.white,
                                         side: const BorderSide(
                                           color: Colors.red,
                                         ),
@@ -146,10 +146,10 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                             side: BorderSide.none)),
                                     onPressed: () {
                                       loading == true
-                                          ? print("Loading ")
+                                          ? loading
                                           : context.read<EditKawasanBloc>().add(
                                               EditKawasanChange(model.kawasanId,
-                                                  _kawasan.text));
+                                                  kawasan.text));
                                     },
                                     child: Text(
                                       loading == true ? "Loading " : "SIMPAN",
@@ -261,7 +261,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                                 side: BorderSide.none))),
                                     onPressed: () {
                                       loading == true
-                                          ? print("Loading ")
+                                          ? loading
                                           : Navigator.of(context).pop();
                                     },
                                     child: Text(
@@ -278,7 +278,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                 margin: const EdgeInsets.only(left: 8),
                                 child: ElevatedButton(
                                     style: ElevatedButton.styleFrom(
-                                        primary: Colors.white,
+                                        backgroundColor: Colors.white,
                                         side: const BorderSide(
                                           color: Colors.red,
                                         ),
@@ -288,7 +288,7 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
                                             side: BorderSide.none)),
                                     onPressed: () {
                                       loading == true
-                                          ? print("Loading ")
+                                          ? loading
                                           : context.read<EditKawasanBloc>().add(
                                               DeleteKawasan(model.kawasanId));
                                     },

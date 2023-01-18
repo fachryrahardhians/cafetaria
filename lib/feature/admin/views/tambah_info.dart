@@ -14,26 +14,42 @@ import 'package:flutter/material.dart';
 import 'package:formz/formz.dart';
 
 class TambahInfo extends StatelessWidget {
-  const TambahInfo({Key? key}) : super(key: key);
+  final InfoModel? infoModel;
+  const TambahInfo({Key? key, this.infoModel}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           AddInfoBloc(adminRepository: context.read<AdminRepository>()),
-      child: TambahInfoWidget(),
+      child: TambahInfoWidget(infoModel: infoModel),
     );
   }
 }
 
 class TambahInfoWidget extends StatefulWidget {
-  const TambahInfoWidget({Key? key}) : super(key: key);
+  final InfoModel? infoModel;
+  const TambahInfoWidget({Key? key, this.infoModel}) : super(key: key);
 
   @override
   State<TambahInfoWidget> createState() => _TambahInfoWidgetState();
 }
 
 class _TambahInfoWidgetState extends TambahInfoModel {
+  @override
+  void initState() {
+    super.initState();
+    if (widget.infoModel != null) {
+      setState(() {
+        judul.text = widget.infoModel!.title!;
+        terbit = DateTime.parse(widget.infoModel!.publishDate!);
+        kadarluasa = DateTime.parse(widget.infoModel!.expDate!);
+        selectedDropdown = widget.infoModel!.type!;
+        status = widget.infoModel!.status! == 'active' ? true : false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -202,7 +218,12 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                 ),
                 onTap: () => handleUpload(),
                 child: gambar == null
-                    ? null
+                    ? widget.infoModel != null
+                        ? Image.network(
+                            widget.infoModel!.image!,
+                            fit: BoxFit.contain,
+                          )
+                        : null
                     : Image.file(File(gambar!.path), fit: BoxFit.contain)),
             const SizedBox(height: 50),
             BlocConsumer<AddInfoBloc, AddInfoState>(
@@ -230,28 +251,51 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                   width: double.infinity,
                   height: 50,
                   child: ReusableButton1(
-                    label: "KIRIM",
+                    label: widget.infoModel != null ? "UPDATE" : "KIRIM",
                     onPressed: () async {
                       setState(() {
                         submitLoading = true;
                       });
-                      var snapshot = await storage
-                          .ref()
-                          .child('images/info/${gambar!.name}.jpg')
-                          .putFile(File(gambar!.path))
-                          .onError((error, stackTrace) => throw error!);
-                      var thumbnail = await snapshot.ref.getDownloadURL();
+                      String? thumbnail;
+                      if (gambar != null) {
+                        var snapshot = await storage
+                            .ref()
+                            .child('images/info/${gambar!.name}.jpg')
+                            .putFile(File(gambar!.path))
+                            .onError((error, stackTrace) => throw error!);
+                        thumbnail = await snapshot.ref.getDownloadURL();
+                      } else {
+                        setState(() {
+                          thumbnail = widget.infoModel!.image;
+                        });
+                      }
 
-                      context.read<AddInfoBloc>().add(AddInfo(
-                          judul: judul.text,
-                          body: DeltaToHTML.encodeJson(
-                                  quillController.document.toDelta().toJson())
-                              .toString(),
-                          imageUri: thumbnail,
-                          kadarluasa: kadarluasa.toString(),
-                          terbit: terbit.toString(),
-                          statusInfo: status == true ? "active" : "deactive",
-                          tipe: selectedDropdown));
+                      if (widget.infoModel != null) {
+                        // ignore: use_build_context_synchronously
+                        context.read<AddInfoBloc>().add(Updateinfo(
+                            infoId: widget.infoModel!.infoId,
+                            judul: judul.text,
+                            body: DeltaToHTML.encodeJson(
+                                    quillController.document.toDelta().toJson())
+                                .toString(),
+                            imageUri: thumbnail!,
+                            kadarluasa: kadarluasa.toString(),
+                            terbit: terbit.toString(),
+                            statusInfo: status == true ? "active" : "deactive",
+                            tipe: selectedDropdown));
+                      } else {
+                        // ignore: use_build_context_synchronously
+                        context.read<AddInfoBloc>().add(AddInfo(
+                            judul: judul.text,
+                            body: DeltaToHTML.encodeJson(
+                                    quillController.document.toDelta().toJson())
+                                .toString(),
+                            imageUri: thumbnail!,
+                            kadarluasa: kadarluasa.toString(),
+                            terbit: terbit.toString(),
+                            statusInfo: status == true ? "active" : "deactive",
+                            tipe: selectedDropdown));
+                      }
                     },
                     padding: const EdgeInsets.all(0),
                     margin: const EdgeInsets.all(0),

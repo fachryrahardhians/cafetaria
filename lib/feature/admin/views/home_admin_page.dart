@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
+import 'package:cafetaria/feature/admin/views/home_info.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
 import 'package:cafetaria/feature/admin/views/tambah_info.dart';
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
@@ -115,7 +116,7 @@ class MainMenu extends StatelessWidget {
                 image: "assets/icons/admin_atur.png",
                 title: "Atur Admin",
               ),
-              // TODO: SANDIKA
+              
               HomeItemOrder(
                 // route: () => Get.toNamed(
                 //   Routes.BOOKING,
@@ -123,7 +124,7 @@ class MainMenu extends StatelessWidget {
                 // ),
                 route: () {
                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const TambahInfo()));
+                      MaterialPageRoute(builder: (_) => const HomeInfo()));
                 },
                 image: "assets/icons/atur_info.png",
                 title: "Atur Info",

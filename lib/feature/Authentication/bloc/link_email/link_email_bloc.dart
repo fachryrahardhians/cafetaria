@@ -1,4 +1,5 @@
 import 'package:authentication_repository/authentication_repository.dart';
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 
 import 'link_email_event.dart';
