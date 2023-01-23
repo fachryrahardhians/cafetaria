@@ -23,9 +23,9 @@ class $AssetsImagesGen {
   /// File path: assets/images/ic_grfx_warning.png
   AssetGenImage get icGrfxWarning =>
       const AssetGenImage('assets/images/ic_grfx_warning.png');
-      /// File path: assets/images/map.png
-  AssetGenImage get icMap =>
-      const AssetGenImage('assets/images/map.png');
+
+  /// File path: assets/images/map.png
+  AssetGenImage get icMap => const AssetGenImage('assets/images/map.png');
 
   /// File path: assets/images/ill_cafetaria.png
   AssetGenImage get illCafetaria =>
@@ -92,6 +92,8 @@ class $AssetsImagesGen {
   /// File path: assets/images/product-3.png
   AssetGenImage get product3 =>
       const AssetGenImage('assets/images/product-3.png');
+  AssetGenImage get register =>
+      const AssetGenImage('assets/images/grfx_register2.png');
 }
 
 class Assets {

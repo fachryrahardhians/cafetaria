@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/category_bloc/category_bloc.dart';
@@ -14,6 +16,7 @@ import 'package:cafetaria/utilities/size_config.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_keyboard_visibility/flutter_keyboard_visibility.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:provider/provider.dart';
 
@@ -109,7 +112,7 @@ class _ListMenuState extends State<ListMenu> {
   bool _preOrder = false;
   String? tutupToko;
   String? bukaToko;
-
+  late StreamSubscription keyboard;
   @override
   void initState() {
     _listMenuBloc =
@@ -120,9 +123,14 @@ class _ListMenuState extends State<ListMenu> {
         ListRecomendedMenuBloc(menuRepository: context.read<MenuRepository>());
     _menuPreorderBloc =
         MenuPreorderBloc(menuRepository: context.read<MenuRepository>());
-
     super.initState();
   }
+
+  // @override
+  // void dispose() {
+  //   keyboard.cancel();
+  //   super.dispose();
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -132,6 +140,13 @@ class _ListMenuState extends State<ListMenu> {
       bukaToko = widget.buka_toko;
     }
     final dataProvider = Provider.of<DataProvider>(context);
+    keyboard = KeyboardVisibilityController().onChange.listen((event) {
+      if (event == false) {
+        dataProvider.updateDataField(!dataProvider.dataField!);
+      } else {
+        print(event);
+      }
+    });
     return MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -159,23 +174,6 @@ class _ListMenuState extends State<ListMenu> {
                         idMerchant: idMerchant),
                     pinned: true,
                   ),
-                  // SliverAppBar(
-                  //     expandedHeight: 150.0,
-                  //     flexibleSpace: FlexibleSpaceBar(
-                  //       centerTitle: true,
-                  //       title: Text(
-                  //         title,
-                  //         style: const TextStyle(
-                  //             fontSize: 16,
-                  //             fontWeight: FontWeight.w700,
-                  //             color: Color(0xff333435)),
-                  //       ),
-                  //     ),
-                  //     floating: true,
-                  //     pinned: true,
-                  //     iconTheme: IconThemeData(color: Color(0xffee3124)),
-                  //     backgroundColor: Color(0xffFCFBFC),
-                  //     elevation: 0),
                   SliverToBoxAdapter(
                     child: Padding(
                         padding: const EdgeInsets.symmetric(
@@ -774,24 +772,24 @@ class _ListMenuState extends State<ListMenu> {
     );
   }
 
-  Widget _recomendation() {
-    return GridView.count(
-      shrinkWrap: true,
-      crossAxisCount: 2,
-      physics: const ScrollPhysics(),
-      mainAxisSpacing: SizeConfig.safeBlockVertical * 2,
-      children: [
-        makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
-            false, ''),
-        makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
-            true, 'Rp 30.000'),
-        makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
-            false, ''),
-        makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
-            false, '')
-      ],
-    );
-  }
+  // Widget _recomendation() {
+  //   return GridView.count(
+  //     shrinkWrap: true,
+  //     crossAxisCount: 2,
+  //     physics: const ScrollPhysics(),
+  //     mainAxisSpacing: SizeConfig.safeBlockVertical * 2,
+  //     children: [
+  //       makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
+  //           false, ''),
+  //       makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
+  //           true, 'Rp 30.000'),
+  //       makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
+  //           false, ''),
+  //       makananGrid(Assets.images.illFood.path, 'Nasi Ayam Bakar', 'Rp. 20000',
+  //           false, '')
+  //     ],
+  //   );
+  // }
 
   Widget _customerInfo() {
     return Container(
@@ -1002,127 +1000,132 @@ class CustomSliverAppbarDelegate extends SliverPersistentHeaderDelegate {
               height: 40,
               child: Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
-                child: Row(
-                  crossAxisAlignment: CrossAxisAlignment.center,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                  children: [
-                    BlocProvider(
-                      create: (context) => CategoryBloc(
-                        categoryRepository: context.read<CategoryRepository>(),
-                      )..add(GetMenuMakanan(idMerchant)),
-                      child: BlocBuilder<CategoryBloc, CategoryState>(
-                        builder: (context, state) {
-                          final status = state.status;
-                          if (status == CategoryStatus.loading) {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          } else if (status == CategoryStatus.failure) {
-                            return const Center(
-                              child: Text('Terjadi kesalahan'),
-                            );
-                          } else if (status == CategoryStatus.success) {
-                            // final items = state.items!;
-                            if (dataProvider.dataField == true) {
-                              return SizedBox(
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: TextField(
-                                  style: const TextStyle(fontSize: 13),
-                                  onSubmitted: (value) {
-                                    if (value.isNotEmpty) {
-                                      context
-                                          .read<MenuRepository>()
-                                          .searchMenuByKeyword(
-                                              value.toString(), idMerchant)
-                                          .then((value) {
-                                        print(value.first);
-                                        dataProvider.updateData(value);
-                                      });
-                                    } else {
-                                      return;
-                                    }
-                                  },
-                                  decoration: InputDecoration(
-                                    prefixIcon: const Icon(
-                                      Icons.search,
-                                      color: MyColors.red1,
-                                      size: 20,
-                                    ),
-                                    hintText: "Kamu lagi mau makan apa?",
-                                    hintStyle: const TextStyle(fontSize: 13),
-                                    border: OutlineInputBorder(
-                                      borderRadius: BorderRadius.circular(100),
-                                    ),
-                                  ),
-                                ),
-                              );
+                child: dataProvider.dataField == true
+                    ? SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.1,
+                        child: TextField(
+                          style: const TextStyle(fontSize: 13),
+                          onSubmitted: (value) {
+                            if (value.isNotEmpty) {
+                              context
+                                  .read<MenuRepository>()
+                                  .searchMenuByKeyword(
+                                      value.toString(), idMerchant)
+                                  .then((value) {
+                                print(value.first);
+                                dataProvider.updateData(value);
+                              });
                             } else {
-                              return SizedBox(
-                                //height: 55,
-                                width: MediaQuery.of(context).size.width / 2,
-                                child: DropdownButtonFormField<CategoryModel>(
-                                  icon: const Icon(
-                                    Icons.keyboard_arrow_down_rounded,
-                                    color: Colors.red,
-                                  ),
-                                  decoration: const InputDecoration.collapsed(
-                                    hintText: 'Pilih kategori',
-                                  ),
-                                  borderRadius: BorderRadius.circular(20),
-                                  items: state.items!
-                                      .map((category) => DropdownMenuItem(
-                                            value: category,
-                                            child: Text(
-                                                category.category.toString()),
-                                          ))
-                                      .toList(),
-                                  value: state.items![0],
-                                  onChanged: (val) {
-                                    // context.read<PilihKawasanBloc>().add(
-                                    //     KawasanChange(val!.kawasanId.toString()));
-                                    context
-                                        .read<MenuRepository>()
-                                        .searchMenuByCategory(
-                                            val!.categoryId.toString(),
-                                            idMerchant)
-                                        .then((value) {
-                                      print(value.first);
-                                      dataProvider.updateData(value);
-                                    });
-                                  },
-                                ),
-                              );
+                              return;
                             }
-                          }
-                          return const SizedBox.shrink();
-                        },
-                      ),
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        dataProvider.updateDataField(!dataProvider.dataField!);
-                      },
-                      child: Container(
-                        width: 70,
-                        decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            border:
-                                Border.all(color: Colors.black, width: 0.5)),
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 8, vertical: 5),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: const [
-                              Icon(Icons.search, size: 20),
-                              Text("Cari")
-                            ],
+                          },
+                          decoration: InputDecoration(
+                            prefixIcon: const Icon(
+                              Icons.search,
+                              color: MyColors.red1,
+                              size: 20,
+                            ),
+                            hintText: "Kamu lagi mau makan apa?",
+                            hintStyle: const TextStyle(fontSize: 13),
+                            border: OutlineInputBorder(
+                              borderRadius: BorderRadius.circular(100),
+                            ),
                           ),
                         ),
+                      )
+                    : Row(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: [
+                          BlocProvider(
+                            create: (context) => CategoryBloc(
+                              categoryRepository:
+                                  context.read<CategoryRepository>(),
+                            )..add(GetMenuMakanan(idMerchant)),
+                            child: BlocBuilder<CategoryBloc, CategoryState>(
+                              builder: (context, state) {
+                                final status = state.status;
+                                if (status == CategoryStatus.loading) {
+                                  return const Center(
+                                    child: CircularProgressIndicator(),
+                                  );
+                                } else if (status == CategoryStatus.failure) {
+                                  return const Center(
+                                    child: Text('Terjadi kesalahan'),
+                                  );
+                                } else if (status == CategoryStatus.success) {
+                                  // final items = state.items!;
+
+                                  return SizedBox(
+                                    //height: 55,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2,
+                                    child:
+                                        DropdownButtonFormField<CategoryModel>(
+                                      icon: const Icon(
+                                        Icons.keyboard_arrow_down_rounded,
+                                        color: Colors.red,
+                                      ),
+                                      decoration:
+                                          const InputDecoration.collapsed(
+                                        hintText: 'Pilih kategori',
+                                      ),
+                                      borderRadius: BorderRadius.circular(20),
+                                      items: state.items!
+                                          .map((category) => DropdownMenuItem(
+                                                value: category,
+                                                child: Text(category.category
+                                                    .toString()),
+                                              ))
+                                          .toList(),
+                                      value: state.items![0],
+                                      onChanged: (val) {
+                                        // context.read<PilihKawasanBloc>().add(
+                                        //     KawasanChange(val!.kawasanId.toString()));
+                                        context
+                                            .read<MenuRepository>()
+                                            .searchMenuByCategory(
+                                                val!.categoryId.toString(),
+                                                idMerchant)
+                                            .then((value) {
+                                          print(value.first);
+                                          dataProvider.updateData(value);
+                                        });
+                                      },
+                                    ),
+                                  );
+                                }
+                                return const SizedBox.shrink();
+                              },
+                            ),
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              dataProvider
+                                  .updateDataField(!dataProvider.dataField!);
+                            },
+                            child: Container(
+                              width: 70,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  border: Border.all(
+                                      color: Colors.black, width: 0.5)),
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 8, vertical: 5),
+                                child: Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: const [
+                                    Icon(Icons.search, size: 20),
+                                    Text("Cari")
+                                  ],
+                                ),
+                              ),
+                            ),
+                          )
+                        ],
                       ),
-                    )
-                  ],
-                ),
               ),
             ),
           )

@@ -61,6 +61,7 @@ dependencies:
   flutter_switch: ^0.3.2
   provider: ^6.0.5
   delta_to_html: ^0.2.2
+  flutter_keyboard_visibility: ^5.4.0
   webview_flutter: ^3.0.0
   fluttertoast: ^8.0.9
   formz: ^0.4.1

@@ -4,6 +4,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
+import 'package:cafetaria/feature/pembeli/views/register_sub_admin.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -271,7 +272,14 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                                           color: Colors.black,
                                           fontWeight: FontWeight.normal)),
                                 ),
-                                onPressed: () {}),
+                                onPressed: () {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) =>
+                                            RegisterSubAdmin(user: user),
+                                      ));
+                                }),
                           ),
                           const SizedBox(height: 20),
                         ],
