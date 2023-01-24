@@ -94,6 +94,8 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/product-3.png');
   AssetGenImage get register =>
       const AssetGenImage('assets/images/grfx_register2.png');
+        AssetGenImage get login =>
+      const AssetGenImage('assets/images/grfx_login2.png');
 }
 
 class Assets {

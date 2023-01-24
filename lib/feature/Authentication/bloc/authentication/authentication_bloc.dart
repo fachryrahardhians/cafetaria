@@ -17,6 +17,7 @@ class AuthenticationBloc
         _appSharedPref = appSharedPref,
         super(AuthenticationStateInit()) {
     on<GetGoogleAuthentication>((event, emit) => _signWithGoogle(emit, event));
+    on<GetPasswordLogin>((event, emit) => _signinWithPassword(emit, event));
   }
 
   Future<void> _signWithGoogle(
@@ -24,6 +25,20 @@ class AuthenticationBloc
     emit(AuthenticationStateLoading());
     try {
       final result = await _authenticationRepository.signedWithGoogle();
+      emit(AuthenticationStateSuccess(result!));
+      _appSharedPref.setLogin(true);
+      // final User? user =  await _authenticationRepository.getCurrentUser();
+    } catch (e) {
+      emit(AuthenticationStateError(e.toString()));
+    }
+  }
+
+  Future<void> _signinWithPassword(
+      Emitter<AuthenticationState> emit, GetPasswordLogin event) async {
+    emit(AuthenticationStateLoading());
+    try {
+      final result = await _authenticationRepository.signedWithEmailAndPassword(
+          event.email, event.password);
       emit(AuthenticationStateSuccess(result!));
       _appSharedPref.setLogin(true);
       // final User? user =  await _authenticationRepository.getCurrentUser();

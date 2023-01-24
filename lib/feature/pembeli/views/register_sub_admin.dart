@@ -234,11 +234,18 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
                 child: ReusableButton1(
                   label: "DAFTAR",
                   onPressed: () {
-                    _onSubmit(context, idKawasan, auth);
+                    if (hp.text.isEmpty) {
+                      return null;
+                    }
+                    if (password.text.isEmpty) {
+                      return null;
+                    } else {
+                      _onSubmit(context, idKawasan, auth);
+                    }
                   },
                   padding: const EdgeInsets.all(0),
                   margin: const EdgeInsets.all(0),
-                  disabled: _checkDisableButton(),
+                 // disabled: _checkDisableButton(),
                   loading: _submitLoading,
                 ),
               ),

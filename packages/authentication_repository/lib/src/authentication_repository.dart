@@ -48,15 +48,18 @@ class AuthenticationRepository {
 
   /// sign user with email and password
   /// [email] and [password] must not be null
-  Future<void> signedWithEmailAndPassword(
+  Future<UserCredential?> signedWithEmailAndPassword(
     String email,
     String password,
   ) async {
     try {
-      await _firebaseAuth.signInWithEmailAndPassword(
+      final data = await _firebaseAuth.signInWithEmailAndPassword(
         email: email,
         password: password,
       );
+
+      // Once signed in, return the UserCredential
+      return data;
     } on Exception catch (error, stacktrace) {
       throw AuthenticationException(error, stacktrace);
     }
