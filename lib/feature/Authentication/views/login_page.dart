@@ -6,6 +6,8 @@ import 'package:cafetaria/feature/Authentication/bloc/authentication/authenticat
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
 import 'package:cafetaria/feature/admin/views/dashboard_admin.dart';
+
+import 'package:cafetaria/feature/pembeli/views/merchant_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 //import 'package:cafetaria/feature/Authentication/views/link_email.dart';
 
@@ -35,6 +37,7 @@ class LoginView extends StatefulWidget {
   const LoginView({Key? key}) : super(key: key);
 
   @override
+  // ignore: library_private_types_in_public_api
   _LoginViewState createState() => _LoginViewState();
 }
 
@@ -118,9 +121,7 @@ class _LoginViewState extends State<LoginView> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         // Based on passwordVisible state choose the icon
-                        obscureText
-                            ? Icons.visibility
-                            : Icons.visibility_off,
+                        obscureText ? Icons.visibility : Icons.visibility_off,
                         color: Theme.of(context).primaryColorDark,
                       ),
                       onPressed: () {
@@ -239,7 +240,7 @@ class _LoginViewState extends State<LoginView> {
                                             fontSize: 14,
                                             fontWeight: FontWeight.w700,
                                             color: Colors.white.withOpacity(1)),
-                                      ))))
+                                      )))),
                         ],
                       )
                     ],
@@ -442,6 +443,26 @@ class _LoginViewState extends State<LoginView> {
                 //     //             )));
                 //   },
                 // ),
+                const SizedBox(
+                  height: 30,
+                ),
+                InkWell(
+                  child: Text(
+                    "Login As Guest",
+                    style: textStyle.copyWith(
+                        fontWeight: FontWeight.bold,
+                        color: Colors.red,
+                        fontSize: 14),
+                  ),
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                            builder: (_) => const MerchantPage(
+                                  id: "jDoNCWTG8EUNNJvSNPTJnFtDDj12",
+                                )));
+                  },
+                )
               ],
             ),
           ),

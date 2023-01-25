@@ -1,6 +1,8 @@
 import 'dart:async';
 
+import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/category_bloc/category_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/check_menu_preorder_bloc/check_menu_preorder_bloc.dart';
@@ -134,6 +136,8 @@ class _ListMenuState extends State<ListMenu> {
 
   @override
   Widget build(BuildContext context) {
+    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
+
     if ((widget.tutup_toko != null && widget.tutup_toko != "kosong") &&
         (widget.buka_toko != null && widget.buka_toko != "kosong")) {
       tutupToko = widget.tutup_toko;
@@ -230,15 +234,24 @@ class _ListMenuState extends State<ListMenu> {
                                                 BorderRadius.circular(6),
                                             side: BorderSide.none)),
                                     onPressed: () {
-                                      Navigator.push(
-                                          context,
-                                          MaterialPageRoute(
-                                              builder: (context) => ChatPage(
-                                                    idMerchant:
-                                                        widget.idMerchant,
-                                                    iduser: widget.iduser,
-                                                    title: widget.title,
-                                                  )));
+                                      if (statusApp ==
+                                          AppStatus.unauthenticated) {
+                                        showDialog(
+                                            context: context,
+                                            builder: ((context) {
+                                              return dialogWarnCart();
+                                            }));
+                                      } else {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (context) => ChatPage(
+                                                      idMerchant:
+                                                          widget.idMerchant,
+                                                      iduser: widget.iduser,
+                                                      title: widget.title,
+                                                    )));
+                                      }
                                     },
                                     child: Text(
                                       "CHAT",
@@ -719,6 +732,92 @@ class _ListMenuState extends State<ListMenu> {
                 ),
               )),
         ));
+  }
+
+  Dialog dialogWarnCart() {
+    return Dialog(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Assets.images.icGrfxWarning.image(),
+          const Text(
+            "Anda Belum Login",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff222222),
+                fontSize: 18,
+                fontWeight: FontWeight.w700),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 16),
+            child: Text(
+              "Jika ingin melakukan pemesanan maka anda harus melakukan login terlebih dahulu",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color(0xff808285),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                      height: 44,
+                      margin: const EdgeInsets.only(right: 8),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              side: const BorderSide(
+                                color: MyColors.red1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  side: BorderSide.none)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "TIDAK",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black.withOpacity(1)),
+                          )))),
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                      height: 44,
+                      margin: const EdgeInsets.only(left: 8),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(0),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xffee3124)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: BorderSide.none))),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "LOGIN",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white.withOpacity(1)),
+                          ))))
+            ],
+          )
+        ],
+      ),
+    ));
   }
 
   Widget _merchantInfo(

@@ -1,8 +1,12 @@
+import 'package:cafetaria/app/bloc/app_bloc.dart';
+import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/menu_in_cart_bloc/menu_in_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/model/topping_pick.dart';
-import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
+
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
+import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/size_config.dart';
 import 'package:flutter/material.dart';
@@ -104,6 +108,7 @@ class _SelectToppingState extends State<SelectTopping> {
     if (widget.itemInKeranjang.options != null) {
       //print(widget.itemInKeranjang.options!.length);
     }
+
     return MultiBlocProvider(
         providers: [
           BlocProvider(
@@ -370,8 +375,7 @@ class _SelectToppingState extends State<SelectTopping> {
                               if (tp > optionPilihMultiple!.length) {
                                 ScaffoldMessenger.of(context).showSnackBar(
                                   const SnackBar(
-                                    content: Text(
-                                        'mohon isi dari porsi ke 1'),
+                                    content: Text('mohon isi dari porsi ke 1'),
                                   ),
                                 );
                               } else {
@@ -509,8 +513,6 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
- 
-
   Widget quantity() {
     return Row(
       mainAxisAlignment: MainAxisAlignment.center,
@@ -599,7 +601,95 @@ class _SelectToppingState extends State<SelectTopping> {
     );
   }
 
+  Dialog dialogWarnCart() {
+    return Dialog(
+        child: Padding(
+      padding: const EdgeInsets.only(left: 16, right: 16, top: 15, bottom: 16),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Assets.images.icGrfxWarning.image(),
+          const Text(
+            "Anda Belum Login",
+            textAlign: TextAlign.center,
+            style: TextStyle(
+                color: Color(0xff222222),
+                fontSize: 18,
+                fontWeight: FontWeight.w700),
+          ),
+          const Padding(
+            padding: EdgeInsets.only(top: 8, bottom: 16),
+            child: Text(
+              "Jika ingin melakukan pemesanan maka anda harus melakukan login terlebih dahulu",
+              textAlign: TextAlign.center,
+              style: TextStyle(
+                  color: Color(0xff808285),
+                  fontSize: 12,
+                  fontWeight: FontWeight.w400),
+            ),
+          ),
+          Row(
+            children: [
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                      height: 44,
+                      margin: const EdgeInsets.only(right: 8),
+                      child: ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                              primary: Colors.white,
+                              side: const BorderSide(
+                                color: MyColors.red1,
+                              ),
+                              shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(6),
+                                  side: BorderSide.none)),
+                          onPressed: () {
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "TIDAK",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.black.withOpacity(1)),
+                          )))),
+              Expanded(
+                  flex: 1,
+                  child: Container(
+                      height: 44,
+                      margin: const EdgeInsets.only(left: 8),
+                      child: ElevatedButton(
+                          style: ButtonStyle(
+                              elevation: MaterialStateProperty.all(0),
+                              backgroundColor: MaterialStateProperty.all(
+                                  const Color(0xffee3124)),
+                              shape: MaterialStateProperty.all(
+                                  RoundedRectangleBorder(
+                                      borderRadius: BorderRadius.circular(6),
+                                      side: BorderSide.none))),
+                          onPressed: () {
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                            Navigator.pop(context);
+                          },
+                          child: Text(
+                            "LOGIN",
+                            style: TextStyle(
+                                fontSize: 14,
+                                fontWeight: FontWeight.w700,
+                                color: Colors.white.withOpacity(1)),
+                          ))))
+            ],
+          )
+        ],
+      ),
+    ));
+  }
+
   Widget bottomNavBar() {
+    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
       child: SizedBox(
@@ -617,74 +707,82 @@ class _SelectToppingState extends State<SelectTopping> {
                     side: BorderSide.none))),
             onPressed: _isButtonPerbaruEnable
                 ? () {
-                    if ((_toppingType == type.beda) && (qty == 1)) {
-                      ScaffoldMessenger.of(context).showSnackBar(
-                        const SnackBar(
-                          content: Text(
-                              'quantity harus diatas 1 jika ingin tipe topping beda'),
-                        ),
-                      );
+                    if (statusApp == AppStatus.unauthenticated) {
+                      showDialog(
+                          context: context,
+                          builder: ((context) {
+                            return dialogWarnCart();
+                          }));
                     } else {
-                      if (qty == 0) {
-                        menuInCartBloc
-                            .add(DeleteMenuInCart(widget.itemInKeranjang));
-                      } else if (widget.itemInKeranjang.quantity == -1) {
-                        List<OrderTopping>? multiple = [
-                          OrderTopping(
-                              items: optionPilih?.map((e) {
-                            return ToppingItem(
-                                name: e.name,
-                                price: int.parse(e.price.toString()));
-                          }).toList())
-                        ];
-                        print(multiple);
-                        addMenuToCartBloc.add(AddMenuToCart(
-                            option: optionPilih ?? [],
-                            multiple: optionPilihMultiple!.isNotEmpty
-                                ? optionPilihMultiple
-                                : multiple,
-                            menuModel: item,
-                            quantity: qty,
-                            totalPrice: (item.price ?? 0) * qty,
-                            notes: _catatanController.text));
+                      if ((_toppingType == type.beda) && (qty == 1)) {
+                        ScaffoldMessenger.of(context).showSnackBar(
+                          const SnackBar(
+                            content: Text(
+                                'quantity harus diatas 1 jika ingin tipe topping beda'),
+                          ),
+                        );
                       } else {
-                        Keranjang editedMenu = widget.itemInKeranjang;
-                        //deklarasi isi menu in keranjang yang akan di update
-                        if (optionPilihMultiple!.isEmpty ||
-                            widget.itemInKeranjang.toppings?.length == 1) {
-                          setState(() {
-                            optionPilihMultiple = [
-                              OrderTopping(
-                                  items: optionPilih?.map((e) {
-                                return ToppingItem(
-                                    name: e.name,
-                                    price: int.parse(e.price.toString()));
-                              }).toList())
-                            ];
-                          });
+                        if (qty == 0) {
+                          menuInCartBloc
+                              .add(DeleteMenuInCart(widget.itemInKeranjang));
+                        } else if (widget.itemInKeranjang.quantity == -1) {
+                          List<OrderTopping>? multiple = [
+                            OrderTopping(
+                                items: optionPilih?.map((e) {
+                              return ToppingItem(
+                                  name: e.name,
+                                  price: int.parse(e.price.toString()));
+                            }).toList())
+                          ];
+                          print(multiple);
+                          addMenuToCartBloc.add(AddMenuToCart(
+                              option: optionPilih ?? [],
+                              multiple: optionPilihMultiple!.isNotEmpty
+                                  ? optionPilihMultiple
+                                  : multiple,
+                              menuModel: item,
+                              quantity: qty,
+                              totalPrice: (item.price ?? 0) * qty,
+                              notes: _catatanController.text));
+                        } else {
+                          Keranjang editedMenu = widget.itemInKeranjang;
+                          //deklarasi isi menu in keranjang yang akan di update
+                          if (optionPilihMultiple!.isEmpty ||
+                              widget.itemInKeranjang.toppings?.length == 1) {
+                            setState(() {
+                              optionPilihMultiple = [
+                                OrderTopping(
+                                    items: optionPilih?.map((e) {
+                                  return ToppingItem(
+                                      name: e.name,
+                                      price: int.parse(e.price.toString()));
+                                }).toList())
+                              ];
+                            });
+                          }
+                          editedMenu.totalPrice =
+                              widget.itemInKeranjang.price! * qty;
+                          editedMenu.quantity = qty;
+                          editedMenu.toppings = optionPilihMultiple?.map((e) {
+                                return ToppingOrder(
+                                    items: e.items?.map((a) {
+                                  return ListOption(
+                                      name: a.name, price: a.price.toString());
+                                }).toList());
+                              }).toList() ??
+                              optionPilihMultiple?.map((e) {
+                                return ToppingOrder(
+                                    items: optionPilih?.map((a) {
+                                  return ListOption(
+                                      name: a.name, price: a.price.toString());
+                                }).toList());
+                              }).toList();
+                          editedMenu.options = optionPilih?.map((e) {
+                            return ListOption(
+                                name: e.name, price: e.price.toString());
+                          }).toList();
+                          menuInCartBloc.add(UpdateMenuInCart(editedMenu));
                         }
-                        editedMenu.totalPrice =
-                            widget.itemInKeranjang.price! * qty;
-                        editedMenu.quantity = qty;
-                        editedMenu.toppings = optionPilihMultiple?.map((e) {
-                              return ToppingOrder(
-                                  items: e.items?.map((a) {
-                                return ListOption(
-                                    name: a.name, price: a.price.toString());
-                              }).toList());
-                            }).toList() ??
-                            optionPilihMultiple?.map((e) {
-                              return ToppingOrder(
-                                  items: optionPilih?.map((a) {
-                                return ListOption(
-                                    name: a.name, price: a.price.toString());
-                              }).toList());
-                            }).toList();
-                        editedMenu.options = optionPilih?.map((e) {
-                          return ListOption(
-                              name: e.name, price: e.price.toString());
-                        }).toList();
-                        menuInCartBloc.add(UpdateMenuInCart(editedMenu));
                       }
                     }
                   }

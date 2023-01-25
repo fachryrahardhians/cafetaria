@@ -1,6 +1,7 @@
 import 'dart:async';
 
 import 'package:authentication_repository/authentication_repository.dart';
+// ignore: depend_on_referenced_packages
 import 'package:bloc/bloc.dart';
 import 'package:cafetaria/feature/pembeli/model/order_input.dart';
 import 'package:equatable/equatable.dart';

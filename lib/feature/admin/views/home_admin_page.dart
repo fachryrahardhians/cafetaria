@@ -1,7 +1,7 @@
 import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
 import 'package:cafetaria/feature/admin/views/home_info.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
-import 'package:cafetaria/feature/admin/views/tambah_info.dart';
+
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
@@ -101,8 +101,10 @@ class MainMenu extends StatelessWidget {
             children: [
               HomeItemOrder(
                 route: () async {
-                   Navigator.push(context,
-                      MaterialPageRoute(builder: (_) => const PendingSubAdmin()));
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => const PendingSubAdmin()));
                 },
                 image: "assets/icons/pending.png",
                 title: "Pending",
@@ -110,13 +112,12 @@ class MainMenu extends StatelessWidget {
               ),
               HomeItemOrder(
                 route: () {
-                   Navigator.push(context,
+                  Navigator.push(context,
                       MaterialPageRoute(builder: (_) => const EditKawasan()));
                 },
                 image: "assets/icons/admin_atur.png",
                 title: "Atur Admin",
               ),
-              
               HomeItemOrder(
                 // route: () => Get.toNamed(
                 //   Routes.BOOKING,
