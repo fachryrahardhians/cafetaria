@@ -1,3 +1,5 @@
+import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/components/view_info.dart';
 import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
 import 'package:cafetaria/feature/admin/views/home_info.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
@@ -64,22 +66,49 @@ class _HomeAdminState extends AdminPage {
                 ),
               ),
               const SizedBox(height: 15),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: MediaQuery.of(context).size.height / 4,
-                child: ListView.builder(
-                  itemCount: 3,
-                  scrollDirection: Axis.horizontal,
-                  itemBuilder: (context, index) {
-                    return const HomeItemInfo(
-                      image: 'assets/images/offer_1.png',
-                      title:
-                          'Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja',
-                      author: 'Charlie Natalie',
+              StreamBuilder<List<InfoModel>>(
+                stream: getStreamInfo(),
+                builder: (context, snapshot) {
+                  if (snapshot.hasError) {
+                    return Text("Ada masalah ${snapshot.error}");
+                  } else if (snapshot.hasData) {
+                    final items = snapshot.data;
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height / 5,
+                      child: ListView.builder(
+                        itemCount: items!.length,
+                        scrollDirection: Axis.horizontal,
+                        itemBuilder: (context, index) {
+                          return items[index].status == "active"
+                              ? items[index].type == "kawasan" ||
+                                      items[index].type == "semua"
+                                  ? GestureDetector(
+                                      onTap: () {
+                                        Navigator.push(
+                                            context,
+                                            MaterialPageRoute(
+                                                builder: (_) => ViewInfo(
+                                                    infoModel: items[index])));
+                                      },
+                                      child: HomeItemInfo(
+                                        image: items[index].image.toString(),
+                                        title: items[index].title.toString(),
+                                        author: 'Charlie Natalie',
+                                      ),
+                                    )
+                                  : const SizedBox.shrink()
+                              : const SizedBox.shrink();
+                        },
+                      ),
                     );
-                  },
-                ),
-              )
+                  } else {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  }
+                },
+              ),
             ],
           )
         ],

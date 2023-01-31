@@ -46,6 +46,9 @@ class _TambahInfoWidgetState extends TambahInfoModel {
         kadarluasa = DateTime.parse(widget.infoModel!.expDate!);
         selectedDropdown = widget.infoModel!.type!;
         status = widget.infoModel!.status! == 'active' ? true : false;
+        quillController = quill.QuillController(
+            document: quill.Document.fromJson(widget.infoModel!.body),
+            selection: const TextSelection.collapsed(offset: 0));
       });
     }
   }
@@ -275,9 +278,7 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                         context.read<AddInfoBloc>().add(Updateinfo(
                             infoId: widget.infoModel!.infoId,
                             judul: judul.text,
-                            body: DeltaToHTML.encodeJson(
-                                    quillController.document.toDelta().toJson())
-                                .toString(),
+                            body: quillController.document.toDelta().toJson(),
                             imageUri: thumbnail!,
                             kadarluasa: kadarluasa.toString(),
                             terbit: terbit.toString(),
@@ -287,9 +288,7 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                         // ignore: use_build_context_synchronously
                         context.read<AddInfoBloc>().add(AddInfo(
                             judul: judul.text,
-                            body: DeltaToHTML.encodeJson(
-                                    quillController.document.toDelta().toJson())
-                                .toString(),
+                            body: quillController.document.toDelta().toJson(),
                             imageUri: thumbnail!,
                             kadarluasa: kadarluasa.toString(),
                             terbit: terbit.toString(),

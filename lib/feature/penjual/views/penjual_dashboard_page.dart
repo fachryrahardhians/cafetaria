@@ -1,10 +1,13 @@
 import 'dart:async';
 
+import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/components/view_info.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/chat_list_merchant.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
+import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
 import 'package:cafetaria/feature/penjual_order/views/order_page/order_page.dart';
@@ -420,6 +423,71 @@ class _PenjualDashboardViewState extends State<PenjualDashboardView> {
                       ),
                       const SizedBox(height: 20),
                       MainMenuWidget(merchantModel: items),
+
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Text(
+                            'PAPAN INFO',
+                            style: textStyle.copyWith(
+                                color: const Color(0xff808285)),
+                          ),
+                          Text(
+                            'Lihat semua',
+                            style: textStyle.copyWith(
+                                fontSize: 12, color: const Color(0xffee3124)),
+                          )
+                        ],
+                      ),
+                      const SizedBox(height: 15),
+                      StreamBuilder<List<InfoModel>>(
+                        stream: context.read<AdminRepository>().getStreamInfo(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Text("Ada masalah ${snapshot.error}");
+                          } else if (snapshot.hasData) {
+                            final items = snapshot.data;
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height / 5,
+                              child: ListView.builder(
+                                itemCount: items!.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return items[index].status == "active"
+                                      ? items[index].type == "penjual" ||
+                                              items[index].type == "semua"
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) => ViewInfo(
+                                                            infoModel:
+                                                                items[index])));
+                                              },
+                                              child: HomeItemInfo(
+                                                image: items[index]
+                                                    .image
+                                                    .toString(),
+                                                title: items[index]
+                                                    .title
+                                                    .toString(),
+                                                author: 'Charlie Natalie',
+                                              ),
+                                            )
+                                          : const SizedBox.shrink()
+                                      : const SizedBox.shrink();
+                                },
+                              ),
+                            );
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
                     ],
                   );
                 }

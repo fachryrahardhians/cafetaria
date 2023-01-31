@@ -1,9 +1,9 @@
 part of 'add_info_bloc.dart';
 
 class AddInfoState extends Equatable {
-  const AddInfoState(
+   AddInfoState(
       {this.status = FormzStatus.pure,
-      this.body = "",
+      this.body ,
       this.imageUri = "",
       this.judul = "",
       this.kadarluasa = "",
@@ -17,12 +17,21 @@ class AddInfoState extends Equatable {
   final String kadarluasa;
   final String tipe;
   final String statusInfo;
-  final String body;
+  var body;
   final String imageUri;
   final String kawasanId;
   @override
-  List<Object> get props =>
-      [status, judul, terbit, kadarluasa, tipe, statusInfo, body, imageUri,kawasanId];
+  List<Object> get props => [
+        status,
+        judul,
+        terbit,
+        kadarluasa,
+        tipe,
+        statusInfo,
+        body,
+        imageUri,
+        kawasanId
+      ];
   AddInfoState copyWith(
       {
       // bool? status,
@@ -32,7 +41,7 @@ class AddInfoState extends Equatable {
       String? kadarluasa,
       String? tipe,
       String? statusInfo,
-      String? body,
+      var body,
       String? imageUri,
       String? kawasanId}) {
     return AddInfoState(

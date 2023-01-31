@@ -13,12 +13,13 @@ class AddInfo extends AddInfoEvent {
   final String kadarluasa;
   final String tipe;
   final String statusInfo;
-  final String body;
+  // ignore: prefer_typing_uninitialized_variables
+  var body;
   final String imageUri;
   final String kawasanId;
 
-  const AddInfo(
-      {this.body = "",
+  AddInfo(
+      {this.body,
       this.imageUri = "",
       this.judul = "",
       this.kadarluasa = "",
@@ -37,13 +38,13 @@ class Updateinfo extends AddInfoEvent {
   final String kadarluasa;
   final String tipe;
   final String statusInfo;
-  final String body;
+  var body;
   final String imageUri;
   final String kawasanId;
   final String infoId;
 
-  const Updateinfo(
-      {this.body = "",
+  Updateinfo(
+      {this.body,
       this.imageUri = "",
       this.judul = "",
       this.kadarluasa = "",

@@ -14,7 +14,7 @@ class AddInfoBloc extends Bloc<AddInfoEvent, AddInfoState> {
   AddInfoBloc({
     required AdminRepository adminRepository,
   })  : _adminRepository = adminRepository,
-        super(const AddInfoState()) {
+        super(AddInfoState()) {
     on<AddInfo>(_addInfo);
     on<Updateinfo>(_updateInfo);
     on<DeleteInfo>(_deleteInfo);

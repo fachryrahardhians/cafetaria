@@ -5,7 +5,8 @@ part 'info_model.g.dart';
 
 @JsonSerializable(explicitToJson: true)
 class InfoModel extends Equatable {
-  final String? body;
+  // ignore: prefer_typing_uninitialized_variables
+  var body;
   final String? expDate;
   final String? image;
   final String infoId;
@@ -14,7 +15,7 @@ class InfoModel extends Equatable {
   final String? status;
   final String? title;
   final String? type;
-  const InfoModel(
+  InfoModel(
       {this.body,
       required this.infoId,
       required this.kawasanId,
@@ -44,7 +45,7 @@ class InfoModel extends Equatable {
       ];
 
   InfoModel copyWith(
-      {String? body,
+      {var body,
       String? expDate,
       String? image,
       String? infoId,

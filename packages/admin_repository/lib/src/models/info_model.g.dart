@@ -7,7 +7,7 @@ part of 'info_model.dart';
 // **************************************************************************
 
 InfoModel _$InfoModelFromJson(Map<String, dynamic> json) => InfoModel(
-      body: json['body'] as String?,
+      body: json['body'],
       infoId: json['infoId'] as String,
       kawasanId: json['kawasanId'] as String,
       expDate: json['expDate'] as String?,

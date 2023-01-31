@@ -1,5 +1,7 @@
 // ignore_for_file: avoid_print
 
+import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/components/view_info.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/hasil_search_merchant.dart';
@@ -86,7 +88,8 @@ class _MerchantPageState extends State<MerchantPage>
                                     selectedMerchant!.merchantId.toString(),
                                 alamat: selectedMerchant!.address.toString(),
                                 rating: selectedMerchant?.rating,
-                                jumlahUlasan: selectedMerchant?.totalCountRating,
+                                jumlahUlasan:
+                                    selectedMerchant?.totalCountRating,
                                 tutup_toko:
                                     selectedMerchant?.tutup_toko ?? "kosong",
                                 minPrice: selectedMerchant?.minPrice,
@@ -96,8 +99,8 @@ class _MerchantPageState extends State<MerchantPage>
                 }
               }),
               child: Padding(
-                  padding:
-                      const EdgeInsets.symmetric(vertical: 16.0, horizontal: 24),
+                  padding: const EdgeInsets.symmetric(
+                      vertical: 16.0, horizontal: 24),
                   child: SingleChildScrollView(
                     child: Column(children: [
                       SizedBox(height: SizeConfig.safeBlockVertical * 1),
@@ -129,7 +132,8 @@ class _MerchantPageState extends State<MerchantPage>
                                               id: widget.id),
                                         ))
                                     .then((value) => {
-                                          addMenuToCartBloc..add(GetMenusInCart())
+                                          addMenuToCartBloc
+                                            ..add(GetMenusInCart())
                                         });
                               } else {
                                 return;
@@ -209,7 +213,7 @@ class _MerchantPageState extends State<MerchantPage>
                             }
                             return merchant;
                           }
-        
+
                           return FutureBuilder<List<MerchantModel>>(
                               future: listmerchant(),
                               builder: (context, snapshot) {
@@ -227,7 +231,8 @@ class _MerchantPageState extends State<MerchantPage>
                                             onTap: () {
                                               selectedMerchant =
                                                   snapshot.data?[index];
-                                              if (merchantIdInKeranjang != null &&
+                                              if (merchantIdInKeranjang !=
+                                                      null &&
                                                   snapshot.data?[index]
                                                           .merchantId !=
                                                       merchantIdInKeranjang) {
@@ -235,7 +240,8 @@ class _MerchantPageState extends State<MerchantPage>
                                                     context: context,
                                                     builder: ((context) {
                                                       return dialogWarnCart(
-                                                          snapshot.data?[index]);
+                                                          snapshot
+                                                              .data?[index]);
                                                     }));
                                               } else {
                                                 Navigator.push(
@@ -291,7 +297,8 @@ class _MerchantPageState extends State<MerchantPage>
                                                               maxPrice: snapshot
                                                                   .data?[index]
                                                                   .maxPrice,
-                                                            ))).then((value) => {
+                                                            ))).then((value) =>
+                                                    {
                                                       addMenuToCartBloc
                                                         ..add(GetMenusInCart())
                                                     });
@@ -339,22 +346,54 @@ class _MerchantPageState extends State<MerchantPage>
                         ],
                       ),
                       const SizedBox(height: 15),
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width,
-                        height: MediaQuery.of(context).size.height / 5,
-                        child: ListView.builder(
-                          itemCount: 3,
-                          scrollDirection: Axis.horizontal,
-                          itemBuilder: (context, index) {
-                            return const HomeItemInfo(
-                              image: 'assets/images/offer_1.png',
-                              title:
-                                  'Semua Petugas Ingat Protokol Kesehatan Ditempat Kerja',
-                              author: 'Charlie Natalie',
+                      StreamBuilder<List<InfoModel>>(
+                        stream: context.read<AdminRepository>().getStreamInfo(),
+                        builder: (context, snapshot) {
+                          if (snapshot.hasError) {
+                            return Text("Ada masalah ${snapshot.error}");
+                          } else if (snapshot.hasData) {
+                            final items = snapshot.data;
+                            return SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              height: MediaQuery.of(context).size.height / 5,
+                              child: ListView.builder(
+                                itemCount: items!.length,
+                                scrollDirection: Axis.horizontal,
+                                itemBuilder: (context, index) {
+                                  return items[index].status == "active"
+                                      ? items[index].type == "pembeli" ||
+                                              items[index].type == "semua"
+                                          ? GestureDetector(
+                                              onTap: () {
+                                                Navigator.push(
+                                                    context,
+                                                    MaterialPageRoute(
+                                                        builder: (_) => ViewInfo(
+                                                            infoModel:
+                                                                items[index])));
+                                              },
+                                              child: HomeItemInfo(
+                                                image: items[index]
+                                                    .image
+                                                    .toString(),
+                                                title: items[index]
+                                                    .title
+                                                    .toString(),
+                                                author: 'Charlie Natalie',
+                                              ),
+                                            )
+                                          : const SizedBox.shrink()
+                                      : const SizedBox.shrink();
+                                },
+                              ),
                             );
-                          },
-                        ),
-                      )
+                          } else {
+                            return const Center(
+                              child: CircularProgressIndicator(),
+                            );
+                          }
+                        },
+                      ),
                     ]),
                   ))),
         ));
