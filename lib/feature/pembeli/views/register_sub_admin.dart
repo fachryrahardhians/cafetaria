@@ -78,7 +78,11 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
 
     try {
       final data = {'mobile': hp.text};
-      final data2 = {'status': "unverified", 'userId': widget.user.uid};
+      final data2 = {
+        'status': "unverified",
+        'userId': widget.user.uid,
+        'kawasanId': idKawasanPick
+      };
       await auth.updatePassword(password.text);
       await _firestore.collection('user').doc(widget.user.uid).update(data);
       await _firestore
@@ -245,7 +249,7 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
                   },
                   padding: const EdgeInsets.all(0),
                   margin: const EdgeInsets.all(0),
-                 // disabled: _checkDisableButton(),
+                  // disabled: _checkDisableButton(),
                   loading: _submitLoading,
                 ),
               ),

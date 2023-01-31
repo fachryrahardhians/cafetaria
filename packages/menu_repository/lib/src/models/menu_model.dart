@@ -4,7 +4,7 @@ import 'package:json_annotation/json_annotation.dart';
 
 part 'menu_model.g.dart';
 
-@JsonSerializable()
+@JsonSerializable(explicitToJson: true)
 class MenuModel extends Equatable {
   final String? menuId;
   final String? merchantId;
