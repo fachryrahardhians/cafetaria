@@ -20,6 +20,7 @@ class MenuModel extends Equatable {
   final String? resetTime;
   final String? resetType;
   final String? rulepreordermenuId;
+  final bool? foodKit;
   // final List<OpsiMenu>? options;
   final int? stock;
   final List<String>? tags;
@@ -40,6 +41,7 @@ class MenuModel extends Equatable {
       this.resetTime,
       this.resetType,
       this.rulepreordermenuId,
+      this.foodKit,
       this.stock,
       this.tags});
 
@@ -65,27 +67,28 @@ class MenuModel extends Equatable {
       String? resetType,
       String? rulepreordermenuId,
       int? stock,
+      bool? foodKit,
       //List<OpsiMenu>? options,
       List<String>? tags}) {
     return MenuModel(
-      menuId: menuId ?? this.menuId,
-      merchantId: merchantId ?? this.merchantId,
-      name: name ?? this.name,
-      //options: options ?? this.options,
-      autoResetStock: autoResetStock ?? this.autoResetStock,
-      defaultStock: defaultStock ?? this.defaultStock,
-      categoryId: categoryId ?? this.categoryId,
-      desc: desc ?? this.desc,
-      image: image ?? this.image,
-      isPreOrder: isPreOrder ?? this.isPreOrder,
-      isRecomended: isRecomended ?? this.isRecomended,
-      price: price ?? this.price,
-      resetTime: resetTime ?? this.resetTime,
-      resetType: resetType ?? this.resetType,
-      rulepreordermenuId: rulepreordermenuId ?? this.rulepreordermenuId,
-      stock: stock ?? this.stock,
-      tags: tags ?? this.tags,
-    );
+        menuId: menuId ?? this.menuId,
+        merchantId: merchantId ?? this.merchantId,
+        name: name ?? this.name,
+        //options: options ?? this.options,
+        autoResetStock: autoResetStock ?? this.autoResetStock,
+        defaultStock: defaultStock ?? this.defaultStock,
+        categoryId: categoryId ?? this.categoryId,
+        desc: desc ?? this.desc,
+        image: image ?? this.image,
+        isPreOrder: isPreOrder ?? this.isPreOrder,
+        isRecomended: isRecomended ?? this.isRecomended,
+        price: price ?? this.price,
+        resetTime: resetTime ?? this.resetTime,
+        resetType: resetType ?? this.resetType,
+        rulepreordermenuId: rulepreordermenuId ?? this.rulepreordermenuId,
+        stock: stock ?? this.stock,
+        tags: tags ?? this.tags,
+        foodKit: foodKit ?? this.foodKit);
   }
 
   @override

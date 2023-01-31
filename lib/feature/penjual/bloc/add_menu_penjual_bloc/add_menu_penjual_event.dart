@@ -42,7 +42,14 @@ class CheckedStock extends AddMenuPenjualEvent {
   @override
   List<Object> get props => [checked];
 }
+class CheckedFoodKit extends AddMenuPenjualEvent {
+  final bool checked;
 
+  const CheckedFoodKit(this.checked);
+
+  @override
+  List<Object> get props => [checked];
+}
 class HargaJualChange extends AddMenuPenjualEvent {
   final String hargaJual;
 

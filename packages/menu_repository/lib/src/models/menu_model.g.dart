@@ -21,6 +21,7 @@ MenuModel _$MenuModelFromJson(Map<String, dynamic> json) => MenuModel(
       resetTime: json['resetTime'] as String?,
       resetType: json['resetType'] as String?,
       rulepreordermenuId: json['rulepreordermenuId'] as String?,
+      foodKit: json['foodKit'] as bool?,
       stock: json['stock'] as int?,
       tags: (json['tags'] as List<dynamic>?)?.map((e) => e as String).toList(),
     );
@@ -40,6 +41,7 @@ Map<String, dynamic> _$MenuModelToJson(MenuModel instance) => <String, dynamic>{
       'resetTime': instance.resetTime,
       'resetType': instance.resetType,
       'rulepreordermenuId': instance.rulepreordermenuId,
+      'foodKit': instance.foodKit,
       'stock': instance.stock,
       'tags': instance.tags,
     };

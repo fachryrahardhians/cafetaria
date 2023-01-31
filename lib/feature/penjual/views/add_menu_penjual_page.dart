@@ -75,6 +75,9 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
       context
           .read<AddMenuPenjualBloc>()
           .add(MenuCanBooked(widget.menu!.isPreOrder!));
+      context
+          .read<AddMenuPenjualBloc>()
+          .add(CheckedFoodKit(widget.menu!.foodKit!));
     }
     super.initState();
   }
@@ -112,7 +115,8 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
         (AddMenuPenjualBloc bloc) => bloc.state.checkMenuRecomendAccepted);
     final checkBookedMenu = context.select(
         (AddMenuPenjualBloc bloc) => bloc.state.checkMenuBookedAccepted);
-
+  final checkedFoodKit = context.select(
+        (AddMenuPenjualBloc bloc) => bloc.state.foodKit);
     final image = context.select((AddMenuPenjualBloc bloc) => bloc.state.image);
 
     final uploadProgressState =
@@ -602,6 +606,29 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                   ),
                   Text(
                     'Menu bisa dibooking',
+                    style: TextStyle(
+                      color: CFColors.slateGrey,
+                      fontSize: 14,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ],
+              ),
+               Row(
+                children: [
+                  Checkbox(
+                    value: checkedFoodKit,
+                    onChanged: (val) {
+                      context
+                          .read<AddMenuPenjualBloc>()
+                          .add(CheckedFoodKit(val!));
+                    },
+                  ),
+                  const SizedBox(
+                    width: 8,
+                  ),
+                  Text(
+                    'Tambahkan alat makan',
                     style: TextStyle(
                       color: CFColors.slateGrey,
                       fontSize: 14,

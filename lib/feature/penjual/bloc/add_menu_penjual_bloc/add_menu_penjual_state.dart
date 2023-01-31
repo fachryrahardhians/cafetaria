@@ -14,6 +14,7 @@ class AddMenuPenjualState extends Equatable {
     this.checkStockAccepted = false,
     this.checkMenuRecomendAccepted = false,
     this.checkMenuBookedAccepted = false,
+    this.foodKit = false,
     this.uploadProgress,
   });
 
@@ -29,6 +30,7 @@ class AddMenuPenjualState extends Equatable {
   final bool checkStockAccepted;
   final bool checkMenuRecomendAccepted;
   final bool checkMenuBookedAccepted;
+  final bool foodKit;
   final UploadProgress? uploadProgress;
 
   @override
@@ -46,6 +48,7 @@ class AddMenuPenjualState extends Equatable {
         checkMenuBookedAccepted,
         uploadProgress,
         tagInput,
+        foodKit
       ];
 
   AddMenuPenjualState copyWith({
@@ -62,6 +65,7 @@ class AddMenuPenjualState extends Equatable {
     bool? checkMenuRecomendAccepted,
     bool? checkMenuBookedAccepted,
     UploadProgress? uploadProgress,
+    bool? foodKit
   }) {
     return AddMenuPenjualState(
       status: status ?? this.status,
@@ -79,6 +83,7 @@ class AddMenuPenjualState extends Equatable {
       checkMenuBookedAccepted:
           checkMenuBookedAccepted ?? this.checkMenuBookedAccepted,
       uploadProgress: uploadProgress ?? this.uploadProgress,
+      foodKit: foodKit ?? this.foodKit
     );
   }
 }

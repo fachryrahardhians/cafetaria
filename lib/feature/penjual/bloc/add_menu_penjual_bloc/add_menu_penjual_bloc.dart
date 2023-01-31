@@ -38,6 +38,7 @@ class AddMenuPenjualBloc
     on<UploadPhoto>(_uploadPhoto);
     on<SaveMenu>(_saveMenu);
     on<UpdateMenu>(_updateMenu);
+    on<CheckedFoodKit>(_checkedFoodKit);
     on<DeleteImage>(_deleteImage);
     on<DeleteTag>(_deleteTag);
   }
@@ -265,6 +266,27 @@ class AddMenuPenjualBloc
     ));
   }
 
+  FutureOr<void> _checkedFoodKit(
+    CheckedFoodKit event,
+    Emitter<AddMenuPenjualState> emit,
+  ) {
+    emit(state.copyWith(
+        status: state.status,
+        menuInput: state.menuInput,
+        categoryInput: state.categoryInput,
+        deskripsiInput: state.deskripsiInput,
+        tagInput: state.tagInput,
+        hargaInput: state.hargaInput,
+        tagging: state.tagging,
+        image: state.image,
+        imageUrl: state.imageUrl,
+        uploadProgress: state.uploadProgress,
+        checkStockAccepted: state.checkStockAccepted,
+        checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+        checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+        foodKit: event.checked));
+  }
+
   FutureOr<void> _uploadPhoto(
     UploadPhoto event,
     Emitter<AddMenuPenjualState> emit,
@@ -327,6 +349,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      foodKit: state.foodKit
     ));
     SharedPreferences idmercahnt = await SharedPreferences.getInstance();
     String id = idmercahnt.getString("merchantId").toString();
@@ -345,6 +368,7 @@ class AddMenuPenjualBloc
       price: int.parse(state.hargaInput.value),
       stock: 0,
       tags: state.tagging,
+      foodKit: state.foodKit
     );
 
     await _menuRepository.addMenu(menu);
@@ -363,6 +387,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      foodKit: state.foodKit
     ));
   }
 
@@ -384,6 +409,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      foodKit: state.foodKit
     ));
     SharedPreferences idmercahnt = await SharedPreferences.getInstance();
     String id = idmercahnt.getString("merchantId").toString();
@@ -404,6 +430,7 @@ class AddMenuPenjualBloc
         price: int.parse(state.hargaInput.value),
         stock: 0,
         tags: state.tagging,
+        foodKit: state.foodKit
       );
     } else {
       menu = MenuModel(
@@ -421,6 +448,7 @@ class AddMenuPenjualBloc
         price: int.parse(state.hargaInput.value),
         stock: 0,
         tags: state.tagging,
+        foodKit: state.foodKit
       );
     }
 
@@ -440,6 +468,7 @@ class AddMenuPenjualBloc
       checkStockAccepted: state.checkStockAccepted,
       checkMenuBookedAccepted: state.checkMenuBookedAccepted,
       checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+      foodKit: state.foodKit
     ));
   }
 
