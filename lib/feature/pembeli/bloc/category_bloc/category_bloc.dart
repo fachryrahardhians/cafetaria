@@ -1,7 +1,9 @@
+// ignore_for_file: depend_on_referenced_packages
+
 import 'package:bloc/bloc.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:equatable/equatable.dart';
-import 'package:menu_repository/menu_repository.dart';
+
 
 part 'category_event.dart';
 part 'category_state.dart';

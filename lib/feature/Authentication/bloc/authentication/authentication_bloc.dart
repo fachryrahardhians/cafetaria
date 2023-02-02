@@ -40,7 +40,8 @@ class AuthenticationBloc
       final result = await _authenticationRepository.signedWithEmailAndPassword(
           event.email, event.password);
       emit(AuthenticationStateSuccess(result!));
-      _appSharedPref.setLogin(true);
+      _appSharedPref.setAdmin(true);
+
       // final User? user =  await _authenticationRepository.getCurrentUser();
     } catch (e) {
       emit(AuthenticationStateError(e.toString()));

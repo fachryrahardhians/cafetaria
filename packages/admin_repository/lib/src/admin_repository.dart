@@ -1,5 +1,6 @@
 import 'package:admin_repository/admin_repository.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:cloud_functions/cloud_functions.dart';
 
 class AdminRepository {
   AdminRepository({
@@ -7,6 +8,22 @@ class AdminRepository {
   }) : _firestore = firestore;
   final FirebaseFirestore _firestore;
   // get  menu per merchant
+
+  Future<UserAdmin> getUserAdmin(String userId) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getUserAdminKawasanData');
+    final resp = await callable.call(<String, dynamic>{'userId': userId});
+    // final List data = resp.data;
+    final UserAdmin leaderboardEntries;
+
+    try {
+      leaderboardEntries =
+          UserAdmin.fromJson(Map<String, dynamic>.from(resp.data));
+    } catch (error) {
+      throw Exception(error.toString());
+    }
+    return leaderboardEntries;
+  }
 
   Future<void> addInfo(InfoModel info) async {
     try {
@@ -45,9 +62,15 @@ class AdminRepository {
     }
   }
 
-  Stream<List<KawasanRead>> getStreamListKawasan() async* {
-    yield* _firestore.collection('kawasan-read').snapshots().map((event) =>
-        event.docs.map((e) => KawasanRead.fromJson(e.data())).toList());
+  Stream<List<UserModel>> getStreamListKawasan(
+      String idKawasan, String kawasan) async* {
+    yield* _firestore
+        .collection('kawasan-read')
+        .doc(idKawasan)
+        .collection(kawasan)
+        .snapshots()
+        .map((event) =>
+            event.docs.map((e) => UserModel.fromJson(e.data())).toList());
   }
 
   Stream<List<InfoModel>> getStreamInfo() async* {
@@ -66,9 +89,15 @@ class AdminRepository {
     }
   }
 
-  Future<void> updateStatus(String id, String status) async {
+  Future<void> updateStatus(
+      String id, String status, String kawasan, String iduser) async {
     try {
-      await _firestore.collection('kawasan').doc(id).update({'status': status});
+      await _firestore
+          .collection('kawasan')
+          .doc(id)
+          .collection(kawasan)
+          .doc(iduser)
+          .update({'status': status});
     } catch (e) {
       throw Exception('Failed to Update status');
     }

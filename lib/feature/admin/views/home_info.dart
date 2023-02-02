@@ -9,16 +9,20 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 class HomeInfo extends StatelessWidget {
-  const HomeInfo({Key? key}) : super(key: key);
+  final String idKawasan;
+  const HomeInfo({Key? key, required this.idKawasan}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const HomeInfoWidget();
+    return HomeInfoWidget(
+      idKawasan: idKawasan,
+    );
   }
 }
 
 class HomeInfoWidget extends StatefulWidget {
-  const HomeInfoWidget({Key? key}) : super(key: key);
+  final String idKawasan;
+  const HomeInfoWidget({Key? key, required this.idKawasan}) : super(key: key);
 
   @override
   State<HomeInfoWidget> createState() => _HomeInfoWidgetState();
@@ -131,6 +135,8 @@ class _HomeInfoWidgetState extends HomeInfoModel {
                                                           builder: (_) =>
                                                               TambahInfo(
                                                                 infoModel: e,
+                                                                idKawasan: widget
+                                                                    .idKawasan,
                                                               )));
                                                 },
                                                 child: const Center(child: Icon(Icons.edit)))),
@@ -206,8 +212,12 @@ class _HomeInfoWidgetState extends HomeInfoModel {
           child: ReusableButton1(
             label: "TAMBAH INFO",
             onPressed: () {
-              Navigator.push(context,
-                  MaterialPageRoute(builder: (_) => const TambahInfo()));
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (_) => TambahInfo(
+                            idKawasan: widget.idKawasan,
+                          )));
             },
             padding: const EdgeInsets.all(0),
             margin: const EdgeInsets.all(0),

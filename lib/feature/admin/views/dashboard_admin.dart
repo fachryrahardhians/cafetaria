@@ -1,3 +1,4 @@
+import 'package:cafetaria/feature/admin/views/admin_profile_page.dart';
 import 'package:cafetaria/feature/admin/views/home_admin_page.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -33,7 +34,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               HomeAdminPage(),
               SizedBox.shrink(),
               SizedBox.shrink(),
-              SizedBox.shrink(),
+              AdminProfilePage(),
             ],
           ),
           bottomNavigationBar: TabBar(

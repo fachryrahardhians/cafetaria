@@ -36,7 +36,7 @@ class AddInfoBloc extends Bloc<AddInfoEvent, AddInfoState> {
           tipe: event.tipe));
       final info = InfoModel(
           infoId: _uuid.v4(),
-          kawasanId: "e574154f-cde0-4b49-a678-c19d1fed1bb6",
+          kawasanId: event.kawasanId,
           body: state.body,
           expDate: state.kadarluasa,
           image: state.imageUri,
@@ -77,7 +77,7 @@ class AddInfoBloc extends Bloc<AddInfoEvent, AddInfoState> {
           tipe: event.tipe));
       final info = InfoModel(
           infoId: event.infoId,
-          kawasanId: "e574154f-cde0-4b49-a678-c19d1fed1bb6",
+          kawasanId: event.kawasanId,
           body: state.body,
           expDate: state.kadarluasa,
           image: state.imageUri,

@@ -1,7 +1,7 @@
 import 'dart:io';
 import 'package:admin_repository/admin_repository.dart';
 import 'package:cafetaria/feature/admin/bloc/add_info_bloc/add_info_bloc.dart';
-import 'package:delta_to_html/delta_to_html.dart';
+
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_quill/flutter_quill.dart' as quill;
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
@@ -15,21 +15,25 @@ import 'package:formz/formz.dart';
 
 class TambahInfo extends StatelessWidget {
   final InfoModel? infoModel;
-  const TambahInfo({Key? key, this.infoModel}) : super(key: key);
+  final String idKawasan;
+  const TambahInfo({Key? key, this.infoModel, required this.idKawasan})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) =>
           AddInfoBloc(adminRepository: context.read<AdminRepository>()),
-      child: TambahInfoWidget(infoModel: infoModel),
+      child: TambahInfoWidget(infoModel: infoModel, idKawasan: idKawasan),
     );
   }
 }
 
 class TambahInfoWidget extends StatefulWidget {
   final InfoModel? infoModel;
-  const TambahInfoWidget({Key? key, this.infoModel}) : super(key: key);
+  final String idKawasan;
+  const TambahInfoWidget({Key? key, this.infoModel, required this.idKawasan})
+      : super(key: key);
 
   @override
   State<TambahInfoWidget> createState() => _TambahInfoWidgetState();
@@ -276,6 +280,7 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                       if (widget.infoModel != null) {
                         // ignore: use_build_context_synchronously
                         context.read<AddInfoBloc>().add(Updateinfo(
+                            kawasanId: widget.idKawasan,
                             infoId: widget.infoModel!.infoId,
                             judul: judul.text,
                             body: quillController.document.toDelta().toJson(),
@@ -287,6 +292,7 @@ class _TambahInfoWidgetState extends TambahInfoModel {
                       } else {
                         // ignore: use_build_context_synchronously
                         context.read<AddInfoBloc>().add(AddInfo(
+                            kawasanId: widget.idKawasan,
                             judul: judul.text,
                             body: quillController.document.toDelta().toJson(),
                             imageUri: thumbnail!,

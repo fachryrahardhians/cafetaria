@@ -35,7 +35,8 @@ class UpdateStatusBloc extends Bloc<UpdateStatusEvent, UpdateStatusState> {
       //     resetType: state.tipeRestok.value,
       //    );
 
-      await _adminRepository.updateStatus(state.idKawasan, state.stat);
+      await _adminRepository.updateStatus(
+          state.idKawasan, state.stat, event.kawasan, event.idUser);
 
       emit(
         state.copyWith(

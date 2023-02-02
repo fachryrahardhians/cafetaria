@@ -1,3 +1,5 @@
+// ignore_for_file: must_be_immutable
+
 part of 'add_info_bloc.dart';
 
 abstract class AddInfoEvent extends Equatable {
@@ -38,6 +40,7 @@ class Updateinfo extends AddInfoEvent {
   final String kadarluasa;
   final String tipe;
   final String statusInfo;
+  // ignore: prefer_typing_uninitialized_variables
   var body;
   final String imageUri;
   final String kawasanId;

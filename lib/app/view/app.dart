@@ -3,6 +3,7 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
+import 'package:cafetaria/feature/admin/views/dashboard_admin.dart';
 
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -164,19 +165,38 @@ class _AppState extends State<App> {
   }
 }
 
-class AppView extends StatelessWidget {
+class AppView extends StatefulWidget {
   const AppView({
     Key? key,
   }) : super(key: key);
 
   @override
+  State<AppView> createState() => _AppViewState();
+}
+
+class _AppViewState extends State<AppView> {
+  bool? isAdmin = false;
+  @override
+  void initState() {
+    super.initState();
+    context.read<AppSharedPref>().isAdmin().then((value) {
+      setState(() {
+        isAdmin = value;
+      });
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     final statusApp = context.select((AppBloc bloc) => bloc.state.status);
+
     return MaterialApp(
       theme: CFTheme.themeData,
       title: 'Cafetaria',
       home: statusApp == AppStatus.authenticated
-          ? const PilihKwsn()
+          ? isAdmin == true
+              ? const AdminDashboard()
+              : const PilihKwsn()
           : const LoginPage(),
     );
   }

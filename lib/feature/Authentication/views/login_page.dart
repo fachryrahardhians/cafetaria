@@ -276,15 +276,15 @@ class _LoginViewState extends State<LoginView> {
                 ),
                 InkWell(
                   onTap: () {
-                    Navigator.push(
-                      context,
-                      MaterialPageRoute(
-                        // builder: (context) => const HomePage(),
-                        // builder: (context) => const LinkEmailPage(),
-                        builder: (context) => const AdminDashboard(),
-                        // builder: (context) => const PembeliDashboardPage(),
-                      ),
-                    );
+                    // Navigator.push(
+                    //   context,
+                    //   MaterialPageRoute(
+                    //     // builder: (context) => const HomePage(),
+                    //     // builder: (context) => const LinkEmailPage(),
+                    //     builder: (context) => const AdminDashboard(),
+                    //     // builder: (context) => const PembeliDashboardPage(),
+                    //   ),
+                    // );
                   },
                   child: Container(
                     width: 370,

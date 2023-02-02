@@ -10,8 +10,10 @@ class UpdateStatusEvent extends Equatable {
 class UpdateStatus extends UpdateStatusEvent {
   final String idKawasan;
   final String status;
+  final String idUser;
+  final String kawasan;
 
-  const UpdateStatus(this.idKawasan, this.status);
+  const UpdateStatus(this.idKawasan, this.status, this.idUser, this.kawasan);
 
   @override
   List<Object> get props => [idKawasan, status];

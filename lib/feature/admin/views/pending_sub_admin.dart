@@ -11,28 +11,34 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 class PendingSubAdmin extends StatelessWidget {
-  const PendingSubAdmin({Key? key}) : super(key: key);
+  final String? idKawasan;
+  const PendingSubAdmin({Key? key, this.idKawasan}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(
-          create: (context) =>
-              ListKawasanBloc(adminRepository: context.read<AdminRepository>())
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => ListKawasanBloc(
+                  adminRepository: context.read<AdminRepository>())
                 ..add(const GetListKawasan()))
-    ], child: const PendingSubAdminWidget());
+        ],
+        child: PendingSubAdminWidget(
+          idKawasan: idKawasan,
+        ));
   }
 }
 
 class PendingSubAdminWidget extends StatefulWidget {
-  const PendingSubAdminWidget({Key? key}) : super(key: key);
+  final String? idKawasan;
+  const PendingSubAdminWidget({Key? key, this.idKawasan}) : super(key: key);
 
   @override
   State<PendingSubAdminWidget> createState() => _PendingSubAdminWidgetState();
 }
 
 class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
-  final column = ['nama', "Email", "Kawasan", "Status"];
+  final column = ['nama', "Email", "Status"];
   List<DataColumn> columns(List<String> data) {
     return data.map((e) {
       return DataColumn(label: Text(e));
@@ -90,21 +96,17 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                 ),
               ),
             ),
-            StreamBuilder<List<KawasanRead>>(
-              stream: context.read<AdminRepository>().getStreamListKawasan(),
+            StreamBuilder<List<UserModel>>(
+              stream: context
+                  .read<AdminRepository>()
+                  .getStreamListKawasan(widget.idKawasan!, "subAdminKawasan"),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text("Ada masalah ${snapshot.error}");
                 } else if (snapshot.hasData) {
                   final items = snapshot.data;
-                  List<DataRow> getRows(List<KawasanRead> data) =>
-                      data.map((e) {
-                        final cell = [
-                          e.admin.fullname,
-                          e.admin.email,
-                          e.name,
-                          e.status
-                        ];
+                  List<DataRow> getRows(List<UserModel> data) => data.map((e) {
+                        final cell = [e.fullname, e.email, e.status];
                         return DataRow(
                             cells: Utils.modelBuilder(cell, (index, model) {
                           return DataCell(
@@ -114,7 +116,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                   barrierDismissible: false,
                                   context: context,
                                   builder: ((context) {
-                                    return infoCart(e);
+                                    return infoCart(e, widget.idKawasan!);
                                   }));
                             },
                           );
@@ -184,14 +186,14 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
     );
   }
 
-  Dialog infoCart(KawasanRead? model) {
+  Dialog infoCart(UserModel? model, String idKawasan) {
     bool loading = false;
     final TextEditingController nama = TextEditingController();
     final TextEditingController email = TextEditingController();
-    final TextEditingController kawasan = TextEditingController();
-    nama.text = model!.admin.fullname;
-    email.text = model.admin.email;
-    kawasan.text = model.name.toString();
+
+    nama.text = model!.fullname;
+    email.text = model.email;
+
     return Dialog(
         child: BlocProvider(
       create: (context) =>
@@ -228,12 +230,6 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
               enable: false,
               hint: "Masukkan nama Lengkap",
               controller: email,
-            ),
-            CustomTextfield2(
-              label: "KAWASAN",
-              enable: false,
-              hint: "Masukkan nama Lengkap",
-              controller: kawasan,
             ),
             BlocConsumer<UpdateStatusBloc, UpdateStatusState>(
               listener: (context, state) {
@@ -283,8 +279,8 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                               loading == true
                                   ? loading
                                   : context.read<UpdateStatusBloc>().add(
-                                      UpdateStatus(
-                                          model.kawasanId, "verified"));
+                                      UpdateStatus(idKawasan, "verified",
+                                          model.userId, "subAdminKawasan"));
                             },
                             child: Text(
                               loading == true ? "LOADING" : "SETUJU",
@@ -316,7 +312,10 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                           : context
                                               .read<UpdateStatusBloc>()
                                               .add(UpdateStatus(
-                                                  model.kawasanId, "block"));
+                                                  idKawasan,
+                                                  "block",
+                                                  model.userId,
+                                                  "subAdminKawasan"));
                                     },
                                     child: Text(
                                       "BLOCK",
@@ -346,7 +345,10 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                           : context
                                               .read<UpdateStatusBloc>()
                                               .add(UpdateStatus(
-                                                  model.kawasanId, "denied"));
+                                                  idKawasan,
+                                                  "denied",
+                                                  model.userId,
+                                                  "subAdminKawasan"));
                                     },
                                     child: Text(
                                       "TOLAK",

@@ -6,6 +6,7 @@ class AppSharedPref {
   AppSharedPref(this._sharedPreferences);
 
   final String _isLogin = "isLogin";
+  final String _isAdmin = "isAdmin";
   final String _merchantId = "merchantId";
 
   Future<bool?> isLogin() async {
@@ -19,6 +20,24 @@ class AppSharedPref {
   Future<void> setLogin(bool value) async {
     try {
       await _sharedPreferences.setBool(_isLogin, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<bool?> isAdmin() async {
+    try {
+      return _sharedPreferences.getBool(_isAdmin);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> setAdmin(bool value) async {
+    try {
+      await _sharedPreferences.setBool(_isAdmin, value);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
