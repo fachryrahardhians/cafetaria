@@ -12,7 +12,9 @@ import 'package:formz/formz.dart';
 
 class PendingSubAdmin extends StatelessWidget {
   final String? idKawasan;
-  const PendingSubAdmin({Key? key, this.idKawasan}) : super(key: key);
+  final String? kawasan;
+  const PendingSubAdmin({Key? key, this.idKawasan, required this.kawasan})
+      : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -25,13 +27,16 @@ class PendingSubAdmin extends StatelessWidget {
         ],
         child: PendingSubAdminWidget(
           idKawasan: idKawasan,
+          kawasan: kawasan,
         ));
   }
 }
 
 class PendingSubAdminWidget extends StatefulWidget {
   final String? idKawasan;
-  const PendingSubAdminWidget({Key? key, this.idKawasan}) : super(key: key);
+  final String? kawasan;
+  const PendingSubAdminWidget({Key? key, this.idKawasan, required this.kawasan})
+      : super(key: key);
 
   @override
   State<PendingSubAdminWidget> createState() => _PendingSubAdminWidgetState();
@@ -52,9 +57,11 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
         iconTheme: const IconThemeData(color: Color(0xffee3124)),
         backgroundColor: Colors.white,
         elevation: 0,
-        title: const Text(
-          "PENDING SUB ADMIN",
-          style: TextStyle(
+        title: Text(
+          widget.kawasan == "subAdminKawasan"
+              ? "PENDING SUB ADMIN"
+              : "PENDING ADMIN",
+          style: const TextStyle(
               fontSize: 16,
               fontWeight: FontWeight.w700,
               color: Color(0xff333435)),
@@ -99,7 +106,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
             StreamBuilder<List<UserModel>>(
               stream: context
                   .read<AdminRepository>()
-                  .getStreamListKawasan(widget.idKawasan!, "subAdminKawasan"),
+                  .getStreamListKawasan(widget.idKawasan!, widget.kawasan!),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
                   return Text("Ada masalah ${snapshot.error}");
@@ -280,7 +287,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                   ? loading
                                   : context.read<UpdateStatusBloc>().add(
                                       UpdateStatus(idKawasan, "verified",
-                                          model.userId, "subAdminKawasan"));
+                                          model.userId, widget.kawasan.toString()));
                             },
                             child: Text(
                               loading == true ? "LOADING" : "SETUJU",

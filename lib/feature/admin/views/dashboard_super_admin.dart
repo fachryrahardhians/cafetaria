@@ -4,15 +4,16 @@ import 'package:cafetaria/feature/Authentication/bloc/authentication/authenticat
 import 'package:cafetaria/feature/admin/bloc/admin_kawasan_bloc/admin_kawasan_bloc.dart';
 import 'package:cafetaria/feature/admin/views/admin_profile_page.dart';
 import 'package:cafetaria/feature/admin/views/home_admin_page.dart';
+import 'package:cafetaria/feature/admin/views/home_super_admin_page%20.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
-class AdminDashboard extends StatelessWidget {
+class SuperAdminDashboard extends StatelessWidget {
   final int index;
-  const AdminDashboard({Key? key, this.index = 0}) : super(key: key);
+  const SuperAdminDashboard({Key? key, this.index = 0}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -29,20 +30,21 @@ class AdminDashboard extends StatelessWidget {
               adminRepository: context.read<AdminRepository>()),
         ),
       ],
-      child: const AdminDashboardPage(),
+      child: const SuperAdminDashboardPage(),
     );
   }
 }
 
-class AdminDashboardPage extends StatefulWidget {
+class SuperAdminDashboardPage extends StatefulWidget {
   final int index;
-  const AdminDashboardPage({Key? key, this.index = 0}) : super(key: key);
+  const SuperAdminDashboardPage({Key? key, this.index = 0}) : super(key: key);
 
   @override
-  State<AdminDashboardPage> createState() => _AdminDashboardPageState();
+  State<SuperAdminDashboardPage> createState() =>
+      _SuperAdminDashboardPageState();
 }
 
-class _AdminDashboardPageState extends State<AdminDashboardPage> {
+class _SuperAdminDashboardPageState extends State<SuperAdminDashboardPage> {
   @override
   Widget build(BuildContext context) {
     AuthenticationRepository auth = context.read<AuthenticationRepository>();
@@ -63,7 +65,7 @@ class _AdminDashboardPageState extends State<AdminDashboardPage> {
               return Scaffold(
                 body: TabBarView(
                   children: [
-                    HomeAdminPage(userId: user.uid),
+                    HomeSuperAdmin(userId: user),
                     const SizedBox.shrink(),
                     const SizedBox.shrink(),
                     const AdminProfilePage(),

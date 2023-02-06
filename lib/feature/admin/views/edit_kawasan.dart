@@ -137,12 +137,7 @@ class _EditKawasanWidgetState extends EditKawasanModel {
                   final items = state.items!;
                   List<DataRow> getRows(List<KawasanRead> data) =>
                       data.map((e) {
-                        final cell = [
-                          e.admin.fullname,
-                          e.admin.email,
-                          e.name,
-                          e.status
-                        ];
+                        final cell = [e.kawasanId, e.name, e.status,e.address];
                         return DataRow(
                             cells: Utils.modelBuilder(cell, (index, model) {
                           return DataCell(
@@ -212,12 +207,12 @@ class _EditKawasanWidgetState extends EditKawasanModel {
                                                                 BorderRadius.circular(6),
                                                             side: BorderSide.none))),
                                                 onPressed: () async {
-                                                  showDialog(
-                                                      barrierDismissible: false,
-                                                      context: context,
-                                                      builder: ((context) {
-                                                        return deletecart(e);
-                                                      }));
+                                                  // showDialog(
+                                                  //     barrierDismissible: false,
+                                                  //     context: context,
+                                                  //     builder: ((context) {
+                                                  //       return deletecart(e);
+                                                  //     }));
                                                 },
                                                 child: const Center(child: Icon(Icons.delete)))),
                                       ),

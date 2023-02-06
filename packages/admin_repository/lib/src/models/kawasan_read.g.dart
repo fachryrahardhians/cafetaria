@@ -8,9 +8,9 @@ part of 'kawasan_read.dart';
 
 KawasanRead _$KawasanReadFromJson(Map<String, dynamic> json) => KawasanRead(
       address: json['address'] as String?,
-      adminId: json['adminId'] as String,
+      //adminId: json['adminId'] as String,
       kawasanId: json['kawasanId'] as String,
-      admin: UserModel.fromJson(json['admin'] as Map<String, dynamic>),
+      // admin: UserModel.fromJson(json['admin'] as Map<String, dynamic>),
       kawasan_latitude: (json['kawasan_latitude'] as num?)?.toDouble(),
       kawasan_longitude: (json['kawasan_longitude'] as num?)?.toDouble(),
       name: json['name'] as String?,
@@ -20,11 +20,11 @@ KawasanRead _$KawasanReadFromJson(Map<String, dynamic> json) => KawasanRead(
 Map<String, dynamic> _$KawasanReadToJson(KawasanRead instance) =>
     <String, dynamic>{
       'address': instance.address,
-      'adminId': instance.adminId,
+      //'adminId': instance.adminId,
       'kawasanId': instance.kawasanId,
       'kawasan_latitude': instance.kawasan_latitude,
       'kawasan_longitude': instance.kawasan_longitude,
-      'admin': instance.admin.toJson(),
+      //'admin': instance.admin.toJson(),
       'name': instance.name,
       'status': instance.status,
     };

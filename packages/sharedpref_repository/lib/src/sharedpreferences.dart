@@ -7,6 +7,7 @@ class AppSharedPref {
 
   final String _isLogin = "isLogin";
   final String _isAdmin = "isAdmin";
+  final String _isSuperAdmin = "isAdmin";
   final String _merchantId = "merchantId";
 
   Future<bool?> isLogin() async {
@@ -38,6 +39,24 @@ class AppSharedPref {
   Future<void> setAdmin(bool value) async {
     try {
       await _sharedPreferences.setBool(_isAdmin, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<bool?> isSuperAdmin() async {
+    try {
+      return _sharedPreferences.getBool(_isSuperAdmin);
+    } catch (e) {
+      return false;
+    }
+  }
+
+  Future<void> setSuperAdmin(bool value) async {
+    try {
+      await _sharedPreferences.setBool(_isSuperAdmin, value);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());

@@ -39,6 +39,7 @@ class _AdminProfileViewState extends State<AdminProfileView> {
   @override
   Widget build(BuildContext context) {
     AuthenticationRepository auth = context.read<AuthenticationRepository>();
+    AppSharedPref appSharedPref = context.read<AppSharedPref>();
 
     return FutureBuilder<User?>(
       future: auth.getCurrentUser(),
@@ -208,6 +209,8 @@ class _AdminProfileViewState extends State<AdminProfileView> {
                           label: "KELUAR",
                           onPressed: () async {
                             await auth.signoutGoogle();
+                            await appSharedPref.setAdmin(false);
+                            await appSharedPref.setSuperAdmin(false);
                             // ignore: use_build_context_synchronously
                             Navigator.pushReplacement(
                               context,

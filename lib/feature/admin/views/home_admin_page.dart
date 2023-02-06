@@ -6,17 +6,20 @@ import 'package:cafetaria/feature/admin/bloc/admin_kawasan_bloc/admin_kawasan_bl
 import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
 import 'package:cafetaria/feature/admin/views/home_info.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
+import 'package:cafetaria/feature/admin/views/pick_kawasan.dart';
 
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class HomeAdminPage extends StatelessWidget {
-  const HomeAdminPage({Key? key}) : super(key: key);
+  final String? userId;
+  const HomeAdminPage({Key? key, this.userId}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -33,13 +36,14 @@ class HomeAdminPage extends StatelessWidget {
               adminRepository: context.read<AdminRepository>()),
         ),
       ],
-      child: const HomeAdmin(),
+      child: HomeAdmin(userId: userId),
     );
   }
 }
 
 class HomeAdmin extends StatefulWidget {
-  const HomeAdmin({Key? key}) : super(key: key);
+  final String? userId;
+  const HomeAdmin({Key? key, this.userId}) : super(key: key);
 
   @override
   State<HomeAdmin> createState() => _HomeAdminState();
@@ -63,6 +67,7 @@ class _HomeAdminState extends AdminPage {
           //   print("Admin Kawasan: ${value.adminKawasan}");
           //   print("Sub Admin Kawasan: ${value.subAdminKawasan}");
           // });
+
           context.read<AdminKawasanBloc>().add(GetAdmin(user.uid));
           return BlocBuilder<AdminKawasanBloc, AdminKawasanState>(
             builder: (context, state) {
@@ -186,8 +191,11 @@ class _HomeAdminState extends AdminPage {
 class MainMenu extends StatelessWidget {
   final String idKawasan;
   final bool? visible;
-  const MainMenu({Key? key, required this.idKawasan, this.visible = false})
-      : super(key: key);
+  const MainMenu({
+    Key? key,
+    required this.idKawasan,
+    this.visible = false,
+  }) : super(key: key);
   @override
   Widget build(BuildContext context) {
     return Padding(
@@ -206,6 +214,7 @@ class MainMenu extends StatelessWidget {
                         MaterialPageRoute(
                             builder: (_) => PendingSubAdmin(
                                   idKawasan: idKawasan,
+                                  kawasan: "subAdminKawasan",
                                 )));
                   },
                   image: "assets/icons/pending.png",
@@ -217,8 +226,8 @@ class MainMenu extends StatelessWidget {
                 visible: visible!,
                 child: HomeItemOrder(
                   route: () {
-                    Navigator.push(context,
-                        MaterialPageRoute(builder: (_) => const EditKawasan()));
+                    // Navigator.push(context,
+                    //     MaterialPageRoute(builder: (_) => const EditKawasan()));
                   },
                   image: "assets/icons/admin_atur.png",
                   title: visible == true ? "Atur Sub-Admin" : "Atur Admin",

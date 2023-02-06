@@ -9,7 +9,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 
 abstract class EditKawasanModel extends State<EditKawasanWidget> {
-  final column = ['nama', "Email", "Kawasan", "Action"];
+  final column = ["Kawasan Id", "Name", "status","Action"];
   List<DataColumn> columns(List<String> data) {
     return data.map((e) {
       return DataColumn(label: Text(e));
@@ -21,9 +21,9 @@ abstract class EditKawasanModel extends State<EditKawasanWidget> {
     final TextEditingController nama = TextEditingController();
     final TextEditingController email = TextEditingController();
     final TextEditingController kawasan = TextEditingController();
-    nama.text = model!.admin.fullname;
-    email.text = model.admin.email;
-    kawasan.text = model.name.toString();
+    nama.text = "";
+    email.text = "";
+    kawasan.text = model!.name.toString();
     return Dialog(
         child: BlocProvider(
       create: (context) =>
