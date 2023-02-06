@@ -487,6 +487,7 @@ class _KeranjangPageState extends State<KeranjangPage> {
     );
     return Visibility(
       visible: _preorder,
+      replacement: const SizedBox(),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
@@ -672,7 +673,6 @@ class _KeranjangPageState extends State<KeranjangPage> {
           SizedBox(height: SizeConfig.safeBlockVertical * 3),
         ],
       ),
-      replacement: const SizedBox(),
     );
   }
 

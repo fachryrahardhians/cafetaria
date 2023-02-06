@@ -68,6 +68,11 @@ class _HomeSuperAdminState extends State<HomeSuperAdmin> {
         if (!_documentExists!) {
           FirebaseAuth.instance.signOut();
           context.read<AppSharedPref>().setSuperAdmin(false);
+          ScaffoldMessenger.of(context).showSnackBar(
+            const SnackBar(
+              content: Text('Anda Bukan Admin Aplikasi'),
+            ),
+          );
           Navigator.pushReplacement(
             context,
             MaterialPageRoute(
@@ -244,7 +249,7 @@ class MainMenu extends StatelessWidget {
                         MaterialPageRoute(builder: (_) => const EditKawasan()));
                   },
                   image: "assets/icons/admin_atur.png",
-                  title: visible == true ? "Atur Sub-Admin" : "Atur Admin",
+                  title: "Atur Admin",
                 ),
               ),
               HomeItemOrder(

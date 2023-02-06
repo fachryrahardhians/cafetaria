@@ -286,8 +286,11 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                               loading == true
                                   ? loading
                                   : context.read<UpdateStatusBloc>().add(
-                                      UpdateStatus(idKawasan, "verified",
-                                          model.userId, widget.kawasan.toString()));
+                                      UpdateStatus(
+                                          idKawasan,
+                                          "verified",
+                                          model.userId,
+                                          widget.kawasan.toString()));
                             },
                             child: Text(
                               loading == true ? "LOADING" : "SETUJU",
@@ -322,7 +325,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                                   idKawasan,
                                                   "block",
                                                   model.userId,
-                                                  "subAdminKawasan"));
+                                                  widget.kawasan.toString()));
                                     },
                                     child: Text(
                                       "BLOCK",
@@ -355,7 +358,7 @@ class _PendingSubAdminWidgetState extends State<PendingSubAdminWidget> {
                                                   idKawasan,
                                                   "denied",
                                                   model.userId,
-                                                  "subAdminKawasan"));
+                                                  widget.kawasan.toString()));
                                     },
                                     child: Text(
                                       "TOLAK",
