@@ -23,6 +23,8 @@ MerchantModel _$MerchantModelFromJson(Map<String, dynamic> json) =>
       userId: json['userId'] as String?,
       tutup_toko: json['tutup_toko'] as String?,
       address: json['address'] as String?,
+      city: json['city'] as String?,
+      postal_code: json['postal_code'] as String?,
       address_detail: json['address_detail'] as String?,
       address_latitude: (json['address_latitude'] as num?)?.toDouble(),
       address_longitude: (json['address_longitude'] as num?)?.toDouble(),

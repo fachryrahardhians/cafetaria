@@ -7,6 +7,7 @@ import 'package:cafetaria/feature/penjual/bloc/merchant_bloc/bloc/merchant_bloc.
 import 'package:cafetaria/feature/penjual/views/booking/booking_page.dart';
 import 'package:cafetaria/feature/penjual/views/chat_list_merchant.dart';
 import 'package:cafetaria/feature/penjual/views/menu_cafetaria_page.dart';
+import 'package:cafetaria/feature/penjual/views/penjual_profile_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
@@ -61,7 +62,7 @@ class _MerchantDashboardState extends State<MerchantDashboard> {
               PenjualDashboardPage(id: widget.id),
               ChatListMerchantWidget(id: widget.id),
               const SizedBox(),
-              const SizedBox(),
+              const PenjualProfilePage(),
             ],
           ),
           bottomNavigationBar: TabBar(

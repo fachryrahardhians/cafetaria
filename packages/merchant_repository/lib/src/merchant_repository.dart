@@ -1,5 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:cloud_functions/cloud_functions.dart';
+import 'package:merchant_repository/merchant_repository.dart';
 import 'package:merchant_repository/src/models/merchant_search.dart';
 import 'package:merchant_repository/src/models/models.dart';
 import 'package:uuid/uuid.dart';
@@ -44,6 +45,67 @@ class MerchantRepository {
       throw Exception('Failed to get merchant');
     }
   }
+
+  // get  menu per merchant
+  Future<List<Rules>> getrulesDay(String idMerchant) async {
+    try {
+      final snapshot = await _firestore
+          .collection('merchant')
+          .doc(idMerchant)
+          .collection("rules")
+          .get();
+
+      final documents = snapshot.docs;
+      return documents.toListDay();
+    } catch (e) {
+      throw Exception('Failed to get merchant');
+    }
+  }
+
+  Future<RulesDays> getMerchantOffDaysRule(
+      {String? date, String? merchantId, String? type}) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('getMerchantOffDaysRule');
+    final resp = await callable.call(<String, dynamic>{
+      'merchantId': merchantId,
+      'date': date,
+      'type': type
+    });
+    final RulesDays leaderboardEntries;
+
+    try {
+      leaderboardEntries =
+          RulesDays.fromJson(Map<String, dynamic>.from(resp.data));
+    } catch (error) {
+      throw Exception(error.toString());
+    }
+    // final leaderboardEntries = <MechantSearch>[];
+
+    // for (final document in data) {
+    //   final data = document;
+    //   if (data != null) {
+    //     try {
+    //       print(data);
+    //       leaderboardEntries
+    //           .add(MechantSearch.fromJson(Map<String, dynamic>.from(data)));
+    //     } catch (error) {
+    //       throw Exception(error.toString());
+    //     }
+    //   }
+    // }
+    return leaderboardEntries;
+  }
+
+  // Future<void> editStockMenu(String menu, String idMerchant) async {
+  //   try {
+  //     await _firestore
+  //         .collection('menu')
+  //         .doc(menu.menuId)
+  //         .update(menu.toJson());
+  //   } catch (e) {
+  //     throw Exception('Failed to Update Stock Menu');
+  //   }
+  // }
 
   Future<List<MechantSearch>> searchMerchant(String message, String id) async {
     HttpsCallable callable =
@@ -120,6 +182,25 @@ extension on List<QueryDocumentSnapshot> {
         try {
           print(data);
           leaderboardEntries.add(MerchantModel.fromJson(data));
+        } catch (error) {
+          print(error.toString());
+          throw Exception();
+        }
+      }
+    }
+    return leaderboardEntries;
+  }
+}
+
+extension on List<QueryDocumentSnapshot> {
+  List<Rules> toListDay() {
+    final leaderboardEntries = <Rules>[];
+    for (final document in this) {
+      final data = document.data() as Map<String, dynamic>?;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries.add(Rules.fromJson(data));
         } catch (error) {
           print(error.toString());
           throw Exception();

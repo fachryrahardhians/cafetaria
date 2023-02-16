@@ -75,6 +75,8 @@ class $AssetsImagesGen {
   /// File path: assets/images/offer_1.png
   AssetGenImage get offer1 => const AssetGenImage('assets/images/offer_1.png');
 
+  AssetGenImage get user => const AssetGenImage('assets/images/grfx_user.png');
+
   /// File path: assets/images/offer_2.png
   AssetGenImage get offer2 => const AssetGenImage('assets/images/offer_2.png');
 
@@ -94,7 +96,7 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/product-3.png');
   AssetGenImage get register =>
       const AssetGenImage('assets/images/grfx_register2.png');
-        AssetGenImage get login =>
+  AssetGenImage get login =>
       const AssetGenImage('assets/images/grfx_login2.png');
 }
 
