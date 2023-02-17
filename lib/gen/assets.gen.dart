@@ -98,6 +98,9 @@ class $AssetsImagesGen {
       const AssetGenImage('assets/images/grfx_register2.png');
   AssetGenImage get login =>
       const AssetGenImage('assets/images/grfx_login2.png');
+  AssetGenImage get calClose =>
+      const AssetGenImage('assets/icons/cal_close.png');
+  AssetGenImage get calOpen => const AssetGenImage('assets/icons/cal_open.png');
 }
 
 class Assets {

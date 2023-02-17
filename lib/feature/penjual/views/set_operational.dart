@@ -1,4 +1,5 @@
 import 'package:cafetaria/feature/penjual/views/set_open.dart';
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
@@ -52,7 +53,8 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
   Future onSubmit(context) async {
     final userId = widget.merchantId;
     String date =
-        "${_selectedDay?.year}-${_selectedDay?.month}-${_selectedDay?.day}";
+        "${_selectedDay?.year}-${_selectedDay?.month.toString().length == 2 ? _selectedDay?.month : _selectedDay?.month.toString().padLeft(2, '0')}-${_selectedDay?.day}";
+
     setState(() {
       _submitLoading = true;
     });
@@ -97,63 +99,109 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
         padding: const EdgeInsets.all(18.0),
         child: ListView(
           children: [
-            Container(
-                padding: const EdgeInsets.all(16),
-                decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(8),
-                    boxShadow: boxShadows,
-                    color: const Color(0xffF9FAFB)),
-                child: TableCalendar(
-                  weekendDays: const [DateTime.sunday, 6],
-                  // daysOfWeekStyle: const DaysOfWeekStyle(
-                  //   // Weekend days color (Sat,Sun)
-                  //   weekendStyle: TextStyle(color: Colors.red),
-                  // ),
-                  firstDay: DateTime.utc(1980, 01, 01),
-                  lastDay: DateTime.utc(2030, 12, 31),
-                  calendarFormat: _calendarFormat,
-                  focusedDay: _focusedDay,
-                  selectedDayPredicate: (day) => isSameDay(_selectedDay, day),
-                  eventLoader: (day) => _events[day] ?? [],
-                  startingDayOfWeek: StartingDayOfWeek.sunday,
-                  calendarStyle: const CalendarStyle(
-                    weekendTextStyle: TextStyle(color: Colors.red),
-                    markerDecoration: BoxDecoration(
-                        color: Color(0xFFee3124), shape: BoxShape.circle),
-                    todayDecoration: BoxDecoration(shape: BoxShape.circle),
-                    todayTextStyle: TextStyle(
-                        color: Color(0xFF5A5A5A),
-                        fontSize: 16.0,
-                        fontWeight: FontWeight.w700),
-                    selectedDecoration: BoxDecoration(
-                        color: Color(0xFFee3124), shape: BoxShape.circle),
-                    // todayDecoration: BoxDecoration(
-                    //   color: Colors.green,
-                    //   shape: BoxShape.circle,
-                    // ),
-                    outsideDaysVisible: false,
-                  ),
-                  headerStyle: const HeaderStyle(
-                    formatButtonVisible: false,
-                    titleCentered: true,
-                  ),
-                  onDaySelected: (selectedDay, focusedDay) {
-                    setState(() {
-                      _selectedDay = selectedDay;
-                      _focusedDay = focusedDay;
-                      close = false;
-                    });
-                    // context
-                    //     .read<MerchantRepository>()
-                    //     .getMerchantOffDaysRule(
-                    //         merchantId: widget.merchantId,
-                    //         date: _selectedDay?.toIso8601String(),
-                    //         type: 'daily')
-                    //     .then((value) {
-                    //   print(value.isClosed);
-                    // });
-                  },
-                )),
+            FutureBuilder<List<RulesDays>>(
+                future: context
+                    .read<MerchantRepository>()
+                    .getMerchantOffDaysRule(
+                        date: _focusedDay.toIso8601String(),
+                        merchantId: widget.merchantId,
+                        type: 'monthly'),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  } else if (snapshot.connectionState == ConnectionState.none) {
+                    return const Text("Error");
+                  } else {
+                    return Container(
+                        padding: const EdgeInsets.all(16),
+                        decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(8),
+                            boxShadow: boxShadows,
+                            color: const Color(0xffF9FAFB)),
+                        child: TableCalendar(
+                          calendarBuilders: CalendarBuilders(
+                            // Define a builder for the day cell
+                            defaultBuilder: (context, date, events) {
+                              final event = snapshot.data!.firstWhere(
+                                (element) => isSameDay(element.date, date),
+                                orElse: () => RulesDays(
+                                    date: DateTime.now(), isClosed: false),
+                              );
+                              final isSpecialDate = event.isClosed;
+                              final backgroundColor = isSpecialDate!
+                                  ? Colors.red // Use red for special dates
+                                  : Colors
+                                      .transparent; // Use transparent for other dates
+                              return Container(
+                                margin: const EdgeInsets.all(4),
+                                child: Center(
+                                  child: Text(
+                                    date.day.toString(),
+                                    style: TextStyle(
+                                      color: isSpecialDate
+                                          ? Colors.red
+                                          : Colors.black,
+                                    ),
+                                  ),
+                                ),
+                              );
+                            },
+                          ),
+                          weekendDays: const [DateTime.sunday, 6],
+                          // daysOfWeekStyle: const DaysOfWeekStyle(
+                          //   // Weekend days color (Sat,Sun)
+                          //   weekendStyle: TextStyle(color: Colors.red),
+                          // ),
+                          firstDay: DateTime.utc(1980, 01, 01),
+                          lastDay: DateTime.utc(2030, 12, 31),
+                          calendarFormat: _calendarFormat,
+                          focusedDay: _focusedDay,
+                          selectedDayPredicate: (day) =>
+                              isSameDay(_selectedDay, day),
+                          eventLoader: (day) => _events[day] ?? [],
+                          startingDayOfWeek: StartingDayOfWeek.sunday,
+                          calendarStyle: const CalendarStyle(
+                            weekendTextStyle: TextStyle(color: Colors.red),
+                            markerDecoration: BoxDecoration(
+                                color: Color(0xFFee3124),
+                                shape: BoxShape.circle),
+                            todayDecoration:
+                                BoxDecoration(shape: BoxShape.circle),
+                            todayTextStyle: TextStyle(
+                                color: Color(0xFF5A5A5A),
+                                fontSize: 16.0,
+                                fontWeight: FontWeight.w700),
+                            selectedDecoration: BoxDecoration(
+                                color: Color(0xFFee3124),
+                                shape: BoxShape.circle),
+                            // todayDecoration: BoxDecoration(
+                            //   color: Colors.green,
+                            //   shape: BoxShape.circle,
+                            // ),
+                            outsideDaysVisible: false,
+                          ),
+                          headerStyle: const HeaderStyle(
+                            formatButtonVisible: false,
+                            titleCentered: true,
+                          ),
+                          onDaySelected: (selectedDay, focusedDay) {
+                            setState(() {
+                              _selectedDay = selectedDay;
+                              _focusedDay = focusedDay;
+                              final event = snapshot.data!.firstWhere(
+                                (element) =>
+                                    isSameDay(element.date, selectedDay),
+                                orElse: () => RulesDays(
+                                    date: DateTime.now(), isClosed: false),
+                              );
+                              close = event.isClosed!;
+                            });
+                          },
+                        ));
+                  }
+                }),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -190,6 +238,7 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                     itemCount: snapshot.data?.length,
                     physics: const NeverScrollableScrollPhysics(),
                     itemBuilder: (context, index) {
+                      snapshot.data!.map((e) => print("Hari:${e.day!}"));
                       final item = snapshot.data?[index];
                       return Container(
                         margin: const EdgeInsets.symmetric(vertical: 24),
@@ -211,6 +260,9 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                         height: 84,
                         child: Row(
                           children: [
+                            Image.asset(item?.isClosed == true
+                                ? Assets.images.calClose.path
+                                : Assets.images.calOpen.path),
                             const SizedBox(width: 18),
                             Column(
                               crossAxisAlignment: CrossAxisAlignment.start,

@@ -62,7 +62,7 @@ class MerchantRepository {
     }
   }
 
-  Future<RulesDays> getMerchantOffDaysRule(
+  Future<List<RulesDays>> getMerchantOffDaysRule(
       {String? date, String? merchantId, String? type}) async {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('getMerchantOffDaysRule');
@@ -71,28 +71,21 @@ class MerchantRepository {
       'date': date,
       'type': type
     });
-    final RulesDays leaderboardEntries;
+    final List data = resp.data;
+    final leaderboardEntries = <RulesDays>[];
 
-    try {
-      leaderboardEntries =
-          RulesDays.fromJson(Map<String, dynamic>.from(resp.data));
-    } catch (error) {
-      throw Exception(error.toString());
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(RulesDays.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
     }
-    // final leaderboardEntries = <MechantSearch>[];
-
-    // for (final document in data) {
-    //   final data = document;
-    //   if (data != null) {
-    //     try {
-    //       print(data);
-    //       leaderboardEntries
-    //           .add(MechantSearch.fromJson(Map<String, dynamic>.from(data)));
-    //     } catch (error) {
-    //       throw Exception(error.toString());
-    //     }
-    //   }
-    // }
     return leaderboardEntries;
   }
 
