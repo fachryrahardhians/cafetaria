@@ -1,4 +1,5 @@
-// ignore: file_names
+// ignore_for_file: file_names
+
 import 'package:admin_repository/admin_repository.dart';
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/feature/Authentication/authentication.dart';

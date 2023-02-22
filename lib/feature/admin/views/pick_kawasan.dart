@@ -1,9 +1,8 @@
 import 'package:admin_repository/admin_repository.dart';
 import 'package:cafetaria/feature/admin/bloc/list_kawasan_bloc/list_kawasan_bloc.dart';
 
-import 'package:cafetaria/feature/admin/utils.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
-import 'package:cafetaria/styles/colors.dart';
+
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

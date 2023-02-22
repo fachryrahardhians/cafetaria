@@ -50,59 +50,69 @@ class PenjualProfileView extends StatefulWidget {
 
 class _PenjualProfileState extends State<PenjualProfileView> {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  late Future<double?> _progressFuture;
+  @override
+  void initState() {
+    super.initState();
+    _progressFuture = context.read<AppSharedPref>().getProgress();
+  }
 
-  Widget _merchantBanner(user) {
-    CollectionReference merchant =
-        FirebaseFirestore.instance.collection('merchant');
-
-    return FutureBuilder<DocumentSnapshot>(
-      future: merchant.doc(user.uid).get(),
-      builder:
-          (BuildContext context, AsyncSnapshot<DocumentSnapshot> snapshot) {
-        if (snapshot.hasError) {
-          return const Text("Something went wrong");
-        }
-
-        if (snapshot.connectionState == ConnectionState.done) {
-          Map<String, dynamic> data = {};
-          if (snapshot.data?.data() != null) {
-            data = snapshot.data!.data() as Map<String, dynamic>;
-          }
-
-          return InkWell(
-            onTap: () {
-              // Navigator.push(
-              //   context,
-              //   MaterialPageRoute(
-              //     builder: (_) => snapshot.data!.exists
-              //         ? DahsboardPage(
-              //             id: user.uid,
-              //           )
-              //         : PembeliCreateMerchantPage(user),
-              //   ),
-              // );
-              Navigator.of(context).pop();
-            },
-            child: Row(
-              children: [
-                Image(image: AssetImage(Assets.images.user.path)),
-                const SizedBox(width: 18),
-                const Text("Pembeli",
-                    style:
-                        TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
-                const Spacer(),
-                const Icon(
-                  Icons.arrow_forward_ios,
-                  size: 16,
-                  color: MyColors.red1,
-                )
-              ],
-            ),
-          );
-        }
-        return const Text("Loading ...");
+  Widget _merchantBanner() {
+    return InkWell(
+      onTap: () {
+        // Navigator.push(
+        //   context,
+        //   MaterialPageRoute(
+        //     builder: (_) => snapshot.data!.exists
+        //         ? DahsboardPage(
+        //             id: user.uid,
+        //           )
+        //         : PembeliCreateMerchantPage(user),
+        //   ),
+        // );
+        Navigator.of(context).pop();
       },
+      child: Row(
+        children: [
+          Image(image: AssetImage(Assets.images.user.path)),
+          const SizedBox(width: 18),
+          const Text("Pembeli",
+              style: TextStyle(fontSize: 16, fontWeight: FontWeight.bold)),
+          const Spacer(),
+          const Icon(
+            Icons.arrow_forward_ios,
+            size: 16,
+            color: MyColors.red1,
+          )
+        ],
+      ),
     );
+  }
+
+  void _navigateToEditProfile(user) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => EditProfile(idMerchant: user.uid),
+        ));
+    if (result == 'refresh') {
+      setState(() {
+        _progressFuture = context.read<AppSharedPref>().getProgress();
+      });
+    }
+  }
+
+  void _navigateToSetOperational(user) async {
+    final result = await Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) => SetOperational(merchantId: user.uid),
+        ));
+    if (result == 'refresh') {
+      setState(() {
+        _progressFuture = context.read<AppSharedPref>().getProgress();
+      });
+    }
   }
 
   @override
@@ -159,7 +169,7 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                           ],
                         ),
                         Container(
-                            margin: const EdgeInsets.symmetric(vertical: 24),
+                            margin: const EdgeInsets.only(top: 14),
                             padding: const EdgeInsets.symmetric(
                                 vertical: 20, horizontal: 14),
                             decoration: BoxDecoration(
@@ -176,7 +186,72 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                               ],
                             ),
                             height: 84,
-                            child: _merchantBanner(user)),
+                            child: _merchantBanner()),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        FutureBuilder<double?>(
+                            future: _progressFuture,
+                            builder: (context, snapshot) {
+                              if (snapshot.data == 1) {
+                                return const SizedBox.shrink();
+                              }
+                              return Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      vertical: 20, horizontal: 14),
+                                  decoration: BoxDecoration(
+                                    color: Colors.white,
+                                    borderRadius: const BorderRadius.all(
+                                        Radius.circular(8)),
+                                    boxShadow: [
+                                      BoxShadow(
+                                        color: Colors.black.withOpacity(0.04),
+                                        blurRadius: 12,
+                                        offset: const Offset(
+                                            0, 4), // changes position of shadow
+                                      ),
+                                    ],
+                                  ),
+                                  height: 124,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Text(
+                                          "Pengaturan Toko sudah selesai ${snapshot.data == null ? "0%" : snapshot.data == 0.5 ? "50%" : "100%"}",
+                                          style: const TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      const Text(
+                                          "Lengkapi profil toko dan jam operasional terlebih dahulu agar toko dapat aktif.",
+                                          style: TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.normal)),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      Text(
+                                          "Pengaturan Toko kamu sudah ${snapshot.data == null ? "0%" : snapshot.data == 0.5 ? "50%" : "100%"}",
+                                          style: const TextStyle(
+                                              fontSize: 13,
+                                              fontWeight: FontWeight.bold)),
+                                      const SizedBox(
+                                        height: 5,
+                                      ),
+                                      LinearProgressIndicator(
+                                        value: snapshot.data ?? 0,
+                                        color: const Color.fromARGB(
+                                            255, 4, 201, 250), //<-- SEE HERE
+                                        backgroundColor:
+                                            Colors.grey, //<-- SEE HERE
+                                      ),
+                                    ],
+                                  ));
+                            }),
+
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -246,40 +321,29 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                             SizedBox(
                               width: double.infinity,
                               child: TextButton(
-                                  child: const Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("Profil Toko",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.normal)),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) =>
-                                              EditProfile(idMerchant: user.uid),
-                                        ));
-                                  }),
+                                child: const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("Profil Toko",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal)),
+                                ),
+                                onPressed: () => _navigateToEditProfile(user),
+                              ),
                             ),
                             SizedBox(
                               width: double.infinity,
                               child: TextButton(
-                                  child: const Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text("Jam Operasional",
-                                        style: TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight.normal)),
-                                  ),
-                                  onPressed: () {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => SetOperational(
-                                              merchantId: user.uid),
-                                        ));
-                                  }),
+                                child: const Align(
+                                  alignment: Alignment.centerLeft,
+                                  child: Text("Jam Operasional",
+                                      style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.normal)),
+                                ),
+                                onPressed: () =>
+                                    _navigateToSetOperational(user),
+                              ),
                             ),
                           ],
                         ),

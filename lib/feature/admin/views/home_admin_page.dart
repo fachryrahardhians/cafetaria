@@ -3,15 +3,14 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/view_info.dart';
 import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
 import 'package:cafetaria/feature/admin/bloc/admin_kawasan_bloc/admin_kawasan_bloc.dart';
-import 'package:cafetaria/feature/admin/views/edit_kawasan.dart';
+
 import 'package:cafetaria/feature/admin/views/home_info.dart';
 import 'package:cafetaria/feature/admin/views/pending_sub_admin.dart';
-import 'package:cafetaria/feature/admin/views/pick_kawasan.dart';
 
 import 'package:cafetaria/feature/admin/views/widgets/admin_page.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/feature/penjual/views/widgets/item_order.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
+
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';

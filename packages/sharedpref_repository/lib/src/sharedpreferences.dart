@@ -9,6 +9,24 @@ class AppSharedPref {
   final String _isAdmin = "isAdmin";
   final String _isSuperAdmin = "isAdmin";
   final String _merchantId = "merchantId";
+  final String _progress = "progress";
+  Future<double?> getProgress() async {
+    try {
+      return _sharedPreferences.getDouble(_progress);
+    } catch (e) {
+      return 0;
+    }
+  }
+
+  Future<void> setProgress(double value) async {
+    try {
+      await _sharedPreferences.setDouble(_progress, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
 
   Future<bool?> isLogin() async {
     try {

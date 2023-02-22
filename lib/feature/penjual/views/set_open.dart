@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 import 'package:another_flushbar/flushbar.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class SetOpen extends StatelessWidget {
   final Rules rules;
@@ -93,7 +95,7 @@ class _SetOpenWidgetState extends State<SetOpenWidget> {
           .doc(widget.rules.day)
           .update(data);
       Navigator.of(context).pop();
-      Navigator.of(context).pop();
+      Navigator.pop(context, 'refresh');
       Future.delayed(
         const Duration(microseconds: 100),
         () {
@@ -146,6 +148,38 @@ class _SetOpenWidgetState extends State<SetOpenWidget> {
             onPressed: () {
               //_onSubmit(context);
               onSubmit(context);
+              context.read<AppSharedPref>().getProgress().then((value) {
+                if (value == null) {
+                  context.read<AppSharedPref>().setProgress(0.5);
+                } else if (value == 0.5) {
+                  context.read<AppSharedPref>().setProgress(1);
+                  Future.delayed(
+                    const Duration(microseconds: 100),
+                    () {
+                      Flushbar(
+                        flushbarPosition: FlushbarPosition.TOP,
+                        borderRadius: BorderRadius.circular(8),
+                        margin: const EdgeInsets.all(16),
+                        backgroundColor: const Color(0xff36B37E),
+                        messageText: Column(
+                          children: const [
+                            Center(
+                              child: Text(
+                                "Pengaturan Toko telah berhasil dilengkapi dan selamat menikmati fitur-fitur di lapaku.",
+                                style: TextStyle(
+                                    fontSize: 14,
+                                    fontWeight: FontWeight.w500,
+                                    color: Colors.white),
+                              ),
+                            ),
+                          ],
+                        ),
+                        duration: const Duration(seconds: 3),
+                      ).show(context);
+                    },
+                  );
+                }
+              });
             },
             padding: const EdgeInsets.all(0),
             margin: const EdgeInsets.all(0),
