@@ -77,9 +77,9 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
     if (_namakawasan.text.isEmpty) {
       return true;
     }
-    if (_alamatLengkap.text.isEmpty) {
-      return true;
-    }
+    // if (_alamatLengkap.text.isEmpty) {
+    //   return true;
+    // }
     if (_email.text.isEmpty) {
       return true;
     }
@@ -104,17 +104,27 @@ class _DaftarKawasanState extends State<DaftarKawasan> {
         //'userId': userId,
         'address': _alamatLengkap.text,
         'name': _namakawasan.text,
-        'adminId': iduser,
+
         'kawasanId': idKawasan,
         'kawasan_latitude': _latLngKawasan!.latitude,
         'kawasan_longitude': _latLngKawasan!.longitude,
         'status': "unverified",
       };
-
+      final dataAdmin = {
+        //'userId': userId,
+        'userId': iduser,
+        'kawasanId': idKawasan,
+        'status': "unverified",
+      };
       await FirebaseFirestore.instance
           .collection('kawasan')
           .doc(idKawasan)
           .set(data);
+      CollectionReference adminRef = FirebaseFirestore.instance
+          .collection('kawasan')
+          .doc(idKawasan)
+          .collection('adminKawasan');
+      adminRef.doc(iduser).set(dataAdmin);
       Navigator.pushReplacement(
         context,
         MaterialPageRoute(builder: (context) => const KawasanSukses()),
