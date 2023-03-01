@@ -458,30 +458,32 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
                       onTap: _handleMapsPicker,
                       child: _latLngToko == null
                           ? null
-                          : Stack(
-                              children: [
-                                GoogleMap(
-                                  mapType: MapType.normal,
-                                  mapToolbarEnabled: false,
-                                  myLocationEnabled: false,
-                                  zoomControlsEnabled: false,
-                                  initialCameraPosition: CameraPosition(
-                                    target: _latLngInit,
-                                    zoom: 17,
+                          : SizedBox(
+                              width: double.infinity,
+                              height: 300,
+                              child: Stack(
+                                children: [
+                                  GoogleMap(
+                                    mapType: MapType.normal,
+                                    mapToolbarEnabled: false,
+                                    myLocationEnabled: false,
+                                    zoomControlsEnabled: false,
+                                    initialCameraPosition: CameraPosition(
+                                      target: _latLngInit,
+                                      zoom: 17,
+                                    ),
+                                    onMapCreated:
+                                        (GoogleMapController controller) {
+                                      _mapController.complete(controller);
+                                    },
+                                    markers: Set.from(_marker),
                                   ),
-                                  onMapCreated:
-                                      (GoogleMapController controller) {
-                                    _mapController.complete(controller);
-                                  },
-                                  markers: Set.from(_marker),
-                                ),
-                                GestureDetector(
-                                    onTap: _handleMapsPicker,
-                                    child: Expanded(
-                                        child: Container(
-                                            color:
-                                                Colors.black.withOpacity(0))))
-                              ],
+                                  GestureDetector(
+                                      onTap: _handleMapsPicker,
+                                      child: Container(
+                                          color: Colors.black.withOpacity(0)))
+                                ],
+                              ),
                             )),
                   const SizedBox(height: 20),
                   CustomTextfield2(

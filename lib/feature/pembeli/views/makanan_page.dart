@@ -1007,7 +1007,7 @@ class _ListMenuState extends State<ListMenu> {
                       margin: const EdgeInsets.only(right: 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
+                              backgroundColor: Colors.white,
                               side: const BorderSide(
                                 color: MyColors.red1,
                               ),

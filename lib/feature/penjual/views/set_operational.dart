@@ -1,6 +1,7 @@
 import 'package:another_flushbar/flushbar.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/penjual/bloc/calender_bloc/calender_bloc.dart';
+import 'package:cafetaria/feature/penjual/bloc/days_bloc/days_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/set_open.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
@@ -20,13 +21,22 @@ class SetOperational extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return BlocProvider(
-      create: (context) =>
-          CalenderBloc(merchantRepository: context.read<MerchantRepository>())
+    return MultiBlocProvider(
+      providers: [
+        BlocProvider(
+          create: (context) => CalenderBloc(
+              merchantRepository: context.read<MerchantRepository>())
             ..add(GetCalender(
                 date: DateTime.now().toIso8601String(),
                 merchantId: merchantId,
                 type: 'monthly')),
+        ),
+        BlocProvider(
+          create: (context) =>
+              DaysBloc(merchantRepository: context.read<MerchantRepository>())
+                ..add(GetDays(merchantId: merchantId)),
+        ),
+      ],
       child: SetOperationalWidget(
         merchantId: merchantId,
       ),
@@ -64,7 +74,7 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
     });
     final userId = widget.merchantId;
     String date =
-        "${_selectedDay?.year}-${_selectedDay?.month.toString().length == 2 ? _selectedDay?.month : _selectedDay?.month.toString().padLeft(2, '0')}-${_selectedDay?.day}";
+        "${_selectedDay?.year}-${_selectedDay?.month.toString().length == 2 ? _selectedDay?.month : _selectedDay?.month.toString().padLeft(2, '0')}-${_selectedDay?.day.toString().length == 2 ? _selectedDay?.day : _selectedDay?.day.toString().padLeft(2, '0')}";
 
     setState(() {});
 
@@ -206,17 +216,14 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                                   date: DateTime.now(), isClosed: false),
                             );
                             final isSpecialDate = event.isClosed;
-                            final backgroundColor = isSpecialDate!
-                                ? Colors.red // Use red for special dates
-                                : Colors
-                                    .transparent; // Use transparent for other dates
+                            // Use transparent for other dates
                             return Container(
                               margin: const EdgeInsets.all(4),
                               child: Center(
                                 child: Text(
                                   date.day.toString(),
                                   style: TextStyle(
-                                    color: isSpecialDate
+                                    color: isSpecialDate!
                                         ? Colors.red
                                         : Colors.black,
                                   ),
@@ -283,6 +290,13 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                 Text(
                   convertDateTime(_selectedDay!),
                 ),
+                Padding(
+                  padding: const EdgeInsets.only(right: 230),
+                  child: Text(
+                    close == true ? " tutup" : " Buka",
+                    style: const TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                ),
                 Switch(
                   value: close,
                   onChanged: (val) {
@@ -295,109 +309,205 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                 ),
               ],
             ),
-            FutureBuilder<List<Rules>>(
-              future: context
-                  .read<MerchantRepository>()
-                  .getrulesDay(widget.merchantId),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(
-                    child: CircularProgressIndicator(),
-                  );
-                } else if (snapshot.connectionState == ConnectionState.none) {
-                  return const Text("Error");
-                } else {
-                  return ListView.builder(
-                    shrinkWrap: true,
-                    itemCount: snapshot.data?.length,
-                    physics: const NeverScrollableScrollPhysics(),
-                    itemBuilder: (context, index) {
-                      snapshot.data!.map((e) => print("Hari:${e.day!}"));
-                      final item = snapshot.data?[index];
-                      return Container(
-                        margin: const EdgeInsets.symmetric(vertical: 24),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 20, horizontal: 14),
-                        decoration: BoxDecoration(
-                          color: Colors.white,
-                          borderRadius:
-                              const BorderRadius.all(Radius.circular(8)),
-                          boxShadow: [
-                            BoxShadow(
-                              color: Colors.black.withOpacity(0.04),
-                              blurRadius: 12,
-                              offset: const Offset(
-                                  0, 4), // changes position of shadow
-                            ),
-                          ],
-                        ),
-                        height: 84,
-                        child: Row(
-                          children: [
-                            Image.asset(item?.isClosed == true
-                                ? Assets.images.calClose.path
-                                : Assets.images.calOpen.path),
-                            const SizedBox(width: 18),
-                            Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(item!.day.toString(),
-                                    style: const TextStyle(
-                                        fontSize: 16,
-                                        fontWeight: FontWeight.bold)),
-                                Text("${item.openTime} - ${item.closedTime}",
-                                    style: const TextStyle(
-                                        fontSize: 13,
-                                        fontWeight: FontWeight.w500,
-                                        color: Colors.grey)),
-                              ],
-                            ),
-                            const Spacer(),
-                            GestureDetector(
-                              onTap: () {
-                                Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => SetOpen(
-                                          rules: item,
-                                          merchantId: widget.merchantId),
-                                    ));
-                              },
-                              child: Container(
-                                decoration: BoxDecoration(
-                                  color: Colors.white,
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(8)),
-                                  border: Border.all(
-                                    color: Colors.red,
-                                    width: 0.0,
-                                  ),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.black.withOpacity(0.04),
-                                      blurRadius: 12,
-                                      offset: const Offset(
-                                          0, 4), // changes position of shadow
-                                    ),
-                                  ],
+            BlocBuilder<DaysBloc, DaysState>(builder: (context, state) {
+              final status = state.status;
+              if (status == DaysStatus.loading) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (status == DaysStatus.failure) {
+                return Text(state.errorMessage.toString());
+              } else if (status == DaysStatus.success) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: state.items!.length,
+                  physics: const NeverScrollableScrollPhysics(),
+                  itemBuilder: (context, index) {
+                    final item = state.items?[index];
+                    return Container(
+                      margin: const EdgeInsets.symmetric(vertical: 24),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 20, horizontal: 14),
+                      decoration: BoxDecoration(
+                        color: Colors.white,
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(8)),
+                        boxShadow: [
+                          BoxShadow(
+                            color: Colors.black.withOpacity(0.04),
+                            blurRadius: 12,
+                            offset: const Offset(
+                                0, 4), // changes position of shadow
+                          ),
+                        ],
+                      ),
+                      height: 84,
+                      child: Row(
+                        children: [
+                          Image.asset(item?.isClosed == true
+                              ? Assets.images.calClose.path
+                              : Assets.images.calOpen.path),
+                          const SizedBox(width: 18),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(item!.day.toString(),
+                                  style: const TextStyle(
+                                      fontSize: 16,
+                                      fontWeight: FontWeight.bold)),
+                              Text("${item.openTime} - ${item.closedTime}",
+                                  style: const TextStyle(
+                                      fontSize: 13,
+                                      fontWeight: FontWeight.w500,
+                                      color: Colors.grey)),
+                            ],
+                          ),
+                          const Spacer(),
+                          GestureDetector(
+                            onTap: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => SetOpen(
+                                        rules: item,
+                                        merchantId: widget.merchantId),
+                                  ));
+                            },
+                            child: Container(
+                              decoration: BoxDecoration(
+                                color: Colors.white,
+                                borderRadius:
+                                    const BorderRadius.all(Radius.circular(8)),
+                                border: Border.all(
+                                  color: Colors.red,
+                                  width: 0.0,
                                 ),
-                                width: 60,
-                                height: 25,
-                                child: const Center(
-                                    child: Text(
-                                  "Ubah",
-                                  style: TextStyle(color: Colors.red),
-                                )),
+                                boxShadow: [
+                                  BoxShadow(
+                                    color: Colors.black.withOpacity(0.04),
+                                    blurRadius: 12,
+                                    offset: const Offset(
+                                        0, 4), // changes position of shadow
+                                  ),
+                                ],
                               ),
-                            )
-                          ],
-                        ),
-                      );
-                    },
-                  );
-                }
-              },
-            )
+                              width: 60,
+                              height: 25,
+                              child: const Center(
+                                  child: Text(
+                                "Ubah",
+                                style: TextStyle(color: Colors.red),
+                              )),
+                            ),
+                          )
+                        ],
+                      ),
+                    );
+                  },
+                );
+              }
+              return const SizedBox.shrink();
+            }),
+            // FutureBuilder<List<Rules>>(
+            //   future: context
+            //       .read<MerchantRepository>()
+            //       .getrulesDay(merchantId: widget.merchantId),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return const Center(
+            //         child: CircularProgressIndicator(),
+            //       );
+            //     } else if (snapshot.connectionState == ConnectionState.none) {
+            //       return const Text("Error");
+            //     } else {
+            //       return ListView.builder(
+            //         shrinkWrap: true,
+            //         itemCount: snapshot.data?.length,
+            //         physics: const NeverScrollableScrollPhysics(),
+            //         itemBuilder: (context, index) {
+            //           final item = snapshot.data?[index];
+            //           return Container(
+            //             margin: const EdgeInsets.symmetric(vertical: 24),
+            //             padding: const EdgeInsets.symmetric(
+            //                 vertical: 20, horizontal: 14),
+            //             decoration: BoxDecoration(
+            //               color: Colors.white,
+            //               borderRadius:
+            //                   const BorderRadius.all(Radius.circular(8)),
+            //               boxShadow: [
+            //                 BoxShadow(
+            //                   color: Colors.black.withOpacity(0.04),
+            //                   blurRadius: 12,
+            //                   offset: const Offset(
+            //                       0, 4), // changes position of shadow
+            //                 ),
+            //               ],
+            //             ),
+            //             height: 84,
+            //             child: Row(
+            //               children: [
+            //                 Image.asset(item?.isClosed == true
+            //                     ? Assets.images.calClose.path
+            //                     : Assets.images.calOpen.path),
+            //                 const SizedBox(width: 18),
+            //                 Column(
+            //                   crossAxisAlignment: CrossAxisAlignment.start,
+            //                   children: [
+            //                     Text(item!.day.toString(),
+            //                         style: const TextStyle(
+            //                             fontSize: 16,
+            //                             fontWeight: FontWeight.bold)),
+            //                     Text("${item.openTime} - ${item.closedTime}",
+            //                         style: const TextStyle(
+            //                             fontSize: 13,
+            //                             fontWeight: FontWeight.w500,
+            //                             color: Colors.grey)),
+            //                   ],
+            //                 ),
+            //                 const Spacer(),
+            //                 GestureDetector(
+            //                   onTap: () {
+            //                     Navigator.push(
+            //                         context,
+            //                         MaterialPageRoute(
+            //                           builder: (context) => SetOpen(
+            //                               rules: item,
+            //                               merchantId: widget.merchantId),
+            //                         ));
+            //                   },
+            //                   child: Container(
+            //                     decoration: BoxDecoration(
+            //                       color: Colors.white,
+            //                       borderRadius: const BorderRadius.all(
+            //                           Radius.circular(8)),
+            //                       border: Border.all(
+            //                         color: Colors.red,
+            //                         width: 0.0,
+            //                       ),
+            //                       boxShadow: [
+            //                         BoxShadow(
+            //                           color: Colors.black.withOpacity(0.04),
+            //                           blurRadius: 12,
+            //                           offset: const Offset(
+            //                               0, 4), // changes position of shadow
+            //                         ),
+            //                       ],
+            //                     ),
+            //                     width: 60,
+            //                     height: 25,
+            //                     child: const Center(
+            //                         child: Text(
+            //                       "Ubah",
+            //                       style: TextStyle(color: Colors.red),
+            //                     )),
+            //                   ),
+            //                 )
+            //               ],
+            //             ),
+            //           );
+            //         },
+            //       );
+            //     }
+            //   },
+            // )
           ],
         ),
       ),

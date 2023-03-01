@@ -145,7 +145,7 @@ class _MerchantPageState extends State<MerchantPage>
                                 color: MyColors.red1,
                                 size: 20,
                               ),
-                              hintText: "Kamu lagi mau makan apa?",
+                              hintText: "Cari Produk Apa ?",
                               hintStyle: const TextStyle(fontSize: 13),
                               border: OutlineInputBorder(
                                 borderRadius: BorderRadius.circular(100),

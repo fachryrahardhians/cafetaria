@@ -220,28 +220,32 @@ class _EditProfileWidgetState extends State<EditProfileWidget> {
                     size: 32,
                   ),
                   onTap: _handleMapsPicker,
-                  child: Stack(
-                    children: [
-                      GoogleMap(
-                        mapType: MapType.normal,
-                        mapToolbarEnabled: false,
-                        myLocationEnabled: false,
-                        zoomControlsEnabled: false,
-                        initialCameraPosition: CameraPosition(
-                          target: latLngInit,
-                          zoom: 17,
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 300,
+                    child: Stack(
+                      children: [
+                        GoogleMap(
+                          mapType: MapType.normal,
+                          mapToolbarEnabled: false,
+                          myLocationEnabled: false,
+                          zoomControlsEnabled: false,
+                          initialCameraPosition: CameraPosition(
+                            target: latLngInit,
+                            zoom: 17,
+                          ),
+                          onMapCreated: (GoogleMapController controller) {
+                            _mapController.complete(controller);
+                          },
+                          markers: Set.from(_marker),
                         ),
-                        onMapCreated: (GoogleMapController controller) {
-                          _mapController.complete(controller);
-                        },
-                        markers: Set.from(_marker),
-                      ),
-                      GestureDetector(
-                          onTap: _handleMapsPicker,
-                          child: Expanded(
-                              child: Container(
-                                  color: Colors.black.withOpacity(0))))
-                    ],
+                        GestureDetector(
+                            onTap: _handleMapsPicker,
+                            child: Expanded(
+                                child: Container(
+                                    color: Colors.black.withOpacity(0))))
+                      ],
+                    ),
                   )),
               const SizedBox(height: 20),
               CustomTextfield2(
