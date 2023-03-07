@@ -1,9 +1,11 @@
 // ignore_for_file: avoid_print
 
 import 'package:admin_repository/admin_repository.dart';
+import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/components/view_info.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
+import 'package:cafetaria/feature/pembeli/bloc/list_merchant_login_bloc/list_merchant_login_bloc.dart';
 import 'package:cafetaria/feature/pembeli/views/hasil_search_merchant.dart';
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
 import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
@@ -35,6 +37,7 @@ class _MerchantPageState extends State<MerchantPage>
       color: Color(0xff333435), fontSize: 20, fontWeight: FontWeight.w700);
   late ListMerchantBloc listMerchantBloc;
   late AddMenuToCartBloc addMenuToCartBloc;
+  late ListMerchantLoginBloc listMerchantLoginBloc;
 
   String? merchantIdInKeranjang;
   MerchantModel? selectedMerchant;
@@ -47,12 +50,15 @@ class _MerchantPageState extends State<MerchantPage>
         merchantRepository: context.read<MerchantRepository>());
     addMenuToCartBloc =
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
+    listMerchantLoginBloc = ListMerchantLoginBloc(
+        merchantRepository: context.read<MerchantRepository>());
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
 
   @override
   Widget build(BuildContext context) {
+    final statusApp = context.select((AppBloc bloc) => bloc.state.status);
     SizeConfig().init(context);
     //var size = MediaQuery.of(context).size;
     // show == true
@@ -64,7 +70,10 @@ class _MerchantPageState extends State<MerchantPage>
               create: ((context) =>
                   listMerchantBloc..add(const GetListMerchant()))),
           BlocProvider(
-              create: ((context) => addMenuToCartBloc..add(GetMenusInCart())))
+              create: ((context) => addMenuToCartBloc..add(GetMenusInCart()))),
+          BlocProvider(
+              create: ((context) =>
+                  listMerchantLoginBloc..add(GetListMerchantLogin(widget.id)))),
         ],
         child: Scaffold(
           body: BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
@@ -155,24 +164,6 @@ class _MerchantPageState extends State<MerchantPage>
                         ),
                       ),
                       SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      // Row(
-                      //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //   children: [
-                      //     Text(
-                      //       'PROMO HARI INI',
-                      //       style:
-                      //           textStyle.copyWith(color: const Color(0xff808285)),
-                      //     ),
-                      //     Text(
-                      //       'Lihat semua',
-                      //       style: textStyle.copyWith(
-                      //           fontSize: 12, color: const Color(0xffee3124)),
-                      //     )
-                      //   ],
-                      // ),
-                      // SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      // promo(),
-                      // SizedBox(height: SizeConfig.safeBlockVertical * 3),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
@@ -189,146 +180,312 @@ class _MerchantPageState extends State<MerchantPage>
                         ],
                       ),
                       SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      BlocBuilder<ListMerchantBloc, ListMerchantState>(
-                          builder: ((context, state) {
-                        if (state.status == ListMerchantStatus.loading) {
-                          return const CircularProgressIndicator();
-                        } else if (state.status == ListMerchantStatus.success) {
-                          //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
-                          List<MerchantModel> merchant = [];
-                          Future<List<MerchantModel>> listmerchant() async {
-                            for (var element in state.items!) {
-                              final menu = await context
-                                  .read<MenuRepository>()
-                                  .getAllMenu(element.merchantId.toString());
-                              if (menu.isEmpty) {
-                                print("data Kosong");
-                              } else {
-                                try {
-                                  merchant.add(element);
-                                } catch (e) {
-                                  throw Exception('Failed to get All menu');
+                      statusApp == AppStatus.unauthenticated
+                          ? BlocBuilder<ListMerchantBloc, ListMerchantState>(
+                              builder: ((context, state) {
+                              if (state.status == ListMerchantStatus.loading) {
+                                return const CircularProgressIndicator();
+                              } else if (state.status ==
+                                  ListMerchantStatus.success) {
+                                //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
+                                List<MerchantModel> merchant = [];
+                                Future<List<MerchantModel>>
+                                    listmerchant() async {
+                                  for (var element in state.items!) {
+                                    final menu = await context
+                                        .read<MenuRepository>()
+                                        .getAllMenu(
+                                            element.merchantId.toString());
+                                    if (menu.isEmpty) {
+                                      print("data Kosong");
+                                    } else {
+                                      try {
+                                        merchant.add(element);
+                                      } catch (e) {
+                                        throw Exception(
+                                            'Failed to get All menu');
+                                      }
+                                    }
+                                  }
+                                  return merchant;
                                 }
-                              }
-                            }
-                            return merchant;
-                          }
 
-                          return FutureBuilder<List<MerchantModel>>(
-                              future: listmerchant(),
-                              builder: (context, snapshot) {
-                                // print(snapshot.data?.length);
-                                if (snapshot.data?.length == null) {
-                                  return const CircularProgressIndicator();
-                                } else {
-                                  return ListView.builder(
-                                      physics:
-                                          const NeverScrollableScrollPhysics(),
-                                      shrinkWrap: true,
-                                      itemCount: snapshot.data?.length,
-                                      itemBuilder: ((context, index) {
-                                        return InkWell(
-                                            onTap: () {
-                                              selectedMerchant =
-                                                  snapshot.data?[index];
-                                              if (merchantIdInKeranjang !=
-                                                      null &&
-                                                  snapshot.data?[index]
-                                                          .merchantId !=
-                                                      merchantIdInKeranjang) {
-                                                showDialog(
-                                                    context: context,
-                                                    builder: ((context) {
-                                                      return dialogWarnCart(
-                                                          snapshot
-                                                              .data?[index]);
-                                                    }));
-                                              } else {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            MakananPage(
-                                                              iduser: widget.id,
-                                                              title: snapshot
-                                                                      .data?[
-                                                                          index]
-                                                                      .name ??
-                                                                  'Shabrina’s Kitchen - Gambir',
-                                                              idMerchant: snapshot
-                                                                  .data![index]
-                                                                  .merchantId
-                                                                  .toString(),
-                                                              alamat: snapshot
-                                                                  .data![index]
-                                                                  .address
-                                                                  .toString(),
-                                                              buka_toko: snapshot
-                                                                          .data![
-                                                                              index]
-                                                                          .buka_toko ==
-                                                                      null
-                                                                  ? "kosong"
-                                                                  : snapshot
-                                                                      .data![
-                                                                          index]
-                                                                      .buka_toko
-                                                                      .toString(),
-                                                              tutup_toko: snapshot
-                                                                          .data![
-                                                                              index]
-                                                                          .tutup_toko ==
-                                                                      null
-                                                                  ? "kosong"
-                                                                  : snapshot
-                                                                      .data![
-                                                                          index]
-                                                                      .tutup_toko
-                                                                      .toString(),
-                                                              rating: snapshot
-                                                                  .data?[index]
-                                                                  .rating,
-                                                              jumlahUlasan: snapshot
-                                                                  .data?[index]
-                                                                  .totalCountRating,
-                                                              minPrice: snapshot
-                                                                  .data?[index]
-                                                                  .minPrice,
-                                                              maxPrice: snapshot
-                                                                  .data?[index]
-                                                                  .maxPrice,
-                                                            ))).then((value) =>
-                                                    {
-                                                      addMenuToCartBloc
-                                                        ..add(GetMenusInCart())
-                                                    });
-                                              }
-                                            },
-                                            child: Padding(
-                                              padding: EdgeInsets.only(
-                                                  top: SizeConfig
-                                                          .safeBlockVertical *
-                                                      3),
-                                              child: outlet(
-                                                  Assets.images
-                                                      .illCafetariaBanner2.path,
-                                                  snapshot.data?[index].image,
-                                                  false,
-                                                  snapshot.data?[index].name ??
-                                                      'Shabrina’s Kitchen - Gambir',
-                                                  'Lantai 1',
-                                                  'Cafetaria',
-                                                  '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
-                                            ));
-                                      }));
+                                return FutureBuilder<List<MerchantModel>>(
+                                    future: listmerchant(),
+                                    builder: (context, snapshot) {
+                                      // print(snapshot.data?.length);
+                                      if (snapshot.data?.length == null) {
+                                        return const CircularProgressIndicator();
+                                      } else {
+                                        return ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: snapshot.data?.length,
+                                            itemBuilder: ((context, index) {
+                                              return InkWell(
+                                                  onTap: () {
+                                                    selectedMerchant =
+                                                        snapshot.data?[index];
+                                                    if (merchantIdInKeranjang !=
+                                                            null &&
+                                                        snapshot.data?[index]
+                                                                .merchantId !=
+                                                            merchantIdInKeranjang) {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: ((context) {
+                                                            return dialogWarnCart(
+                                                                snapshot.data?[
+                                                                    index]);
+                                                          }));
+                                                    } else {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  MakananPage(
+                                                                    iduser:
+                                                                        widget
+                                                                            .id,
+                                                                    title: snapshot
+                                                                            .data?[index]
+                                                                            .name ??
+                                                                        'Shabrina’s Kitchen - Gambir',
+                                                                    idMerchant: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .merchantId
+                                                                        .toString(),
+                                                                    alamat: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .address
+                                                                        .toString(),
+                                                                    buka_toko: snapshot.data![index].buka_toko ==
+                                                                            null
+                                                                        ? "kosong"
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .buka_toko
+                                                                            .toString(),
+                                                                    tutup_toko: snapshot.data![index].tutup_toko ==
+                                                                            null
+                                                                        ? "kosong"
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .tutup_toko
+                                                                            .toString(),
+                                                                    rating: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .rating,
+                                                                    jumlahUlasan: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .totalCountRating,
+                                                                    minPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .minPrice,
+                                                                    maxPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .maxPrice,
+                                                                  ))).then(
+                                                          (value) => {
+                                                                addMenuToCartBloc
+                                                                  ..add(
+                                                                      GetMenusInCart())
+                                                              });
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: SizeConfig
+                                                                .safeBlockVertical *
+                                                            3),
+                                                    child: outlet(
+                                                        Assets
+                                                            .images
+                                                            .illCafetariaBanner2
+                                                            .path,
+                                                        snapshot
+                                                            .data?[index].image,
+                                                        false,
+                                                        snapshot.data?[index]
+                                                                .name ??
+                                                            'Shabrina’s Kitchen - Gambir',
+                                                        'Lantai 1',
+                                                        'Cafetaria',
+                                                        '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
+                                                  ));
+                                            }));
+                                      }
+                                    });
+                              } else if (state.status ==
+                                  ListMerchantStatus.failure) {
+                                return Text(state.errorMessage.toString());
+                              } else {
+                                return const SizedBox();
+                              }
+                            }))
+                          : BlocBuilder<ListMerchantLoginBloc,
+                                  ListMerchantLoginState>(
+                              builder: ((context, state) {
+                              if (state.status ==
+                                  ListMerchantLoginStatus.loading) {
+                                return const CircularProgressIndicator();
+                              } else if (state.status ==
+                                  ListMerchantLoginStatus.success) {
+                                //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
+                                List<MerchantModel> merchant = [];
+                                Future<List<MerchantModel>>
+                                    listmerchant() async {
+                                  for (var element in state.items!) {
+                                    final menu = await context
+                                        .read<MenuRepository>()
+                                        .getAllMenu(
+                                            element.merchantId.toString());
+                                    if (menu.isEmpty) {
+                                      print("data Kosong");
+                                    } else {
+                                      try {
+                                        merchant.add(element);
+                                      } catch (e) {
+                                        throw Exception(
+                                            'Failed to get All menu');
+                                      }
+                                    }
+                                  }
+                                  return merchant;
                                 }
-                              });
-                        } else if (state.status == ListMerchantStatus.failure) {
-                          return Text(state.errorMessage.toString());
-                        } else {
-                          return const SizedBox();
-                        }
-                      })),
+
+                                return FutureBuilder<List<MerchantModel>>(
+                                    future: listmerchant(),
+                                    builder: (context, snapshot) {
+                                      // print(snapshot.data?.length);
+                                      if (snapshot.data?.length == null) {
+                                        return const CircularProgressIndicator();
+                                      } else {
+                                        return ListView.builder(
+                                            physics:
+                                                const NeverScrollableScrollPhysics(),
+                                            shrinkWrap: true,
+                                            itemCount: snapshot.data?.length,
+                                            itemBuilder: ((context, index) {
+                                              double distance = snapshot
+                                                  .data![index].distance!;
+                                              double parseDistance =
+                                                  double.parse(distance
+                                                      .toStringAsFixed(2));
+                                              return InkWell(
+                                                  onTap: () {
+                                                    selectedMerchant =
+                                                        snapshot.data?[index];
+                                                    if (merchantIdInKeranjang !=
+                                                            null &&
+                                                        snapshot.data?[index]
+                                                                .merchantId !=
+                                                            merchantIdInKeranjang) {
+                                                      showDialog(
+                                                          context: context,
+                                                          builder: ((context) {
+                                                            return dialogWarnCart(
+                                                                snapshot.data?[
+                                                                    index]);
+                                                          }));
+                                                    } else {
+                                                      Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  MakananPage(
+                                                                    iduser:
+                                                                        widget
+                                                                            .id,
+                                                                    title: snapshot
+                                                                            .data?[index]
+                                                                            .name ??
+                                                                        'Shabrina’s Kitchen - Gambir',
+                                                                    idMerchant: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .merchantId
+                                                                        .toString(),
+                                                                    alamat: snapshot
+                                                                        .data![
+                                                                            index]
+                                                                        .address
+                                                                        .toString(),
+                                                                    buka_toko: snapshot.data![index].buka_toko ==
+                                                                            null
+                                                                        ? "kosong"
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .buka_toko
+                                                                            .toString(),
+                                                                    tutup_toko: snapshot.data![index].tutup_toko ==
+                                                                            null
+                                                                        ? "kosong"
+                                                                        : snapshot
+                                                                            .data![index]
+                                                                            .tutup_toko
+                                                                            .toString(),
+                                                                    rating: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .rating,
+                                                                    jumlahUlasan: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .totalCountRating,
+                                                                    minPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .minPrice,
+                                                                    maxPrice: snapshot
+                                                                        .data?[
+                                                                            index]
+                                                                        .maxPrice,
+                                                                  ))).then(
+                                                          (value) => {
+                                                                addMenuToCartBloc
+                                                                  ..add(
+                                                                      GetMenusInCart())
+                                                              });
+                                                    }
+                                                  },
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(
+                                                        top: SizeConfig
+                                                                .safeBlockVertical *
+                                                            3),
+                                                    child: outlet(
+                                                        Assets
+                                                            .images
+                                                            .illCafetariaBanner2
+                                                            .path,
+                                                        snapshot
+                                                            .data?[index].image,
+                                                        false,
+                                                        snapshot.data?[index]
+                                                                .name ??
+                                                            'Shabrina’s Kitchen - Gambir',
+                                                        "$parseDistance Km",
+                                                        'Cafetaria',
+                                                        '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
+                                                  ));
+                                            }));
+                                      }
+                                    });
+                              } else if (state.status ==
+                                  ListMerchantLoginStatus.failure) {
+                                return Text(state.errorMessage.toString());
+                              } else {
+                                return const SizedBox();
+                              }
+                            })),
                       const SizedBox(height: 30),
                       Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,

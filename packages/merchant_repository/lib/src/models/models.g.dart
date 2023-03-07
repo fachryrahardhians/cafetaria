@@ -13,6 +13,7 @@ MerchantModel _$MerchantModelFromJson(Map<String, dynamic> json) =>
       minPrice: json['minPrice'] as int?,
       name: json['name'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
+      distance: (json['distance'] as num?)?.toDouble(),
       test: json['test'] as String?,
       image: json['image'] as String?,
       totalCountRating: json['totalCountRating'] as int?,

@@ -46,6 +46,20 @@ class MerchantRepository {
     }
   }
 
+  Future<List<MerchantModel>> getMerchantLogin(String userId) async {
+    try {
+      final snapshot = await _firestore
+          .collection('user')
+          .doc(userId)
+          .collection('store')
+          .get();
+
+      final documents = snapshot.docs;
+      return documents.toListMerchant();
+    } catch (e) {
+      throw Exception('Failed to get merchant');
+    }
+  }
   // get  menu per merchant
   // Future<List<Rules>> getrulesDay(String idMerchant) async {
   //   try {

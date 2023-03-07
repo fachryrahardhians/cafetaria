@@ -133,7 +133,6 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
       //   data = model[i];
 
       // }
-
     }
     print("Kawasan terdekat : $kawasan");
     return data;
@@ -318,7 +317,7 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         future: auth.getCurrentUser(),
         builder: (context, snapshot) {
           if (snapshot.data == null) {
-            return CircularProgressIndicator();
+            return const CircularProgressIndicator();
           } else {
             return DefaultTabController(
               length: 4,

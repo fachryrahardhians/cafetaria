@@ -20,6 +20,7 @@ class MerchantModel extends Equatable {
       this.totalOrderToday,
       this.totalSalesToday,
       this.totalSalesYesterday,
+      this.distance,
       this.buka_toko,
       this.userId,
       this.tutup_toko,
@@ -37,6 +38,7 @@ class MerchantModel extends Equatable {
   final int? minPrice;
   final String? name;
   final double? rating;
+  final double? distance;
   final String? test;
   final String? image;
   final String? city;
@@ -76,6 +78,7 @@ class MerchantModel extends Equatable {
       String? address,
       String? address_detail,
       double? address_latitude,
+      double? distance,
       double? address_longitude}) {
     return MerchantModel(
       maxPrice: maxPrice ?? this.maxPrice,
@@ -85,6 +88,7 @@ class MerchantModel extends Equatable {
       buka_toko: buka_toko ?? this.buka_toko,
       tutup_toko: tutup_toko ?? this.tutup_toko,
       rating: rating ?? this.rating,
+      distance: distance ?? this.distance,
       test: test ?? this.test,
       city: city ?? this.city,
       postal_code: postal_code ?? this.postal_code,
