@@ -138,11 +138,17 @@ class MerchantRepository {
   //   }
   // }
 
-  Future<List<MechantSearch>> searchMerchant(String message, String id) async {
+  Future<List<MechantSearch>> searchMerchant(String message, //String id,
+      {required double long,
+      required double lat}) async {
     HttpsCallable callable =
         FirebaseFunctions.instance.httpsCallable('searchMerchant');
-    final resp = await callable
-        .call(<String, dynamic>{'keyword': message, 'userId': id});
+    final resp = await callable.call(<String, dynamic>{
+      'keyword': message,
+      //'userId': id,
+      'latitude': lat,
+      'longitude': long
+    });
     final List data = resp.data;
     final leaderboardEntries = <MechantSearch>[];
 

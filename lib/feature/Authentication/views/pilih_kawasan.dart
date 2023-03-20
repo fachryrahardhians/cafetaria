@@ -117,7 +117,7 @@ class _PilihKawasanState extends State<PilihKawasan> {
                               FormzStatus.submissionSuccess) {
                             ScaffoldMessenger.of(context).showSnackBar(
                               const SnackBar(
-                                content: Text('Status Berhasil Di Update'),
+                                content: Text('Kawasan Berhasil Di Ubah'),
                               ),
                             );
                             Navigator.pushReplacement(

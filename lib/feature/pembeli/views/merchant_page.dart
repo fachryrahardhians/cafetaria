@@ -3,6 +3,7 @@
 import 'package:admin_repository/admin_repository.dart';
 import 'package:cafetaria/app/bloc/app_bloc.dart';
 import 'package:cafetaria/components/view_info.dart';
+import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_bloc/list_merchant_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/list_merchant_login_bloc/list_merchant_login_bloc.dart';
@@ -13,6 +14,7 @@ import 'package:cafetaria/feature/penjual/views/widgets/item_info.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/utilities/size_config.dart';
+import 'package:category_repository/category_repository.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -38,7 +40,9 @@ class _MerchantPageState extends State<MerchantPage>
   late ListMerchantBloc listMerchantBloc;
   late AddMenuToCartBloc addMenuToCartBloc;
   late ListMerchantLoginBloc listMerchantLoginBloc;
-
+  late PilihKawasanBloc pilihKawasanBloc;
+  double? long;
+  double? lat;
   String? merchantIdInKeranjang;
   MerchantModel? selectedMerchant;
 
@@ -52,6 +56,8 @@ class _MerchantPageState extends State<MerchantPage>
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     listMerchantLoginBloc = ListMerchantLoginBloc(
         merchantRepository: context.read<MerchantRepository>());
+    pilihKawasanBloc = PilihKawasanBloc(
+        categoryRepository: context.read<CategoryRepository>());
     WidgetsBinding.instance.addObserver(this);
     super.initState();
   }
@@ -74,6 +80,9 @@ class _MerchantPageState extends State<MerchantPage>
           BlocProvider(
               create: ((context) =>
                   listMerchantLoginBloc..add(GetListMerchantLogin(widget.id)))),
+          BlocProvider(
+              create: (context) =>
+                  pilihKawasanBloc..add(const GetPilihKawasan()))
         ],
         child: Scaffold(
           body: BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
@@ -107,452 +116,558 @@ class _MerchantPageState extends State<MerchantPage>
                       (value) => {addMenuToCartBloc..add(GetMenusInCart())});
                 }
               }),
-              child: Padding(
-                  padding: const EdgeInsets.symmetric(
-                      vertical: 16.0, horizontal: 24),
-                  child: SingleChildScrollView(
-                    child: Column(children: [
-                      SizedBox(height: SizeConfig.safeBlockVertical * 1),
-                      const Center(
-                        child: Text(
-                          'CAFETARIA',
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xff333435)),
-                        ),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 3),
-                      Padding(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 2, vertical: 5),
-                        child: SizedBox(
-                          width: double.infinity,
-                          height: 40,
-                          child: TextField(
-                            style: const TextStyle(fontSize: 13),
-                            onSubmitted: (value) {
-                              if (value.isNotEmpty) {
-                                Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => HasilMerchant(
-                                              cari: value.toString(),
-                                              id: widget.id),
-                                        ))
-                                    .then((value) => {
-                                          addMenuToCartBloc
-                                            ..add(GetMenusInCart())
-                                        });
-                              } else {
-                                return;
-                              }
-                            },
-                            decoration: InputDecoration(
-                              prefixIcon: const Icon(
-                                Icons.search,
-                                color: MyColors.red1,
-                                size: 20,
-                              ),
-                              hintText: "Cari Produk Apa ?",
-                              hintStyle: const TextStyle(fontSize: 13),
-                              border: OutlineInputBorder(
-                                borderRadius: BorderRadius.circular(100),
+              child: SingleChildScrollView(
+                child: Column(children: [
+                  Container(
+                    width: double.infinity,
+                    height: 150,
+                    color: const Color.fromARGB(255, 234, 0, 30),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                        Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 20),
+                          child: SizedBox(
+                            width: double.infinity,
+                            height: 50,
+                            child: TextField(
+                              style: const TextStyle(fontSize: 13),
+                              onSubmitted: (value) {
+                                if (value.isNotEmpty &&
+                                    lat != null &&
+                                    long != null) {
+                                  Navigator.push(
+                                          context,
+                                          MaterialPageRoute(
+                                            builder: (context) => HasilMerchant(
+                                                cari: value.toString(),
+                                                lat: lat!,
+                                                long: long!,
+                                                id: widget.id),
+                                          ))
+                                      .then((value) => {
+                                            addMenuToCartBloc
+                                              ..add(GetMenusInCart())
+                                          });
+                                } else {
+                                  return;
+                                }
+                              },
+                              decoration: InputDecoration(
+                                filled: true,
+                                fillColor: Colors.white,
+                                prefixIcon: const Icon(
+                                  Icons.search,
+                                  color: MyColors.grey1,
+                                  size: 20,
+                                ),
+                                hintText: "Cari Produk Apa ?",
+                                hintStyle: const TextStyle(fontSize: 13),
+                                border: OutlineInputBorder(
+                                  borderRadius: BorderRadius.circular(100),
+                                ),
                               ),
                             ),
                           ),
                         ),
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'REKOMENDASI UNTUKMU',
-                            style: textStyle.copyWith(
-                                color: const Color(0xff808285)),
+                        Padding(
+                          padding: const EdgeInsets.only(
+                              left: 22, right: 22, top: 10),
+                          child: Row(
+                            children: [
+                              const Icon(
+                                Icons.location_on,
+                                color: Colors.white,
+                              ),
+                              Text(
+                                "Kawasan Kamu",
+                                style: textStyle.copyWith(
+                                    fontWeight: FontWeight.w400,
+                                    color: const Color.fromARGB(
+                                        255, 255, 255, 255)),
+                              ),
+                              const SizedBox(
+                                width: 10,
+                              ),
+                              SizedBox(
+                                height: 47,
+                                width: SizeConfig.screenWidth / 2.5,
+                                child: BlocBuilder<PilihKawasanBloc,
+                                    PilihKawasanState>(
+                                  builder: (context, state) {
+                                    final status = state.status;
+                                    if (status == PilihKawasanStatus.loading) {
+                                      return const Center(
+                                        child: CircularProgressIndicator(),
+                                      );
+                                    } else if (status ==
+                                        PilihKawasanStatus.failure) {
+                                      return const Center(
+                                        child: Text('Terjadi kesalahan'),
+                                      );
+                                    } else if (status ==
+                                        PilihKawasanStatus.success) {
+                                      // final items = state.items!;
+                                      return DropdownButtonFormField<
+                                          PilihKawasanModel>(
+                                        isExpanded: true,
+                                        items: state.items!
+                                            .map((kawasan) => DropdownMenuItem(
+                                                  value: kawasan,
+                                                  child: Text(
+                                                    kawasan.name.toString(),
+                                                  ),
+                                                ))
+                                            .toList(),
+                                        value: state.items![0],
+                                        icon: const Icon(
+                                          Icons.keyboard_arrow_down_rounded,
+                                          color: Colors.white,
+                                        ),
+                                        style: const TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight
+                                                .bold // set the text color here
+                                            ),
+                                        decoration: const InputDecoration(
+                                          border: InputBorder.none,
+
+                                          // other properties like labelText, hintText, etc.
+                                        ),
+                                        onChanged: (val) {
+                                          setState(() {
+                                            lat = val?.kawasan_latitude;
+                                            long = val?.kawasan_longitude;
+                                          });
+                                        },
+                                      );
+                                    }
+                                    return const SizedBox.shrink();
+                                  },
+                                ),
+                              ),
+                            ],
                           ),
-                          Text(
-                            'Lihat semua',
-                            style: textStyle.copyWith(
-                                fontSize: 12, color: const Color(0xffee3124)),
-                          )
-                        ],
-                      ),
-                      SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                      statusApp == AppStatus.unauthenticated
-                          ? BlocBuilder<ListMerchantBloc, ListMerchantState>(
-                              builder: ((context, state) {
-                              if (state.status == ListMerchantStatus.loading) {
-                                return const CircularProgressIndicator();
-                              } else if (state.status ==
-                                  ListMerchantStatus.success) {
-                                //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
-                                List<MerchantModel> merchant = [];
-                                Future<List<MerchantModel>>
-                                    listmerchant() async {
-                                  for (var element in state.items!) {
-                                    final menu = await context
-                                        .read<MenuRepository>()
-                                        .getAllMenu(
-                                            element.merchantId.toString());
-                                    if (menu.isEmpty) {
-                                      print("data Kosong");
-                                    } else {
-                                      try {
-                                        merchant.add(element);
-                                      } catch (e) {
-                                        throw Exception(
-                                            'Failed to get All menu');
-                                      }
+                        )
+                      ],
+                    ),
+                  ),
+                  // const Center(
+                  //   child: Text(
+                  //     'CAFETARIA',
+                  //     style: TextStyle(
+                  //         fontSize: 16,
+                  //         fontWeight: FontWeight.w700,
+                  //         color: Color(0xff333435)),
+                  //   ),
+                  // ),
+                  // SizedBox(height: SizeConfig.safeBlockVertical * 3),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 5.0, horizontal: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'REKOMENDASI UNTUKMU',
+                          style: textStyle.copyWith(
+                              color: const Color(0xff808285)),
+                        ),
+                        Text(
+                          'Lihat semua',
+                          style: textStyle.copyWith(
+                              fontSize: 12, color: const Color(0xffee3124)),
+                        )
+                      ],
+                    ),
+                  ),
+                  SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                  statusApp == AppStatus.unauthenticated
+                      ? Padding(
+                          padding: const EdgeInsets.symmetric(
+                              vertical: 16.0, horizontal: 24),
+                          child:
+                              BlocBuilder<ListMerchantBloc, ListMerchantState>(
+                                  builder: ((context, state) {
+                            if (state.status == ListMerchantStatus.loading) {
+                              return const CircularProgressIndicator();
+                            } else if (state.status ==
+                                ListMerchantStatus.success) {
+                              //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
+                              List<MerchantModel> merchant = [];
+                              Future<List<MerchantModel>> listmerchant() async {
+                                for (var element in state.items!) {
+                                  final menu = await context
+                                      .read<MenuRepository>()
+                                      .getAllMenu(
+                                          element.merchantId.toString());
+                                  if (menu.isEmpty) {
+                                    print("data Kosong");
+                                  } else {
+                                    try {
+                                      merchant.add(element);
+                                    } catch (e) {
+                                      throw Exception('Failed to get All menu');
                                     }
                                   }
-                                  return merchant;
                                 }
-
-                                return FutureBuilder<List<MerchantModel>>(
-                                    future: listmerchant(),
-                                    builder: (context, snapshot) {
-                                      // print(snapshot.data?.length);
-                                      if (snapshot.data?.length == null) {
-                                        return const CircularProgressIndicator();
-                                      } else {
-                                        return ListView.builder(
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: snapshot.data?.length,
-                                            itemBuilder: ((context, index) {
-                                              return InkWell(
-                                                  onTap: () {
-                                                    selectedMerchant =
-                                                        snapshot.data?[index];
-                                                    if (merchantIdInKeranjang !=
-                                                            null &&
-                                                        snapshot.data?[index]
-                                                                .merchantId !=
-                                                            merchantIdInKeranjang) {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: ((context) {
-                                                            return dialogWarnCart(
-                                                                snapshot.data?[
-                                                                    index]);
-                                                          }));
-                                                    } else {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  MakananPage(
-                                                                    iduser:
-                                                                        widget
-                                                                            .id,
-                                                                    title: snapshot
-                                                                            .data?[index]
-                                                                            .name ??
-                                                                        'Shabrina’s Kitchen - Gambir',
-                                                                    idMerchant: snapshot
-                                                                        .data![
-                                                                            index]
-                                                                        .merchantId
-                                                                        .toString(),
-                                                                    alamat: snapshot
-                                                                        .data![
-                                                                            index]
-                                                                        .address
-                                                                        .toString(),
-                                                                    buka_toko: snapshot.data![index].buka_toko ==
-                                                                            null
-                                                                        ? "kosong"
-                                                                        : snapshot
-                                                                            .data![index]
-                                                                            .buka_toko
-                                                                            .toString(),
-                                                                    tutup_toko: snapshot.data![index].tutup_toko ==
-                                                                            null
-                                                                        ? "kosong"
-                                                                        : snapshot
-                                                                            .data![index]
-                                                                            .tutup_toko
-                                                                            .toString(),
-                                                                    rating: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .rating,
-                                                                    jumlahUlasan: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .totalCountRating,
-                                                                    minPrice: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .minPrice,
-                                                                    maxPrice: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .maxPrice,
-                                                                  ))).then(
-                                                          (value) => {
-                                                                addMenuToCartBloc
-                                                                  ..add(
-                                                                      GetMenusInCart())
-                                                              });
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: SizeConfig
-                                                                .safeBlockVertical *
-                                                            3),
-                                                    child: outlet(
-                                                        Assets
-                                                            .images
-                                                            .illCafetariaBanner2
-                                                            .path,
-                                                        snapshot
-                                                            .data?[index].image,
-                                                        false,
-                                                        snapshot.data?[index]
-                                                                .name ??
-                                                            'Shabrina’s Kitchen - Gambir',
-                                                        'Lantai 1',
-                                                        'Cafetaria',
-                                                        '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
-                                                  ));
-                                            }));
-                                      }
-                                    });
-                              } else if (state.status ==
-                                  ListMerchantStatus.failure) {
-                                return Text(state.errorMessage.toString());
-                              } else {
-                                return const SizedBox();
+                                return merchant;
                               }
-                            }))
-                          : BlocBuilder<ListMerchantLoginBloc,
+
+                              return FutureBuilder<List<MerchantModel>>(
+                                  future: listmerchant(),
+                                  builder: (context, snapshot) {
+                                    // print(snapshot.data?.length);
+                                    if (snapshot.data?.length == null) {
+                                      return const CircularProgressIndicator();
+                                    } else {
+                                      return ListView.builder(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: snapshot.data?.length,
+                                          itemBuilder: ((context, index) {
+                                            return InkWell(
+                                                onTap: () {
+                                                  selectedMerchant =
+                                                      snapshot.data?[index];
+                                                  if (merchantIdInKeranjang !=
+                                                          null &&
+                                                      snapshot.data?[index]
+                                                              .merchantId !=
+                                                          merchantIdInKeranjang) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return dialogWarnCart(
+                                                              snapshot.data?[
+                                                                  index]);
+                                                        }));
+                                                  } else {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (_) =>
+                                                                    MakananPage(
+                                                                      iduser:
+                                                                          widget
+                                                                              .id,
+                                                                      title: snapshot
+                                                                              .data?[index]
+                                                                              .name ??
+                                                                          'Shabrina’s Kitchen - Gambir',
+                                                                      idMerchant: snapshot
+                                                                          .data![
+                                                                              index]
+                                                                          .merchantId
+                                                                          .toString(),
+                                                                      alamat: snapshot
+                                                                          .data![
+                                                                              index]
+                                                                          .address
+                                                                          .toString(),
+                                                                      buka_toko: snapshot.data![index].buka_toko ==
+                                                                              null
+                                                                          ? "kosong"
+                                                                          : snapshot
+                                                                              .data![index]
+                                                                              .buka_toko
+                                                                              .toString(),
+                                                                      tutup_toko: snapshot.data![index].tutup_toko ==
+                                                                              null
+                                                                          ? "kosong"
+                                                                          : snapshot
+                                                                              .data![index]
+                                                                              .tutup_toko
+                                                                              .toString(),
+                                                                      rating: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .rating,
+                                                                      jumlahUlasan: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .totalCountRating,
+                                                                      minPrice: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .minPrice,
+                                                                      maxPrice: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .maxPrice,
+                                                                    ))).then(
+                                                        (value) => {
+                                                              addMenuToCartBloc
+                                                                ..add(
+                                                                    GetMenusInCart())
+                                                            });
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: SizeConfig
+                                                              .safeBlockVertical *
+                                                          3),
+                                                  child: outlet(
+                                                      Assets
+                                                          .images
+                                                          .illCafetariaBanner2
+                                                          .path,
+                                                      snapshot
+                                                          .data?[index].image,
+                                                      false,
+                                                      snapshot.data?[index]
+                                                              .name ??
+                                                          'Shabrina’s Kitchen - Gambir',
+                                                      'Lantai 1',
+                                                      'Cafetaria',
+                                                      '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
+                                                ));
+                                          }));
+                                    }
+                                  });
+                            } else if (state.status ==
+                                ListMerchantStatus.failure) {
+                              return Text(state.errorMessage.toString());
+                            } else {
+                              return const SizedBox();
+                            }
+                          })),
+                        )
+                      : Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: BlocBuilder<ListMerchantLoginBloc,
                                   ListMerchantLoginState>(
                               builder: ((context, state) {
-                              if (state.status ==
-                                  ListMerchantLoginStatus.loading) {
-                                return const CircularProgressIndicator();
-                              } else if (state.status ==
-                                  ListMerchantLoginStatus.success) {
-                                //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
-                                List<MerchantModel> merchant = [];
-                                Future<List<MerchantModel>>
-                                    listmerchant() async {
-                                  for (var element in state.items!) {
-                                    final menu = await context
-                                        .read<MenuRepository>()
-                                        .getAllMenu(
-                                            element.merchantId.toString());
-                                    if (menu.isEmpty) {
-                                      print("data Kosong");
-                                    } else {
-                                      try {
-                                        merchant.add(element);
-                                      } catch (e) {
-                                        throw Exception(
-                                            'Failed to get All menu');
-                                      }
+                            if (state.status ==
+                                ListMerchantLoginStatus.loading) {
+                              return const CircularProgressIndicator();
+                            } else if (state.status ==
+                                ListMerchantLoginStatus.success) {
+                              //inisialisasi fungsi future untuk menginput list merchant yang memiliki list menu
+                              List<MerchantModel> merchant = [];
+                              Future<List<MerchantModel>> listmerchant() async {
+                                for (var element in state.items!) {
+                                  final menu = await context
+                                      .read<MenuRepository>()
+                                      .getAllMenu(
+                                          element.merchantId.toString());
+                                  if (menu.isEmpty) {
+                                    print("data Kosong");
+                                  } else {
+                                    try {
+                                      merchant.add(element);
+                                    } catch (e) {
+                                      throw Exception('Failed to get All menu');
                                     }
                                   }
-                                  return merchant;
                                 }
-
-                                return FutureBuilder<List<MerchantModel>>(
-                                    future: listmerchant(),
-                                    builder: (context, snapshot) {
-                                      // print(snapshot.data?.length);
-                                      if (snapshot.data?.length == null) {
-                                        return const CircularProgressIndicator();
-                                      } else {
-                                        return ListView.builder(
-                                            physics:
-                                                const NeverScrollableScrollPhysics(),
-                                            shrinkWrap: true,
-                                            itemCount: snapshot.data?.length,
-                                            itemBuilder: ((context, index) {
-                                              double distance = snapshot
-                                                  .data![index].distance!;
-                                              double parseDistance =
-                                                  double.parse(distance
-                                                      .toStringAsFixed(2));
-                                              return InkWell(
-                                                  onTap: () {
-                                                    selectedMerchant =
-                                                        snapshot.data?[index];
-                                                    if (merchantIdInKeranjang !=
-                                                            null &&
-                                                        snapshot.data?[index]
-                                                                .merchantId !=
-                                                            merchantIdInKeranjang) {
-                                                      showDialog(
-                                                          context: context,
-                                                          builder: ((context) {
-                                                            return dialogWarnCart(
-                                                                snapshot.data?[
-                                                                    index]);
-                                                          }));
-                                                    } else {
-                                                      Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  MakananPage(
-                                                                    iduser:
-                                                                        widget
-                                                                            .id,
-                                                                    title: snapshot
-                                                                            .data?[index]
-                                                                            .name ??
-                                                                        'Shabrina’s Kitchen - Gambir',
-                                                                    idMerchant: snapshot
-                                                                        .data![
-                                                                            index]
-                                                                        .merchantId
-                                                                        .toString(),
-                                                                    alamat: snapshot
-                                                                        .data![
-                                                                            index]
-                                                                        .address
-                                                                        .toString(),
-                                                                    buka_toko: snapshot.data![index].buka_toko ==
-                                                                            null
-                                                                        ? "kosong"
-                                                                        : snapshot
-                                                                            .data![index]
-                                                                            .buka_toko
-                                                                            .toString(),
-                                                                    tutup_toko: snapshot.data![index].tutup_toko ==
-                                                                            null
-                                                                        ? "kosong"
-                                                                        : snapshot
-                                                                            .data![index]
-                                                                            .tutup_toko
-                                                                            .toString(),
-                                                                    rating: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .rating,
-                                                                    jumlahUlasan: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .totalCountRating,
-                                                                    minPrice: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .minPrice,
-                                                                    maxPrice: snapshot
-                                                                        .data?[
-                                                                            index]
-                                                                        .maxPrice,
-                                                                  ))).then(
-                                                          (value) => {
-                                                                addMenuToCartBloc
-                                                                  ..add(
-                                                                      GetMenusInCart())
-                                                              });
-                                                    }
-                                                  },
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        top: SizeConfig
-                                                                .safeBlockVertical *
-                                                            3),
-                                                    child: outlet(
-                                                        Assets
-                                                            .images
-                                                            .illCafetariaBanner2
-                                                            .path,
-                                                        snapshot
-                                                            .data?[index].image,
-                                                        false,
-                                                        snapshot.data?[index]
-                                                                .name ??
-                                                            'Shabrina’s Kitchen - Gambir',
-                                                        "$parseDistance Km",
-                                                        'Cafetaria',
-                                                        '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
-                                                  ));
-                                            }));
-                                      }
-                                    });
-                              } else if (state.status ==
-                                  ListMerchantLoginStatus.failure) {
-                                return Text(state.errorMessage.toString());
-                              } else {
-                                return const SizedBox();
+                                return merchant;
                               }
-                            })),
-                      const SizedBox(height: 30),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Text(
-                            'PAPAN INFO',
-                            style: textStyle.copyWith(
-                                color: const Color(0xff808285)),
-                          ),
-                          Text(
-                            'Lihat semua',
-                            style: textStyle.copyWith(
-                                fontSize: 12, color: const Color(0xffee3124)),
-                          )
-                        ],
-                      ),
-                      const SizedBox(height: 15),
-                      StreamBuilder<List<InfoModel>>(
-                        stream: context.read<AdminRepository>().getStreamInfo(),
-                        builder: (context, snapshot) {
-                          if (snapshot.hasError) {
-                            return Text("Ada masalah ${snapshot.error}");
-                          } else if (snapshot.hasData) {
-                            final items = snapshot.data;
-                            return SizedBox(
-                              width: MediaQuery.of(context).size.width,
-                              height: MediaQuery.of(context).size.height / 5,
-                              child: ListView.builder(
-                                itemCount: items!.length,
-                                scrollDirection: Axis.horizontal,
-                                itemBuilder: (context, index) {
-                                  return items[index].status == "active"
-                                      ? items[index].type == "pembeli" ||
-                                              items[index].type == "semua"
-                                          ? GestureDetector(
-                                              onTap: () {
-                                                Navigator.push(
-                                                    context,
-                                                    MaterialPageRoute(
-                                                        builder: (_) => ViewInfo(
-                                                            infoModel:
-                                                                items[index])));
-                                              },
-                                              child: HomeItemInfo(
-                                                image: items[index]
-                                                    .image
-                                                    .toString(),
-                                                title: items[index]
-                                                    .title
-                                                    .toString(),
-                                                author: 'Charlie Natalie',
-                                              ),
-                                            )
-                                          : const SizedBox.shrink()
-                                      : const SizedBox.shrink();
-                                },
-                              ),
-                            );
-                          } else {
-                            return const Center(
-                              child: CircularProgressIndicator(),
-                            );
-                          }
-                        },
-                      ),
-                    ]),
-                  ))),
+
+                              return FutureBuilder<List<MerchantModel>>(
+                                  future: listmerchant(),
+                                  builder: (context, snapshot) {
+                                    // print(snapshot.data?.length);
+                                    if (snapshot.data?.length == null) {
+                                      return const CircularProgressIndicator();
+                                    } else {
+                                      return ListView.builder(
+                                          physics:
+                                              const NeverScrollableScrollPhysics(),
+                                          shrinkWrap: true,
+                                          itemCount: snapshot.data?.length,
+                                          itemBuilder: ((context, index) {
+                                            double distance =
+                                                snapshot.data![index].distance!;
+                                            double parseDistance = double.parse(
+                                                distance.toStringAsFixed(2));
+                                            return InkWell(
+                                                onTap: () {
+                                                  selectedMerchant =
+                                                      snapshot.data?[index];
+                                                  if (merchantIdInKeranjang !=
+                                                          null &&
+                                                      snapshot.data?[index]
+                                                              .merchantId !=
+                                                          merchantIdInKeranjang) {
+                                                    showDialog(
+                                                        context: context,
+                                                        builder: ((context) {
+                                                          return dialogWarnCart(
+                                                              snapshot.data?[
+                                                                  index]);
+                                                        }));
+                                                  } else {
+                                                    Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder:
+                                                                (_) =>
+                                                                    MakananPage(
+                                                                      iduser:
+                                                                          widget
+                                                                              .id,
+                                                                      title: snapshot
+                                                                              .data?[index]
+                                                                              .name ??
+                                                                          'Shabrina’s Kitchen - Gambir',
+                                                                      idMerchant: snapshot
+                                                                          .data![
+                                                                              index]
+                                                                          .merchantId
+                                                                          .toString(),
+                                                                      alamat: snapshot
+                                                                          .data![
+                                                                              index]
+                                                                          .address
+                                                                          .toString(),
+                                                                      buka_toko: snapshot.data![index].buka_toko ==
+                                                                              null
+                                                                          ? "kosong"
+                                                                          : snapshot
+                                                                              .data![index]
+                                                                              .buka_toko
+                                                                              .toString(),
+                                                                      tutup_toko: snapshot.data![index].tutup_toko ==
+                                                                              null
+                                                                          ? "kosong"
+                                                                          : snapshot
+                                                                              .data![index]
+                                                                              .tutup_toko
+                                                                              .toString(),
+                                                                      rating: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .rating,
+                                                                      jumlahUlasan: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .totalCountRating,
+                                                                      minPrice: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .minPrice,
+                                                                      maxPrice: snapshot
+                                                                          .data?[
+                                                                              index]
+                                                                          .maxPrice,
+                                                                    ))).then(
+                                                        (value) => {
+                                                              addMenuToCartBloc
+                                                                ..add(
+                                                                    GetMenusInCart())
+                                                            });
+                                                  }
+                                                },
+                                                child: Padding(
+                                                  padding: EdgeInsets.only(
+                                                      top: SizeConfig
+                                                              .safeBlockVertical *
+                                                          3),
+                                                  child: outlet(
+                                                      Assets
+                                                          .images
+                                                          .illCafetariaBanner2
+                                                          .path,
+                                                      snapshot
+                                                          .data?[index].image,
+                                                      false,
+                                                      snapshot.data?[index]
+                                                              .name ??
+                                                          'Shabrina’s Kitchen - Gambir',
+                                                      "$parseDistance Km",
+                                                      'Cafetaria',
+                                                      '${snapshot.data?[index].rating} • ${snapshot.data?[index].totalCountRating} rating'),
+                                                ));
+                                          }));
+                                    }
+                                  });
+                            } else if (state.status ==
+                                ListMerchantLoginStatus.failure) {
+                              return Text(state.errorMessage.toString());
+                            } else {
+                              return const SizedBox();
+                            }
+                          })),
+                        ),
+                  const SizedBox(height: 30),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 24),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Text(
+                          'PAPAN INFO',
+                          style: textStyle.copyWith(
+                              color: const Color(0xff808285)),
+                        ),
+                        Text(
+                          'Lihat semua',
+                          style: textStyle.copyWith(
+                              fontSize: 12, color: const Color(0xffee3124)),
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(height: 15),
+                  Padding(
+                    padding: const EdgeInsets.symmetric(
+                        vertical: 16.0, horizontal: 24),
+                    child: StreamBuilder<List<InfoModel>>(
+                      stream: context.read<AdminRepository>().getStreamInfo(),
+                      builder: (context, snapshot) {
+                        if (snapshot.hasError) {
+                          return Text("Ada masalah ${snapshot.error}");
+                        } else if (snapshot.hasData) {
+                          final items = snapshot.data;
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width,
+                            height: MediaQuery.of(context).size.height / 5,
+                            child: ListView.builder(
+                              itemCount: items!.length,
+                              scrollDirection: Axis.horizontal,
+                              itemBuilder: (context, index) {
+                                return items[index].status == "active"
+                                    ? items[index].type == "pembeli" ||
+                                            items[index].type == "semua"
+                                        ? GestureDetector(
+                                            onTap: () {
+                                              Navigator.push(
+                                                  context,
+                                                  MaterialPageRoute(
+                                                      builder: (_) => ViewInfo(
+                                                          infoModel:
+                                                              items[index])));
+                                            },
+                                            child: HomeItemInfo(
+                                              image:
+                                                  items[index].image.toString(),
+                                              title:
+                                                  items[index].title.toString(),
+                                              author: 'Charlie Natalie',
+                                            ),
+                                          )
+                                        : const SizedBox.shrink()
+                                    : const SizedBox.shrink();
+                              },
+                            ),
+                          );
+                        } else {
+                          return const Center(
+                            child: CircularProgressIndicator(),
+                          );
+                        }
+                      },
+                    ),
+                  ),
+                ]),
+              )),
         ));
   }
 
