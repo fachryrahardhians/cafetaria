@@ -16,6 +16,7 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
   })  : _categoryRepository = categoryRepository,
         super(const PilihKawasanState.initial()) {
     on<GetPilihKawasan>(_getPilihKawasan);
+    on<GetDistanceKawasan>(_getDistanceKawasan);
     on<KawasanChange>(_kawasanChange);
     on<UpdateKawasan>(_updateKawasan);
   }
@@ -26,6 +27,20 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
 
     try {
       final items = await _categoryRepository.getPilihKawasan();
+
+      emit(PilihKawasanState.success(items));
+    } catch (error) {
+      emit(PilihKawasanState.failure(error.toString()));
+    }
+  }
+
+  Future<void> _getDistanceKawasan(
+      GetDistanceKawasan event, Emitter<PilihKawasanState> emit) async {
+    emit(const PilihKawasanState.loading());
+
+    try {
+      final items = await _categoryRepository.getDistanceKawasan(
+          lat: double.parse(event.lat), long: double.parse(event.long));
 
       emit(PilihKawasanState.success(items));
     } catch (error) {
@@ -55,7 +70,7 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
           // tersedia: state.tersedia
           ));
 
-     await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
+      await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
 
       emit(
         state.copyWith(

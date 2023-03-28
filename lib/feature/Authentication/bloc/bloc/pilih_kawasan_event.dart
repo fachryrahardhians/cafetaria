@@ -13,6 +13,14 @@ class GetPilihKawasan extends PilihKawasanEvent {
   List<Object> get props => [];
 }
 
+class GetDistanceKawasan extends PilihKawasanEvent {
+  final String long;
+  final String lat;
+  const GetDistanceKawasan({required this.long, required this.lat});
+  @override
+  List<Object> get props => [];
+}
+
 class KawasanChange extends PilihKawasanEvent {
   final String kawasan;
 

@@ -1,5 +1,6 @@
 // ignore_for_file: avoid_print
 
+import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_menu_to_cart_bloc/add_menu_to_cart_bloc.dart';
 
 import 'package:cafetaria/feature/pembeli/views/makanan_page.dart';
@@ -7,6 +8,7 @@ import 'package:cafetaria/feature/pembeli/views/widget/merchant_widget.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/utilities/size_config.dart';
+import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:menu_repository/menu_repository.dart';
@@ -33,6 +35,10 @@ class HasilMerchant extends StatelessWidget {
               create: (context) => AddMenuToCartBloc(
                   menuRepository: context.read<MenuRepository>())
                 ..add(GetMenusInCart())),
+          BlocProvider(
+              create: (context) => PilihKawasanBloc(
+                  categoryRepository: context.read<CategoryRepository>())
+                ..add(const GetPilihKawasan()))
         ],
         child: HasilSearchMerchant(
           search: cari,
@@ -67,6 +73,8 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
       fontWeight: FontWeight.w400, fontSize: 12, color: Color(0xff333435));
   TextStyle headlineStyle = const TextStyle(
       color: Color(0xff333435), fontSize: 20, fontWeight: FontWeight.w700);
+  double? long;
+  double? lat;
 
   late AddMenuToCartBloc addMenuToCartBloc;
 
@@ -113,199 +121,276 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
               child: const Icon(Icons.arrow_back)),
           centerTitle: true,
         ),
-        body: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 24),
-            child: Column(children: [
-              // const Center(
-              //   child: Text(
-              //     'Hasil Search',
-              //     style: TextStyle(
-              //         fontSize: 16,
-              //         fontWeight: FontWeight.w700,
-              //         color: Color(0xff333435)),
-              //   ),
-              // ),
+        body: Column(children: [
+          // const Center(
+          //   child: Text(
+          //     'Hasil Search',
+          //     style: TextStyle(
+          //         fontSize: 16,
+          //         fontWeight: FontWeight.w700,
+          //         color: Color(0xff333435)),
+          //   ),
+          // ),
 
-              Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 5),
-                child: SizedBox(
-                  width: double.infinity,
-                  height: 40,
-                  child: TextField(
-                    style: const TextStyle(fontSize: 13),
-                    onSubmitted: (value) {
-                      if (value.isNotEmpty) {
-                        Navigator.push(
-                                context,
-                                MaterialPageRoute(
-                                  builder: (context) => HasilMerchant(
-                                      cari: value.toString(),
-                                      id: idUser!,
-                                      lat: widget.lat,
-                                      long: widget.long),
-                                ))
-                            .then((value) =>
-                                {addMenuToCartBloc..add(GetMenusInCart())});
-                      } else {
-                        return;
-                      }
-                    },
-                    decoration: InputDecoration(
-                      prefixIcon: const Icon(
-                        Icons.search,
-                        color: MyColors.red1,
-                        size: 20,
-                      ),
-                      hintText: "Kamu lagi mau makan apa?",
-                      hintStyle: const TextStyle(fontSize: 13),
-                      border: OutlineInputBorder(
-                        borderRadius: BorderRadius.circular(100),
+          Container(
+            width: double.infinity,
+            height: 150,
+            color: const Color.fromARGB(255, 234, 0, 30),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                SizedBox(height: SizeConfig.safeBlockVertical * 2),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20),
+                  child: SizedBox(
+                    width: double.infinity,
+                    height: 50,
+                    child: TextField(
+                      style: const TextStyle(fontSize: 13),
+                      onSubmitted: (value) {
+                        if (value.isNotEmpty && lat != null && long != null) {
+                          Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => HasilMerchant(
+                                        cari: value.toString(),
+                                        lat: lat!,
+                                        long: long!,
+                                        id: widget.id),
+                                  ))
+                              .then((value) =>
+                                  {addMenuToCartBloc..add(GetMenusInCart())});
+                        } else {
+                          return;
+                        }
+                      },
+                      decoration: InputDecoration(
+                        filled: true,
+                        fillColor: Colors.white,
+                        prefixIcon: const Icon(
+                          Icons.search,
+                          color: MyColors.grey1,
+                          size: 20,
+                        ),
+                        hintText: "Cari Produk Apa ?",
+                        hintStyle: const TextStyle(fontSize: 13),
+                        border: OutlineInputBorder(
+                          borderRadius: BorderRadius.circular(100),
+                        ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              SizedBox(height: SizeConfig.safeBlockVertical * 1),
-              BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
-                  listener: ((context, state) {
-                    if (state is MenuInCartRetrieved) {
-                      if (state.menuInCart.isNotEmpty) {
-                        merchantIdInKeranjang = state.menuInCart[0].merchantId;
-                      }
-                    } else if (state is AllMenuRemoved) {
-                      merchantIdInKeranjang = null;
-                      Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (_) => MakananPage(
-                                    buka_toko:
-                                        selectedMerchant?.buka_toko ?? "kosong",
-                                    title: selectedMerchant?.name ??
-                                        'Shabrina’s Kitchen - Gambir',
-                                    idMerchant:
-                                        selectedMerchant!.merchantId.toString(),
-                                    iduser: widget.id,
-                                    alamat:
-                                        selectedMerchant!.address.toString(),
-                                    rating: selectedMerchant?.rating,
-                                    jumlahUlasan:
-                                        selectedMerchant?.totalCountRating,
-                                    tutup_toko: selectedMerchant?.tutup_toko ??
-                                        "kosong",
-                                    minPrice: selectedMerchant?.minPrice,
-                                    maxPrice: selectedMerchant?.maxPrice,
-                                  ))).then((value) =>
-                          {addMenuToCartBloc..add(GetMenusInCart())});
-                    }
-                  }),
-                  child: FutureBuilder<List<MechantSearch>>(
-                    future: context.read<MerchantRepository>().searchMerchant(
-                        widget.search,
-                        lat: widget.lat,
-                        long: widget.long),
-                    builder: (context, snapshot) {
-                      if (snapshot.connectionState == ConnectionState.waiting) {
-                        return const CircularProgressIndicator();
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.none) {
-                        return const Text("Error");
-                      } else if (snapshot.connectionState ==
-                          ConnectionState.done) {
-                        return Expanded(
-                            child: ListView.builder(
-                          itemCount: snapshot.data?.length,
-                          itemBuilder: (context, index) {
-                            return InkWell(
-                                onTap: () {
-                                  selectedMerchant = MerchantModel(
-                                      address:
-                                          snapshot.data?[index].source!.address,
-                                      merchantId: snapshot.data?[index].id,
-                                      name: snapshot.data?[index].source?.name,
-                                      maxPrice: snapshot
-                                          .data?[index].source?.maxPrice,
-                                      totalCountRating: snapshot.data?[index]
-                                          .source!.totalCountRating,
-                                      minPrice: snapshot
-                                          .data?[index].source?.minPrice,
-                                      rating: snapshot
-                                          .data?[index].source?.rating
-                                          ?.toDouble());
-                                  if (merchantIdInKeranjang != null &&
-                                      snapshot.data?[index].id !=
-                                          merchantIdInKeranjang) {
-                                    showDialog(
-                                        context: context,
-                                        builder: ((context) {
-                                          return dialogWarnCart(
-                                              snapshot.data?[index]);
-                                        }));
-                                  } else {
-                                    Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (_) => MakananPage(
-                                                  title: snapshot.data?[index]
-                                                          .source?.name ??
-                                                      'Shabrina’s Kitchen - Gambir',
-                                                  iduser: widget.id,
-                                                  idMerchant: snapshot
-                                                      .data![index].id
-                                                      .toString(),
-                                                  alamat: snapshot.data![index]
-                                                      .source!.address
-                                                      .toString(),
-                                                  buka_toko: snapshot
-                                                          .data?[index]
-                                                          .source
-                                                          ?.buka_toko ??
-                                                      "kosong",
-                                                  tutup_toko: snapshot
-                                                          .data?[index]
-                                                          .source
-                                                          ?.tutup_toko ??
-                                                      "kosong",
-                                                  rating: snapshot.data?[index]
-                                                      .source?.rating!
-                                                      .toDouble(),
-                                                  jumlahUlasan: snapshot
-                                                      .data?[index]
-                                                      .source
-                                                      ?.totalCountRating,
-                                                  minPrice: snapshot
-                                                      .data?[index]
-                                                      .source
-                                                      ?.minPrice,
-                                                  maxPrice: snapshot
-                                                      .data?[index]
-                                                      .source
-                                                      ?.maxPrice,
-                                                ))).then((value) => {
-                                          addMenuToCartBloc
-                                            ..add(GetMenusInCart())
-                                        });
-                                  }
+                Padding(
+                  padding: const EdgeInsets.only(left: 22, right: 22, top: 10),
+                  child: Row(
+                    children: [
+                      const Icon(
+                        Icons.location_on,
+                        color: Colors.white,
+                      ),
+                      Text(
+                        "Kawasan Kamu",
+                        style: textStyle.copyWith(
+                            fontWeight: FontWeight.w400,
+                            color: const Color.fromARGB(255, 255, 255, 255)),
+                      ),
+                      const SizedBox(
+                        width: 10,
+                      ),
+                      SizedBox(
+                        height: 47,
+                        width: SizeConfig.screenWidth / 2.5,
+                        child: BlocBuilder<PilihKawasanBloc, PilihKawasanState>(
+                          builder: (context, state) {
+                            final status = state.status;
+                            if (status == PilihKawasanStatus.loading) {
+                              return const Center(
+                                child: CircularProgressIndicator(),
+                              );
+                            } else if (status == PilihKawasanStatus.failure) {
+                              return const Center(
+                                child: Text('Terjadi kesalahan'),
+                              );
+                            } else if (status == PilihKawasanStatus.success) {
+                              // final items = state.items!;
+                              return DropdownButtonFormField<PilihKawasanModel>(
+                                isExpanded: true,
+                                items: state.items!
+                                    .map((kawasan) => DropdownMenuItem(
+                                          value: kawasan,
+                                          child: Text(
+                                            kawasan.name.toString(),
+                                          ),
+                                        ))
+                                    .toList(),
+                                value: state.items![0],
+                                icon: const Icon(
+                                  Icons.keyboard_arrow_down_rounded,
+                                  color: Colors.white,
+                                ),
+                                style: const TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight
+                                        .bold // set the text color here
+                                    ),
+                                decoration: const InputDecoration(
+                                  border: InputBorder.none,
+
+                                  // other properties like labelText, hintText, etc.
+                                ),
+                                onChanged: (val) {
+                                  setState(() {
+                                    lat = val?.kawasan_latitude;
+                                    long = val?.kawasan_longitude;
+                                  });
                                 },
-                                child: Padding(
-                                  padding: EdgeInsets.only(
-                                      top: SizeConfig.safeBlockVertical * 3),
-                                  child: outlet(
-                                      Assets.images.illCafetariaBanner2.path,
-                                      snapshot.data?[index].source?.image,
-                                      false,
-                                      snapshot.data?[index].source?.name ??
-                                          'Shabrina’s Kitchen - Gambir',
-                                      'Lantai 1',
-                                      'Cafetaria',
-                                      '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
-                                ));
+                              );
+                            }
+                            return const SizedBox.shrink();
                           },
-                        ));
-                      }
-                      return const Text("Error");
-                    },
-                  ))
-            ])),
+                        ),
+                      ),
+                    ],
+                  ),
+                )
+              ],
+            ),
+          ),
+          SizedBox(height: SizeConfig.safeBlockVertical * 1),
+          BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
+              listener: ((context, state) {
+                if (state is MenuInCartRetrieved) {
+                  if (state.menuInCart.isNotEmpty) {
+                    merchantIdInKeranjang = state.menuInCart[0].merchantId;
+                  }
+                } else if (state is AllMenuRemoved) {
+                  merchantIdInKeranjang = null;
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                          builder: (_) => MakananPage(
+                                buka_toko:
+                                    selectedMerchant?.buka_toko ?? "kosong",
+                                title: selectedMerchant?.name ??
+                                    'Shabrina’s Kitchen - Gambir',
+                                idMerchant:
+                                    selectedMerchant!.merchantId.toString(),
+                                iduser: widget.id,
+                                alamat: selectedMerchant!.address.toString(),
+                                rating: selectedMerchant?.rating,
+                                jumlahUlasan:
+                                    selectedMerchant?.totalCountRating,
+                                tutup_toko:
+                                    selectedMerchant?.tutup_toko ?? "kosong",
+                                minPrice: selectedMerchant?.minPrice,
+                                maxPrice: selectedMerchant?.maxPrice,
+                              ))).then(
+                      (value) => {addMenuToCartBloc..add(GetMenusInCart())});
+                }
+              }),
+              child: FutureBuilder<List<MechantSearch>>(
+                future: context.read<MerchantRepository>().searchMerchant(
+                    widget.search,
+                    lat: widget.lat,
+                    long: widget.long),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.waiting) {
+                    return const CircularProgressIndicator();
+                  } else if (snapshot.connectionState == ConnectionState.none) {
+                    return const Text("Error");
+                  } else if (snapshot.connectionState == ConnectionState.done) {
+                    return Expanded(
+                        child: ListView.builder(
+                      itemCount: snapshot.data?.length,
+                      itemBuilder: (context, index) {
+                        return Padding(
+                          padding: const EdgeInsets.symmetric(horizontal: 24),
+                          child: InkWell(
+                              onTap: () {
+                                selectedMerchant = MerchantModel(
+                                    address:
+                                        snapshot.data?[index].source!.address,
+                                    merchantId: snapshot.data?[index].id,
+                                    name: snapshot.data?[index].source?.name,
+                                    maxPrice:
+                                        snapshot.data?[index].source?.maxPrice,
+                                    totalCountRating: snapshot
+                                        .data?[index].source!.totalCountRating,
+                                    minPrice:
+                                        snapshot.data?[index].source?.minPrice,
+                                    rating: snapshot.data?[index].source?.rating
+                                        ?.toDouble());
+                                if (merchantIdInKeranjang != null &&
+                                    snapshot.data?[index].id !=
+                                        merchantIdInKeranjang) {
+                                  showDialog(
+                                      context: context,
+                                      builder: ((context) {
+                                        return dialogWarnCart(
+                                            snapshot.data?[index]);
+                                      }));
+                                } else {
+                                  Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                          builder: (_) => MakananPage(
+                                                title: snapshot.data?[index]
+                                                        .source?.name ??
+                                                    'Shabrina’s Kitchen - Gambir',
+                                                iduser: widget.id,
+                                                idMerchant: snapshot
+                                                    .data![index].id
+                                                    .toString(),
+                                                alamat: snapshot.data![index]
+                                                    .source!.address
+                                                    .toString(),
+                                                buka_toko: snapshot.data?[index]
+                                                        .source?.buka_toko ??
+                                                    "kosong",
+                                                tutup_toko: snapshot
+                                                        .data?[index]
+                                                        .source
+                                                        ?.tutup_toko ??
+                                                    "kosong",
+                                                rating: snapshot.data?[index]
+                                                    .source?.rating!
+                                                    .toDouble(),
+                                                jumlahUlasan: snapshot
+                                                    .data?[index]
+                                                    .source
+                                                    ?.totalCountRating,
+                                                minPrice: snapshot.data?[index]
+                                                    .source?.minPrice,
+                                                maxPrice: snapshot.data?[index]
+                                                    .source?.maxPrice,
+                                              ))).then((value) => {
+                                        addMenuToCartBloc..add(GetMenusInCart())
+                                      });
+                                }
+                              },
+                              child: Padding(
+                                padding: EdgeInsets.only(
+                                    top: SizeConfig.safeBlockVertical * 3),
+                                child: outlet(
+                                    Assets.images.illCafetariaBanner2.path,
+                                    snapshot.data?[index].source?.image,
+                                    false,
+                                    snapshot.data?[index].source?.name ??
+                                        'Shabrina’s Kitchen - Gambir',
+                                    'Lantai 1',
+                                    'Cafetaria',
+                                    '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
+                              )),
+                        );
+                      },
+                    ));
+                  }
+                  return const Text("Error");
+                },
+              ))
+        ]),
       ),
     );
   }

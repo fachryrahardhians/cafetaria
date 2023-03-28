@@ -1,6 +1,6 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uuid/uuid.dart';
-
+import 'package:cloud_functions/cloud_functions.dart';
 import 'models/models.dart';
 
 class CategoryRepository {
@@ -60,6 +60,35 @@ class CategoryRepository {
     } catch (e) {
       throw Exception(e.toString());
     }
+  }
+
+  Future<List<PilihKawasanModel>> getDistanceKawasan(
+      //String id,
+      {required double long,
+      required double lat}) async {
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('distanceKawasan');
+    final resp = await callable.call(<String, dynamic>{
+      //'userId': id,
+      'latitude': lat,
+      'longitude': long
+    });
+    final List data = resp.data;
+    final leaderboardEntries = <PilihKawasanModel>[];
+
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(PilihKawasanModel.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
+    }
+    return leaderboardEntries;
   }
 
   // add category menu

@@ -10,6 +10,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
+import 'package:geolocator/geolocator.dart';
 
 class PilihKwsn extends StatelessWidget {
   const PilihKwsn({Key? key}) : super(key: key);
@@ -19,8 +20,7 @@ class PilihKwsn extends StatelessWidget {
     return MultiBlocProvider(providers: [
       BlocProvider(
           create: (context) => PilihKawasanBloc(
-              categoryRepository: context.read<CategoryRepository>())
-            ..add(const GetPilihKawasan()))
+              categoryRepository: context.read<CategoryRepository>()))
     ], child: const PilihKawasan());
   }
 }
@@ -34,6 +34,45 @@ class PilihKawasan extends StatefulWidget {
 
 class _PilihKawasanState extends State<PilihKawasan> {
   String status = 'verified';
+  String? lat;
+  String? long;
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Location Service Disabled");
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location Service denied");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          "Location Service permanently denied cannot request permission");
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation().then((value) async {
+      setState(() {
+        lat = value.latitude.toString();
+        long = value.longitude.toString();
+        print("data lat : $lat");
+        print("data long : $long");
+        context
+            .read<PilihKawasanBloc>()
+            .add(GetDistanceKawasan(long: long!, lat: lat!));
+        // context.read<CategoryRepository>().getDistanceKawasan(
+        //     long: double.parse(long!), lat: double.parse(lat!));
+      });
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     AuthenticationRepository auth = context.read<AuthenticationRepository>();
@@ -83,7 +122,15 @@ class _PilihKawasanState extends State<PilihKawasan> {
                                 items: state.items!
                                     .map((kawasan) => DropdownMenuItem(
                                           value: kawasan,
-                                          child: Text(kawasan.name.toString()),
+                                          child: Row(
+                                            mainAxisAlignment:
+                                                MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Text(kawasan.name.toString()),
+                                              Text(
+                                                  "${double.parse(kawasan.distance!.toStringAsFixed(2))} KM"),
+                                            ],
+                                          ),
                                         ))
                                     .toList(),
                                 value: state.items![0],

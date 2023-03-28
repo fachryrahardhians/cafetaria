@@ -12,6 +12,7 @@ class PilihKawasanModel {
   //final GeoPoint? geolocation;
   final String kawasanId;
   final double? kawasan_latitude;
+  final double? distance;
   final double? kawasan_longitude;
   final String? status;
   final String? name;
@@ -20,6 +21,7 @@ class PilihKawasanModel {
     this.address,
     required this.adminId,
     required this.kawasanId,
+    this.distance,
     // required this.createdAt,
     //this.geolocation,
     this.status,
@@ -38,6 +40,7 @@ class PilihKawasanModel {
         kawasanId,
         kawasan_latitude, kawasan_longitude,
         status,
+        distance,
         name //updatedAt
       ];
 
@@ -48,6 +51,7 @@ class PilihKawasanModel {
       String? status,
       double? kawasan_latitude,
       double? kawasan_longitude,
+      double? distance,
       String? name}) {
     return PilihKawasanModel(
         address: address ?? this.address,
@@ -56,6 +60,7 @@ class PilihKawasanModel {
         status: status ?? this.status,
         kawasan_latitude: kawasan_latitude ?? this.kawasan_latitude,
         kawasan_longitude: kawasan_longitude ?? this.kawasan_longitude,
+        distance: distance ?? this.distance,
         name: name ?? this.name);
   }
 }
