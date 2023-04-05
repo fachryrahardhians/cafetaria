@@ -10,6 +10,8 @@ class AppSharedPref {
   final String _isSuperAdmin = "isAdmin";
   final String _merchantId = "merchantId";
   final String _progress = "progress";
+  final String _lat = 'lat';
+  final String _long = 'long';
   Future<double?> getProgress() async {
     try {
       return _sharedPreferences.getDouble(_progress);
@@ -18,9 +20,45 @@ class AppSharedPref {
     }
   }
 
+  Future<String?> getLat() async {
+    try {
+      return _sharedPreferences.getString(_lat);
+    } catch (e) {
+      return "";
+    }
+  }
+
+  Future<String?> getLong() async {
+    try {
+      return _sharedPreferences.getString(_long);
+    } catch (e) {
+      return "";
+    }
+  }
+
   Future<void> setProgress(double value) async {
     try {
       await _sharedPreferences.setDouble(_progress, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> setLong(String value) async {
+    try {
+      await _sharedPreferences.setString(_long, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> setLat(String value) async {
+    try {
+      await _sharedPreferences.setString(_lat, value);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());

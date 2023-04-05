@@ -13,7 +13,7 @@ import 'package:cafetaria/gen/assets.gen.dart';
 //import 'package:cafetaria/feature/Authentication/views/link_email.dart';
 
 //import 'package:cafetaria/feature/pembeli/views/pembeli_profile_page.dart';
-
+import 'package:geolocator/geolocator.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
@@ -43,6 +43,8 @@ class LoginView extends StatefulWidget {
 }
 
 class _LoginViewState extends State<LoginView> {
+  String? lat;
+  String? long;
   Dialog infoCart() {
     bool loading = false;
     bool obscureText = true;
@@ -465,6 +467,40 @@ class _LoginViewState extends State<LoginView> {
     }));
   }
 
+  Future<Position> _getCurrentLocation() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    if (!serviceEnabled) {
+      return Future.error("Location Service Disabled");
+    }
+    LocationPermission permission = await Geolocator.checkPermission();
+    if (permission == LocationPermission.denied) {
+      permission = await Geolocator.requestPermission();
+      if (permission == LocationPermission.denied) {
+        return Future.error("Location Service denied");
+      }
+    }
+    if (permission == LocationPermission.deniedForever) {
+      return Future.error(
+          "Location Service permanently denied cannot request permission");
+    }
+    return await Geolocator.getCurrentPosition();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _getCurrentLocation().then((value) async {
+      if (mounted) {
+        setState(() {
+          lat = value.latitude.toString();
+          long = value.longitude.toString();
+          context.read<AppSharedPref>().setLong(long!);
+          context.read<AppSharedPref>().setLat(lat!);
+        });
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     return WillPopScope(
@@ -477,7 +513,10 @@ class _LoginViewState extends State<LoginView> {
               mainAxisAlignment: MainAxisAlignment.center,
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
-                const BoxLogo(),
+                Image.asset(
+                  Assets.images.logo.path,
+                  scale: 2,
+                ),
                 Padding(
                   padding: const EdgeInsets.symmetric(vertical: 36),
                   child: Text(

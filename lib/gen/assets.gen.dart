@@ -101,6 +101,8 @@ class $AssetsImagesGen {
   AssetGenImage get calClose =>
       const AssetGenImage('assets/icons/cal_close.png');
   AssetGenImage get calOpen => const AssetGenImage('assets/icons/cal_open.png');
+  
+    AssetGenImage get logo => const AssetGenImage('assets/images/Logo.png');
 }
 
 class Assets {

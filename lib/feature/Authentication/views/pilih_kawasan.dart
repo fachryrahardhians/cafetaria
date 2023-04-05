@@ -2,8 +2,9 @@ import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/Authentication/views/daftar_kawasan.dart';
-import 'package:cafetaria/feature/Authentication/views/login_page.dart';
+
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
+import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -11,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
 import 'package:geolocator/geolocator.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PilihKwsn extends StatelessWidget {
   const PilihKwsn({Key? key}) : super(key: key);
@@ -34,41 +36,15 @@ class PilihKawasan extends StatefulWidget {
 
 class _PilihKawasanState extends State<PilihKawasan> {
   String status = 'verified';
-  String? lat;
-  String? long;
-  Future<Position> _getCurrentLocation() async {
-    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
-    if (!serviceEnabled) {
-      return Future.error("Location Service Disabled");
-    }
-    LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied) {
-      permission = await Geolocator.requestPermission();
-      if (permission == LocationPermission.denied) {
-        return Future.error("Location Service denied");
-      }
-    }
-    if (permission == LocationPermission.deniedForever) {
-      return Future.error(
-          "Location Service permanently denied cannot request permission");
-    }
-    return await Geolocator.getCurrentPosition();
-  }
 
   @override
   void initState() {
     super.initState();
-    _getCurrentLocation().then((value) async {
-      setState(() {
-        lat = value.latitude.toString();
-        long = value.longitude.toString();
-        print("data lat : $lat");
-        print("data long : $long");
+    context.read<AppSharedPref>().getLong().then((valueLong) {
+      context.read<AppSharedPref>().getLat().then((valueLat) {
         context
             .read<PilihKawasanBloc>()
-            .add(GetDistanceKawasan(long: long!, lat: lat!));
-        // context.read<CategoryRepository>().getDistanceKawasan(
-        //     long: double.parse(long!), lat: double.parse(lat!));
+            .add(GetDistanceKawasan(long: valueLong!, lat: valueLat!));
       });
     });
   }
@@ -87,11 +63,11 @@ class _PilihKawasanState extends State<PilihKawasan> {
                     mainAxisAlignment: MainAxisAlignment.center,
                     crossAxisAlignment: CrossAxisAlignment.center,
                     children: [
-                      const BoxLogo(),
+                      Image.asset(Assets.images.logo.path, scale: 2),
                       Padding(
                         padding: const EdgeInsets.only(top: 36, bottom: 15),
                         child: Text(
-                          "Selamat Datang Kembali di Komplekku!",
+                          "Selamat Datang Kembali di Lapaku!",
                           style: extraBigText.copyWith(
                               fontWeight: FontWeight.bold),
                         ),
