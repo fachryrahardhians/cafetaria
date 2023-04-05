@@ -305,6 +305,9 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                         child: ListView.builder(
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
+                        double? distance = snapshot.data?[index].source!.distance;
+                        double parseDistance =
+                            double.parse(distance!.toStringAsFixed(2));
                         return Padding(
                           padding: const EdgeInsets.symmetric(horizontal: 24),
                           child: InkWell(
@@ -379,7 +382,7 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                     false,
                                     snapshot.data?[index].source?.name ??
                                         'Shabrina’s Kitchen - Gambir',
-                                    'Lantai 1',
+                                    "$parseDistance KM",
                                     'Cafetaria',
                                     '${snapshot.data?[index].source?.rating} • ${snapshot.data?[index].source?.totalCountRating} rating'),
                               )),

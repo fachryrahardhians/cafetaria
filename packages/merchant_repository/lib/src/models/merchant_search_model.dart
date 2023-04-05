@@ -18,6 +18,7 @@ class MerchantSearchModel extends Equatable {
       this.totalOrderToday,
       this.totalSalesToday,
       this.totalSalesYesterday,
+      this.distance,
       this.buka_toko,
       this.userId,
       this.tutup_toko,
@@ -45,6 +46,7 @@ class MerchantSearchModel extends Equatable {
   final String? address_detail;
   final double? address_latitude;
   final double? address_longitude;
+  final double? distance;
 
   Map<String, dynamic> toJson() => _$MerchantSearchModelToJson(this);
   MerchantSearchModel copyWith(
@@ -56,6 +58,7 @@ class MerchantSearchModel extends Equatable {
       String? name,
       String? image,
       double? rating,
+      double? distance,
       String? test,
       int? totalCountRating,
       int? totalOrderToday,
@@ -74,6 +77,7 @@ class MerchantSearchModel extends Equatable {
       buka_toko: buka_toko ?? this.buka_toko,
       tutup_toko: tutup_toko ?? this.tutup_toko,
       rating: rating ?? this.rating,
+      distance: distance ?? this.distance,
       test: test ?? this.test,
       image: image ?? this.image,
       totalCountRating: totalCountRating ?? this.totalCountRating,

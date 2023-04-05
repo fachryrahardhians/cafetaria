@@ -158,6 +158,7 @@ class MerchantRepository {
           print(data);
           leaderboardEntries
               .add(MechantSearch.fromJson(Map<String, dynamic>.from(data)));
+          print(leaderboardEntries[0].source!.distance);
         } catch (error) {
           throw Exception(error.toString());
         }

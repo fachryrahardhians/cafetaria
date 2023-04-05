@@ -13,6 +13,7 @@ MerchantSearchModel _$MerchantSearchModelFromJson(Map<String, dynamic> json) =>
       minPrice: json['minPrice'] as int?,
       name: json['name'] as String?,
       rating: (json['rating'] as num?)?.toDouble(),
+      distance: (json['distance'] as num?)?.toDouble(),
       test: json['test'] as String?,
       image: json['image'] as String?,
       totalCountRating: json['totalCountRating'] as int?,
@@ -49,4 +50,5 @@ Map<String, dynamic> _$MerchantSearchModelToJson(
       'address_detail': instance.address_detail,
       'address_latitude': instance.address_latitude,
       'address_longitude': instance.address_longitude,
+      'distance': instance.distance
     };
