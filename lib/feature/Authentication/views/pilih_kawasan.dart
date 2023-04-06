@@ -11,7 +11,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:formz/formz.dart';
-import 'package:geolocator/geolocator.dart';
+
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PilihKwsn extends StatelessWidget {
