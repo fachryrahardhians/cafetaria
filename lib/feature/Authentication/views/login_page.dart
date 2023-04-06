@@ -18,7 +18,6 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class LoginPage extends StatelessWidget {
   const LoginPage({Key? key}) : super(key: key);
@@ -27,8 +26,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
-          authenticationRepository: context.read<AuthenticationRepository>(),
-          appSharedPref: context.read<AppSharedPref>()),
+        authenticationRepository: context.read<AuthenticationRepository>(),
+      ),
       child: const LoginView(),
     );
   }
