@@ -15,20 +15,26 @@ import 'package:formz/formz.dart';
 import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PilihKwsn extends StatelessWidget {
-  const PilihKwsn({Key? key}) : super(key: key);
+  final bool? merchant;
+  const PilihKwsn({Key? key, this.merchant}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return MultiBlocProvider(providers: [
-      BlocProvider(
-          create: (context) => PilihKawasanBloc(
-              categoryRepository: context.read<CategoryRepository>()))
-    ], child: const PilihKawasan());
+    return MultiBlocProvider(
+        providers: [
+          BlocProvider(
+              create: (context) => PilihKawasanBloc(
+                  categoryRepository: context.read<CategoryRepository>()))
+        ],
+        child: PilihKawasan(
+          merchant: merchant,
+        ));
   }
 }
 
 class PilihKawasan extends StatefulWidget {
-  const PilihKawasan({Key? key}) : super(key: key);
+  final bool? merchant;
+  const PilihKawasan({Key? key, this.merchant}) : super(key: key);
 
   @override
   State<PilihKawasan> createState() => _PilihKawasanState();
@@ -128,9 +134,12 @@ class _PilihKawasanState extends State<PilihKawasan> {
                             child: ReusableButton1(
                               label: "Konfirmasi",
                               onPressed: () {
-                                context
-                                    .read<PilihKawasanBloc>()
-                                    .add(UpdateKawasan(snapshot.data!.uid));
+                                context.read<PilihKawasanBloc>().add(
+                                    UpdateKawasan(
+                                        snapshot.data!.uid,
+                                        widget.merchant != null
+                                            ? widget.merchant!
+                                            : false));
                               },
                             ),
                           );

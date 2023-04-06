@@ -370,7 +370,7 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                                         context,
                                         MaterialPageRoute(
                                           builder: (context) =>
-                                              const PilihKwsn(),
+                                              const PilihKwsn(merchant: true),
                                         ));
                                   }),
                             ),

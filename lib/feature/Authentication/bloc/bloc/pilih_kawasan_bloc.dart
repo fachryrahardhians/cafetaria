@@ -69,9 +69,13 @@ class PilihKawasanBloc extends Bloc<PilihKawasanEvent, PilihKawasanState> {
           idkawasan: state.idkawasan
           // tersedia: state.tersedia
           ));
-
-      await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
-
+      if (event.merchant == true) {
+        await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
+        await _categoryRepository.updateKawasanMerchant(
+            event.idUser, state.idkawasan!);
+      } else {
+        await _categoryRepository.updateKawasan(event.idUser, state.idkawasan!);
+      }
       emit(
         state.copyWith(
           inputStatus: FormzStatus.submissionSuccess,

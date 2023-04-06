@@ -25,18 +25,25 @@ import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
-  const PembeliCreateMerchantPage(this.user, {Key? key}) : super(key: key);
+  final String? idKawasan;
+  const PembeliCreateMerchantPage(this.user, {Key? key, this.idKawasan})
+      : super(key: key);
 
   final User user;
 
   @override
   Widget build(BuildContext context) {
-    return PembeliCreateMerchantView(user);
+    return PembeliCreateMerchantView(
+      user,
+      idKawasan: idKawasan,
+    );
   }
 }
 
 class PembeliCreateMerchantView extends StatefulWidget {
-  const PembeliCreateMerchantView(this.user, {Key? key}) : super(key: key);
+  final String? idKawasan;
+  const PembeliCreateMerchantView(this.user, {Key? key, this.idKawasan})
+      : super(key: key);
   final User user;
   @override
   State<PembeliCreateMerchantView> createState() =>
@@ -198,6 +205,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'totalOrderToday': 0,
         'totalSalesToday': 0,
         'totalSalesYesterday': 0,
+        'kawasanId': widget.idKawasan,
         'create_at': Timestamp.now()
       };
 

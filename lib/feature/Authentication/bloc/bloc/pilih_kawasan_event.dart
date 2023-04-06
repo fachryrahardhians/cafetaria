@@ -31,9 +31,10 @@ class KawasanChange extends PilihKawasanEvent {
 }
 
 class UpdateKawasan extends PilihKawasanEvent {
+  final bool merchant;
   final String idUser;
-  const UpdateKawasan(this.idUser);
+  const UpdateKawasan(this.idUser, this.merchant);
 
   @override
-  List<Object> get props => [idUser];
+  List<Object> get props => [idUser,merchant];
 }

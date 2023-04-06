@@ -230,9 +230,8 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
                                                 BorderRadius.circular(6),
                                             side: BorderSide.none)),
                                     onPressed: () {
-                                      context
-                                          .read<PilihKawasanBloc>()
-                                          .add(UpdateKawasan(id.toString()));
+                                      context.read<PilihKawasanBloc>().add(
+                                          UpdateKawasan(id.toString(), false));
                                     },
                                     child: Text(
                                       "Ya Ganti",

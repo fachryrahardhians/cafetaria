@@ -48,6 +48,17 @@ class CategoryRepository {
     } catch (e) {
       throw Exception('Failed to Update idkawasan');
     }
+  } //add idkawasan collection merchant
+
+  Future<void> updateKawasanMerchant(String id, String idkawasan) async {
+    try {
+      await _firestore
+          .collection('merchant')
+          .doc(id)
+          .update({'kawasanId': idkawasan});
+    } catch (e) {
+      throw Exception('Failed to Update idkawasan');
+    }
   }
 
   //get pilih kawasan
