@@ -218,6 +218,8 @@ class _MerchantPageState extends State<MerchantPage>
                                                   value: kawasan,
                                                   child: Text(
                                                     kawasan.name.toString(),
+                                                    style: const TextStyle(
+                                                        color: Colors.black),
                                                   ),
                                                 ))
                                             .toList(),
@@ -227,14 +229,21 @@ class _MerchantPageState extends State<MerchantPage>
                                           color: Colors.white,
                                         ),
                                         style: const TextStyle(
-                                            color: Colors.black,
-                                            fontWeight: FontWeight
-                                                .bold // set the text color here
-                                            ),
+                                          color: Colors.white,
+                                          fontWeight: FontWeight.bold,
+                                        ),
+                                        selectedItemBuilder:
+                                            (BuildContext context) {
+                                          return state.items!
+                                              .map<Widget>((item) => Text(
+                                                    item.name.toString(),
+                                                    style: const TextStyle(
+                                                        color: Colors.white),
+                                                  ))
+                                              .toList();
+                                        },
                                         decoration: const InputDecoration(
                                           border: InputBorder.none,
-
-                                          // other properties like labelText, hintText, etc.
                                         ),
                                         onChanged: (val) {
                                           setState(() {
@@ -707,7 +716,7 @@ class _MerchantPageState extends State<MerchantPage>
                       margin: const EdgeInsets.only(right: 8),
                       child: ElevatedButton(
                           style: ElevatedButton.styleFrom(
-                              primary: Colors.white,
+                              backgroundColor: Colors.white,
                               side: const BorderSide(
                                 color: MyColors.red1,
                               ),

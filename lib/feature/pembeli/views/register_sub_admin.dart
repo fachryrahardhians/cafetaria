@@ -48,6 +48,7 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
   TextEditingController email = TextEditingController();
   final TextEditingController hp = TextEditingController();
   final TextEditingController password = TextEditingController();
+  final FirebaseAuth _firebaseAuth = FirebaseAuth.instance;
   bool _submitLoading = false;
   String idKawasan = "e574154f-cde0-4b49-a678-c19d1fed1bb6";
   bool _checkDisableButton() {
@@ -75,7 +76,7 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
     setState(() {
       _submitLoading = true;
     });
-
+  
     try {
       final data = {'mobile': hp.text};
       final data2 = {
@@ -83,7 +84,7 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
         'userId': widget.user.uid,
         'kawasanId': idKawasanPick
       };
-      await auth.updatePassword(password.text);
+      await _firebaseAuth.currentUser!.updatePassword(password.text);
       await _firestore.collection('user').doc(widget.user.uid).update(data);
       await _firestore
           .collection('kawasan')

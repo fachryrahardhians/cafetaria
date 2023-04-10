@@ -14,15 +14,16 @@ import 'package:cafetaria/feature/pembeli/widget/widget.dart';
 import 'package:cafetaria/feature/penjual/views/penjual_dashboard_page.dart';
 import 'package:cafetaria/styles/colors.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:firebase_storage/firebase_storage.dart';
-import 'package:flutter/material.dart';
+
 import 'package:fluttertoast/fluttertoast.dart';
 import 'package:geocoding/geocoding.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:intl/intl.dart';
+
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class PembeliCreateMerchantPage extends StatelessWidget {
   final String? idKawasan;
@@ -72,7 +73,7 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   String? _bidangUsaha = null;
   XFile? _fotoLuar;
   XFile? _fotoDalam;
-
+  String? idKawasan;
   DateTime? _buka;
   DateTime? _tutup;
 
@@ -200,12 +201,12 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
         'address_longitude': _latLngToko!.longitude,
         'photo_from_outside': urlLuar,
         'photo_from_inside': urlDalam,
+        'kawasanId': idKawasan,
         'rating': 0,
         'totalCountRating': 0,
         'totalOrderToday': 0,
         'totalSalesToday': 0,
         'totalSalesYesterday': 0,
-        'kawasanId': widget.idKawasan,
         'create_at': Timestamp.now()
       };
 
@@ -271,6 +272,11 @@ class _PembeliCreateMerchantState extends State<PembeliCreateMerchantView> {
   void initState() {
     super.initState();
     user = widget.user;
+    context.read<AppSharedPref>().getIdKawasan().then((value) {
+      setState(() {
+        idKawasan = value;
+      });
+    });
   }
 
   @override

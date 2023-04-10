@@ -6,6 +6,7 @@ import 'package:cafetaria/feature/Authentication/views/daftar_kawasan.dart';
 import 'package:cafetaria/feature/pembeli/views/dashboard_page.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/text_styles.dart';
+import 'package:cafetaria/utilities/size_config.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
@@ -115,10 +116,22 @@ class _PilihKawasanState extends State<PilihKawasan> {
                                           ),
                                         ))
                                     .toList(),
+                                selectedItemBuilder: (BuildContext context) {
+                                  return state.items!
+                                      .map<Widget>((item) => Text(
+                                            item.name.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.black),
+                                          ))
+                                      .toList();
+                                },
                                 value: state.items![0],
                                 onChanged: (val) {
                                   context.read<PilihKawasanBloc>().add(
                                       KawasanChange(val!.kawasanId.toString()));
+                                  context
+                                      .read<AppSharedPref>()
+                                      .setIdKawasan(val.kawasanId.toString());
                                 },
                               );
                             }

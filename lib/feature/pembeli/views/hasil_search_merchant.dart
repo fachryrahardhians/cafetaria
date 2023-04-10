@@ -222,6 +222,8 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                           value: kawasan,
                                           child: Text(
                                             kawasan.name.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.black),
                                           ),
                                         ))
                                     .toList(),
@@ -231,14 +233,20 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                   color: Colors.white,
                                 ),
                                 style: const TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight
-                                        .bold // set the text color here
-                                    ),
+                                  color: Colors.white,
+                                  fontWeight: FontWeight.bold,
+                                ),
+                                selectedItemBuilder: (BuildContext context) {
+                                  return state.items!
+                                      .map<Widget>((item) => Text(
+                                            item.name.toString(),
+                                            style: const TextStyle(
+                                                color: Colors.white),
+                                          ))
+                                      .toList();
+                                },
                                 decoration: const InputDecoration(
                                   border: InputBorder.none,
-
-                                  // other properties like labelText, hintText, etc.
                                 ),
                                 onChanged: (val) {
                                   setState(() {
@@ -305,7 +313,8 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                         child: ListView.builder(
                       itemCount: snapshot.data?.length,
                       itemBuilder: (context, index) {
-                        double? distance = snapshot.data?[index].source!.distance;
+                        double? distance =
+                            snapshot.data?[index].source!.distance;
                         double parseDistance =
                             double.parse(distance!.toStringAsFixed(2));
                         return Padding(

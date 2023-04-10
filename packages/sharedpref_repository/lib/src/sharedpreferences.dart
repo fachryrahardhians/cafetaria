@@ -12,11 +12,20 @@ class AppSharedPref {
   final String _progress = "progress";
   final String _lat = 'lat';
   final String _long = 'long';
+  final String _idKawasan = 'idKawasan';
   Future<double?> getProgress() async {
     try {
       return _sharedPreferences.getDouble(_progress);
     } catch (e) {
       return 0;
+    }
+  }
+
+  Future<String?> getIdKawasan() async {
+    try {
+      return _sharedPreferences.getString(_idKawasan);
+    } catch (e) {
+      return "";
     }
   }
 
@@ -49,6 +58,16 @@ class AppSharedPref {
   Future<void> setLong(String value) async {
     try {
       await _sharedPreferences.setString(_long, value);
+    } catch (e) {
+      if (kDebugMode) {
+        print(e.toString());
+      }
+    }
+  }
+
+  Future<void> setIdKawasan(String value) async {
+    try {
+      await _sharedPreferences.setString(_idKawasan, value);
     } catch (e) {
       if (kDebugMode) {
         print(e.toString());
