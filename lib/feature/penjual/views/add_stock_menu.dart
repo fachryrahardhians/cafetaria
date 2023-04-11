@@ -306,7 +306,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                                   padding: const EdgeInsets.only(
                                       top: 15, left: 12, bottom: 10),
                                   child: Text(
-                                    timeRestok == "" || timeRestok == null
+                                    timeRestok == null ||
+                                            timeRestok == "null" ||
+                                            widget.user.resetTime == ""
                                         ? ""
                                         : "${DateTime.parse(timeRestok.toString()).hour} : ${DateTime.parse(timeRestok.toString()).minute}",
                                     style: const TextStyle(
@@ -374,8 +376,9 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                         ),
                       ),
                       const SizedBox(height: 4.0),
-                      widget.user.resetTime == "" ||
-                              widget.user.resetTime == null
+                      widget.user.resetTime == "null" ||
+                              widget.user.resetTime == null ||
+                              widget.user.resetTime == ""
                           ? Container()
                           : Text(
                               convertDateTime(
@@ -436,7 +439,7 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                       context.read<AturStockBlocBloc>().add(
                             AturStok(stok),
                           );
-                    
+
                       Timer(
                         const Duration(seconds: 3),
                         () {
@@ -449,11 +452,11 @@ class _AddStockMenuPageState extends State<AddStockMenuPage> {
                       );
                     }
                   : null,
-              child: loading ? const Text('LOADING') : const Text('SIMPAN'),
               style: ElevatedButton.styleFrom(
                 primary: Colors.red,
                 tapTargetSize: MaterialTapTargetSize.padded,
               ),
+              child: loading ? const Text('LOADING') : const Text('SIMPAN'),
             ),
           );
         },

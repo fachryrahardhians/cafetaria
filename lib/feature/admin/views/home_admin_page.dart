@@ -80,7 +80,8 @@ class _HomeAdminState extends AdminPage {
                   child: Text('Terjadi kesalahan'),
                 );
               } else if (status == AdminKawasanStatus.success) {
-                final items = state.items!.adminKawasan != null
+                // ignore: prefer_is_empty
+                final items = state.items?.subAdminKawasan?.length == 0
                     ? state.items?.adminKawasan?.first
                     : state.items?.subAdminKawasan?.first;
                 return Scaffold(
@@ -111,7 +112,7 @@ class _HomeAdminState extends AdminPage {
                             padding: const EdgeInsets.all(10.0),
                             child: MainMenu(
                                 idKawasan: items!.kawasanId.toString(),
-                                visible: state.items!.adminKawasan != null
+                                visible: state.items!.adminKawasan!.isNotEmpty
                                     ? true
                                     : false),
                           ),

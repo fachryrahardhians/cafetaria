@@ -101,6 +101,9 @@ class _PilihKawasanState extends State<PilihKawasan> {
                               );
                             } else if (status == PilihKawasanStatus.success) {
                               // final items = state.items!;
+                              context.read<PilihKawasanBloc>().add(
+                                  KawasanChange(
+                                      state.items![0].kawasanId.toString()));
                               return DropdownButtonFormField<PilihKawasanModel>(
                                 items: state.items!
                                     .map((kawasan) => DropdownMenuItem(
@@ -129,6 +132,11 @@ class _PilihKawasanState extends State<PilihKawasan> {
                                 onChanged: (val) {
                                   context.read<PilihKawasanBloc>().add(
                                       KawasanChange(val!.kawasanId.toString()));
+                                  context
+                                      .read<AppSharedPref>()
+                                      .setLat(val.kawasan_latitude.toString());
+                                  context.read<AppSharedPref>().setLong(
+                                      val.kawasan_longitude.toString());
                                   context
                                       .read<AppSharedPref>()
                                       .setIdKawasan(val.kawasanId.toString());

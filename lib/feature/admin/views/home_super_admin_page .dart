@@ -102,7 +102,8 @@ class _HomeSuperAdminState extends State<HomeSuperAdmin> {
             child: Text('Terjadi kesalahan'),
           );
         } else if (status == AdminKawasanStatus.success) {
-          final items = state.items!.adminKawasan != null
+          // ignore: prefer_is_empty
+          final items = state.items?.subAdminKawasan?.length == 0
               ? state.items?.adminKawasan?.first
               : state.items?.subAdminKawasan?.first;
           return Scaffold(
@@ -140,56 +141,6 @@ class _HomeSuperAdminState extends State<HomeSuperAdmin> {
                               state.items!.adminKawasan != null ? true : false),
                     ),
                     const SizedBox(height: 5),
-
-                    // StreamBuilder<List<InfoModel>>(
-                    //   stream: getStreamInfo(),
-                    //   builder: (context, snapshot) {
-                    //     if (snapshot.hasError) {
-                    //       return Text("Ada masalah ${snapshot.error}");
-                    //     } else if (snapshot.hasData) {
-                    //       final items = snapshot.data;
-                    //       return SizedBox(
-                    //         width: MediaQuery.of(context).size.width,
-                    //         height:
-                    //             MediaQuery.of(context).size.height / 5,
-                    //         child: ListView.builder(
-                    //           itemCount: items!.length,
-                    //           scrollDirection: Axis.horizontal,
-                    //           itemBuilder: (context, index) {
-                    //             return items[index].status == "active"
-                    //                 ? items[index].type == "kawasan" ||
-                    //                         items[index].type == "semua"
-                    //                     ? GestureDetector(
-                    //                         onTap: () {
-                    //                           Navigator.push(
-                    //                               context,
-                    //                               MaterialPageRoute(
-                    //                                   builder: (_) => ViewInfo(
-                    //                                       infoModel: items[
-                    //                                           index])));
-                    //                         },
-                    //                         child: HomeItemInfo(
-                    //                           image: items[index]
-                    //                               .image
-                    //                               .toString(),
-                    //                           title: items[index]
-                    //                               .title
-                    //                               .toString(),
-                    //                           author: 'Charlie Natalie',
-                    //                         ),
-                    //                       )
-                    //                     : const SizedBox.shrink()
-                    //                 : const SizedBox.shrink();
-                    //           },
-                    //         ),
-                    //       );
-                    //     } else {
-                    //       return const Center(
-                    //         child: CircularProgressIndicator(),
-                    //       );
-                    //     }
-                    //   },
-                    // ),
                   ],
                 )
               ],

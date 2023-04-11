@@ -27,9 +27,8 @@ class LoginPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
       create: (context) => AuthenticationBloc(
-        authenticationRepository: context.read<AuthenticationRepository>(),
-        appSharedPref: context.read<AppSharedPref>()
-      ),
+          authenticationRepository: context.read<AuthenticationRepository>(),
+          appSharedPref: context.read<AppSharedPref>()),
       child: const LoginView(),
     );
   }
@@ -115,7 +114,7 @@ class _LoginViewState extends State<LoginView> {
                   enabled: true,
                   controller: password,
                   maxLines: 1,
-                  obscureText: !obscureText,
+                  obscureText: obscureText,
                   decoration: InputDecoration(
                     isDense: false,
                     border: InputBorder.none,
@@ -124,7 +123,7 @@ class _LoginViewState extends State<LoginView> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         // Based on passwordVisible state choose the icon
-                        obscureText ? Icons.visibility : Icons.visibility_off,
+                        !obscureText ? Icons.visibility : Icons.visibility_off,
                         color: Theme.of(context).primaryColorDark,
                       ),
                       onPressed: () {
@@ -326,7 +325,7 @@ class _LoginViewState extends State<LoginView> {
                   enabled: true,
                   controller: password,
                   maxLines: 1,
-                  obscureText: !obscureText,
+                  obscureText: obscureText,
                   decoration: InputDecoration(
                     isDense: false,
                     border: InputBorder.none,
@@ -335,7 +334,7 @@ class _LoginViewState extends State<LoginView> {
                     suffixIcon: IconButton(
                       icon: Icon(
                         // Based on passwordVisible state choose the icon
-                        obscureText ? Icons.visibility : Icons.visibility_off,
+                        !obscureText ? Icons.visibility : Icons.visibility_off,
                         color: Theme.of(context).primaryColorDark,
                       ),
                       onPressed: () {
