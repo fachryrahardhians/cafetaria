@@ -14,18 +14,25 @@ class OrderRepository {
 
   Future<List<HistoryModel>> getListOrderHistory(
       String status, String userId) async {
-    try {
-      final snapshot = await _firestore
-          .collection('order')
-          .where('statusOrder', isEqualTo: status)
-          .where('userId', isEqualTo: userId)
-          .get();
-
-      final documents = snapshot.docs;
-      return documents.toListHistory();
-    } catch (e) {
-      throw Exception('Failed to get history');
+    int retries = 3;
+    while (retries > 0) {
+      try {
+        final snapshot = await _firestore
+            .collection('order')
+            .where('statusOrder', isEqualTo: status)
+            .where('userId', isEqualTo: userId)
+            .get();
+        final documents = snapshot.docs;
+        return documents.toListHistory();
+      } catch (e) {
+        retries--;
+        if (retries == 0) {
+          throw Exception('Failed to get history');
+        }
+        await Future.delayed(Duration(seconds: 2));
+      }
     }
+    return [];
   }
 
   Future<void> addOrder(HistoryModel order) async {

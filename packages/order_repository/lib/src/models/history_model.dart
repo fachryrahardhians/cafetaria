@@ -1,5 +1,6 @@
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
+import 'package:order_repository/src/models/merchant.dart';
 import 'package:order_repository/src/models/toppingItem.dart';
 
 part 'history_model.g.dart';
@@ -26,6 +27,7 @@ class HistoryModel extends Equatable {
   final String? timestamp;
   final String? statusOrder;
   final List<OrderMenu>? menus;
+  final MerchantModelHistory? merchantDetail;
 
   const HistoryModel(
       {this.orderId,
@@ -41,6 +43,7 @@ class HistoryModel extends Equatable {
       this.total,
       this.timestamp,
       this.statusOrder,
+      this.merchantDetail,
       this.menus});
 
   /// Copy with a new [HistoryModel].
@@ -59,6 +62,7 @@ class HistoryModel extends Equatable {
     String? timestamp,
     String? statusOrder,
     List<OrderMenu>? menus,
+    MerchantModelHistory? merchantDetail,
   }) {
     return HistoryModel(
         orderId: orderId ?? this.orderId,
@@ -74,6 +78,7 @@ class HistoryModel extends Equatable {
         isPreorder: isPreorder ?? this.isPreorder,
         pickupDate: pickupDate ?? this.pickupDate,
         typePickup: typePickup ?? this.typePickup,
+        merchantDetail: merchantDetail ?? this.merchantDetail,
         userId: userId ?? this.userId);
   }
 

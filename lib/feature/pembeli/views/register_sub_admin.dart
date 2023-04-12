@@ -1,6 +1,9 @@
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/buttons/reusables_buttons.dart';
 import 'package:cafetaria/components/textfields/reusable_textfields.dart';
+import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_bloc.dart';
+import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_event.dart';
+import 'package:cafetaria/feature/Authentication/bloc/authentication/authentication_state.dart';
 import 'package:cafetaria/feature/Authentication/bloc/bloc/pilih_kawasan_bloc.dart';
 import 'package:cafetaria/feature/Authentication/views/kawasan_sukses.dart';
 import 'package:cafetaria/feature/pembeli/views/register_sukses.dart';
@@ -76,7 +79,7 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
     setState(() {
       _submitLoading = true;
     });
-  
+
     try {
       final data = {'mobile': hp.text};
       final data2 = {
@@ -100,6 +103,11 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
           msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
     } catch (error) {
       Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
+      auth.signedWithGoogle().then((value) {
+        Fluttertoast.showToast(
+            msg: "mohon Klik Kembali tombol Daftar",
+            toastLength: Toast.LENGTH_LONG);
+      });
     } finally {
       setState(() {
         _submitLoading = false;
@@ -246,6 +254,9 @@ class _RegisterSubAdminWidgetState extends State<RegisterSubAdminWidget> {
                       return null;
                     } else {
                       _onSubmit(context, idKawasan, auth);
+                      // .then((err) {
+                      //   _onSubmit(context, idKawasan, auth);
+                      // });
                     }
                   },
                   padding: const EdgeInsets.all(0),

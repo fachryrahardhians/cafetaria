@@ -9,9 +9,12 @@ class PenjualOrderRepository {
     required FirebaseFirestore firestore,
   }) : _firestore = firestore;
 
-  Future<List<PenjualOrderModel>> getOrder() async {
+  Future<List<PenjualOrderModel>> getOrder(String idMerchant) async {
     try {
-      final snapshot = await _firestore.collection("order").get();
+      final snapshot = await _firestore
+          .collection("order")
+          .where("merchantId", isEqualTo: idMerchant)
+          .get();
       if (kDebugMode) {}
 
       final documents = snapshot.docs;

@@ -45,19 +45,42 @@ class MerchantRepository {
     }
   }
 
-  Future<List<MerchantModel>> getMerchantLogin(String userId) async {
-    try {
-      final snapshot = await _firestore
-          .collection('user')
-          .doc(userId)
-          .collection('store')
-          .get();
+  Future<List<MerchantModel>> getMerchantLogin(
+      String userId, double longitude, double latitude) async {
+    // try {
+    //   final snapshot = await _firestore
+    //       .collection('user')
+    //       .doc(userId)
+    //       .collection('store')
+    //       .get();
 
-      final documents = snapshot.docs;
-      return documents.toListMerchant();
-    } catch (e) {
-      throw Exception('Failed to get merchant');
+    //   final documents = snapshot.docs;
+    //   return documents.toListMerchant();
+    // } catch (e) {
+    //   throw Exception('Failed to get merchant');
+    // }
+    HttpsCallable callable =
+        FirebaseFunctions.instance.httpsCallable('distanceMerchant');
+    final resp = await callable.call(<String, dynamic>{
+      'longitude': longitude,
+      'latitude': latitude,
+    });
+    final List data = resp.data;
+    final leaderboardEntries = <MerchantModel>[];
+
+    for (final document in data) {
+      final data = document;
+      if (data != null) {
+        try {
+          print(data);
+          leaderboardEntries
+              .add(MerchantModel.fromJson(Map<String, dynamic>.from(data)));
+        } catch (error) {
+          throw Exception(error.toString());
+        }
+      }
     }
+    return leaderboardEntries;
   }
   // get  menu per merchant
   // Future<List<Rules>> getrulesDay(String idMerchant) async {

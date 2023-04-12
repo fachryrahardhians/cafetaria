@@ -11,6 +11,7 @@ import 'package:cafetaria/utilities/size_config.dart';
 import 'package:category_repository/category_repository.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
 
@@ -162,6 +163,9 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                               .then((value) =>
                                   {addMenuToCartBloc..add(GetMenusInCart())});
                         } else {
+                          Fluttertoast.showToast(
+                              msg: "mohon Pilih Kawasan Terlebih Dahulu",
+                              toastLength: Toast.LENGTH_LONG);
                           return;
                         }
                       },
@@ -214,6 +218,8 @@ class _HasilSearchMerchantState extends State<HasilSearchMerchant>
                                 child: Text('Terjadi kesalahan'),
                               );
                             } else if (status == PilihKawasanStatus.success) {
+                              lat = state.items?[0].kawasan_latitude;
+                              long = state.items?[0].kawasan_longitude;
                               // final items = state.items!;
                               return DropdownButtonFormField<PilihKawasanModel>(
                                 isExpanded: true,

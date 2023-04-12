@@ -20,6 +20,8 @@ HistoryModel _$HistoryModelFromJson(Map<String, dynamic> json) => HistoryModel(
       total: json['total'] as int?,
       timestamp: json['timestamp'] as String?,
       statusOrder: json['statusOrder'] as String?,
+      merchantDetail: MerchantModelHistory.fromJson(
+          json['merchantDetail'] as Map<String, dynamic>),
       menus: (json['menus'] as List<dynamic>?)
           ?.map((e) => OrderMenu.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -41,6 +43,7 @@ Map<String, dynamic> _$HistoryModelToJson(HistoryModel instance) =>
       'timestamp': instance.timestamp,
       'statusOrder': instance.statusOrder,
       'menus': instance.menus?.map((e) => e.toJson()).toList(),
+      'merchantDetail': instance.merchantDetail?.toJson(),
     };
 
 OrderMenu _$OrderMenuFromJson(Map<String, dynamic> json) => OrderMenu(

@@ -12,6 +12,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:penjual_order_repository/penjual_order_repository.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class OrderPage extends StatelessWidget {
   const OrderPage({Key? key}) : super(key: key);
@@ -20,8 +21,8 @@ class OrderPage extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider<PenjualOrderBloc>(
       create: (context) => PenjualOrderBloc(
-        context.read<PenjualOrderRepository>(),
-      )..add(
+          context.read<PenjualOrderRepository>(), context.read<AppSharedPref>())
+        ..add(
           GetPenjualOrder(),
         ),
       child: const OrderPageView(),

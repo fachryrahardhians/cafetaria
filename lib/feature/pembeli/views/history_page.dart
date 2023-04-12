@@ -122,48 +122,35 @@ class ProcessList extends StatelessWidget {
         } else if (status == HistoryOrderStatus.success) {
           if (state.items != null) {
             final items = state.items!;
-            return BlocBuilder<ListMerchantBloc, ListMerchantState>(
-                builder: (context, merchantState) {
-              final merchantStatus = merchantState.status;
-              if (merchantStatus == ListMerchantStatus.loading) {
-                return const Center(child: CircularProgressIndicator());
-              } else if (merchantStatus == ListMerchantStatus.success) {
-                return SizedBox(
-                  height: 200,
-                  child: ListView.separated(
-                      padding:
-                          const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
-                      itemBuilder: (context, index) {
-                        final item = items[index];
-                        DateTime date = DateTime.parse(item.timestamp!);
-                        int minutes = getDiffTime(date);
-                        List<String> dateFormated = DateFormat('EEE MMM d')
-                            .format(date)
-                            .toString()
-                            .trim()
-                            .split(' ');
-                        MerchantModel? merchant;
-                        for (var element in merchantState.items!) {
-                          if (element.merchantId == item.merchantId) {
-                            merchant = element;
-                          }
-                        }
-                        return listCard(dateFormated[0], dateFormated[2],
-                            dateFormated[1], context,
-                            item: item, minutes: minutes, merchant: merchant!);
-                      },
-                      separatorBuilder: (context, index) {
-                        return SizedBox(
-                            height: SizeConfig.safeBlockVertical * 3);
-                      },
-                      itemCount: items.length),
-                );
-              } else if (merchantStatus == ListMerchantStatus.failure) {
-                return Text(merchantState.errorMessage!);
-              } else {
-                return const SizedBox();
-              }
-            });
+            return SizedBox(
+              height: 200,
+              child: ListView.separated(
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 24, vertical: 16),
+                  itemBuilder: (context, index) {
+                    final item = items[index];
+                    DateTime date = DateTime.parse(item.timestamp!);
+                    int minutes = getDiffTime(date);
+                    List<String> dateFormated = DateFormat('EEE MMM d')
+                        .format(date)
+                        .toString()
+                        .trim()
+                        .split(' ');
+
+                    return listCard(
+                      dateFormated[0],
+                      dateFormated[2],
+                      dateFormated[1],
+                      context,
+                      item: item,
+                      minutes: minutes,
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return SizedBox(height: SizeConfig.safeBlockVertical * 3);
+                  },
+                  itemCount: items.length),
+            );
           } else {
             return const Text('No Data');
           }
@@ -173,10 +160,14 @@ class ProcessList extends StatelessWidget {
     );
   }
 
-  Widget listCard(String day, String date, String month, BuildContext context,
-      {required HistoryModel item,
-      required int minutes,
-      required MerchantModel merchant}) {
+  Widget listCard(
+    String day,
+    String date,
+    String month,
+    BuildContext context, {
+    required HistoryModel item,
+    required int minutes,
+  }) {
     return GestureDetector(
       onTap: () {
         Navigator.push(
@@ -184,7 +175,6 @@ class ProcessList extends StatelessWidget {
             MaterialPageRoute(
                 builder: (_) => HistoryDetailPage(
                       item: item,
-                      merchant: merchant,
                     )));
       },
       child: Container(
@@ -282,7 +272,7 @@ class ProcessList extends StatelessWidget {
                       ),
                       SizedBox(height: SizeConfig.safeBlockVertical * 1),
                       Text(
-                        merchant.name ?? 'No name',
+                        item.merchantDetail?.name ?? 'No name',
                         style: textStyle.copyWith(fontWeight: FontWeight.w500),
                       ),
                       // SizedBox(height: SizeConfig.safeBlockVertical * .5),
@@ -394,7 +384,6 @@ class _DoneListState extends State<DoneList> {
             MaterialPageRoute(
                 builder: (_) => HistoryDetailPage(
                       item: item,
-                      merchant: merchant,
                     )));
       },
       child: Container(
@@ -412,7 +401,7 @@ class _DoneListState extends State<DoneList> {
                 SizedBox(
                   width: SizeConfig.safeBlockHorizontal * 50,
                   child: Text(
-                    item.merchantId ?? '',
+                    item.merchantDetail?.name ?? '',
                     style: headlineStyle.copyWith(fontSize: 14),
                   ),
                 ),

@@ -18,9 +18,11 @@ import 'package:category_repository/category_repository.dart';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 
 import 'package:menu_repository/menu_repository.dart';
 import 'package:merchant_repository/merchant_repository.dart';
+import 'package:sharedpref_repository/sharedpref_repository.dart';
 
 class MerchantPage extends StatefulWidget {
   final String id;
@@ -55,10 +57,19 @@ class _MerchantPageState extends State<MerchantPage>
     addMenuToCartBloc =
         AddMenuToCartBloc(menuRepository: context.read<MenuRepository>());
     listMerchantLoginBloc = ListMerchantLoginBloc(
-        merchantRepository: context.read<MerchantRepository>());
+        merchantRepository: context.read<MerchantRepository>(),
+        appSharedPref: context.read<AppSharedPref>());
     pilihKawasanBloc = PilihKawasanBloc(
         categoryRepository: context.read<CategoryRepository>());
     WidgetsBinding.instance.addObserver(this);
+    context.read<AppSharedPref>().getLong().then((valueLong) {
+      context.read<AppSharedPref>().getLat().then((valueLat) {
+        setState(() {
+          long = double.parse(valueLong!);
+          lat = double.parse(valueLat!);
+        });
+      });
+    });
     super.initState();
   }
 
@@ -152,6 +163,10 @@ class _MerchantPageState extends State<MerchantPage>
                                               ..add(GetMenusInCart())
                                           });
                                 } else {
+                                  Fluttertoast.showToast(
+                                      msg:
+                                          "mohon Pilih Kawasan Terlebih Dahulu",
+                                      toastLength: Toast.LENGTH_LONG);
                                   return;
                                 }
                               },
@@ -209,6 +224,8 @@ class _MerchantPageState extends State<MerchantPage>
                                       );
                                     } else if (status ==
                                         PilihKawasanStatus.success) {
+                                      lat = state.items?[0].kawasan_latitude;
+                                      long = state.items?[0].kawasan_longitude;
                                       // final items = state.items!;
                                       return DropdownButtonFormField<
                                           PilihKawasanModel>(

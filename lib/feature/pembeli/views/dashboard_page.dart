@@ -83,13 +83,16 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
         context.read<AdminRepository>().updateLongLat(
             value!.uid.toString(), long.toString(), lat.toString());
       });
-      if ((position.latitude < latlang.getDouble('lat')! + -0.1) ||
-              (position.latitude > latlang.getDouble('lat')! + 0.1)
+      if ((position.latitude <
+                  double.parse(latlang.getString('lat')!) + -0.1) ||
+              (position.latitude >
+                  double.parse(latlang.getString('lat')!) + 0.1)
           // && latlang.getDouble('lat')! < latlang.getDouble('lat')! + -0.1000000
           ) {
         showAlert(context);
-        latlang.setDouble('lat', position.latitude);
-        print("lat 2 : ${latlang.getDouble('lat')}");
+        latlang.setString('lat', position.latitude.toString());
+        latlang.setString('long', position.longitude.toString());
+        print("lat 2 : ${latlang.getString('lat')}");
       } else {
         print("data sama");
       }
@@ -281,10 +284,11 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
       setState(() {
         lat = value.latitude.toString();
         long = value.longitude.toString();
-        if (latlang.getDouble('lat') == null) {
-          latlang.setDouble('lat', value.latitude);
+        if (latlang.getString('lat') == null) {
+          latlang.setString('lat', value.latitude.toString());
+          latlang.setString('long', value.longitude.toString());
         } else {
-          print("data lat : ${latlang.getDouble('lat')! + 0.1}");
+          print("data lat : ${double.parse(latlang.getString('lat')!) + 0.1}");
         }
       });
       _liveLocation();
@@ -293,7 +297,6 @@ class _PembeliDashboardState extends State<PembeliDashboard> {
       setState(() {
         id = value?.uid;
       });
-
       context.read<AuthenticationRepository>().getFcmToken().then((value) {
         context
             .read<MenuRepository>()
