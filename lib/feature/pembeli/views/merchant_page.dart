@@ -62,14 +62,7 @@ class _MerchantPageState extends State<MerchantPage>
     pilihKawasanBloc = PilihKawasanBloc(
         categoryRepository: context.read<CategoryRepository>());
     WidgetsBinding.instance.addObserver(this);
-    context.read<AppSharedPref>().getLong().then((valueLong) {
-      context.read<AppSharedPref>().getLat().then((valueLat) {
-        setState(() {
-          long = double.parse(valueLong!);
-          lat = double.parse(valueLat!);
-        });
-      });
-    });
+
     super.initState();
   }
 
@@ -91,9 +84,6 @@ class _MerchantPageState extends State<MerchantPage>
           BlocProvider(
               create: ((context) =>
                   listMerchantLoginBloc..add(GetListMerchantLogin(widget.id)))),
-          BlocProvider(
-              create: (context) =>
-                  pilihKawasanBloc..add(const GetPilihKawasan()))
         ],
         child: Scaffold(
           body: BlocListener<AddMenuToCartBloc, AddMenuToCartState>(
@@ -209,68 +199,128 @@ class _MerchantPageState extends State<MerchantPage>
                               SizedBox(
                                 height: 47,
                                 width: SizeConfig.screenWidth / 2.5,
-                                child: BlocBuilder<PilihKawasanBloc,
-                                    PilihKawasanState>(
-                                  builder: (context, state) {
-                                    final status = state.status;
-                                    if (status == PilihKawasanStatus.loading) {
-                                      return const Center(
-                                        child: CircularProgressIndicator(),
-                                      );
-                                    } else if (status ==
-                                        PilihKawasanStatus.failure) {
-                                      return const Center(
-                                        child: Text('Terjadi kesalahan'),
-                                      );
-                                    } else if (status ==
-                                        PilihKawasanStatus.success) {
-                                      lat = state.items?[0].kawasan_latitude;
-                                      long = state.items?[0].kawasan_longitude;
-                                      // final items = state.items!;
-                                      return DropdownButtonFormField<
-                                          PilihKawasanModel>(
-                                        isExpanded: true,
-                                        items: state.items!
-                                            .map((kawasan) => DropdownMenuItem(
-                                                  value: kawasan,
-                                                  child: Text(
-                                                    kawasan.name.toString(),
+                                child: FutureBuilder(
+                                  future: Future.wait([
+                                    context.read<AppSharedPref>().getLong(),
+                                    context.read<AppSharedPref>().getLat(),
+                                  ]),
+                                  builder: (context,
+                                      AsyncSnapshot<List<String?>> snapshot) {
+                                    if (snapshot.connectionState ==
+                                        ConnectionState.done) {
+                                      if (snapshot.hasData) {
+                                        List<String?> data = snapshot.data!;
+                                        long = double.parse(data[0]!);
+                                        lat = double.parse(data[1]!);
+                                        return BlocProvider(
+                                            create: (context) => PilihKawasanBloc(
+                                                categoryRepository: context
+                                                    .read<CategoryRepository>())
+                                              ..add(GetDistanceKawasan(
+                                                  lat: lat.toString(),
+                                                  long: long.toString())),
+                                            child: BlocBuilder<PilihKawasanBloc,
+                                                PilihKawasanState>(
+                                              builder: (context, state) {
+                                                final status = state.status;
+                                                if (status ==
+                                                    PilihKawasanStatus
+                                                        .loading) {
+                                                  return const Center(
+                                                    child:
+                                                        CircularProgressIndicator(),
+                                                  );
+                                                } else if (status ==
+                                                    PilihKawasanStatus
+                                                        .failure) {
+                                                  return const Center(
+                                                    child: Text(
+                                                        'Terjadi kesalahan'),
+                                                  );
+                                                } else if (status ==
+                                                    PilihKawasanStatus
+                                                        .success) {
+                                                  lat = state.items?[0]
+                                                      .kawasan_latitude;
+                                                  long = state.items?[0]
+                                                      .kawasan_longitude;
+                                                  // final items = state.items!;
+                                                  return DropdownButtonFormField<
+                                                      PilihKawasanModel>(
+                                                    isExpanded: true,
+                                                    items: state.items!
+                                                        .map((kawasan) =>
+                                                            DropdownMenuItem(
+                                                              value: kawasan,
+                                                              child: Text(
+                                                                kawasan.name
+                                                                    .toString(),
+                                                                style: const TextStyle(
+                                                                    color: Colors
+                                                                        .black),
+                                                              ),
+                                                            ))
+                                                        .toList(),
+                                                    value: state.items![0],
+                                                    icon: const Icon(
+                                                      Icons
+                                                          .keyboard_arrow_down_rounded,
+                                                      color: Colors.white,
+                                                    ),
                                                     style: const TextStyle(
-                                                        color: Colors.black),
-                                                  ),
-                                                ))
-                                            .toList(),
-                                        value: state.items![0],
-                                        icon: const Icon(
-                                          Icons.keyboard_arrow_down_rounded,
-                                          color: Colors.white,
-                                        ),
-                                        style: const TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
-                                        ),
-                                        selectedItemBuilder:
-                                            (BuildContext context) {
-                                          return state.items!
-                                              .map<Widget>((item) => Text(
-                                                    item.name.toString(),
-                                                    style: const TextStyle(
-                                                        color: Colors.white),
-                                                  ))
-                                              .toList();
-                                        },
-                                        decoration: const InputDecoration(
-                                          border: InputBorder.none,
-                                        ),
-                                        onChanged: (val) {
-                                          setState(() {
-                                            lat = val?.kawasan_latitude;
-                                            long = val?.kawasan_longitude;
-                                          });
-                                        },
-                                      );
+                                                      color: Colors.white,
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                    ),
+                                                    selectedItemBuilder:
+                                                        (BuildContext context) {
+                                                      return state.items!
+                                                          .map<Widget>(
+                                                              (item) => Text(
+                                                                    item.name
+                                                                        .toString(),
+                                                                    style: const TextStyle(
+                                                                        color: Colors
+                                                                            .white),
+                                                                  ))
+                                                          .toList();
+                                                    },
+                                                    decoration:
+                                                        const InputDecoration(
+                                                      border: InputBorder.none,
+                                                    ),
+                                                    onChanged: (val) {
+                                                      setState(() {
+                                                        lat = val
+                                                            ?.kawasan_latitude;
+                                                        long = val
+                                                            ?.kawasan_longitude;
+                                                        context
+                                                            .read<
+                                                                AppSharedPref>()
+                                                            .setLat(
+                                                                lat.toString());
+                                                        context
+                                                            .read<
+                                                                AppSharedPref>()
+                                                            .setLong(long
+                                                                .toString());
+                                                      });
+                                                      listMerchantLoginBloc.add(GetListMerchantLogin(widget.id));
+                                                    },
+                                                  );
+                                                }
+                                                return const SizedBox.shrink();
+                                              },
+                                            ));
+                                      } else {
+                                        // handle error case
+                                        return Text(snapshot.error.toString());
+                                      }
+                                    } else {
+                                      // show progress indicator
+                                      return const CircularProgressIndicator();
                                     }
-                                    return const SizedBox.shrink();
                                   },
                                 ),
                               ),

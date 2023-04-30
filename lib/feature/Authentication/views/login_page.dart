@@ -524,93 +524,7 @@ class _LoginViewState extends State<LoginView> {
                     style: extraBigText.copyWith(fontWeight: FontWeight.bold),
                   ),
                 ),
-                InkWell(
-                  onTap: () {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: ((context) {
-                          return infoCart2();
-                        }));
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //     // builder: (context) => const HomePage(),
-                    //     // builder: (context) => const LinkEmailPage(),
-                    //     builder: (context) => const AdminDashboard(),
-                    //     // builder: (context) => const PembeliDashboardPage(),
-                    //   ),
-                    // );
-                  },
-                  child: Container(
-                    width: 370,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 75, vertical: 14),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                            blurRadius: 1,
-                          ),
-                        ]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset('assets/icons/subadmin.png'),
-                        Text(
-                          "Masuk Sebagai Admin Apps",
-                          style: bigText.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                InkWell(
-                  onTap: () {
-                    showDialog(
-                        barrierDismissible: false,
-                        context: context,
-                        builder: ((context) {
-                          return infoCart();
-                        }));
-                  },
-                  child: Container(
-                    width: 370,
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 50, vertical: 14),
-                    decoration: const BoxDecoration(
-                        borderRadius: BorderRadius.all(Radius.circular(8)),
-                        color: Colors.white,
-                        boxShadow: [
-                          BoxShadow(
-                            color: Colors.grey,
-                            offset: Offset(0, 0),
-                            spreadRadius: 0,
-                            blurRadius: 1,
-                          ),
-                        ]),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Image.asset('assets/icons/admin.png'),
-                        Text(
-                          "Masuk Sebagai Admin & Sub-Admin",
-                          style: bigText.copyWith(fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
+
                 BlocListener<AuthenticationBloc, AuthenticationState>(
                   listener: (ctx, state) {
                     if (state is AuthenticationStateSuccess) {
@@ -671,14 +585,116 @@ class _LoginViewState extends State<LoginView> {
                     ),
                   ),
                 ),
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(vertical: 18),
-                //   child: Text(
-                //     "ATAU",
-                //     style: extraBigText.copyWith(
-                //         fontWeight: FontWeight.bold, color: MyColors.grey2),
-                //   ),
-                // ),
+
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 18),
+                  child: Text(
+                    "ATAU",
+                    style: extraBigText.copyWith(
+                        fontWeight: FontWeight.bold, color: MyColors.grey2),
+                  ),
+                ),
+                SizedBox(
+                  width: 370,
+                  child: ExpansionTile(
+                    title: const Text("Lainnya"),
+                    iconColor: Colors.red,
+                    initiallyExpanded: false,
+                    textColor: Colors.red,
+                    expandedAlignment: Alignment.center,
+                    children: [
+                      InkWell(
+                        onTap: () {
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: ((context) {
+                                return infoCart2();
+                              }));
+                          // Navigator.push(
+                          //   context,
+                          //   MaterialPageRoute(
+                          //     // builder: (context) => const HomePage(),
+                          //     // builder: (context) => const LinkEmailPage(),
+                          //     builder: (context) => const AdminDashboard(),
+                          //     // builder: (context) => const PembeliDashboardPage(),
+                          //   ),
+                          // );
+                        },
+                        child: Container(
+                          width: 370,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 75, vertical: 14),
+                          decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(0, 0),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                ),
+                              ]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset('assets/icons/subadmin.png'),
+                              Text(
+                                "Masuk Sebagai Admin Apps",
+                                style:
+                                    bigText.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                      const SizedBox(
+                        height: 20,
+                      ),
+                      InkWell(
+                        onTap: () {
+                          showDialog(
+                              barrierDismissible: false,
+                              context: context,
+                              builder: ((context) {
+                                return infoCart();
+                              }));
+                        },
+                        child: Container(
+                          width: 370,
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 50, vertical: 14),
+                          decoration: const BoxDecoration(
+                              borderRadius: BorderRadius.all(Radius.circular(8)),
+                              color: Colors.white,
+                              boxShadow: [
+                                BoxShadow(
+                                  color: Colors.grey,
+                                  offset: Offset(0, 0),
+                                  spreadRadius: 0,
+                                  blurRadius: 1,
+                                ),
+                              ]),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Image.asset('assets/icons/admin.png'),
+                              Text(
+                                "Masuk Sebagai Admin & Sub-Admin",
+                                style:
+                                    bigText.copyWith(fontWeight: FontWeight.bold),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                       const SizedBox(
+                        height: 20,
+                      ),
+                    ],
+                  ),
+                ),
                 // const CustomTextfield1(
                 //   label: "Email",
                 // ),

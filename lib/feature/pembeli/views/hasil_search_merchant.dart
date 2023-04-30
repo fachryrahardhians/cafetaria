@@ -39,7 +39,8 @@ class HasilMerchant extends StatelessWidget {
           BlocProvider(
               create: (context) => PilihKawasanBloc(
                   categoryRepository: context.read<CategoryRepository>())
-                ..add(const GetPilihKawasan()))
+                ..add(GetDistanceKawasan(
+                    lat: lat.toString(), long: long.toString())))
         ],
         child: HasilSearchMerchant(
           search: cari,

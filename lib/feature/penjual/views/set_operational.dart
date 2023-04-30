@@ -5,8 +5,7 @@ import 'package:cafetaria/feature/penjual/bloc/days_bloc/days_bloc.dart';
 import 'package:cafetaria/feature/penjual/views/set_open.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/box_shadows.dart';
-import 'package:cafetaria/styles/colors.dart';
-import 'package:cafetaria/styles/text_styles.dart';
+
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:fluttertoast/fluttertoast.dart';
@@ -284,30 +283,34 @@ class _SetOperationalWidgetState extends State<SetOperationalWidget> {
                 return const SizedBox.shrink();
               },
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text(
-                  convertDateTime(_selectedDay!),
-                ),
-                Padding(
-                  padding: const EdgeInsets.only(right: 230),
-                  child: Text(
-                    close == true ? " tutup" : " Buka",
-                    style: const TextStyle(fontWeight: FontWeight.bold),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: Row(
+                mainAxisSize: MainAxisSize.min,
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    convertDateTime(_selectedDay!),
                   ),
-                ),
-                Switch(
-                  value: close,
-                  onChanged: (val) {
-                    setState(() {
-                      close = val;
-                    });
-                  },
-                  activeColor: Colors.white,
-                  activeTrackColor: Colors.green,
-                ),
-              ],
+                  Padding(
+                    padding: const EdgeInsets.only(right: 150),
+                    child: Text(
+                      close == true ? " tutup" : " Buka",
+                      style: const TextStyle(fontWeight: FontWeight.bold),
+                    ),
+                  ),
+                  Switch(
+                    value: close,
+                    onChanged: (val) {
+                      setState(() {
+                        close = val;
+                      });
+                    },
+                    activeColor: Colors.white,
+                    activeTrackColor: Colors.green,
+                  ),
+                ],
+              ),
             ),
             BlocBuilder<DaysBloc, DaysState>(builder: (context, state) {
               final status = state.status;

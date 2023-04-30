@@ -14,7 +14,7 @@ class OrderRepository {
 
   Future<List<HistoryModel>> getListOrderHistory(
       String status, String userId) async {
-    int retries = 3;
+    int retries = 5;
     while (retries > 0) {
       try {
         final snapshot = await _firestore
@@ -29,7 +29,7 @@ class OrderRepository {
         if (retries == 0) {
           throw Exception('Failed to get history');
         }
-        await Future.delayed(Duration(seconds: 2));
+        await Future.delayed(const Duration(seconds: 3));
       }
     }
     return [];
