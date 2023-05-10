@@ -9,6 +9,7 @@ import 'package:cafetaria/feature/pembeli/views/create_merchant_page.dart';
 import 'package:cafetaria/feature/Authentication/views/pilih_kawasan.dart';
 import 'package:cafetaria/feature/pembeli/views/register_sub_admin.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cafetaria/utilities/feedback.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
@@ -284,6 +285,24 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                           ),
                           const SizedBox(height: 20),
                         ],
+                      ),
+                      SizedBox(
+                        width: double.infinity,
+                        child: TextButton(
+                            child: const Align(
+                              alignment: Alignment.centerLeft,
+                              child: Text("Beri Saran",
+                                  style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.normal)),
+                            ),
+                            onPressed: () {
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => const FeedBackPage(),
+                                  ));
+                            }),
                       ),
                       const Spacer(),
                       SizedBox(
