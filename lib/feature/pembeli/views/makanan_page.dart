@@ -193,6 +193,7 @@ class _ListMenuState extends State<ListMenu> {
                     return Text(state.errorMessage.toString());
                   } else if (state.status ==
                       ListMerchantCategoryStatus.success) {
+                   
                     return CustomScrollView(
                       controller: _scrollController,
                       slivers: [
@@ -393,7 +394,7 @@ class _ListMenuState extends State<ListMenu> {
                                   SizedBox(
                                       height: SizeConfig.safeBlockVertical * 2),
                                   _merchantInfo(
-                                      widget.rating,
+                                     double.parse(widget.rating!.toStringAsFixed(2)),
                                       widget.jumlahUlasan,
                                       widget.minPrice,
                                       widget.maxPrice),

@@ -115,8 +115,8 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
         (AddMenuPenjualBloc bloc) => bloc.state.checkMenuRecomendAccepted);
     final checkBookedMenu = context.select(
         (AddMenuPenjualBloc bloc) => bloc.state.checkMenuBookedAccepted);
-  final checkedFoodKit = context.select(
-        (AddMenuPenjualBloc bloc) => bloc.state.foodKit);
+    final checkedFoodKit =
+        context.select((AddMenuPenjualBloc bloc) => bloc.state.foodKit);
     final image = context.select((AddMenuPenjualBloc bloc) => bloc.state.image);
 
     final uploadProgressState =
@@ -143,13 +143,13 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
           );
         }
         if (state.uploadProgress?.status == UploadStatus.uploaded) {
-          ScaffoldMessenger.of(context)
-            ..hideCurrentSnackBar()
-            ..showSnackBar(
-              const SnackBar(
-                content: Text('Foto berhasil diupload'),
-              ),
-            );
+          // ScaffoldMessenger.of(context)
+          //   ..hideCurrentSnackBar()
+          //   ..showSnackBar(
+          //     const SnackBar(
+          //       content: Text('Foto berhasil diupload'),
+          //     ),
+          //   );
         }
       },
       child: Scaffold(
@@ -162,7 +162,6 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
         bottomNavigationBar: Padding(
           padding: const EdgeInsets.all(24.0),
           child: CFButton.primary(
-            child: loading ? const Text('LOADING') : const Text('SIMPAN'),
             onPressed: checkButton(image, menuPenjualState)
                 ? () {
                     setState(() {
@@ -178,6 +177,7 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                     }
                   }
                 : null,
+            child: loading ? const Text('LOADING') : const Text('SIMPAN'),
           ),
         ),
         body: Padding(
@@ -300,42 +300,83 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                     )
                   : const SizedBox.shrink(),
               checkStock
-                  ? IgnorePointer(
-                      ignoring: !checkStock,
-                      child: AnimatedOpacity(
-                        opacity: checkStock == true ? 1.0 : 0.0,
-                        duration: const Duration(seconds: 3),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Text(
-                              'Harga Jual',
-                              style: TextStyle(
-                                color: CFColors.grayscaleBlack80,
-                                fontSize: 12,
-                                fontWeight: FontWeight.w500,
-                              ),
+                  ? Column(
+                      children: [
+                        IgnorePointer(
+                          ignoring: !checkStock,
+                          child: AnimatedOpacity(
+                            opacity: checkStock == true ? 1.0 : 0.0,
+                            duration: const Duration(seconds: 3),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Harga Jual',
+                                  style: TextStyle(
+                                    color: CFColors.grayscaleBlack80,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                CFTextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: "Harga Jual",
+                                  ),
+                                  initialValue: widget.menu == null
+                                      ? ''
+                                      : widget.menu!.price.toString(),
+                                  onChanged: (val) {
+                                    context
+                                        .read<AddMenuPenjualBloc>()
+                                        .add(HargaJualChange(val));
+                                    // context.read<AddMenuPenjualBloc>().add(DescriptionChange(val));
+                                  },
+                                ),
+                              ],
                             ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            CFTextFormField(
-                              decoration: const InputDecoration(
-                                labelText: "Harga Jual",
-                              ),
-                              initialValue: widget.menu == null
-                                  ? ''
-                                  : widget.menu!.price.toString(),
-                              onChanged: (val) {
-                                context
-                                    .read<AddMenuPenjualBloc>()
-                                    .add(HargaJualChange(val));
-                                // context.read<AddMenuPenjualBloc>().add(DescriptionChange(val));
-                              },
-                            ),
-                          ],
+                          ),
                         ),
-                      ),
+                        IgnorePointer(
+                          ignoring: !checkStock,
+                          child: AnimatedOpacity(
+                            opacity: checkStock == true ? 1.0 : 0.0,
+                            duration: const Duration(seconds: 3),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Jumlah Stok',
+                                  style: TextStyle(
+                                    color: CFColors.grayscaleBlack80,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.w500,
+                                  ),
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                CFTextFormField(
+                                  decoration: const InputDecoration(
+                                    labelText: "Jumlah Stok",
+                                  ),
+                                  initialValue: widget.menu == null
+                                      ? ''
+                                      : widget.menu!.price.toString(),
+                                  onChanged: (val) {
+                                    context
+                                        .read<AddMenuPenjualBloc>()
+                                        .add(JumlahStokChange(val));
+                                    // context.read<AddMenuPenjualBloc>().add(DescriptionChange(val));
+                                  },
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
                     )
                   : const SizedBox.shrink(),
               // const SizedBox(
@@ -614,7 +655,7 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
                   ),
                 ],
               ),
-               Row(
+              Row(
                 children: [
                   Checkbox(
                     value: checkedFoodKit,

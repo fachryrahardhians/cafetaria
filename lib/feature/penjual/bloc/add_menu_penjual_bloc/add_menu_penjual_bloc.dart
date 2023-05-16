@@ -30,6 +30,7 @@ class AddMenuPenjualBloc
     on<KategoriChange>(_kategoriChange);
     on<CheckedStock>(_checkedStock);
     on<HargaJualChange>(_hargaJualChange);
+    on<JumlahStokChange>(_jumlahStokChange);
     on<AddTagMenu>(_addTagMenu);
     on<TageMenuChange>(_tagMenuChange);
     on<ChoosePhoto>(_choosePhoto);
@@ -154,6 +155,27 @@ class AddMenuPenjualBloc
       categoryInput: state.categoryInput,
       deskripsiInput: state.deskripsiInput,
       hargaInput: harga,
+      tagInput: state.tagInput,
+      tagging: state.tagging,
+      image: state.image,
+      imageUrl: state.imageUrl,
+      checkStockAccepted: state.checkStockAccepted,
+      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+    ));
+  }
+
+  FutureOr<void> _jumlahStokChange(
+    JumlahStokChange event,
+    Emitter<AddMenuPenjualState> emit,
+  ) {
+    emit(state.copyWith(
+      status: state.status,
+      menuInput: state.menuInput,
+      categoryInput: state.categoryInput,
+      deskripsiInput: state.deskripsiInput,
+      hargaInput: state.hargaInput,
+      stok: event.jumlahStok,
       tagInput: state.tagInput,
       tagging: state.tagging,
       image: state.image,
@@ -336,89 +358,25 @@ class AddMenuPenjualBloc
     Emitter<AddMenuPenjualState> emit,
   ) async {
     emit(state.copyWith(
-      status: FormzStatus.submissionInProgress,
-      menuInput: state.menuInput,
-      categoryInput: state.categoryInput,
-      deskripsiInput: state.deskripsiInput,
-      hargaInput: state.hargaInput,
-      tagInput: state.tagInput,
-      tagging: state.tagging,
-      image: state.image,
-      uploadProgress: state.uploadProgress,
-      imageUrl: state.imageUrl,
-      checkStockAccepted: state.checkStockAccepted,
-      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
-      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
-      foodKit: state.foodKit
-    ));
+        status: FormzStatus.submissionInProgress,
+        menuInput: state.menuInput,
+        categoryInput: state.categoryInput,
+        deskripsiInput: state.deskripsiInput,
+        hargaInput: state.hargaInput,
+        tagInput: state.tagInput,
+        tagging: state.tagging,
+        image: state.image,
+        uploadProgress: state.uploadProgress,
+        imageUrl: state.imageUrl,
+        checkStockAccepted: state.checkStockAccepted,
+        checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+        checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+        foodKit: state.foodKit));
     SharedPreferences idmercahnt = await SharedPreferences.getInstance();
     String id = idmercahnt.getString("merchantId").toString();
     final menu = MenuModel(
-      menuId: _uuid.v4(),
-
-      /// TODO(@Burhan): id merchant still hardcode
-      merchantId: id,
-      name: state.menuInput.value,
-      autoResetStock: state.checkStockAccepted,
-      categoryId: state.categoryInput.value,
-      desc: state.deskripsiInput.value,
-      image: state.uploadProgress!.downloadUrl!,
-      isPreOrder: state.checkMenuBookedAccepted,
-      isRecomended: state.checkMenuRecomendAccepted,
-      price: int.parse(state.hargaInput.value),
-      stock: 0,
-      tags: state.tagging,
-      foodKit: state.foodKit
-    );
-
-    await _menuRepository.addMenu(menu);
-
-    emit(state.copyWith(
-      status: FormzStatus.submissionSuccess,
-      menuInput: state.menuInput,
-      categoryInput: state.categoryInput,
-      deskripsiInput: state.deskripsiInput,
-      hargaInput: state.hargaInput,
-      tagInput: state.tagInput,
-      tagging: state.tagging,
-      image: state.image,
-      uploadProgress: state.uploadProgress,
-      imageUrl: state.imageUrl,
-      checkStockAccepted: state.checkStockAccepted,
-      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
-      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
-      foodKit: state.foodKit
-    ));
-  }
-
-  Future<void> _updateMenu(
-    UpdateMenu event,
-    Emitter<AddMenuPenjualState> emit,
-  ) async {
-    emit(state.copyWith(
-      status: FormzStatus.submissionInProgress,
-      menuInput: state.menuInput,
-      categoryInput: state.categoryInput,
-      deskripsiInput: state.deskripsiInput,
-      hargaInput: state.hargaInput,
-      tagInput: state.tagInput,
-      tagging: state.tagging,
-      image: state.image,
-      uploadProgress: state.uploadProgress,
-      imageUrl: state.imageUrl,
-      checkStockAccepted: state.checkStockAccepted,
-      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
-      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
-      foodKit: state.foodKit
-    ));
-    SharedPreferences idmercahnt = await SharedPreferences.getInstance();
-    String id = idmercahnt.getString("merchantId").toString();
-    final MenuModel menu;
-    if (event.updatePhoto) {
-      menu = MenuModel(
-        menuId: event.menuId,
-
-        /// TODO(@Burhan): id merchant still hardcode
+        menuId: _uuid.v4(),
+        defaultStock: int.parse(state.stok.toString()),
         merchantId: id,
         name: state.menuInput.value,
         autoResetStock: state.checkStockAccepted,
@@ -428,48 +386,105 @@ class AddMenuPenjualBloc
         isPreOrder: state.checkMenuBookedAccepted,
         isRecomended: state.checkMenuRecomendAccepted,
         price: int.parse(state.hargaInput.value),
-        stock: 0,
+        stock: int.parse(state.stok.toString()),
         tags: state.tagging,
-        foodKit: state.foodKit
-      );
+        foodKit: state.foodKit);
+
+    await _menuRepository.addMenu(menu);
+
+    emit(state.copyWith(
+        status: FormzStatus.submissionSuccess,
+        menuInput: state.menuInput,
+        categoryInput: state.categoryInput,
+        deskripsiInput: state.deskripsiInput,
+        hargaInput: state.hargaInput,
+        tagInput: state.tagInput,
+        tagging: state.tagging,
+        image: state.image,
+        uploadProgress: state.uploadProgress,
+        imageUrl: state.imageUrl,
+        checkStockAccepted: state.checkStockAccepted,
+        checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+        checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+        foodKit: state.foodKit));
+  }
+
+  Future<void> _updateMenu(
+    UpdateMenu event,
+    Emitter<AddMenuPenjualState> emit,
+  ) async {
+    emit(state.copyWith(
+        status: FormzStatus.submissionInProgress,
+        menuInput: state.menuInput,
+        categoryInput: state.categoryInput,
+        deskripsiInput: state.deskripsiInput,
+        hargaInput: state.hargaInput,
+        tagInput: state.tagInput,
+        tagging: state.tagging,
+        image: state.image,
+        uploadProgress: state.uploadProgress,
+        imageUrl: state.imageUrl,
+        checkStockAccepted: state.checkStockAccepted,
+        checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+        checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+        foodKit: state.foodKit));
+    SharedPreferences idmercahnt = await SharedPreferences.getInstance();
+    String id = idmercahnt.getString("merchantId").toString();
+    final MenuModel menu;
+    if (event.updatePhoto) {
+      menu = MenuModel(
+          menuId: event.menuId,
+          defaultStock: int.parse(state.stok.toString()),
+
+          /// TODO(@Burhan): id merchant still hardcode
+          merchantId: id,
+          name: state.menuInput.value,
+          autoResetStock: state.checkStockAccepted,
+          categoryId: state.categoryInput.value,
+          desc: state.deskripsiInput.value,
+          image: state.uploadProgress!.downloadUrl!,
+          isPreOrder: state.checkMenuBookedAccepted,
+          isRecomended: state.checkMenuRecomendAccepted,
+          price: int.parse(state.hargaInput.value),
+          stock: int.parse(state.stok.toString()),
+          tags: state.tagging,
+          foodKit: state.foodKit);
     } else {
       menu = MenuModel(
-        menuId: event.menuId,
+          menuId: event.menuId,
 
-        /// TODO(@Burhan): id merchant still hardcode
-        merchantId: id,
-        name: state.menuInput.value,
-        autoResetStock: state.checkStockAccepted,
-        categoryId: state.categoryInput.value,
-        desc: state.deskripsiInput.value,
-        image: event.photoUrl,
-        isPreOrder: state.checkMenuBookedAccepted,
-        isRecomended: state.checkMenuRecomendAccepted,
-        price: int.parse(state.hargaInput.value),
-        stock: 0,
-        tags: state.tagging,
-        foodKit: state.foodKit
-      );
+          /// TODO(@Burhan): id merchant still hardcode
+          merchantId: id,
+          name: state.menuInput.value,
+          autoResetStock: state.checkStockAccepted,
+          categoryId: state.categoryInput.value,
+          desc: state.deskripsiInput.value,
+          image: event.photoUrl,
+          isPreOrder: state.checkMenuBookedAccepted,
+          isRecomended: state.checkMenuRecomendAccepted,
+          price: int.parse(state.hargaInput.value),
+          stock: 0,
+          tags: state.tagging,
+          foodKit: state.foodKit);
     }
 
     await _menuRepository.editMenu(menu);
 
     emit(state.copyWith(
-      status: FormzStatus.submissionSuccess,
-      menuInput: state.menuInput,
-      categoryInput: state.categoryInput,
-      deskripsiInput: state.deskripsiInput,
-      hargaInput: state.hargaInput,
-      tagInput: state.tagInput,
-      tagging: state.tagging,
-      image: state.image,
-      uploadProgress: state.uploadProgress,
-      imageUrl: state.imageUrl,
-      checkStockAccepted: state.checkStockAccepted,
-      checkMenuBookedAccepted: state.checkMenuBookedAccepted,
-      checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
-      foodKit: state.foodKit
-    ));
+        status: FormzStatus.submissionSuccess,
+        menuInput: state.menuInput,
+        categoryInput: state.categoryInput,
+        deskripsiInput: state.deskripsiInput,
+        hargaInput: state.hargaInput,
+        tagInput: state.tagInput,
+        tagging: state.tagging,
+        image: state.image,
+        uploadProgress: state.uploadProgress,
+        imageUrl: state.imageUrl,
+        checkStockAccepted: state.checkStockAccepted,
+        checkMenuBookedAccepted: state.checkMenuBookedAccepted,
+        checkMenuRecomendAccepted: state.checkMenuRecomendAccepted,
+        foodKit: state.foodKit));
   }
 
   FutureOr<void> _deleteImage(

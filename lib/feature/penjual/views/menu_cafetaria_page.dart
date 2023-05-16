@@ -8,6 +8,7 @@ import 'package:cafetaria/feature/penjual/views/add_menu_penjual_page.dart';
 import 'package:cafetaria/feature/penjual/views/add_stock_menu.dart';
 import 'package:cafetaria/feature/penjual/views/choose_menu_page.dart';
 import 'package:cafetaria/feature/penjual/views/edit_opsi_menu.dart';
+import 'package:cafetaria/feature/penjual/views/hapus_kategori.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
 import 'package:category_repository/category_repository.dart';
@@ -226,7 +227,7 @@ class _ModalBottomSheet extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 300,
+      height: 400,
       child: Padding(
         padding: const EdgeInsets.all(24.0),
         child: Column(
@@ -245,8 +246,9 @@ class _ModalBottomSheet extends StatelessWidget {
               onTap: () async {
                 await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AddMenuPage()),
+                  MaterialPageRoute(builder: (_) => const AddMenuPenjualPage()),
                 );
+                // ignore: use_build_context_synchronously
                 Navigator.pop(context);
               },
               desc: 'mis : Ayam bakar, milk tea madu',
@@ -254,22 +256,27 @@ class _ModalBottomSheet extends StatelessWidget {
             const SizedBox(height: 10),
             ListMenu(
               title: 'Tambah Kategori Baru',
-              onTap: () {
-                Navigator.push(
+              onTap: () async {
+                await Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (_) => const AddMenuPenjualPage()),
-                ).then(
-                  (value) {
-                    // context
-                    //     .read<MenuMakananBloc>()
-                    //     .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));
-                    // Navigator.pop(context);
-                  },
+                  MaterialPageRoute(builder: (_) => const AddMenuPage()),
                 );
+                Navigator.pop(context);
               },
               desc: 'mis : Ayam, ikan, minuman',
             ),
             const SizedBox(height: 10),
+            ListMenu(
+              title: 'Hapus Kategori',
+              onTap: () async {
+                await Navigator.push(
+                  context,
+                  MaterialPageRoute(builder: (_) => const HapusKategori()),
+                );
+                Navigator.pop(context);
+              },
+              desc: 'Menghapus Kategori Yang sudah dibuat',
+            ),
           ],
         ),
       ),
@@ -657,6 +664,7 @@ class BottomDaftarMenuWidget extends StatelessWidget {
             return const _ModalBottomSheet();
           },
         );
+        // ignore: use_build_context_synchronously
         context
             .read<MenuMakananBloc>()
             .add(const GetMenuMakanan('0DzobjgsR7jF8qWvCoG0'));

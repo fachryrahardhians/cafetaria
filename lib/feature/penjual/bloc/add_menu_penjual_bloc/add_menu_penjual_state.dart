@@ -1,22 +1,22 @@
 part of 'add_menu_penjual_bloc.dart';
 
 class AddMenuPenjualState extends Equatable {
-  const AddMenuPenjualState({
-    this.status = FormzStatus.pure,
-    this.categoryInput = const CategoryInput.pure(),
-    this.deskripsiInput = const DeskripsiInput.pure(),
-    this.menuInput = const MenuInput.pure(),
-    this.hargaInput = const HargaInput.pure(),
-    this.tagInput = const TagInput.pure(),
-    this.tagging = const <String>[],
-    this.image,
-    this.imageUrl,
-    this.checkStockAccepted = false,
-    this.checkMenuRecomendAccepted = false,
-    this.checkMenuBookedAccepted = false,
-    this.foodKit = false,
-    this.uploadProgress,
-  });
+  const AddMenuPenjualState(
+      {this.status = FormzStatus.pure,
+      this.categoryInput = const CategoryInput.pure(),
+      this.deskripsiInput = const DeskripsiInput.pure(),
+      this.menuInput = const MenuInput.pure(),
+      this.hargaInput = const HargaInput.pure(),
+      this.tagInput = const TagInput.pure(),
+      this.tagging = const <String>[],
+      this.image,
+      this.imageUrl,
+      this.checkStockAccepted = false,
+      this.checkMenuRecomendAccepted = false,
+      this.checkMenuBookedAccepted = false,
+      this.foodKit = false,
+      this.uploadProgress,
+      this.stok});
 
   final FormzStatus status;
   final CategoryInput categoryInput;
@@ -27,6 +27,7 @@ class AddMenuPenjualState extends Equatable {
   final List<String> tagging;
   final File? image;
   final String? imageUrl;
+  final String? stok;
   final bool checkStockAccepted;
   final bool checkMenuRecomendAccepted;
   final bool checkMenuBookedAccepted;
@@ -48,42 +49,43 @@ class AddMenuPenjualState extends Equatable {
         checkMenuBookedAccepted,
         uploadProgress,
         tagInput,
-        foodKit
+        foodKit,
+        stok
       ];
 
-  AddMenuPenjualState copyWith({
-    FormzStatus? status,
-    CategoryInput? categoryInput,
-    DeskripsiInput? deskripsiInput,
-    MenuInput? menuInput,
-    HargaInput? hargaInput,
-    TagInput? tagInput,
-    List<String>? tagging,
-    File? image,
-    String? imageUrl,
-    bool? checkStockAccepted,
-    bool? checkMenuRecomendAccepted,
-    bool? checkMenuBookedAccepted,
-    UploadProgress? uploadProgress,
-    bool? foodKit
-  }) {
+  AddMenuPenjualState copyWith(
+      {FormzStatus? status,
+      CategoryInput? categoryInput,
+      DeskripsiInput? deskripsiInput,
+      MenuInput? menuInput,
+      HargaInput? hargaInput,
+      TagInput? tagInput,
+      List<String>? tagging,
+      File? image,
+      String? imageUrl,
+      bool? checkStockAccepted,
+      bool? checkMenuRecomendAccepted,
+      bool? checkMenuBookedAccepted,
+      UploadProgress? uploadProgress,
+      String? stok,
+      bool? foodKit}) {
     return AddMenuPenjualState(
-      status: status ?? this.status,
-      categoryInput: categoryInput ?? this.categoryInput,
-      deskripsiInput: deskripsiInput ?? this.deskripsiInput,
-      menuInput: menuInput ?? this.menuInput,
-      hargaInput: hargaInput ?? this.hargaInput,
-      tagInput: tagInput ?? this.tagInput,
-      tagging: tagging ?? this.tagging,
-      image: image ?? this.image,
-      imageUrl: imageUrl ?? this.imageUrl,
-      checkStockAccepted: checkStockAccepted ?? this.checkStockAccepted,
-      checkMenuRecomendAccepted:
-          checkMenuRecomendAccepted ?? this.checkMenuRecomendAccepted,
-      checkMenuBookedAccepted:
-          checkMenuBookedAccepted ?? this.checkMenuBookedAccepted,
-      uploadProgress: uploadProgress ?? this.uploadProgress,
-      foodKit: foodKit ?? this.foodKit
-    );
+        status: status ?? this.status,
+        categoryInput: categoryInput ?? this.categoryInput,
+        deskripsiInput: deskripsiInput ?? this.deskripsiInput,
+        menuInput: menuInput ?? this.menuInput,
+        hargaInput: hargaInput ?? this.hargaInput,
+        tagInput: tagInput ?? this.tagInput,
+        tagging: tagging ?? this.tagging,
+        image: image ?? this.image,
+        stok: stok ?? this.stok,
+        imageUrl: imageUrl ?? this.imageUrl,
+        checkStockAccepted: checkStockAccepted ?? this.checkStockAccepted,
+        checkMenuRecomendAccepted:
+            checkMenuRecomendAccepted ?? this.checkMenuRecomendAccepted,
+        checkMenuBookedAccepted:
+            checkMenuBookedAccepted ?? this.checkMenuBookedAccepted,
+        uploadProgress: uploadProgress ?? this.uploadProgress,
+        foodKit: foodKit ?? this.foodKit);
   }
 }

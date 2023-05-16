@@ -117,6 +117,14 @@ class CategoryRepository {
     // add to firestore
     await _firestore.collection('category').doc(id).set(data);
   }
+
+  Future<void> deleteCategory(String categoryId) async {
+    try {
+      await _firestore.collection('category').doc(categoryId).delete();
+    } catch (e) {
+      throw Exception(e.toString());
+    }
+  }
 }
 
 extension on List<QueryDocumentSnapshot> {
