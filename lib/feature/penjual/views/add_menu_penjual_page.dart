@@ -87,15 +87,13 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
       if (image != null &&
           menuPenjualState.menuInput.valid &&
           menuPenjualState.deskripsiInput.valid &&
-          menuPenjualState.categoryInput.valid &&
-          menuPenjualState.tagging.isNotEmpty)
+          menuPenjualState.categoryInput.valid)
         return true;
       else
         return false;
     } else if (menuPenjualState.menuInput.valid &&
         menuPenjualState.deskripsiInput.valid &&
-        menuPenjualState.categoryInput.valid &&
-        menuPenjualState.tagging.isNotEmpty)
+        menuPenjualState.categoryInput.valid)
       return true;
     else
       return false;
@@ -103,6 +101,14 @@ class _AddMenuPenjualViewState extends State<AddMenuPenjualView> {
 
   @override
   Widget build(BuildContext context) {
+    // context.watch<MenuMakananBloc>().state.status == MenuMakananStatus.success
+    //     ? context.read<AddMenuPenjualBloc>().add(KategoriChange(context
+    //         .watch<MenuMakananBloc>()
+    //         .state
+    //         .items![0]
+    //         .categoryId
+    //         .toString()))
+    //     : null;
     final _picker = ImagePicker();
     final listTagging =
         context.select((AddMenuPenjualBloc bloc) => bloc.state.tagging);

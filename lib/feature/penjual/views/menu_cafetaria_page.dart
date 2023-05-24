@@ -1,3 +1,5 @@
+// ignore_for_file: prefer_is_empty
+
 import 'dart:async';
 
 import 'package:cafetaria/feature/penjual/bloc/list_menu_bloc/list_menu_bloc.dart';
@@ -242,6 +244,7 @@ class _ModalBottomSheet extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ListMenu(
+              picture: Image.asset(Assets.images.illMenu.path),
               title: 'Tambah Menu Baru',
               onTap: () async {
                 await Navigator.push(
@@ -255,6 +258,7 @@ class _ModalBottomSheet extends StatelessWidget {
             ),
             const SizedBox(height: 10),
             ListMenu(
+              picture: Image.asset(Assets.images.illKategori.path),
               title: 'Tambah Kategori Baru',
               onTap: () async {
                 await Navigator.push(
@@ -290,11 +294,13 @@ class ListMenu extends StatelessWidget {
     required this.onTap,
     required this.title,
     required this.desc,
+    this.picture,
   }) : super(key: key);
 
   final VoidCallback onTap;
   final String title;
   final String desc;
+  final Widget? picture;
 
   @override
   Widget build(BuildContext context) {
@@ -318,10 +324,11 @@ class ListMenu extends StatelessWidget {
           padding: const EdgeInsets.all(16.0),
           child: Row(
             children: [
-              Assets.images.maskgroup.image(
-                width: 64,
-                height: 64,
-              ),
+              picture ??
+                  Assets.images.maskgroup.image(
+                    width: 64,
+                    height: 64,
+                  ),
               const SizedBox(
                 width: 18,
               ),
@@ -364,7 +371,6 @@ class ListMenuWidget extends StatelessWidget {
   Widget build(BuildContext context) {
     final status = context.watch<MenuMakananBloc>().state.status;
     final oCcy = NumberFormat("#,##0.00", "IDR");
-
     if (status == MenuMakananStatus.loading) {
       return const Center(
         child: CircularProgressIndicator(),
@@ -376,6 +382,7 @@ class ListMenuWidget extends StatelessWidget {
     } else if (status == MenuMakananStatus.success) {
       // final cat = categoryState.items.first;
       final cat = context.watch<MenuMakananBloc>().state;
+      List<CategoryModel>? data = cat.items;
       String? id;
       for (var element in cat.items!) {
         if (idMerchant == element.merchantId) {
@@ -399,6 +406,12 @@ class ListMenuWidget extends StatelessWidget {
             );
           } else if (status == ListMenuStatus.success) {
             final items = state.items!;
+            if (state.items!.length == 0) {
+              for (var element in data!) {
+                context.read<ListMenuBloc>().add(
+                    GetListMenu(idMerchant, element.categoryId.toString()));
+              }
+            }
             return Expanded(
               child: ListView.builder(
                 itemCount: items.length,

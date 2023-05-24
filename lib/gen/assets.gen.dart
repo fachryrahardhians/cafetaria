@@ -106,6 +106,9 @@ class $AssetsImagesGen {
   AssetGenImage get feedback =>
       const AssetGenImage('assets/images/ill_feedback.png');
   AssetGenImage get gallery => const AssetGenImage('assets/icons/gallery.png');
+  AssetGenImage get illMenu => const AssetGenImage('assets/icons/ill_menu.png');
+  AssetGenImage get illKategori =>
+      const AssetGenImage('assets/icons/ill_kategori.png');
 }
 
 class Assets {
