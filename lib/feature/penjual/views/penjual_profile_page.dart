@@ -9,6 +9,7 @@ import 'package:cafetaria/feature/penjual/views/edit_profile.dart';
 import 'package:cafetaria/feature/penjual/views/set_operational.dart';
 import 'package:cafetaria/gen/assets.gen.dart';
 import 'package:cafetaria/styles/colors.dart';
+import 'package:cafetaria/utilities/feedback.dart';
 import 'package:cafetaria/utilities/size_config.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -251,7 +252,6 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                                     ],
                                   ));
                             }),
-
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -393,36 +393,28 @@ class _PenjualProfileState extends State<PenjualProfileView> {
                                         ));
                                   }),
                             ),
-                            const SizedBox(height: 20),
+                            SizedBox(
+                              width: double.infinity,
+                              height: 37,
+                              child: TextButton(
+                                  child: const Align(
+                                    alignment: Alignment.centerLeft,
+                                    child: Text("Beri Saran",
+                                        style: TextStyle(
+                                            color: Colors.black,
+                                            fontWeight: FontWeight.normal)),
+                                  ),
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              FeedBackPage(userId: user.uid),
+                                        ));
+                                  }),
+                            ),
                           ],
                         ),
-                        // SizedBox(
-                        //   width: double.infinity,
-                        //   height: 50,
-                        //   child: ReusableButton1(
-                        //     label: "KELUAR",
-                        //     onPressed: () async {
-                        //       await auth.signoutGoogle();
-                        //       // ignore: use_build_context_synchronously
-                        //       Navigator.pushReplacement(
-                        //         context,
-                        //         MaterialPageRoute(
-                        //           builder: (context) => const LoginPage(),
-                        //         ),
-                        //       );
-                        //       WidgetsFlutterBinding.ensureInitialized();
-                        //       var isRunning = await FlutterBackgroundService()
-                        //           .isServiceRunning();
-                        //       if (isRunning) {
-                        //         FlutterBackgroundService().sendData(
-                        //           {"action": "stopService"},
-                        //         );
-                        //       }
-                        //     },
-                        //     padding: const EdgeInsets.all(0),
-                        //     margin: const EdgeInsets.all(0),
-                        //   ),
-                        // )
                       ],
                     ),
                   ),

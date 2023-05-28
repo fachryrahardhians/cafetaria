@@ -300,7 +300,8 @@ class _PembeliProfileState extends State<PembeliProfileView> {
                               Navigator.push(
                                   context,
                                   MaterialPageRoute(
-                                    builder: (context) => const FeedBackPage(),
+                                    builder: (context) =>
+                                        FeedBackPage(userId: user.uid),
                                   ));
                             }),
                       ),

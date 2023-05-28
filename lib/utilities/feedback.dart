@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:authentication_repository/authentication_repository.dart';
 import 'package:cafetaria/components/alertdialog/alert_dialog_widget.dart';
 import 'package:cafetaria/feature/pembeli/bloc/add_rating_bloc/add_rating_bloc.dart';
@@ -8,25 +10,36 @@ import 'package:cafetaria/styles/colors.dart';
 import 'package:cafetaria/styles/text_styles.dart';
 import 'package:cafetaria/utilities/size_config.dart';
 import 'package:cafetaria_ui/cafetaria_ui.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:cafetaria/components/buttons/reusables_buttons.dart';
+import 'package:fluttertoast/fluttertoast.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:uuid/uuid.dart';
 // import 'package:formz/formz.dart';
 // import 'package:rating_repository/rating_repository.dart';
 
 class FeedBackPage extends StatelessWidget {
+  final String userId;
   const FeedBackPage({
+    required this.userId,
     Key? key,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const FeedBack();
+    return FeedBack(
+      userId: userId,
+    );
   }
 }
 
 class FeedBack extends StatefulWidget {
+  final String userId;
   const FeedBack({
+    required this.userId,
     Key? key,
   }) : super(key: key);
 
@@ -37,7 +50,71 @@ class FeedBack extends StatefulWidget {
 class _FeedBackState extends State<FeedBack> {
   int rating = 0;
   XFile? fotoReview;
-  TextEditingController _reviewController = TextEditingController();
+  bool _submitLoading = false;
+  final ImagePicker _picker = ImagePicker();
+  final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+  final FirebaseStorage _storage = FirebaseStorage.instance;
+  final TextEditingController _reviewController = TextEditingController();
+  Future _handleUpload() async {
+    final XFile? photo =
+        await _picker.pickImage(source: ImageSource.gallery, imageQuality: 25);
+    setState(() {
+      fotoReview = photo;
+    });
+  }
+
+  Future _onSubmit(context) async {
+    final userId = widget.userId;
+    String uuid = const Uuid().v4();
+
+    setState(() {
+      _submitLoading = true;
+    });
+
+    try {
+      if (fotoReview != null) {
+        var snapshotFeedBack = await _storage
+            .ref()
+            .child('images/feedback/$userId.jpg')
+            .putFile(File(fotoReview!.path));
+
+        var urlFeedBack = await snapshotFeedBack.ref.getDownloadURL();
+
+        final data = {
+          'desc': _reviewController.text,
+          'feedbackId': uuid,
+          'image': urlFeedBack,
+          'rating': rating,
+          'userId': userId,
+        };
+
+        await _firestore.collection('feedback-app').doc(uuid).set(data);
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+      } else {
+        final data = {
+          'desc': _reviewController.text,
+          'feedbackId': uuid,
+          'image': null,
+          'rating': rating,
+          'userId': userId,
+        };
+
+        await _firestore.collection('feedback-app').doc(uuid).set(data);
+        Navigator.of(context).pop();
+        Fluttertoast.showToast(
+            msg: "Submit success!", toastLength: Toast.LENGTH_LONG);
+      }
+    } catch (error) {
+      Fluttertoast.showToast(msg: "$error", toastLength: Toast.LENGTH_LONG);
+    } finally {
+      setState(() {
+        _submitLoading = false;
+      });
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -123,8 +200,10 @@ class _FeedBackState extends State<FeedBack> {
                       ],
                     )),
                 SizedBox(height: SizeConfig.safeBlockVertical * 2),
-                fotoReview != null
-                    ? Container(
+                if (fotoReview != null)
+                  GestureDetector(
+                    onTap: () => _handleUpload(),
+                    child: Container(
                         margin: const EdgeInsets.only(top: 10),
                         width: double.infinity,
                         height: MediaQuery.of(context).size.height / 4,
@@ -141,63 +220,71 @@ class _FeedBackState extends State<FeedBack> {
                             ]),
                         child: Center(
                           child: Image.asset(fotoReview!.path),
-                        ))
-                    : GestureDetector(
-                        onTap: () async {
-                          ImagePicker imagePicker = ImagePicker();
-                          final data = await imagePicker.pickImage(
-                              source: ImageSource.gallery);
-                          setState(() {
-                            fotoReview = data;
-                          });
-                        },
-                        child: Container(
-                          width: MediaQuery.of(context).size.width / 1,
-                          height: MediaQuery.of(context).size.height / 16,
-                          decoration: BoxDecoration(
-                              color: const Color.fromARGB(255, 255, 255, 255),
-                              boxShadow: [
-                                BoxShadow(
-                                  color: Colors.grey.withOpacity(0.5),
-                                  spreadRadius: 5,
-                                  blurRadius: 7,
-                                  offset: const Offset(
-                                      0, 3), // changes position of shadow
-                                ),
-                              ],
-                              borderRadius: BorderRadius.circular(5.0)),
-                          child: Padding(
-                            padding: const EdgeInsets.all(8.0),
-                            child: Row(
-                              children: [
-                                Image.asset(
-                                  Assets.images.gallery.path,
-                                  scale: 0.6,
-                                ),
-                                const SizedBox(
-                                  width: 3,
-                                ),
-                                const Align(
-                                    alignment: Alignment.centerLeft,
-                                    child: Text(
-                                      'BUKA GALERI',
-                                      style: TextStyle(
-                                          color: Colors.grey,
-                                          fontWeight: FontWeight.bold),
-                                    )),
-                              ],
+                        )),
+                  )
+                else
+                  GestureDetector(
+                    onTap: () async {
+                      _handleUpload();
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width / 1,
+                      height: MediaQuery.of(context).size.height / 16,
+                      decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 255, 255, 255),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.grey.withOpacity(0.5),
+                              spreadRadius: 5,
+                              blurRadius: 7,
+                              offset: const Offset(
+                                  0, 3), // changes position of shadow
                             ),
-                          ),
+                          ],
+                          borderRadius: BorderRadius.circular(5.0)),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: Row(
+                          children: [
+                            Image.asset(
+                              Assets.images.gallery.path,
+                              scale: 0.6,
+                            ),
+                            const SizedBox(
+                              width: 3,
+                            ),
+                            const Align(
+                                alignment: Alignment.centerLeft,
+                                child: Text(
+                                  'BUKA GALERI',
+                                  style: TextStyle(
+                                      color: Colors.grey,
+                                      fontWeight: FontWeight.bold),
+                                )),
+                          ],
                         ),
-                      )
+                      ),
+                    ),
+                  )
               ],
             ),
           ),
         ),
-        bottomNavigationBar:
-            Padding(
-              padding: const EdgeInsets.all(18.0),
-              child: CFButton.primary(child: const Text('KIRIM'), onPressed: () {}),
-            ));
+        bottomNavigationBar: Padding(
+          padding: const EdgeInsets.all(18.0),
+          child: ReusableButton1(
+              loading: _submitLoading,
+              label: "KIRIM",
+              onPressed: () {
+                if (_reviewController.text.isEmpty) {
+                  return null;
+                }
+                if (rating == 0) {
+                  return null;
+                } else {
+                  _onSubmit(context);
+                }
+              }),
+        ));
   }
 }
